@@ -1,0 +1,33 @@
+.input{
+    border-radius: 50px !important;
+    height: 60px !important;
+    padding-left: 40px;
+    padding-right: 40px;
+    background-color: #dad2d2 !important;
+    margin-bottom: 44px !important;
+    color: #000 !important;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-color: transparent !important;
+}
+.input:focus, .input:hover{
+    color: #000 !important;
+    background-color: #fff !important;
+    border-color: transparent !important;
+}
+
+.btn_concluir{
+    border-radius: 50px !important;
+    height: 60px !important;
+    padding-left: 40px;
+    padding-right: 40px;
+    background-color: #07b2019d !important;
+    color: #FFF;
+    font-weight: bolder;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-color: transparent !important;
+}
+
+.btn_concluir:focus, .btn_concluir:hover{
+    background-color: #07B201 !important;
+    color: #FFF;
+}
