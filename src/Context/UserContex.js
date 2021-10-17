@@ -3,6 +3,7 @@ import {TOKEN_POST} from '../api/endpoints/geral.js';
 import {useHistory} from 'react-router-dom'
 import {login, logout, getToken, isAuthenticated, sandBox} from '../api/Auth/index.js'
 import useFetch from '../Hooks/useFetch.js';
+import {Login} from '../View/index.js'
 
 export const UserContex = React.createContext();
 
@@ -19,7 +20,8 @@ export const UserStorange = ({children})=>{
         try{
 
             logout();
-            historyUser.push('/login');
+            setLoginUser(false)
+            historyUser.push('/usuario/login');
 
         }catch(error){
             console.log(error)

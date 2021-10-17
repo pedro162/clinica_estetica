@@ -5,7 +5,7 @@ import { Container, Col, Row, Navbar, Nav,NavDropdown } from 'react-bootstrap';
 import estilos from './Header.module.css'
 
 const Header = (props)=>{
-    const {isAuthenticated} = React.useContext(UserContex)
+    const {isAuthenticated, userLogout} = React.useContext(UserContex)
     console.log(isAuthenticated)
     if(! isAuthenticated()){
         return <></>
@@ -83,10 +83,11 @@ const Header = (props)=>{
                         </NavDropdown>
                     </Nav>
                     <Nav>
-                        <Nav.Link href="#deets">More deets</Nav.Link>
-                            <Nav.Link eventKey={2}  href="#memes">
-                            Dank memes
-                        </Nav.Link>
+                        <NavDropdown title="Usuário" id="collasible-nav-dropdown" drop="start">
+                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Editar</NavDropdown.Item>
+                            <NavDropdown.Divider />
+                                <NavDropdown.Item onClick={()=>userLogout()} className={[estilos.itemMenu]} as='div' >Sair</NavDropdown.Item>
+                        </NavDropdown>
                     </Nav>
                 </Navbar.Collapse>
             </Container>

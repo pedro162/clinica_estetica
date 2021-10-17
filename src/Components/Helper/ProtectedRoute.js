@@ -12,10 +12,11 @@ const ProtectedRoute = (props)=>{
             {...props}
         />
     }else if(isAuthenticated() === false){
-        //history.push('/usuario/login')
-        return <Login/>;
+       history.push('/usuario/login')
+       return null;
     }else{
-       return <Login/>;
+        history.push('/usuario/login')
+        return null;
     }
 }
 
