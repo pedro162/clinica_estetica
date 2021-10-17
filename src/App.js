@@ -1,16 +1,15 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
-import {Home, NotFound, Login, ProtectedRoute, PainelInicial} from './View/index.js'
+import {Home, NotFound, Login, ProtectedRoute, PainelInicial, Clientes} from './View/index.js'
 import {Router, Route, Switch} from 'react-router'
 import {history} from './history.js'
 import {UserStorange, UserContex} from './Context/UserContex.js'
 import Header from './Components/Header/index.js'
 import { Container} from 'react-bootstrap';
+import {isAuthenticated} from './api/Auth/index.js'
 
 function App() {
-  
- //console.log(UserContext)
  
   return (
     <div className="">
@@ -21,12 +20,17 @@ function App() {
                   <main className="">
                     <Switch>
                       <ProtectedRoute
-                        exact path="/" 
+                        exact path="/home/painel" 
                         component={Home}
                       />
                       <ProtectedRoute
-                        exact path="/home/painel" 
+                        exact path="/" 
                         component={PainelInicial}
+                      />
+
+                       <ProtectedRoute
+                        exact path="/clientes/painel" 
+                        component={Clientes}
                       />
                       
                       <Route

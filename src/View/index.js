@@ -3,5 +3,6 @@ import NotFound from '../Components/NotFound/index.js'
 import Login from '../Components/User/Login.js'
 import ProtectedRoute from '../Components/Helper/ProtectedRoute.js'
 import PainelInicial from '../Components/PainelInicial/index.js'
+import Clientes from '../Components/Clientes/index.js'
 
-export {Home, NotFound, Login, ProtectedRoute, PainelInicial}
+export {Home, NotFound, Login, ProtectedRoute, PainelInicial,Clientes}

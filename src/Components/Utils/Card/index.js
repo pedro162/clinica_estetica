@@ -1,18 +1,19 @@
 import React from 'react';
 import { Container, Col, Row, Card as CartBootstrap, Button } from 'react-bootstrap';
+import estilos from './Card.module.css'
 
-const Card =({children, title, acoesBottomCard, ...props})=>{
+const Card =({children, title, acoesBottomCard, propsCard, ...props})=>{
 	
 	return(
 		<>
-			<CartBootstrap >
-				<CartBootstrap.Header>
+			<CartBootstrap {...propsCard} >
+				<CartBootstrap.Header className={[estilos.headerCard]}>
 					<CartBootstrap.Title>{title}</CartBootstrap.Title>
 				</CartBootstrap.Header>
 				<CartBootstrap.Body>
 				    {children}				
 				</CartBootstrap.Body>
-				<CartBootstrap.Footer className="text-muted">
+				<CartBootstrap.Footer bg="light" className={[{'text-muted':'text-muted'}, estilos.headerFooter]} >
 					{
 						acoesBottomCard && Array.isArray(acoesBottomCard) && acoesBottomCard.length > 0 ? (
 							acoesBottomCard.map((item, index, arr)=>{

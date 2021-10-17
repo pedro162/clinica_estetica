@@ -1,4 +1,5 @@
-import React from 'react'
+import React from 'react';
+import estilos from './Clientes.module.css'
 import useFetch from '../../Hooks/useFetch.js';
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET} from '../../api/endpoints/geral.js'
 import {Col, Row } from 'react-bootstrap';
@@ -6,9 +7,9 @@ import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
 import Breadcrumbs from '../Helper/Breadcrumbs.js'
 
-const Home = () => {
+const Clientes = (props)=>{
 
-    const {data, error, request, loading} = useFetch();
+	const {data, error, request, loading} = useFetch();
     const [exemplos, setExemplos] = React.useState([])
     const [exemplosTitleTable, setExemplosTitleTable] = React.useState([])
 
@@ -74,49 +75,26 @@ const Home = () => {
 
         return exemplos;
     }
-    
 
-    React.useEffect( ()=>{
-        const response = async() =>{
-            const body = TOKEN_POST({
-                'grant_type':'password',
-                'client_id': CLIENT_ID,
-                'client_secret':CLIENT_SECRET,
-                'username':'admin@gmail.com',
-                'password':'123654',
-                'scope':'',
-            })
-            console.log(body)
-            await request(body);
-        }
-
-        response()
-        
-    }, []);
-
-    React.useEffect(()=>{
+	React.useEffect(()=>{
 
         setExemplos(gerarExemplos());
         setExemplosTitleTable(gerarTitleTable());
 
     }, [])
-
-
     const rowsTableArr = exemplos;    
     const titulosTableArr = exemplosTitleTable;
-
-    return (
-        <>
+	return(
+		<>
             <Breadcrumbs
                 items={[
                         {
-                            to:'/',
                             props:{},
                             label:'Início'
                         },
                         {
                             props:{},
-                            label:'Pacientes'
+                            label:'Clientes'
                         }
                     ]}
             />
@@ -136,7 +114,8 @@ const Home = () => {
                 </Col>
             </Row>
         </>
-    )
+
+	)
 }
 
-export default Home
+export default Clientes;

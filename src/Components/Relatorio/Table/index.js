@@ -72,6 +72,7 @@ const Table = ({children, titulosTableArr, rowsTableArr,... props})=>{
 	return(
 			<Card
 				title="Relatório"
+				propsCard={{className:'cardFilter'}}
 			>
 				<TableBootstrap striped bordered hover size="sm">				 
 				  	{

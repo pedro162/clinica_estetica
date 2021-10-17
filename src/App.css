@@ -53,3 +53,7 @@ a{
 .mainContainer{
     margin-top: 2rem;
 }
+.cardFilter{
+    height: 750px !important;
+    box-shadow: 0 2px 5px #CCC;
+}

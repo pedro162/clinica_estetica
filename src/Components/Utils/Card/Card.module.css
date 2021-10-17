@@ -1,1 +1,7 @@
-Card.module.css
+.headerCard, .headerFooter{
+	height: 50px !important;
+}
+.headerFooter{
+	background-color: #FFF !important;
+
+}

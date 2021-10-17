@@ -1,21 +1,25 @@
 import React from 'react'
 import { Form } from 'react-bootstrap';
 
-const Checkbox = ({checked, label, setValue, value,propsLabel, ...props})=>{
+const Checkbox = ({checked, hasLabel,label, setValue, value,propsLabel, ...props})=>{
 	return(
 			<>
-				{label && <label {...propsLabel} >{label}</label>}
-				<Form.Check 
-					aria-label="option {value}"
-					type="switch"
-					checked={checked}
-					value={value}
-					onChange={
-						({target})=>setValue(target)
-					}
+				
+				<label {...propsLabel}  style={{display:'flex', flexDirection:'row', flexWrap:'wrap', justifyContent:'flex-start',alignItems:'center'}}>
+						<Form.Check 
+							aria-label="option {value}"
+							type="switch"
+							checked={checked}
+							value={value}
+							onChange={
+								({target})=>setValue(target)
+							}
 
-					{...props}
-				/>
+							{...props}
+						/>
+					<span style={{marginLeft:'4px'}}>{hasLabel ? label: ''}</span>
+				</label>
+				
 			</>
 		)
 }

@@ -32,6 +32,7 @@ export const UserStorange = ({children})=>{
         try{
 
             console.log(getToken())
+            setLoginUser(isAuthenticated)
 
         }catch(error){
             console.log(error)
