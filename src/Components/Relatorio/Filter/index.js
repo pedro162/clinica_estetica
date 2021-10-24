@@ -6,61 +6,22 @@ import FormControlInput from '../../FormControl/index'
 import Checkbox from '../../FormControl/Checkbox.js'
 import Radio from '../../FormControl/Radio.js'
 import estilos from './Filter.module.css';
+import { faHome, faSearch } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const Filter = ({children,... props})=>{
+const Filter = ({filtersArr, actionsArr,... props})=>{
 	const alerta = (target)=>{
 		console.log(target)
 	}
-	const data = [
-		{
-			type:'text',
-			options:[],	
-			hasLabel: true,
-			contentLabel:'Teste',
-			atributsFormLabel:{},
-			atributsContainer:{xs:"12", sm:"12", md:"12",className:'mb-2'},
-			atributsFormControl:{'type':'text', size:"sm",'name':'nome',onChange:alerta,	onBlur:alerta},
+	const data = filtersArr
 
-		},
-		{
-			type:'radio',
-			options:[
-				{
-					hasLabel: true,
-					contentLabel:'Teste Radio 01',
-					atributsFormLabel:{},
-					atributsFormControl:{'type':'radio', value:'12', size:"sm",'checked':true,'name':'nome',onChange:alerta,	onBlur:alerta},
-				},
-				{
-					hasLabel: true,
-					contentLabel:'Teste Radio',
-					atributsFormLabel:{},
-					atributsFormControl:{'type':'radio', value:'12', size:"sm",'checked':true,'name':'nome',onChange:alerta,	onBlur:alerta},
-				}
-			],	
-			hasLabel: true,
-			contentLabel:'Teste',
-			atributsFormLabel:{},
-			atributsContainer:{xs:"12", sm:"12", md:"12",className:'mb-2',},
-			atributsFormControl:{},
-
-		}
-		,{
-			type:'checkbox',
-			options:[],	
-			hasLabel: true,
-			contentLabel:'Teste',
-			atributsFormLabel:{},
-			atributsContainer:{ xs:"12", sm:"12", md:"6",className:'mb-2'},
-			atributsFormControl:{'type':'checkbox', value:'12',size:"sm",'checked':false,'name':'nome',onChange:alerta,	onBlur:alerta},
-
-		}
-	]
+	const acoesBottomCard=actionsArr
 	return(
 			<>
 				<Card
 					title="Filtros"
 					propsCard={{className:'cardFilter'}}
+					acoesBottomCard={acoesBottomCard}
 				>
 					<Row>
 						{

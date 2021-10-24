@@ -57,3 +57,8 @@ a{
     height: 750px !important;
     box-shadow: 0 2px 5px #CCC;
 }
+
+.botao_success{
+    outline-color: #10820a !important;;
+    background: #07B201 !important;
+}

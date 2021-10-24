@@ -18,9 +18,10 @@ const Card =({children, title, acoesBottomCard, propsCard, ...props})=>{
 						acoesBottomCard && Array.isArray(acoesBottomCard) && acoesBottomCard.length > 0 ? (
 							acoesBottomCard.map((item, index, arr)=>{
 								let label = item.hasOwnProperty('label') ? item.label : '';
+								let icon = item.hasOwnProperty('icon') ? item.icon : '';
 								let propsItem = item.hasOwnProperty('props') ? item.props : {};
 								return(
-									<Button key={index} variant="primary" {... propsItem} >{label}</Button>
+									<Button key={index} {... propsItem} >{icon} {label}</Button>
 								)
 							})
 						) : ('')

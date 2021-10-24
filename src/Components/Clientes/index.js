@@ -6,6 +6,8 @@ import {Col, Row } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
 import Breadcrumbs from '../Helper/Breadcrumbs.js'
+import { faHome, faSearch } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Clientes = (props)=>{
 
@@ -13,8 +15,60 @@ const Clientes = (props)=>{
     const [exemplos, setExemplos] = React.useState([])
     const [exemplosTitleTable, setExemplosTitleTable] = React.useState([])
 
+    const alerta = (target)=>{
+        console.log(target)
+    }
+    const filtersArr = [
+        {
+            type:'text',
+            options:[], 
+            hasLabel: true,
+            contentLabel:'Teste',
+            atributsFormLabel:{},
+            atributsContainer:{xs:"12", sm:"12", md:"12",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'name':'nome',onChange:alerta,    onBlur:alerta},
 
+        },
+        {
+            type:'radio',
+            options:[
+                {
+                    hasLabel: true,
+                    contentLabel:'Teste Radio 01',
+                    atributsFormLabel:{},
+                    atributsFormControl:{'type':'radio', value:'12', size:"sm",'checked':true,'name':'nome',onChange:alerta,    onBlur:alerta},
+                },
+                {
+                    hasLabel: true,
+                    contentLabel:'Teste Radio',
+                    atributsFormLabel:{},
+                    atributsFormControl:{'type':'radio', value:'12', size:"sm",'checked':true,'name':'nome',onChange:alerta,    onBlur:alerta},
+                }
+            ],  
+            hasLabel: true,
+            contentLabel:'Teste',
+            atributsFormLabel:{},
+            atributsContainer:{xs:"12", sm:"12", md:"12",className:'mb-2',},
+            atributsFormControl:{},
 
+        }
+        ,{
+            type:'checkbox',
+            options:[], 
+            hasLabel: true,
+            contentLabel:'Teste',
+            atributsFormLabel:{},
+            atributsContainer:{ xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsFormControl:{'type':'checkbox', value:'12',size:"sm",'checked':false,'name':'nome',onChange:alerta, onBlur:alerta},
+
+        }
+    ]
+
+    const acoesBottomCard=[{
+        label:'Pesquisar',
+        icon:<FontAwesomeIcon icon={faSearch} />,
+        props:{onClick:()=>alert('cliclou'), className:'btn btn-sm botao_success'}
+    }];
     const gerarExemplos = ()=>{
         let exemplos = [];
         for(let i=0; !(i == 10); i++){
@@ -101,7 +155,8 @@ const Clientes = (props)=>{
             <Row>
                 <Col  xs="12" sm="12" md="3">
                     <Filter
-
+                        filtersArr={filtersArr}
+                        actionsArr={acoesBottomCard}
                     />
                 </Col>
                 <Col  xs="12" sm="12" md="9">

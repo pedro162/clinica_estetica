@@ -19,7 +19,7 @@ const Header = (props)=>{
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="me-auto">
                         <NavDropdown title="Financeiro" id="collasible-nav-dropdown">
-                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} to="/home/painel" >Home</Link></NavDropdown.Item>
+                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} to="/financeiro/contas_receber" >Contas a receber</Link></NavDropdown.Item>
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Another action</NavDropdown.Item>
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Something</NavDropdown.Item>
                             <NavDropdown.Divider />
