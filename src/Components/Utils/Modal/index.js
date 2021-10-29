@@ -1,7 +1,7 @@
 import React from 'react';
 import { Col, Row, Modal as ModalBootstrap, Button } from 'react-bootstrap';
 
-const Modal = ({children, title, labelConcluir, labelCanelar, dialogClassName, show, showHide, props})=>{
+const Modal = ({children, title, labelConcluir, labelCanelar, dialogClassName, show, showHide, ...props})=>{
 	
   	const handleClose = () =>showHide(false);
 

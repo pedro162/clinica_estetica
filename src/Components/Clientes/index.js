@@ -6,14 +6,18 @@ import {Col, Row } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
 import Breadcrumbs from '../Helper/Breadcrumbs.js'
-import { faHome, faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faSearch, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Modal from '../Utils/Modal/index.js'
+import Cadastrar from './Cadastrar/index.js'
+
 
 const Clientes = (props)=>{
 
 	const {data, error, request, loading} = useFetch();
     const [exemplos, setExemplos] = React.useState([])
     const [exemplosTitleTable, setExemplosTitleTable] = React.useState([])
+    const [showModalCriarCliente, setShowModalCriarCliente] = React.useState(false)
 
     const alerta = (target)=>{
         console.log(target)
@@ -68,7 +72,13 @@ const Clientes = (props)=>{
         label:'Pesquisar',
         icon:<FontAwesomeIcon icon={faSearch} />,
         props:{onClick:()=>alert('cliclou'), className:'btn btn-sm botao_success'}
-    }];
+    },
+    {
+        label:'Cadastrar',
+        icon:<FontAwesomeIcon icon={faPlus} />,
+        props:{onClick:()=>setShowModalCriarCliente(true), className:'btn btn-sm mx-2 secondary'}
+    }
+    ];
     const gerarExemplos = ()=>{
         let exemplos = [];
         for(let i=0; !(i == 10); i++){
@@ -168,6 +178,7 @@ const Clientes = (props)=>{
                     />
                 </Col>
             </Row>
+            <Modal children={<Cadastrar/>} title={'Cadastrar cliente'} labelConcluir="Concluir" dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarCliente} showHide={setShowModalCriarCliente} size="lg" />
         </>
 
 	)

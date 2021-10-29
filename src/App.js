@@ -42,6 +42,10 @@ function App() {
                         exact path="/" 
                         component={PainelInicial}
                       />
+                      <Route
+                        path="/usuario/login" 
+                        component={Login}
+                      />
 
                       <Route
                         path="*" 
