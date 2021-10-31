@@ -76,7 +76,7 @@ const Clientes = (props)=>{
     {
         label:'Cadastrar',
         icon:<FontAwesomeIcon icon={faPlus} />,
-        props:{onClick:()=>setShowModalCriarCliente(true), className:'btn btn-sm mx-2 secondary'}
+        props:{onClick:()=>setShowModalCriarCliente(true), className:'btn btn-sm mx-2 btn-secondary'}
     }
     ];
     const gerarExemplos = ()=>{

@@ -5,5 +5,6 @@ import ProtectedRoute from '../Components/Helper/ProtectedRoute.js'
 import PainelInicial from '../Components/PainelInicial/index.js'
 import Clientes from '../Components/Clientes/index.js'
 import ContasReceber from '../Components/ContasReceber/index.js'
+import Caixa from '../Components/Caixa/index.js'
 
-export {Home, NotFound, Login, ProtectedRoute, PainelInicial,Clientes, ContasReceber}
+export {Home, NotFound, Login, ProtectedRoute, PainelInicial,Clientes, ContasReceber, Caixa}

@@ -109,17 +109,17 @@ const FormCliente = (props)=>{
                     )=>(
 
                         <form onSubmit={handleSubmit}>
-                            <Row className="mb-3">
+                            <Row className="my-3">
                         		<Col xs="12" sm="12" md="12">
-                        			<span>Dados básicos</span>
+                        			<span className="label_title_grup_forms">Dados básicos</span>
                         		</Col>
                         	</Row>
-                        	<Row className="mb-3">
+                        	<Row className="mb-1">
                         		<Col xs="12" sm="12" md="6">
                         			 <Field
 			                                data={
 			                                    {
-			                                        hasLabel:false,
+			                                        hasLabel:true,
 			                                        contentLabel:'Nome',
 			                                        atributsFormLabel:{
 
@@ -132,7 +132,8 @@ const FormCliente = (props)=>{
 			                                            onChange:handleChange,
 			                                            onBlur:handleBlur,
 			                                            value:values.nome,
-			                                            className:estilos.input
+			                                            className:`${estilos.input}`,
+			                                            size:"sm"
 			                                        },
 			                                        atributsContainer:{
 			                                            className:''
@@ -142,14 +143,14 @@ const FormCliente = (props)=>{
 			                               
 			                                component={FormControlInput}
 			                            ></Field>
-			                            <ErrorMessage name="nome" component="div" />
+			                            <ErrorMessage className="alerta_error_form_label" name="nome" component="div" />
                         		</Col>
 
                         		<Col xs="12" sm="12" md="6">
                         			<Field
 			                                data={
 			                                    {
-			                                        hasLabel:false,
+			                                        hasLabel:true,
 			                                        contentLabel:'Sobrenome',
 			                                        atributsFormLabel:{
 
@@ -162,7 +163,8 @@ const FormCliente = (props)=>{
 			                                            onChange:handleChange,
 			                                            onBlur:handleBlur,
 			                                            value:values.sobrenome,
-			                                            className:estilos.input
+			                                            className:estilos.input,
+			                                            size:"sm"
 			                                        },
 			                                        atributsContainer:{
 			                                            className:''
@@ -172,16 +174,16 @@ const FormCliente = (props)=>{
 			                               
 			                                component={FormControlInput}
 			                            ></Field>
-			                            <ErrorMessage name="sobrenome" component="div" />
+			                            <ErrorMessage className="alerta_error_form_label" name="sobrenome" component="div" />
                         		</Col>
                         	</Row>
 
-                        	<Row className="mb-3">
+                        	<Row className="mb-1">
                         		<Col xs="12" sm="12" md="6">
                         			 <Field
 			                                data={
 			                                    {
-			                                        hasLabel:false,
+			                                        hasLabel:true,
 			                                        contentLabel:'Cpf',
 			                                        atributsFormLabel:{
 
@@ -194,7 +196,8 @@ const FormCliente = (props)=>{
 			                                            onChange:handleChange,
 			                                            onBlur:handleBlur,
 			                                            value:values.documento,
-			                                            className:estilos.input
+			                                            className:estilos.input,
+			                                            size:"sm"
 			                                        },
 			                                        atributsContainer:{
 			                                            className:''
@@ -204,14 +207,14 @@ const FormCliente = (props)=>{
 			                               
 			                                component={FormControlInput}
 			                            ></Field>
-			                            <ErrorMessage name="documento" component="div" />
+			                            <ErrorMessage className="alerta_error_form_label" name="documento" component="div" />
                         		</Col>
 
                         		<Col xs="12" sm="12" md="6">
                         			<Field
 			                                data={
 			                                    {
-			                                        hasLabel:false,
+			                                        hasLabel:true,
 			                                        contentLabel:'RG',
 			                                        atributsFormLabel:{
 
@@ -224,7 +227,8 @@ const FormCliente = (props)=>{
 			                                            onChange:handleChange,
 			                                            onBlur:handleBlur,
 			                                            value:values.doc_complementar,
-			                                            className:estilos.input
+			                                            className:estilos.input,
+			                                            size:"sm"
 			                                        },
 			                                        atributsContainer:{
 			                                            className:''
@@ -234,20 +238,20 @@ const FormCliente = (props)=>{
 			                               
 			                                component={FormControlInput}
 			                            ></Field>
-			                            <ErrorMessage name="doc_complementar" component="div" />
+			                            <ErrorMessage className="alerta_error_form_label" name="doc_complementar" component="div" />
                         		</Col>
                         	</Row>
-                        	<Row className="mb-3">
+                        	<Row className="my-3">
                         		<Col xs="12" sm="12" md="12">
-                        			<span>Dados de endereço</span>
+                        			<span className="label_title_grup_forms">Dados de endereço</span>
                         		</Col>
                         	</Row>
-                        	<Row className="mb-3">
+                        	<Row className="mb-1">
                         		<Col xs="12" sm="12" md="6">
                         			 <Field
 			                                data={
 			                                    {
-			                                        hasLabel:false,
+			                                        hasLabel:true,
 			                                        contentLabel:'Cep',
 			                                        atributsFormLabel:{
 
@@ -260,7 +264,8 @@ const FormCliente = (props)=>{
 			                                            onChange:handleChange,
 			                                            onBlur:handleBlur,
 			                                            value:values.cep,
-			                                            className:estilos.input
+			                                            className:estilos.input,
+			                                            size:"sm"
 			                                        },
 			                                        atributsContainer:{
 			                                            className:''
@@ -270,14 +275,14 @@ const FormCliente = (props)=>{
 			                               
 			                                component={FormControlInput}
 			                            ></Field>
-			                            <ErrorMessage name="cep" component="div" />
+			                            <ErrorMessage className="alerta_error_form_label" name="cep" component="div" />
                         		</Col>
 
                         		<Col xs="12" sm="12" md="6">
                         			<Field
 			                                data={
 			                                    {
-			                                        hasLabel:false,
+			                                        hasLabel:true,
 			                                        contentLabel:'Pais',
 			                                        atributsFormLabel:{
 
@@ -290,7 +295,8 @@ const FormCliente = (props)=>{
 			                                            onChange:handleChange,
 			                                            onBlur:handleBlur,
 			                                            value:values.pais,
-			                                            className:estilos.input
+			                                            className:estilos.input,
+			                                            size:"sm"
 			                                        },
 			                                        atributsContainer:{
 			                                            className:''
@@ -300,15 +306,15 @@ const FormCliente = (props)=>{
 			                               
 			                                component={FormControlInput}
 			                            ></Field>
-			                            <ErrorMessage name="pais" component="div" />
+			                            <ErrorMessage className="alerta_error_form_label" name="pais" component="div" />
                         		</Col>
                         	</Row>
-                        	<Row className="mb-3">
+                        	<Row className="mb-1">
                         		<Col xs="12" sm="12" md="6">
                         			 <Field
 			                                data={
 			                                    {
-			                                        hasLabel:false,
+			                                        hasLabel:true,
 			                                        contentLabel:'Estado',
 			                                        atributsFormLabel:{
 
@@ -321,7 +327,8 @@ const FormCliente = (props)=>{
 			                                            onChange:handleChange,
 			                                            onBlur:handleBlur,
 			                                            value:values.uf,
-			                                            className:estilos.input
+			                                            className:estilos.input,
+			                                            size:"sm"
 			                                        },
 			                                        atributsContainer:{
 			                                            className:''
@@ -331,14 +338,14 @@ const FormCliente = (props)=>{
 			                               
 			                                component={FormControlInput}
 			                            ></Field>
-			                            <ErrorMessage name="uf" component="div" />
+			                            <ErrorMessage className="alerta_error_form_label" name="uf" component="div" />
                         		</Col>
 
                         		<Col xs="12" sm="12" md="6">
                         			<Field
 			                                data={
 			                                    {
-			                                        hasLabel:false,
+			                                        hasLabel:true,
 			                                        contentLabel:'Bairro',
 			                                        atributsFormLabel:{
 
@@ -351,7 +358,8 @@ const FormCliente = (props)=>{
 			                                            onChange:handleChange,
 			                                            onBlur:handleBlur,
 			                                            value:values.bairro,
-			                                            className:estilos.input
+			                                            className:estilos.input,
+			                                            size:"sm"
 			                                        },
 			                                        atributsContainer:{
 			                                            className:''
@@ -361,15 +369,15 @@ const FormCliente = (props)=>{
 			                               
 			                                component={FormControlInput}
 			                            ></Field>
-			                            <ErrorMessage name="bairro" component="div" />
+			                            <ErrorMessage className="alerta_error_form_label" name="bairro" component="div" />
                         		</Col>
                         	</Row>
-                        	<Row className="mb-3">
+                        	<Row className="mb-1">
                         		<Col xs="12" sm="12" md="6">
                         			 <Field
 			                                data={
 			                                    {
-			                                        hasLabel:false,
+			                                        hasLabel:true,
 			                                        contentLabel:'Logradouro',
 			                                        atributsFormLabel:{
 
@@ -382,7 +390,8 @@ const FormCliente = (props)=>{
 			                                            onChange:handleChange,
 			                                            onBlur:handleBlur,
 			                                            value:values.logradouro,
-			                                            className:estilos.input
+			                                            className:estilos.input,
+			                                            size:"sm"
 			                                        },
 			                                        atributsContainer:{
 			                                            className:''
@@ -392,14 +401,14 @@ const FormCliente = (props)=>{
 			                               
 			                                component={FormControlInput}
 			                            ></Field>
-			                            <ErrorMessage name="logradouro" component="div" />
+			                            <ErrorMessage className="alerta_error_form_label" name="logradouro" component="div" />
                         		</Col>
 
                         		<Col xs="12" sm="12" md="6">
                         			<Field
 			                                data={
 			                                    {
-			                                        hasLabel:false,
+			                                        hasLabel:true,
 			                                        contentLabel:'Complemento',
 			                                        atributsFormLabel:{
 
@@ -412,7 +421,8 @@ const FormCliente = (props)=>{
 			                                            onChange:handleChange,
 			                                            onBlur:handleBlur,
 			                                            value:values.complemento,
-			                                            className:estilos.input
+			                                            className:estilos.input,
+			                                            size:"sm"
 			                                        },
 			                                        atributsContainer:{
 			                                            className:''
@@ -422,15 +432,15 @@ const FormCliente = (props)=>{
 			                               
 			                                component={FormControlInput}
 			                            ></Field>
-			                            <ErrorMessage name="complemento" component="div" />
+			                            <ErrorMessage className="alerta_error_form_label" name="complemento" component="div" />
                         		</Col>
                         	</Row>
-                        	<Row className="mb-3">
+                        	<Row className="mb-1">
                         		<Col xs="12" sm="12" md="6">
                         			 <Field
 			                                data={
 			                                    {
-			                                        hasLabel:false,
+			                                        hasLabel:true,
 			                                        contentLabel:'Número',
 			                                        atributsFormLabel:{
 
@@ -443,7 +453,8 @@ const FormCliente = (props)=>{
 			                                            onChange:handleChange,
 			                                            onBlur:handleBlur,
 			                                            value:values.numero,
-			                                            className:estilos.input
+			                                            className:estilos.input,
+			                                            size:"sm"
 			                                        },
 			                                        atributsContainer:{
 			                                            className:''
@@ -453,20 +464,20 @@ const FormCliente = (props)=>{
 			                               
 			                                component={FormControlInput}
 			                            ></Field>
-			                            <ErrorMessage name="numero" component="div" />
+			                            <ErrorMessage className="alerta_error_form_label" name="numero" component="div" />
                         		</Col>
                         	</Row>
-                        	<Row className="mb-3">
+                        	<Row className="my-3">
                         		<Col xs="12" sm="12" md="12">
-                        			<span>Dados para contato</span>
+                        			<span className="label_title_grup_forms" >Dados para contato</span>
                         		</Col>
                         	</Row>
-                        	<Row className="mb-3">
+                        	<Row className="mb-1">
                         		<Col xs="12" sm="12" md="6">
                         			 <Field
 			                                data={
 			                                    {
-			                                        hasLabel:false,
+			                                        hasLabel:true,
 			                                        contentLabel:'Telefone',
 			                                        atributsFormLabel:{
 
@@ -479,7 +490,8 @@ const FormCliente = (props)=>{
 			                                            onChange:handleChange,
 			                                            onBlur:handleBlur,
 			                                            value:values.telefone,
-			                                            className:estilos.input
+			                                            className:estilos.input,
+			                                            size:"sm"
 			                                        },
 			                                        atributsContainer:{
 			                                            className:''
@@ -489,13 +501,13 @@ const FormCliente = (props)=>{
 			                               
 			                                component={FormControlInput}
 			                            ></Field>
-			                            <ErrorMessage name="telefone" component="div" />
+			                            <ErrorMessage className="alerta_error_form_label" name="telefone" component="div" />
                         		</Col>
                         		<Col xs="12" sm="12" md="6">
                         			 <Field
 			                                data={
 			                                    {
-			                                        hasLabel:false,
+			                                        hasLabel:true,
 			                                        contentLabel:'Tipo de telefone',
 			                                        atributsFormLabel:{
 
@@ -508,7 +520,8 @@ const FormCliente = (props)=>{
 			                                            onChange:handleChange,
 			                                            onBlur:handleBlur,
 			                                            value:values.tp_telefone,
-			                                            className:estilos.input
+			                                            className:estilos.input,
+			                                            size:"sm"
 			                                        },
 			                                        atributsContainer:{
 			                                            className:''
@@ -518,15 +531,15 @@ const FormCliente = (props)=>{
 			                               
 			                                component={FormControlInput}
 			                            ></Field>
-			                            <ErrorMessage name="tp_telefone" component="div" />
+			                            <ErrorMessage className="alerta_error_form_label" name="tp_telefone" component="div" />
                         		</Col>
                         	</Row>
-                        	<Row className="mb-3">
+                        	<Row className="mb-1">
                         		<Col xs="12" sm="12" md="6">
                         			<Field
 			                                data={
 			                                    {
-			                                        hasLabel:false,
+			                                        hasLabel:true,
 			                                        contentLabel:'Celular',
 			                                        atributsFormLabel:{
 
@@ -539,7 +552,8 @@ const FormCliente = (props)=>{
 			                                            onChange:handleChange,
 			                                            onBlur:handleBlur,
 			                                            value:values.celular,
-			                                            className:estilos.input
+			                                            className:estilos.input,
+			                                            size:"sm"
 			                                        },
 			                                        atributsContainer:{
 			                                            className:''
@@ -549,13 +563,13 @@ const FormCliente = (props)=>{
 			                               
 			                                component={FormControlInput}
 			                            ></Field>
-			                            <ErrorMessage name="celular" component="div" />
+			                            <ErrorMessage className="alerta_error_form_label" name="celular" component="div" />
                         		</Col>
                         		<Col xs="12" sm="12" md="6">
                         			<Field
 			                                data={
 			                                    {
-			                                        hasLabel:false,
+			                                        hasLabel:true,
 			                                        contentLabel:'Tipo de celular',
 			                                        atributsFormLabel:{
 
@@ -568,7 +582,8 @@ const FormCliente = (props)=>{
 			                                            onChange:handleChange,
 			                                            onBlur:handleBlur,
 			                                            value:values.tp_celular,
-			                                            className:estilos.input
+			                                            className:estilos.input,
+			                                            size:"sm"
 			                                        },
 			                                        atributsContainer:{
 			                                            className:''
@@ -578,16 +593,16 @@ const FormCliente = (props)=>{
 			                               
 			                                component={FormControlInput}
 			                            ></Field>
-			                            <ErrorMessage name="tp_celular" component="div" />
+			                            <ErrorMessage className="alerta_error_form_label" name="tp_celular" component="div" />
                         		</Col>
                         	</Row>                            
 
-							<Row className="mb-3">
+							<Row className="mb-1">
                         		<Col xs="12" sm="12" md="6">
                         			 <Field
 			                                data={
 			                                    {
-			                                        hasLabel:false,
+			                                        hasLabel:true,
 			                                        contentLabel:'Email',
 			                                        atributsFormLabel:{
 
@@ -600,7 +615,8 @@ const FormCliente = (props)=>{
 			                                            onChange:handleChange,
 			                                            onBlur:handleBlur,
 			                                            value:values.email,
-			                                            className:estilos.input
+			                                            className:estilos.input,
+			                                            size:"sm"
 			                                        },
 			                                        atributsContainer:{
 			                                            className:''
@@ -610,14 +626,14 @@ const FormCliente = (props)=>{
 			                               
 			                                component={FormControlInput}
 			                            ></Field>
-			                            <ErrorMessage name="email" component="div" />
+			                            <ErrorMessage className="alerta_error_form_label" name="email" component="div" />
                         		</Col>
 
                         		<Col xs="12" sm="12" md="6">
                         			 <Field
 			                                data={
 			                                    {
-			                                        hasLabel:false,
+			                                        hasLabel:true,
 			                                        contentLabel:'Tipo de email',
 			                                        atributsFormLabel:{
 
@@ -630,7 +646,8 @@ const FormCliente = (props)=>{
 			                                            onChange:handleChange,
 			                                            onBlur:handleBlur,
 			                                            value:values.tp_email,
-			                                            className:estilos.input
+			                                            className:estilos.input,
+			                                            size:"sm"
 			                                        },
 			                                        atributsContainer:{
 			                                            className:''
@@ -640,7 +657,7 @@ const FormCliente = (props)=>{
 			                               
 			                                component={FormControlInput}
 			                            ></Field>
-			                            <ErrorMessage name="tp_email" component="div" />
+			                            <ErrorMessage className="alerta_error_form_label" name="tp_email" component="div" />
                         		</Col>
 
 

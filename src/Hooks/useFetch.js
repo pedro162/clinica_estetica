@@ -1,13 +1,11 @@
 import React from 'react'
-import {api} from '../api/baseApi.js'
-//const cors = require('cors');
 
 const useFetch = () => {
     const [data, setData] = React.useState(null);
     const [error, setError] = React.useState(null);
     const [loading, setLoading] = React.useState(false);
 
-    const request = React.useCallback(async (body)=>{
+    const request = React.useCallback(async (url, options)=>{
         let response;
         let json;
 
@@ -15,9 +13,13 @@ const useFetch = () => {
 
             setError(null);
             setLoading(true);
-            response = await api(body);
-            json = await response.data.json();
             
+            response = await fetch(url, options);
+            json = await response.json();
+            if(response.ok == false){
+                throw new Error(json.message);
+            }
+
         }catch(err){
             
             json = null;

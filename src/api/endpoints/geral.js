@@ -2,17 +2,39 @@
 export const CLIENT_ID = 5;
 export const CLIENT_SECRET = 'nzKVwUPA3NyuSkvxBz2cNTc53mBL9BR7vrMrv8Tq';
 
+const SANDBOX = true;
+const BASE_URL =  (SANDBOX == true) ? "http://1.josepedro.tmp.k8.com.br/api" : '';///api
+
 export const TOKEN_POST = (body)=>{
     return {
         url:'/oauth/token',
         method:'POST',
         headers: {
-            'Content-Type':'application/json;charset=utf-8',
-            'Access-Control-Allow-Origin':"true",
+            'Content-Type':'application/json',
+            'Access-Control-Allow-Origin':"*",
         },
         data:JSON.stringify(body)
     }
-}
+};
+
+export const TESTE_API_GET = (body)=>{
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "text/html");
+
+    var myInit = { 
+        method: 'GET',
+        headers: myHeaders,
+        mode: 'no-cors',
+        cache: 'default' 
+   };
+
+   return{
+        url:BASE_URL+'/country',
+        options:myInit
+    }
+
+};
 
 export const TOKEN_VALIDATE_POST = (token)=>{
 
