@@ -139,7 +139,29 @@ const Clientes = (props)=>{
 
         return exemplos;
     }
+    //------------
+   /* React.useEffect( ()=>{
+        const requestToken = async() =>{
+       
+           const {url, options} = TOKEN_POST({
+                'grant_type':'password',
+                'client_id': CLIENT_ID,
+                'client_secret':CLIENT_SECRET,
+                'username':'admin@gmail.com',
+                'password':'123456'
+             });
 
+
+            const {response, json} = await request(url, options);
+
+            
+        }
+
+        requestToken();
+        
+    }, []);*/
+
+    //----
 	React.useEffect(()=>{
 
         setExemplos(gerarExemplos());

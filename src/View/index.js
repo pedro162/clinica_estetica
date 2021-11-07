@@ -6,5 +6,7 @@ import PainelInicial from '../Components/PainelInicial/index.js'
 import Clientes from '../Components/Clientes/index.js'
 import ContasReceber from '../Components/ContasReceber/index.js'
 import Caixa from '../Components/Caixa/index.js'
+import Filial from '../Components/Filial/index.js'
+import Parametro from '../Components/Parametro/index.js'
 
-export {Home, NotFound, Login, ProtectedRoute, PainelInicial,Clientes, ContasReceber, Caixa}
+export {Home, NotFound, Login, ProtectedRoute, PainelInicial,Clientes, ContasReceber, Caixa, Filial, Parametro}

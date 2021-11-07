@@ -1,7 +1,7 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
-import {Home, NotFound, Login, ProtectedRoute, PainelInicial, Clientes, ContasReceber, Caixa} from './View/index.js'
+import {Home, NotFound, Login, ProtectedRoute, PainelInicial, Clientes, ContasReceber, Caixa, Filial, Parametro} from './View/index.js'
 import {Router, Route, Switch} from 'react-router'
 import {history} from './history.js'
 import {UserStorange, UserContex} from './Context/UserContex.js'
@@ -50,6 +50,14 @@ function App() {
                       <Route
                         path="/usuario/login" 
                         component={Login}
+                      />
+                      <Route
+                        path="/configuracoes/filial" 
+                        component={Filial}
+                      />
+                      <Route
+                        path="/configuracoes/sistema" 
+                        component={Parametro}
                       />
 
                       <Route

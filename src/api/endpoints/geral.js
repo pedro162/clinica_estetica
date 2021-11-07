@@ -1,19 +1,27 @@
 
-export const CLIENT_ID = 5;
-export const CLIENT_SECRET = 'nzKVwUPA3NyuSkvxBz2cNTc53mBL9BR7vrMrv8Tq';
+export const CLIENT_ID = 3;//4;//
+export const CLIENT_SECRET = 'GHt5adQ3HrW6NI3LkGrUQyETEK04OnczcOAIXabH';//'4mjSEP4YSokEwWyyrkV3Jqb4ABylEAT0stjpKVae';//
 
-const SANDBOX = true;
-const BASE_URL =  (SANDBOX == true) ? "http://1.josepedro.tmp.k8.com.br/api" : '';///api
+const SANDBOX = false;
+const BASE_URL =  (SANDBOX == true) ? "http://1.josepedro.tmp.k8.com.br/api" : 'http://localhost:8080';///api
 
-export const TOKEN_POST = (body)=>{
-    return {
-        url:'/oauth/token',
-        method:'POST',
-        headers: {
-            'Content-Type':'application/json',
-            'Access-Control-Allow-Origin':"*",
-        },
-        data:JSON.stringify(body)
+export const TOKEN_POST = (data)=>{
+   
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+
+    var myInit = { 
+        method: 'POST',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        body:JSON.stringify(data)
+   };
+
+   return{
+        url:BASE_URL+'/oauth/token',
+        options:myInit
     }
 };
 
@@ -26,7 +34,7 @@ export const TESTE_API_GET = (body)=>{
         method: 'GET',
         headers: myHeaders,
         mode: 'no-cors',
-        cache: 'default' 
+        cache:'no-store'
    };
 
    return{

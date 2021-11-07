@@ -1,5 +1,5 @@
 import React from 'react';
-import {TOKEN_POST} from '../api/endpoints/geral.js';
+import {TOKEN_POST,CLIENT_ID,CLIENT_SECRET} from '../api/endpoints/geral.js';
 import {useHistory} from 'react-router-dom'
 import {login, logout, getToken, isAuthenticated, sandBox} from '../api/Auth/index.js'
 import useFetch from '../Hooks/useFetch.js';
@@ -23,8 +23,8 @@ export const UserStorange = ({children})=>{
             setLoginUser(false)
             historyUser.push('/usuario/login');
 
-        }catch(error){
-            console.log(error)
+        }catch(er){
+            console.log(er)
         }
 
     }
@@ -35,28 +35,68 @@ export const UserStorange = ({children})=>{
 
             console.log(getToken())
             setLoginUser(isAuthenticated)
+            historyUser.push('/home/painel');
 
-        }catch(error){
-            console.log(error)
+        }catch(er){
+            console.log(er)
         }
     }
 
     const userLogin = async (username, password)=>{
         try{
-            const token = 'asdf123';
+            let token = 'asdf123';
+            let dtaToken = {};
             if(sandBox === false){
-                const {body} = TOKEN_POST({username, password});        
-                const {token} = await request(body);
+
+                const {url, options} = TOKEN_POST({
+                    'grant_type':'password',
+                    'client_id': CLIENT_ID,
+                    'client_secret':CLIENT_SECRET,
+                    'username':username,
+                    'password':password
+                 });
+
+                const {response, json} = await request(url, options);
+
+                if(json){          
+
+                    token = json.access_token;
+                    dtaToken = json;
+
+                    if(token){
+                        login(token)
+                        await getUser();
+                    }
+                    
+                }
+
             }
-            login(token)
-            await getUser();
+           
+                   
 
-            historyUser.push('/home/painel');
-
-        }catch(error){
-            console.log(error)
+        }catch(er){
+            console.log(er)
         }
     }
+
+    /*
+     const requestToken = async() =>{
+       
+           const {url, options} = TOKEN_POST({
+                'grant_type':'password',
+                'client_id': CLIENT_ID,
+                'client_secret':CLIENT_SECRET,
+                'username':'admin@gmail.com',
+                'password':'123456'
+             });
+
+
+            const {response, json} = await request(url, options);
+
+            
+        }
+
+    */
 
     return(
         <UserContex.Provider value={{userLogin, getUser,userLogout, isAuthenticated, sandBox,loginUser, setLoginUser, loading, data, error}} >

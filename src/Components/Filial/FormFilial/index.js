@@ -4,9 +4,9 @@ import FormControlInput from '../../FormControl/index.js'
 import FormControlSelect from '../../FormControl/Select.js'
 import {Col, Row} from 'react-bootstrap';
 import Button from '../../FormControl/Button.js';
-import estilos from './FormCaixa.module.css'
+import estilos from './FormFilial.module.css'
 
-const FormCaixa = ({
+const FormFilial = ({
 			nome,
 			setNome,
 			tipo,
@@ -378,4 +378,4 @@ const FormCaixa = ({
 	)
 }
 
-export default FormCaixa;
+export default FormFilial;

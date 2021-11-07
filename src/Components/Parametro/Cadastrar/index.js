@@ -1,14 +1,14 @@
 import React from 'react';
-import FormCaixa from '../FormCaixa/index.js'
+import FormParametro from '../FormParametro/index.js'
 import { faHome, faSearch,faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {Col, Row, Button } from 'react-bootstrap';
 import Modal from '../../Utils/Modal/index.js'
 import useFetch from '../../../Hooks/useFetch.js';
 
-const Cadastrar = ({showModalCriarCaixa, setShowModalCriarCaixa})=>{
+const Cadastrar = ({showModalCriarParametro, setShowModalCriarParametro})=>{
 
-    //const [showModalCriarCaixa, setShowModalCriarCaixa] = React.useState(false);
+    //const [showModalCriarParametro, setShowModalCriarParametro] = React.useState(false);
     const [nome, setNome] = React.useState('Balcão')
     const [tipo, setTipo] = React.useState('Banco')
     const [vr_minimo, setVrMinimo] = React.useState('12,10')
@@ -54,14 +54,14 @@ const Cadastrar = ({showModalCriarCaixa, setShowModalCriarCaixa})=>{
 		return(
 			<Row>
 				<Col>
-					<FormCaixa  {...data}/>
+					<FormParametro  {...data}/>
 				</Col>
 			</Row>
 		)
 	}
 	return(
 		<>
-			<Modal  handleConcluir={()=>{handleSubmit();setShowModalCriarCaixa(); }} children={<FormModal/>} title={'Cadastrar caixa'} size="lg" labelConcluir="Concluir" dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarCaixa} showHide={setShowModalCriarCaixa}/>
+			<Modal  handleConcluir={()=>{handleSubmit();setShowModalCriarParametro(); }} children={<FormModal/>} title={'Cadastrar parametro'} size="lg" labelConcluir="Concluir" dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarParametro} showHide={setShowModalCriarParametro}/>
 			
 		</>
 	)

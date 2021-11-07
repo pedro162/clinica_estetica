@@ -18,6 +18,13 @@ const Header = (props)=>{
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="me-auto">
+                        <NavDropdown title="Configurações" id="collasible-nav-dropdown">
+                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} to="/configuracoes/filial" >Filial</Link></NavDropdown.Item>
+                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} to="/configuracoes/sistema" >Sistema</Link></NavDropdown.Item>
+                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Something</NavDropdown.Item>
+                            <NavDropdown.Divider />
+                                <NavDropdown.Item className={[estilos.itemMenu]} as='div'>Separated link</NavDropdown.Item>
+                        </NavDropdown>
                         <NavDropdown title="Financeiro" id="collasible-nav-dropdown">
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} to="/financeiro/contas_receber" >Contas a receber</Link></NavDropdown.Item>
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} to="/financeiro/caixa" >Caixa</Link></NavDropdown.Item>

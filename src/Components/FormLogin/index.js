@@ -5,7 +5,7 @@ import FormControlInput from '../FormControl/index.js'
 
 import Button from '../FormControl/Button.js';
 
-const FormLogin = ({logar, ...props})=>{
+const FormLogin = ({logar, loading, data, error,...props})=>{
     const userLogar = (user, password)=>{
         logar(user, password)
 
@@ -13,6 +13,7 @@ const FormLogin = ({logar, ...props})=>{
 
     return(
         <>
+            {error && <div>{'Atenção: '+error}</div>}
             <Formik
                 initialValues={{user:'', password:''}}
                 validate={
@@ -110,15 +111,30 @@ const FormLogin = ({logar, ...props})=>{
                                 component={FormControlInput}
                             ></Field>
                             <ErrorMessage name="password" component="div" />
-                            <Button
-                                type="submit"
-                                disabled={isSubmitting}
-                                size="lg"
-                                typeButton="grid"
-                                classNameButton={estilos.btn_concluir}
-                            >
-                                Entrar
-                            </Button>
+                            {
+                                loading ? 
+                                    <Button
+                                        type="button"
+                                        disabled={true}
+                                        size="lg"
+                                        typeButton="grid"
+                                        classNameButton={estilos.btn_concluir}
+                                    >
+                                        Aguarde...
+                                    </Button>
+                                :
+
+                                    <Button
+                                        type="submit"
+                                        disabled={isSubmitting}
+                                        size="lg"
+                                        typeButton="grid"
+                                        classNameButton={estilos.btn_concluir}
+                                    >
+                                        Entrar
+                                    </Button>
+                            }
+                            
                         </form>
                     )
                 }

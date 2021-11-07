@@ -6,7 +6,7 @@ import {UserContex} from '../../Context/UserContex.js'
 
 const Login = (props)=>{
 
-    const {userLogin} = React.useContext(UserContex);
+    const {userLogin, error, data, loading} = React.useContext(UserContex);
     
     const logar= (user, password)=>{
 
@@ -28,7 +28,7 @@ const Login = (props)=>{
                         </Col>
                     </Row>
                     <Row>
-                        <FormLogin logar={logar}/>
+                        <FormLogin logar={logar} loading={loading} data={data} error={error} />
                     </Row>
                 </Col>
             </Row>

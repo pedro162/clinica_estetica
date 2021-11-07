@@ -83,7 +83,12 @@ a{
 .label_title_modal{
     font-size: 18pt !important;
     text-transform: uppercase !important;
-    color: #07B201 !important;
+    color: #FFF !important;
     font-weight: bolder !important;
+
+}
+
+.header_modal{
+    background-color: #07B201 !important;
 
 }

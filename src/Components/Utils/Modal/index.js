@@ -16,7 +16,7 @@ const Modal = ({children, title, labelConcluir, labelCanelar, dialogClassName, s
         	dialogClassName={dialogClassName ? dialogClassName: "modal-90w"}
         	{...props}
          >
-	        <ModalBootstrap.Header closeButton>
+	        <ModalBootstrap.Header className="header_modal" closeButton>
 	          <ModalBootstrap.Title className="label_title_modal" >{title}</ModalBootstrap.Title>
 	        </ModalBootstrap.Header>
 	        <ModalBootstrap.Body>

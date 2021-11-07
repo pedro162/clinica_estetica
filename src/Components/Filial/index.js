@@ -1,5 +1,5 @@
 import React from 'react';
-import estilos from './Caixa.module.css';
+import estilos from './Filial.module.css';
 import useFetch from '../../Hooks/useFetch.js';
 import useModal from '../../Hooks/useModal.js';
 import {TESTE_API_GET, CLIENT_ID,CLIENT_SECRET} from '../../api/endpoints/geral.js'
@@ -13,11 +13,11 @@ import Create from './Cadastrar/index.js'
 import { faHome, faSearch,faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const Caixa = (props)=>{
+const Filial = (props)=>{
 	const {data, error, request, loading} = useFetch();
     const [exemplos, setExemplos] = React.useState([])
     const [exemplosTitleTable, setExemplosTitleTable] = React.useState([])
-    const [showModalCriarCaixa, setShowModalCriarCaixa] = React.useState(false)
+    const [showModalCriarFilial, setShowModalCriarFilial] = React.useState(false)
 
 
     const alerta = (target)=>{
@@ -137,9 +137,9 @@ const Caixa = (props)=>{
     	},
     	{
 
-    		label:'Novo caixa',
+    		label:'Nova filial',
 	        icon:<FontAwesomeIcon icon={faPlus} />,
-	        props:{onClick:()=>setShowModalCriarCaixa(true), className:'mx-2 btn btn-sm btn-secondary'}
+	        props:{onClick:()=>setShowModalCriarFilial(true), className:'mx-2 btn btn-sm btn-secondary'}
     	},
     ];
 
@@ -181,8 +181,8 @@ const Caixa = (props)=>{
     return (
         <>
         	<Head
-        		title="Caixa"
-        		content="Estúdio beleza, caixa "
+        		title="Filial"
+        		content="Estúdio beleza, filial "
         	/>
             <Breadcrumbs
                 items={[
@@ -193,7 +193,7 @@ const Caixa = (props)=>{
                         },
                         {
                             props:{},
-                            label:'Caixa'
+                            label:'Filial'
                         }
                     ]}
             />
@@ -214,9 +214,9 @@ const Caixa = (props)=>{
                     />
                 </Col>
             </Row>
-            <Create showModalCriarCaixa={showModalCriarCaixa} setShowModalCriarCaixa={setShowModalCriarCaixa} />
+            <Create showModalCriarFilial={showModalCriarFilial} setShowModalCriarFilial={setShowModalCriarFilial} />
         </>
     )
 }
 
-export default Caixa;
+export default Filial;
