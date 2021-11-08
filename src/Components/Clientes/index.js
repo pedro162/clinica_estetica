@@ -1,7 +1,7 @@
 import React from 'react';
 import estilos from './Clientes.module.css'
 import useFetch from '../../Hooks/useFetch.js';
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET} from '../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CLIENTES_ALL_POST} from '../../api/endpoints/geral.js'
 import {Col, Row } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
@@ -10,14 +10,19 @@ import { faHome, faSearch, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from '../Utils/Modal/index.js'
 import Cadastrar from './Cadastrar/index.js'
+import {UserContex} from '../../Context/UserContex.js'
 
 
 const Clientes = (props)=>{
 
 	const {data, error, request, loading} = useFetch();
+    const [clientes, setClientes] = React.useState([])
     const [exemplos, setExemplos] = React.useState([])
     const [exemplosTitleTable, setExemplosTitleTable] = React.useState([])
     const [showModalCriarCliente, setShowModalCriarCliente] = React.useState(false)
+
+
+    const {getToken} = React.useContext(UserContex);
 
     const alerta = (target)=>{
         console.log(target)
@@ -80,7 +85,7 @@ const Clientes = (props)=>{
     }
     ];
     const gerarExemplos = ()=>{
-        let exemplos = [];
+         let exemplos = [];
         for(let i=0; !(i == 10); i++){
             exemplos.push(
 
@@ -117,27 +122,84 @@ const Clientes = (props)=>{
         return exemplos;
     }
 
+    const gerarTableClientes = ()=>{
+       
+        let data = [];
+        let dataClientes = clientes.mensagem
+        if(dataClientes && Array.isArray(dataClientes) && dataClientes.length > 0){
+            for(let i=0; !(i == dataClientes.length); i++){
+                let atual = dataClientes[i];
+                if(atual){
+
+
+                    data.push(
+
+                        {
+                            propsRow:{id:(atual.id)},
+                            celBodyTableArr:[
+                                {
+
+                                    label:atual.id,
+                                    propsRow:{}
+                                },
+                                {
+
+                                    label:atual.name,
+                                    propsRow:{}
+                                },
+                                {
+
+                                    label:atual.name_opcional,
+                                    propsRow:{}
+                                },
+                                {
+
+                                    label:atual.email,
+                                    propsRow:{}
+                                },
+                                {
+
+                                    label:atual.sexo,
+                                    propsRow:{}
+                                }
+                            ]
+                        }
+
+                    )
+
+                }
+
+            }
+        }
+
+        return data;
+    }
+
     const gerarTitleTable = ()=>{
-        let exemplos = [
+        let tableTitle = [
             {
-                label:'Coluna exemplo 1',
+                label:'Código',
                 props:{}
             },
             {
-                label:'Coluna exemplo 2',
+                label:'Nome',
                 props:{}
             },
             {
-                label:'Coluna exemplo 3',
+                label:'Sobremone',
                 props:{}
             },
             {
-                label:'Coluna exemplo 4',
+                label:'Email',
+                props:{}
+            },
+            {
+                label:'Sexo',
                 props:{}
             },
         ]
 
-        return exemplos;
+        return tableTitle;
     }
     //------------
    /* React.useEffect( ()=>{
@@ -162,14 +224,36 @@ const Clientes = (props)=>{
     }, []);*/
 
     //----
-	React.useEffect(()=>{
+	/*React.useEffect(()=>{
 
         setExemplos(gerarExemplos());
         setExemplosTitleTable(gerarTitleTable());
 
+    }, [])*/
+
+    React.useEffect(()=>{
+
+        const requestAllClients = async() =>{
+       
+           const {url, options} = CLIENTES_ALL_POST({}, getToken());
+
+
+            const {response, json} = await request(url, options);
+            console.log('All clients here')
+            console.log(json)
+            if(json){
+                setClientes(json)
+            }
+
+            
+        }
+
+        requestAllClients();
+
+        
     }, [])
-    const rowsTableArr = exemplos;    
-    const titulosTableArr = exemplosTitleTable;
+    const rowsTableArr = gerarTableClientes();    
+    const titulosTableArr = gerarTitleTable();
 	return(
 		<>
             <Breadcrumbs

@@ -58,29 +58,71 @@ export const TOKEN_VALIDATE_POST = (token)=>{
 }
 
 export const USER_GET = (token)=>{
-    return  {
-        url:'/api/user',
-        options:{
-            method:'GET',
-            headers:{
-                Authorization:'Bearer '+token,
-            }
-        }
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'GET',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        //body:JSON.stringify(data)
+   };
+
+   return{
+        url:BASE_URL+'/api/user',
+        options:myInit
     }
+
 }
 
-export const USER_POST = (body)=>{
-    return{
-        url:'/api/user',
-        options:{
-            method:'POST',
-            headers:{
-                'Content-Type':'application/json'
-            },
-            body:JSON.stringify(body)
-        }
+export const USER_ALL_POST = (data, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'POST',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        body:JSON.stringify(data)
+   };
+
+   return{
+        url:BASE_URL+'/api/usuario/json',
+        options:myInit
     }
+
 }
+
+export const CLIENTES_ALL_POST = (data, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'POST',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        body:JSON.stringify(data)
+   };
+
+   return{
+        url:BASE_URL+'/api/pessoa/json',
+        options:myInit
+    }
+
+}
+//------------
 
 
 export const PHOTO_POST = (formData, token)=>{

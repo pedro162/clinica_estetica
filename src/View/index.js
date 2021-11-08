@@ -8,5 +8,6 @@ import ContasReceber from '../Components/ContasReceber/index.js'
 import Caixa from '../Components/Caixa/index.js'
 import Filial from '../Components/Filial/index.js'
 import Parametro from '../Components/Parametro/index.js'
+import User from '../Components/User/index.js'
 
-export {Home, NotFound, Login, ProtectedRoute, PainelInicial,Clientes, ContasReceber, Caixa, Filial, Parametro}
+export {Home, NotFound, Login, ProtectedRoute, PainelInicial,Clientes, ContasReceber, Caixa, Filial, Parametro, User}

@@ -1,5 +1,5 @@
 import React from 'react';
-import {TOKEN_POST,CLIENT_ID,CLIENT_SECRET} from '../api/endpoints/geral.js';
+import {TOKEN_POST, USER_GET,CLIENT_ID,CLIENT_SECRET} from '../api/endpoints/geral.js';
 import {useHistory} from 'react-router-dom'
 import {login, logout, getToken, isAuthenticated, sandBox} from '../api/Auth/index.js'
 import useFetch from '../Hooks/useFetch.js';
@@ -10,6 +10,7 @@ export const UserContex = React.createContext();
 export const UserStorange = ({children})=>{
 
     const [loginUser, setLoginUser] = React.useState(null)
+    const [dataUser, setDataUser] = React.useState(null)
 
     const historyUser = useHistory();
     const {request, loading, data, error} = useFetch();
@@ -35,7 +36,18 @@ export const UserStorange = ({children})=>{
 
             console.log(getToken())
             setLoginUser(isAuthenticated)
-            historyUser.push('/home/painel');
+
+            if(isAuthenticated){
+
+                const {url, options} = USER_GET(getToken())
+                const {response, json} = await request(url, options);
+                if(json){ 
+                       
+                    setDataUser(json)               
+                }
+            }
+
+            
 
         }catch(er){
             console.log(er)
@@ -66,6 +78,7 @@ export const UserStorange = ({children})=>{
                     if(token){
                         login(token)
                         await getUser();
+                        historyUser.push('/home/painel');
                     }
                     
                 }
@@ -99,7 +112,7 @@ export const UserStorange = ({children})=>{
     */
 
     return(
-        <UserContex.Provider value={{userLogin, getUser,userLogout, isAuthenticated, sandBox,loginUser, setLoginUser, loading, data, error}} >
+        <UserContex.Provider value={{userLogin, getUser,userLogout, isAuthenticated, sandBox,loginUser, setLoginUser, loading, data, error, dataUser, setDataUser, getToken}} >
             {children}
         </UserContex.Provider>
     )
