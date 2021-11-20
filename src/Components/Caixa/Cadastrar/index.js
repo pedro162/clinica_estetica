@@ -16,6 +16,7 @@ const Cadastrar = ({showModalCriarCaixa, setShowModalCriarCaixa})=>{
     const [bloquear, setBloquear] = React.useState('Não')
     const [aceita_transferencia, setAceitaTransferencia] = React.useState('Sim')
     const [vr_saldo_inicial, setVrSaldoInicial] = React.useState('560,65')
+    const inputEl = React.useRef(null);
 
     const data = {
     	nome,
@@ -32,11 +33,12 @@ const Cadastrar = ({showModalCriarCaixa, setShowModalCriarCaixa})=>{
 		setAceitaTransferencia,
 		vr_saldo_inicial,
 		setVrSaldoInicial,
+		inputEl
 	}
 	
 	const handleSubmit = ()=>{
 
-		let formData = {
+		/*let formData = {
 	    	nome,
 			tipo,
 			vr_minimo,
@@ -44,10 +46,13 @@ const Cadastrar = ({showModalCriarCaixa, setShowModalCriarCaixa})=>{
 			bloquear,
 			aceita_transferencia,
 			vr_saldo_inicial,
+			inputEl
 		}
 
 		formData = JSON.stringify(formData);
-		alert(formData)
+		alert(formData)*/
+		//inputEl.current.submit();
+		//alert('AQUI')
 	}
 
 	const FormModal = ()=>{

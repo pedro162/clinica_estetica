@@ -1,7 +1,7 @@
 import React from 'react';
-import estilos from './Clientes.module.css'
+import estilos from './Estado.module.css'
 import useFetch from '../../Hooks/useFetch.js';
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CLIENTES_ALL_POST} from '../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, ESTADO_ALL_POST} from '../../api/endpoints/geral.js'
 import {Col, Row } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
@@ -10,18 +10,17 @@ import { faHome, faSearch, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from '../Utils/Modal/index.js'
 import Load from '../Utils/Load/index.js'
-import Cadastrar from './Cadastrar/index.js'
 import {UserContex} from '../../Context/UserContex.js'
-import FormCliente from './FormCliente/index.js'
+import FormEstado from './FormEstado/index.js'
 
 
-const Clientes = (props)=>{
+const Estado = (props)=>{
 
-	const {data, error, request, loading} = useFetch();
-    const [clientes, setClientes] = React.useState([])
+    const {data, error, request, loading} = useFetch();
+    const [estado, setEstado] = React.useState([])
     const [exemplos, setExemplos] = React.useState([])
     const [exemplosTitleTable, setExemplosTitleTable] = React.useState([])
-    const [showModalCriarCliente, setShowModalCriarCliente] = React.useState(false)
+    const [showModalCriarEstado, setShowModalCriarEstado] = React.useState(false)
 
 
     const {getToken} = React.useContext(UserContex);
@@ -78,12 +77,12 @@ const Clientes = (props)=>{
     const acoesBottomCard=[{
         label:'Pesquisar',
         icon:<FontAwesomeIcon icon={faSearch} />,
-        props:{onClick:()=>requestAllClients(), className:'btn btn-sm botao_success'}
+        props:{onClick:()=>requestAllEstados(), className:'btn btn-sm botao_success'}
     },
     {
         label:'Cadastrar',
         icon:<FontAwesomeIcon icon={faPlus} />,
-        props:{onClick:()=>setShowModalCriarCliente(true), className:'btn btn-sm mx-2 btn-secondary'}
+        props:{onClick:()=>setShowModalCriarEstado(true), className:'btn btn-sm mx-2 btn-secondary'}
     }
     ];
     const gerarExemplos = ()=>{
@@ -124,13 +123,13 @@ const Clientes = (props)=>{
         return exemplos;
     }
 
-    const gerarTableClientes = ()=>{
+    const gerarTableEstado = ()=>{
        
         let data = [];
-        let dataClientes = clientes.mensagem
-        if(dataClientes && Array.isArray(dataClientes) && dataClientes.length > 0){
-            for(let i=0; !(i == dataClientes.length); i++){
-                let atual = dataClientes[i];
+        let dataEstado = estado.mensagem
+        if(dataEstado && Array.isArray(dataEstado) && dataEstado.length > 0){
+            for(let i=0; !(i == dataEstado.length); i++){
+                let atual = dataEstado[i];
                 if(atual){
 
 
@@ -138,12 +137,6 @@ const Clientes = (props)=>{
 
                         {
                             propsRow:{id:(atual.id)},
-                            acoes:[
-                                {acao:()=>alert('Aqui a: '+(atual.id)), label:'Editar', propsOption:{}, propsLabel:{}},
-                                {acao:()=>alert('Agenda qui: '+(atual.id)), label:'Agenda', propsOption:{}, propsLabel:{}},
-                                {acao:()=>alert('Histórico de atentimentos: '+(atual.id)), label:'Histórico de atendimentos', propsOption:{}, propsLabel:{}},
-                                {acao:()=>alert('Central do cliente: '+(atual.id)), label:'Central do cliente', propsOption:{}, propsLabel:{}},
-                            ],
                             celBodyTableArr:[
                                 {
 
@@ -152,22 +145,27 @@ const Clientes = (props)=>{
                                 },
                                 {
 
-                                    label:atual.name,
+                                    label:atual.nmEStado,
                                     propsRow:{}
                                 },
                                 {
 
-                                    label:atual.name_opcional,
+                                    label:atual.codEstado,
                                     propsRow:{}
                                 },
                                 {
 
-                                    label:atual.email,
+                                    label:atual.nmPais,
                                     propsRow:{}
                                 },
                                 {
 
-                                    label:atual.sexo,
+                                    label:atual.cdPais,
+                                    propsRow:{}
+                                },
+                                {
+
+                                    label:atual.padrao,
                                     propsRow:{}
                                 }
                             ]
@@ -194,17 +192,22 @@ const Clientes = (props)=>{
                 props:{}
             },
             {
-                label:'Sobremone',
+                label:'Código estado',
                 props:{}
             },
             {
-                label:'Email',
+                label:'País',
                 props:{}
             },
             {
-                label:'Sexo',
+                label:'Código país',
                 props:{}
             },
+
+            {
+                label:'Padrão',
+                props:{}
+            }
         ]
 
         return tableTitle;
@@ -232,23 +235,23 @@ const Clientes = (props)=>{
     }, []);*/
 
     //----
-	/*React.useEffect(()=>{
+    /*React.useEffect(()=>{
 
         setExemplos(gerarExemplos());
         setExemplosTitleTable(gerarTitleTable());
 
     }, [])*/
 
-    const requestAllClients = async() =>{
+    const requestAllEstados = async() =>{
        
-        const {url, options} = CLIENTES_ALL_POST({}, getToken());
+        const {url, options} = ESTADO_ALL_POST({}, getToken());
 
 
         const {response, json} = await request(url, options);
-        console.log('All clients here')
+        console.log('All estados here')
         console.log(json)
         if(json){
-               setClientes(json)
+               setEstado(json)
         }
 
             
@@ -256,21 +259,21 @@ const Clientes = (props)=>{
 
     React.useEffect(()=>{
 
-        const requestAllClientsEffect = async() =>{
+        const requestAllEstadosEffect = async() =>{
        
-           await requestAllClients();
+           await requestAllEstados();
 
             
         }
 
-        requestAllClientsEffect();
+        requestAllEstadosEffect();
 
         
     }, [])
-    const rowsTableArr = gerarTableClientes();    
+    const rowsTableArr = gerarTableEstado();    
     const titulosTableArr = gerarTitleTable();
-	return(
-		<>
+    return(
+        <>
             <Breadcrumbs
                 items={[
                         {
@@ -279,7 +282,7 @@ const Clientes = (props)=>{
                         },
                         {
                             props:{},
-                            label:'Clientes'
+                            label:'Estado'
                         }
                     ]}
             />
@@ -299,10 +302,10 @@ const Clientes = (props)=>{
                     />
                 </Col>
             </Row>
-            <FormCliente showModalCriarCliente={showModalCriarCliente} setShowModalCriarCliente={setShowModalCriarCliente} callback={requestAllClients} />
+            <FormEstado showModalCriarEstado={showModalCriarEstado} setShowModalCriarEstado={setShowModalCriarEstado} callback={requestAllEstados} />
          </>
 
-	)
+    )
 }
 
-export default Clientes;
+export default Estado;
