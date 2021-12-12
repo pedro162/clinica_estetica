@@ -1,7 +1,7 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
-import {Home, NotFound, Login, ProtectedRoute, PainelInicial, Clientes, ContasReceber, Caixa, Filial, Parametro, Pais, Estado} from './View/index.js'
+import {Home, NotFound, Login, ProtectedRoute, PainelInicial, Clientes, Grupos, ContasReceber, Caixa, Filial, Parametro, Pais, Estado} from './View/index.js'
 import {Router, Route, Switch} from 'react-router'
 import {history} from './history.js'
 import {UserStorange, UserContex} from './Context/UserContex.js'
@@ -31,6 +31,10 @@ function App() {
                        <ProtectedRoute
                         exact path="/clientes/painel" 
                         component={Clientes}
+                      />
+                      <ProtectedRoute
+                        exact path="/grupos/painel" 
+                        component={Grupos}
                       />
                       
                       <ProtectedRoute

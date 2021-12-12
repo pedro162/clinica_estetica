@@ -8,13 +8,16 @@ import estilos from './FormCliente.module.css'
 import Modal from '../../Utils/Modal/index.js'
 import useFetch from '../../../Hooks/useFetch.js';
 import {UserContex} from '../../../Context/UserContex.js'
+import Load from '../../Utils/Load/index.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CLIENTES_SAVE_POST, CLIENTES_UPDATE_POST, CLIENTES_ONE_GET} from '../../../api/endpoints/geral.js'
+import Atualizar from '../Atualizar/index.js'
 
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CLIENTES_SAVE_POST} from '../../../api/endpoints/geral.js'
-
-
-const FormCliente = ({showModalCriarCliente, setShowModalCriarCliente, callback})=>{
+const FormCliente = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, showModalCriarCliente, setShowModalCriarCliente, callback, atualizarCadastro, setAtualizarCadastro, carregando})=>{
+    
+    const [carregandoDadosChoice, setCarregandoDadosChoice] = React.useState(false)
 
 	const {data, error, request, loading} = useFetch();
+	const fetchToClient = useFetch();
 
 	const {getToken, dataUser} = React.useContext(UserContex);
 	const userLogar =  ()=>{
@@ -39,6 +42,7 @@ const FormCliente = ({showModalCriarCliente, setShowModalCriarCliente, callback}
 			tp_email,
 			email,
 			bairro,
+            groupo_id,
 		})=>{
 
     	const data = {
@@ -62,31 +66,187 @@ const FormCliente = ({showModalCriarCliente, setShowModalCriarCliente, callback}
             'celular_2':celular,
             'telefone':telefone,
             'idUser':1,
-            'groupo_id':1,
+            'groupo_id':groupo_id,
 
     	}
 
-    	const {url, options} = CLIENTES_SAVE_POST(data, getToken());
+        if(atualizarCadastro == true){
+            const {url, options} = CLIENTES_UPDATE_POST(idCliente, data, getToken());
 
 
-        const {response, json} = await request(url, options);
-        console.log('Save clients here')
-        console.log(json)
-        if(json){
-            console.log('Response Save clients here')
-        	console.log(json)
-        	
-        	callback();
-        	setShowModalCriarCliente();
+            const {response, json} = await request(url, options);
+            console.log('Save clients here')
+            console.log(json)
+            if(json){
+                console.log('Response Save clients here')
+                console.log(json)
+                
+                callback();
+                setShowModalCriarCliente();
+                setAtualizarCadastro(false);
+                setIdcliente(null);
+            }
+
+        }else{
+
+
+        	const {url, options} = CLIENTES_SAVE_POST(data, getToken());
+
+
+            const {response, json} = await request(url, options);
+            console.log('Save clients here')
+            console.log(json)
+            if(json){
+                console.log('Response Save clients here')
+            	console.log(json)
+            	
+            	callback();
+            	setShowModalCriarCliente();
+                setAtualizarCadastro(false);
+            }
+
         }
     }
+
+
+    const dataToFormCliente = ()=>{
+    	let obj = {nome:'', sobrenome:'', documento:'', doc_complementar:'', cep:'', pais:'', uf:'',logradouro:'',complemento:'', numero:'', telefone:'', celular:'', tp_telefone:'', tp_celular:'', tp_email:'', nascimento_fundacao:'', groupo_id:'', bairro:''}
+    	if(dataClienteChoice && dataClienteChoice.hasOwnProperty('mensagem')){
+    		let data = dataClienteChoice.mensagem;
+           
+    		if(data.hasOwnProperty('name')){
+                obj.nome = data.name;
+    		}
+
+    		if(data.hasOwnProperty('name_opcional')){
+    			obj.sobrenome = data.name_opcional;
+    		}
+    		if(data.hasOwnProperty('documento')){
+    			obj.documento = data.documento;
+    		}
+    		if(data.hasOwnProperty('documento_complementar')){
+    			obj.doc_complementar = data.documento_complementar;
+    		}
+
+            if(data.hasOwnProperty('email')){
+                obj.email = data.email;
+            }
+
+            if(data.hasOwnProperty('tp_email')){
+                obj.tp_email = data.tp_email;
+            }
+
+            if(! data.hasOwnProperty('tp_email')){
+                obj.tp_email = 'principal';
+            }
+
+    		if(data.hasOwnProperty('logradouro')){
+    			if(Array.isArray(data.logradouro) && data.logradouro.length > 0){
+    				for(let i=0; !(i==data.logradouro.length); i++){
+    					let atual = data.logradouro[i];
+    					if(atual.hasOwnProperty('importancia') && atual.importancia.trim() == 'principal'){
+    						obj.cep = atual.cep;
+    						obj.uf = atual.estado;
+    						obj.logradouro = atual.logradouro;
+    						obj.complemento = atual.complemento;
+    						obj.numero = atual.numero;
+                            obj.bairro = atual.bairro;
+    						break;
+    					}
+    				}
+    			}
+    			
+    		}
+
+    		if(data.hasOwnProperty('grupo')){
+    			if(Array.isArray(data.grupo) && data.grupo.length > 0){
+    				for(let i=0; !(i==data.grupo.length); i++){
+    					let atual = data.grupo[i];
+    					if(atual.hasOwnProperty('id') && atual.id > 0){
+    						obj.groupo_id = atual.id;
+    						
+    					}
+    				}
+    			}
+    			
+    		}
+
+    		if(data.hasOwnProperty('telefone')){
+    			if(Array.isArray(data.telefone) && data.telefone.length > 0){
+    				for(let i=0; !(i==data.telefone.length); i++){
+    					let atual = data.telefone[i];
+    					if(atual.hasOwnProperty('id') && atual.id > 0){
+    						
+    						if(atual.hasOwnProperty('tipo') && atual.tipo == 'celular' && atual.hasOwnProperty('importancia') && atual.importancia == "principal" ){
+    							obj.celular =  atual.numero;
+                                obj.tp_celular =  atual.importancia;
+    						}
+
+    						if(atual.hasOwnProperty('tipo') && atual.tipo == 'fixo'){
+    							obj.telefone =  atual.numero;
+                                obj.tp_telefone =  atual.importancia;
+    						}
+    						
+    					}
+    				}
+    			}
+    			
+    		}
+
+    		
+    	}
+    	console.log('dados para formulario ----------')
+    	//console.log(obj)
+    	return obj;
+    }
+    
+   /* if(atualizarCadastro){
+        return(
+            <Modal  handleConcluir={()=>null}  title={'Cadastrar Cliente ..'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarCliente} showHide={()=>{setShowModalCriarCliente();}}>
+                {carregandoDadosChoice && <Load/>}
+                <Atualizar
+                    idCliente={idCliente} 
+                    setDataCliente={setDataClienteChoice}
+                    setCarregandoDadosCliente={setCarregandoDadosChoice}
+                />
+             </Modal>
+        )
+    }
+   */
+    const preparaGrupoToForm = ()=>{
+        let grupoFormat = [{label:'Selecione...',valor:'',props:{selected:'selected', disabled:'disabled'}}]
+        if(dataGrupo && dataGrupo.hasOwnProperty('registro') ){
+            
+            if(Array.isArray(dataGrupo.registro) && dataGrupo.registro.length > 0){
+
+
+                for(let i=0; !(i==dataGrupo.registro.length); i++){
+                    let atual = dataGrupo.registro[i];
+                    let name    = atual.hasOwnProperty('name')      ? atual.name : '';
+                    let id      = atual.hasOwnProperty('id')        ? atual.id : '';
+                    grupoFormat.push(
+                        {label:name,valor:id,props:{}}
+                    )
+                }
+
+            }
+            
+        }
+
+        console.log('-------------grupo agui----------------------')
+        console.log(dataGrupo)
+        console.log('-------------grupo agui----------------------')
+
+        return grupoFormat;
+    }
+    
 
 	return(
 
 		<>
 			 <Formik 
 
-                initialValues={{nome:'', sobrenome:'', documento:'', doc_complementar:'', cep:'', pais:'', uf:'',logradouro:'',complemento:'', numero:'', telefone:'', celular:'', tp_telefone:'', tp_celular:'', tp_email:'', nascimento_fundacao:'', groupo_id:''}}
+                initialValues={{... dataToFormCliente()}}
                 validate={
                     values=>{
 
@@ -172,7 +332,7 @@ const FormCliente = ({showModalCriarCliente, setShowModalCriarCliente, callback}
                     }
                 }
 
-                onSubmit={async(values, {setSubmitting})=>{
+                onSubmit={async (values, {setSubmitting})=>{
                     /*setTimeout(() => {
                         alert(JSON.stringify(values, null, 2));
                         setSubmitting(false);
@@ -194,8 +354,13 @@ const FormCliente = ({showModalCriarCliente, setShowModalCriarCliente, callback}
                         }
                     )=>(
 
-                        <Modal  handleConcluir={()=>{handleSubmit(); }}  title={'Cadastrar Cliente'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarCliente} showHide={setShowModalCriarCliente}>
-
+                        <Modal  handleConcluir={()=>{handleSubmit(); }}  title={ (atualizarCadastro == true ? 'Atualizar' : 'Cadastrar')+' Cliente'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarCliente} showHide={()=>{setShowModalCriarCliente();setAtualizarCadastro(false);setIdcliente(null);}}>
+                                {
+                                    carregando && carregando==true
+                                    ?
+                                        (<Load/>)
+                                    :
+                                        (                 
 	                        <form onSubmit={handleSubmit}>
 	                            <Row className="my-3">
 	                        		<Col xs="12" sm="12" md="12">
@@ -381,7 +546,7 @@ const FormCliente = ({showModalCriarCliente, setShowModalCriarCliente, callback}
 				                                            className:estilos.input,
 				                                            size:"sm"
 				                                        },
-				                                        options:[{label:'Selecione...',valor:'',props:{selected:'selected', disabled:'disabled'}},{label:'Clientes',valor:'1',props:{}},{label:'Funcionário',valor:'2',props:{}}, {label:'Fornecedores',valor:'3',props:{}}],
+				                                        options:[...preparaGrupoToForm()],
 				                                        atributsContainer:{
 				                                            className:''
 				                                        }
@@ -819,6 +984,9 @@ const FormCliente = ({showModalCriarCliente, setShowModalCriarCliente, callback}
 	                        	</Row>                            
 
 	                        </form>
+                            )
+                            
+                            }       
 
                         </Modal>
                     )

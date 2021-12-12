@@ -1,7 +1,7 @@
 import React from 'react';
-import estilos from './Clientes.module.css'
+import estilos from './Grupos.module.css'
 import useFetch from '../../Hooks/useFetch.js';
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CLIENTES_ALL_POST} from '../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, GRUPOS_ALL_POST} from '../../api/endpoints/geral.js'
 import {Col, Row } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
@@ -13,21 +13,19 @@ import Load from '../Utils/Load/index.js'
 import Cadastrar from './Cadastrar/index.js'
 import Atualizar from './Atualizar/index.js'
 import {UserContex} from '../../Context/UserContex.js'
-import FormCliente from './FormCliente/index.js'
+import FormGrupo from './FormGrupo/index.js'
 
 
-const Clientes = (props)=>{
+const Grupos = (props)=>{
 
 	const {data, error, request, loading} = useFetch();
-    const [clientes, setClientes] = React.useState([])
+    const [grupos, setGrupos] = React.useState([])
     const [exemplos, setExemplos] = React.useState([])
     const [exemplosTitleTable, setExemplosTitleTable] = React.useState([])
-    const [showModalCriarCliente, setShowModalCriarCliente] = React.useState(false)
-    const [showModalAtualizarCliente, setShowModalAtualizarCliente] = React.useState(false)
-    const [clientChoice, setClienteChoice] = React.useState(null);
-    const [atualizarCadastro, setAtualizarCadastro] = React.useState(false)    
-    const [cadastrarCliente, setCadastrarCliente] = React.useState(false)    
-    const [dataGrupo, setDataGrupo] = React.useState(null)
+    const [showModalCriarGrupo, setShowModalCriarGrupo] = React.useState(false)
+    const [showModalAtualizarGrupo, setShowModalAtualizarGrupo] = React.useState(false)
+    const [clientChoice, setGrupoChoice] = React.useState(null);
+    const [atualizarCadastro, setAtualizarCadastro] = React.useState(false)
 
 
     const {getToken} = React.useContext(UserContex);
@@ -89,7 +87,7 @@ const Clientes = (props)=>{
         {
             label:'Cadastrar',
             icon:<FontAwesomeIcon icon={faPlus} />,
-            props:{onClick:()=>setCadastrarCliente(true), className:'btn btn-sm mx-2 btn-secondary'}
+            props:{onClick:()=>setShowModalCriarGrupo(true), className:'btn btn-sm mx-2 btn-secondary'}
         }
     ];
     const gerarExemplos = ()=>{
@@ -107,19 +105,14 @@ const Clientes = (props)=>{
                             },
                             {
 
-                                label:'Peddro',
+                                label:'Teste',
                                 propsRow:{}
                             },
                             {
 
-                                label:'(98) 98425-7623',
+                                label:'Testando',
                                 propsRow:{}
                             },
-                            {
-
-                                label:'phedroclooney@gmail.com',
-                                propsRow:{}
-                            }
                         ]
                     }
 
@@ -130,13 +123,13 @@ const Clientes = (props)=>{
         return exemplos;
     }
 
-    const gerarTableClientes = ()=>{
+    const gerarTableGrupos = ()=>{
        
         let data = [];
-        let dataClientes = clientes.mensagem
-        if(dataClientes && Array.isArray(dataClientes) && dataClientes.length > 0){
-            for(let i=0; !(i == dataClientes.length); i++){
-                let atual = dataClientes[i];
+        let dataGrupos = grupos.registro
+        if(dataGrupos && Array.isArray(dataGrupos) && dataGrupos.length > 0){
+            for(let i=0; !(i == dataGrupos.length); i++){
+                let atual = dataGrupos[i];
                 if(atual){
 
 
@@ -145,10 +138,10 @@ const Clientes = (props)=>{
                         {
                             propsRow:{id:(atual.id)},
                             acoes:[
-                                {acao:()=>setClienteChoice(atual.id), label:'Editar', propsOption:{}, propsLabel:{}},
+                                {acao:()=>setGrupoChoice(atual.id), label:'Editar', propsOption:{}, propsLabel:{}},
                                 {acao:()=>alert('Agenda qui: '+(atual.id)), label:'Agenda', propsOption:{}, propsLabel:{}},
                                 {acao:()=>alert('Histórico de atentimentos: '+(atual.id)), label:'Histórico de atendimentos', propsOption:{}, propsLabel:{}},
-                                {acao:()=>alert('Central do cliente: '+(atual.id)), label:'Central do cliente', propsOption:{}, propsLabel:{}},
+                                {acao:()=>alert('Central do Grupo: '+(atual.id)), label:'Central do Grupo', propsOption:{}, propsLabel:{}},
                             ],
                             celBodyTableArr:[
                                 {
@@ -163,19 +156,9 @@ const Clientes = (props)=>{
                                 },
                                 {
 
-                                    label:atual.name_opcional,
+                                    label:atual.descricao,
                                     propsRow:{}
                                 },
-                                {
-
-                                    label:atual.email,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual.sexo,
-                                    propsRow:{}
-                                }
                             ]
                         }
 
@@ -200,15 +183,7 @@ const Clientes = (props)=>{
                 props:{}
             },
             {
-                label:'Sobremone',
-                props:{}
-            },
-            {
-                label:'Email',
-                props:{}
-            },
-            {
-                label:'Sexo',
+                label:'Descrição',
                 props:{}
             },
         ]
@@ -247,14 +222,14 @@ const Clientes = (props)=>{
 
     const requestAllClients = async() =>{
        
-        const {url, options} = CLIENTES_ALL_POST({}, getToken());
+        const {url, options} = GRUPOS_ALL_POST({}, getToken());
 
 
         const {response, json} = await request(url, options);
         console.log('All clients here')
         console.log(json)
         if(json){
-               setClientes(json)
+               setGrupos(json)
         }
 
             
@@ -285,19 +260,8 @@ const Clientes = (props)=>{
         
     }, [clientChoice])
 
-    React.useEffect(()=>{
-
-        if(cadastrarCliente == true){
-            setShowModalCriarCliente(true);
-        }else{
-            setShowModalCriarCliente(false);
-        }
-
-        
-    }, [cadastrarCliente])
-
     
-    const rowsTableArr = gerarTableClientes();    
+    const rowsTableArr = gerarTableGrupos();    
     const titulosTableArr = gerarTitleTable();
 	return(
 		<>
@@ -309,7 +273,7 @@ const Clientes = (props)=>{
                         },
                         {
                             props:{},
-                            label:'Clientes'
+                            label:'Grupos'
                         }
                     ]}
             />
@@ -329,19 +293,15 @@ const Clientes = (props)=>{
                     />
                 </Col>
             </Row>
-            {
-                cadastrarCliente && <Cadastrar cadastrarCliente={cadastrarCliente} setCadastrarCliente={setCadastrarCliente} atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro}  idCliente={clientChoice} setIdcliente={setClienteChoice} callback={requestAllClients} />
-            }
+            <FormGrupo dataGrupoChoice={[]}  atualizarCadastro={false} setAtualizarCadastro={setAtualizarCadastro}  idGrupo={null} setIdGrupo={setGrupoChoice}  showModalCriarGrupo={showModalCriarGrupo} setShowModalCriarGrupo={setShowModalCriarGrupo} callback={requestAllClients} />
             
             {
                 atualizarCadastro &&
-                <Atualizar atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro}  idCliente={clientChoice} setIdcliente={setClienteChoice} callback={requestAllClients} />
+                <Atualizar atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro}  idGrupo={clientChoice} setIdGrupo={setGrupoChoice} callback={requestAllClients} />
             }
          </>
 
 	)
 }
 
-export default Clientes;
-
-//<FormCliente dataGrupo={dataGrupo} dataClienteChoice={[]}  atualizarCadastro={false} setAtualizarCadastro={setAtualizarCadastro}  idCliente={null} setIdcliente={setClienteChoice}  showModalCriarCliente={showModalCriarCliente} setShowModalCriarCliente={setShowModalCriarCliente} callback={requestAllClients} />
+export default Grupos;

@@ -7,7 +7,7 @@ import Pesquisar from '../Pesquisar/index.js'
 import Modal from '../../Utils/Modal/index.js'
 import Load from '../../Utils/Load/index.js'
 
-const Cadastrar = ({idCliente, setIdcliente, callback, atualizarCadastro, setAtualizarCadastro, cadastrarCliente, setCadastrarCliente})=>{
+const Atualizar = ({idCliente, setIdcliente, callback, atualizarCadastro, setAtualizarCadastro})=>{
 
     
     const [showModalAtualizarCliente, setShowModalAtualizarCliente] = React.useState(false)
@@ -27,17 +27,32 @@ const Cadastrar = ({idCliente, setIdcliente, callback, atualizarCadastro, setAtu
 	        console.log(json)
 	        if(json){
 	            setDataGrupo(json)
-	            setShowModalAtualizarCliente(true)
 	        }else{
 	        	setDataGrupo(null)
 	        }
 		}
-		if(cadastrarCliente == true){
-			getGrupo();
+
+		const getCliente = async ()=>{
+			if(idCliente > 0){
+				const {url, options} = CLIENTES_ONE_GET(idCliente, getToken());
+				const {response, json} = await request(url, options);
+				if(json){
+					
+					setDataCliente(json)
+					setShowModalAtualizarCliente(true)
+					 
+		        }else{
+		        	setDataCliente([])
+		        }
+			}
 		}
+
 		
+
+		getGrupo();
+		getCliente();
 		
-	}, [cadastrarCliente])
+	}, [idCliente])
 
 	/*
 		atualizarCadastro && 
@@ -46,16 +61,16 @@ const Cadastrar = ({idCliente, setIdcliente, callback, atualizarCadastro, setAtu
 	//<Pesquisar idCliente={idCliente} setDataCliente={setDataCliente} setCarregandoDadosCliente={setCarregando} />
 	return(
 		<>
-			{! dataGrupo &&
-				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={()=>null}  title={'Cadastrar Cliente'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="" show={setShowModalAtualizarCliente} showHide={()=>{setShowModalAtualizarCliente();}}>
+			{! dataCliente &&
+				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={()=>null}  title={'Atualizar Cliente'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="" show={setShowModalAtualizarCliente} showHide={()=>{setShowModalAtualizarCliente();}}>
 					<Load/>
 				</Modal>
 			}
-			{dataGrupo &&
-				<FormCliente dataGrupo={dataGrupo} setIdcliente={setIdcliente} idCliente={idCliente} carregando={false} dataClienteChoice={dataCliente} setAtualizarCadastro={setAtualizarCadastro} atualizarCadastro={atualizarCadastro} showModalCriarCliente={showModalAtualizarCliente} setShowModalCriarCliente={()=>{setShowModalAtualizarCliente();setCadastrarCliente()}} callback={callback} />
+			{dataCliente &&
+				<FormCliente dataGrupo={dataGrupo} setIdcliente={setIdcliente} idCliente={idCliente} carregando={false} dataClienteChoice={dataCliente} setAtualizarCadastro={setAtualizarCadastro} atualizarCadastro={atualizarCadastro} showModalCriarCliente={showModalAtualizarCliente} setShowModalCriarCliente={setShowModalAtualizarCliente} callback={callback} />
 			}
 		</>
 	)
 }
 
-export default Cadastrar;
+export default Atualizar;
