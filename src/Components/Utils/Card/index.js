@@ -10,7 +10,7 @@ const Card =({children, title, acoesBottomCard, propsCard, ...props})=>{
 				<CartBootstrap.Header className={[estilos.headerCard]}>
 					<CartBootstrap.Title>{title}</CartBootstrap.Title>
 				</CartBootstrap.Header>
-				<CartBootstrap.Body>
+				<CartBootstrap.Body className={`${estilos.bodyCard}`}>
 				    {children}				
 				</CartBootstrap.Body>
 				<CartBootstrap.Footer bg="light" className={[{'text-muted':'text-muted'}, estilos.headerFooter]} >

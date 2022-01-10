@@ -1,7 +1,7 @@
 import React from 'react';
-import estilos from './Home.module.css'
+import estilos from './Cidade.module.css'
 import useFetch from '../../Hooks/useFetch.js';
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, HOME_ALL_POST} from '../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CIDADE_ALL_POST} from '../../api/endpoints/geral.js'
 import {Col, Row } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
@@ -13,24 +13,21 @@ import Load from '../Utils/Load/index.js'
 import Cadastrar from './Cadastrar/index.js'
 import Atualizar from './Atualizar/index.js'
 import {UserContex} from '../../Context/UserContex.js'
-import FormHome from './FormHome/index.js'
-import Calendario  from '../Utils/Calendario/index.js'
-import Horario  from '../Utils/Calendario/Horario.js'
+import FormCidade from './FormCidade/index.js'
 
 
-const Home = (props)=>{
+const Cidade = (props)=>{
 
-    const {data, error, request, loading} = useFetch();
-    const [Home, setHome] = React.useState([])
+	const {data, error, request, loading} = useFetch();
+    const [cidade, setCidade] = React.useState([])
     const [exemplos, setExemplos] = React.useState([])
     const [exemplosTitleTable, setExemplosTitleTable] = React.useState([])
-    const [showModalCriarCliente, setShowModalCriarCliente] = React.useState(false)
-    const [showModalAtualizarCliente, setShowModalAtualizarCliente] = React.useState(false)
-    const [clientChoice, setClienteChoice] = React.useState(null);
+    const [showModalCriarCidade, setShowModalCriarCidade] = React.useState(false)
+    const [showModalAtualizarCidade, setShowModalAtualizarCidade] = React.useState(false)
+    const [cidadeChoice, setCidadeChoice] = React.useState(null);
     const [atualizarCadastro, setAtualizarCadastro] = React.useState(false)    
-    const [cadastrarCliente, setCadastrarCliente] = React.useState(false)    
-    const [dataGrupo, setDataGrupo] = React.useState(null)
-    const [tpView, setTpView] = React.useState('semana')//mes
+    const [cadastrarCidade, setCadastrarCidade] = React.useState(false)    
+    const [dataEstado, setDataEstado] = React.useState(null)
 
 
     const {getToken} = React.useContext(UserContex);
@@ -87,12 +84,12 @@ const Home = (props)=>{
     const acoesBottomCard=[{
             label:'Pesquisar',
             icon:<FontAwesomeIcon icon={faSearch} />,
-            props:{onClick:()=>requestAllClients(), className:'btn btn-sm botao_success'}
+            props:{onClick:()=>requestAllCidade(), className:'btn btn-sm botao_success'}
         },
         {
             label:'Cadastrar',
             icon:<FontAwesomeIcon icon={faPlus} />,
-            props:{onClick:()=>setCadastrarCliente(true), className:'btn btn-sm mx-2 btn-secondary'}
+            props:{onClick:()=>setCadastrarCidade(true), className:'btn btn-sm mx-2 btn-secondary'}
         }
     ];
     const gerarExemplos = ()=>{
@@ -133,13 +130,13 @@ const Home = (props)=>{
         return exemplos;
     }
 
-    const gerarTableHome = ()=>{
+    const gerarTableCidade = ()=>{
        
         let data = [];
-        let dataHome = Home.mensagem
-        if(dataHome && Array.isArray(dataHome) && dataHome.length > 0){
-            for(let i=0; !(i == dataHome.length); i++){
-                let atual = dataHome[i];
+        let dataCidade = cidade.registro
+        if(dataCidade && Array.isArray(dataCidade) && dataCidade.length > 0){
+            for(let i=0; !(i == dataCidade.length); i++){
+                let atual = dataCidade[i];
                 if(atual){
 
 
@@ -148,7 +145,7 @@ const Home = (props)=>{
                         {
                             propsRow:{id:(atual.id)},
                             acoes:[
-                                {acao:()=>setClienteChoice(atual.id), label:'Editar', propsOption:{}, propsLabel:{}},
+                                {acao:()=>setCidadeChoice(atual.id), label:'Editar', propsOption:{}, propsLabel:{}},
                                 {acao:()=>alert('Agenda qui: '+(atual.id)), label:'Agenda', propsOption:{}, propsLabel:{}},
                                 {acao:()=>alert('Histórico de atentimentos: '+(atual.id)), label:'Histórico de atendimentos', propsOption:{}, propsLabel:{}},
                                 {acao:()=>alert('Central do cliente: '+(atual.id)), label:'Central do cliente', propsOption:{}, propsLabel:{}},
@@ -161,22 +158,22 @@ const Home = (props)=>{
                                 },
                                 {
 
-                                    label:atual.name,
+                                    label:atual.nmCidade,
                                     propsRow:{}
                                 },
                                 {
 
-                                    label:atual.name_opcional,
+                                    label:atual.sigla,
                                     propsRow:{}
                                 },
                                 {
 
-                                    label:atual.email,
+                                    label:atual.cdCiade,
                                     propsRow:{}
                                 },
                                 {
 
-                                    label:atual.sexo,
+                                    label:atual.nmEStado,
                                     propsRow:{}
                                 }
                             ]
@@ -203,15 +200,15 @@ const Home = (props)=>{
                 props:{}
             },
             {
-                label:'Sobremone',
+                label:'Sigla',
                 props:{}
             },
             {
-                label:'Email',
+                label:'CD IBGE',
                 props:{}
             },
             {
-                label:'Sexo',
+                label:'Estado',
                 props:{}
             },
         ]
@@ -241,23 +238,23 @@ const Home = (props)=>{
     }, []);*/
 
     //----
-    /*React.useEffect(()=>{
+	/*React.useEffect(()=>{
 
         setExemplos(gerarExemplos());
         setExemplosTitleTable(gerarTitleTable());
 
     }, [])*/
 
-    const requestAllClients = async() =>{
+    const requestAllCidade = async() =>{
        
-        const {url, options} = HOME_ALL_POST({}, getToken());
+        const {url, options} = CIDADE_ALL_POST({}, getToken());
 
 
         const {response, json} = await request(url, options);
         console.log('All clients here')
         console.log(json)
         if(json){
-               setHome(json)
+               setCidade(json)
         }
 
             
@@ -265,45 +262,45 @@ const Home = (props)=>{
 
     React.useEffect(()=>{
 
-        const requestAllClientsEffect = async() =>{
+        const requestAllCidadeEffect = async() =>{
        
-           await requestAllClients();
+           await requestAllCidade();
 
             
         }
 
-        requestAllClientsEffect();
+        requestAllCidadeEffect();
 
         
     }, [])
 
     React.useEffect(()=>{
 
-        if(clientChoice > 0){
+        if(cidadeChoice > 0){
             setAtualizarCadastro(true);
         }else{
             setAtualizarCadastro(false);
         }
 
         
-    }, [clientChoice])
+    }, [cidadeChoice])
 
     React.useEffect(()=>{
 
-        if(cadastrarCliente == true){
-            setShowModalCriarCliente(true);
+        if(cadastrarCidade == true){
+            setShowModalCriarCidade(true);
         }else{
-            setShowModalCriarCliente(false);
+            setShowModalCriarCidade(false);
         }
 
         
-    }, [cadastrarCliente])
+    }, [cadastrarCidade])
 
     
-    const rowsTableArr = gerarTableHome();    
+    const rowsTableArr = gerarTableCidade();    
     const titulosTableArr = gerarTitleTable();
-    return(
-        <div className={`container-fluid back_container ${estilos.local_container}`}>
+	return(
+		<>
             <Breadcrumbs
                 items={[
                         {
@@ -312,7 +309,7 @@ const Home = (props)=>{
                         },
                         {
                             props:{},
-                            label:'Home'
+                            label:'Cidade'
                         }
                     ]}
             />
@@ -324,37 +321,27 @@ const Home = (props)=>{
                     />
                 </Col>
                 <Col  xs="12" sm="12" md="9">
-                    {
-                        tpView == 'mes'
-                        ?
-                            (
-                                <Calendario/>
-                            )
-                        :
-                            (
-                                <Horario
-                                    titulosTableArr={titulosTableArr}
-                                    rowsTableArr={rowsTableArr}
-                                    loading={loading}
+                    <Table
+                        titulosTableArr={titulosTableArr}
+                        rowsTableArr={rowsTableArr}
+                        loading={loading}
 
-                                />
-                            )
-
-                    }
-                    
+                    />
                 </Col>
             </Row>
             {
-                cadastrarCliente && <Cadastrar cadastrarCliente={cadastrarCliente} setCadastrarCliente={setCadastrarCliente} atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro}  idCliente={clientChoice} setIdcliente={setClienteChoice} callback={requestAllClients} />
+                cadastrarCidade && <Cadastrar cadastrarCidade={cadastrarCidade} setCadastrarCidade={setCadastrarCidade} atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro}  idCidade={cidadeChoice} setIdCidade={setCidadeChoice} callback={requestAllCidade} />
             }
             
             {
                 atualizarCadastro &&
-                <Atualizar atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro}  idCliente={clientChoice} setIdcliente={setClienteChoice} callback={requestAllClients} />
+                <Atualizar atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro}  idCidade={cidadeChoice} setIdCidade={setCidadeChoice} callback={requestAllCidade} />
             }
-         </div>
+         </>
 
-    )
+	)
 }
 
-export default Home;
+export default Cidade;
+
+//<FormCidade dataEstado={dataEstado} dataClienteChoice={[]}  atualizarCadastro={false} setAtualizarCadastro={setAtualizarCadastro}  idCidade={null} setIdCidade={setCidadeChoice}  showModalCriarCidade={showModalCriarCidade} setShowModalCriarCidade={setShowModalCriarCidade} callback={requestAllCidade} />

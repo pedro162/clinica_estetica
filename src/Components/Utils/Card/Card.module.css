@@ -5,3 +5,7 @@
 	background-color: #FFF !important;
 
 }
+
+.bodyCard{
+    overflow: auto !important;
+}

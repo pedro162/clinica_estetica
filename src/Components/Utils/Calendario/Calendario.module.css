@@ -1,0 +1,138 @@
+.container_calendar{
+	background: #FFF;
+}
+.titulo, .ano{
+	margin-top: 20px;
+	font-size: 32px;
+	text-transform: uppercase;
+	font-weight: bolder;
+	color: #07B201;
+}
+.header *{
+	text-align: center;
+	align-items: center !important;
+}
+
+.btn-ant, .btn-pro{
+	position: absolute;
+	top: 50%;
+	height: 32px;
+	width: 32px;
+	line-height: 32px;
+	margin-top: -16px;
+	border: 2px solid #cbd2d2;
+	border-radius: 50%;
+	color: #cbd2d2;
+	font-size: 16px;
+	font-weight: bold;
+}
+
+.btn_ant{
+	
+	background: #07B201 !important;
+	color: #FFF !important;
+	font-weight: bold !important;
+}
+
+.btn_pro{
+	
+	background: #07B201 !important;
+	color: #FFF !important;
+	font-weight: bold !important;
+}
+
+.btn-ant:hover, .btn-pro:hover{
+	background-color: #cbd2d2;
+	color: #f9f9f9;
+}
+
+.table, .table_horario{
+	display: flex;
+	margin-top: 20px;
+	border-collapse: collapse;
+	text-align: center !important;
+	align-items: center !important;
+	justify-content: center;
+
+
+}
+.table table{
+
+	width: 100% !important;
+	box-shadow: 4px 4px 4px #DDD;
+}
+
+.table_horario table{
+	width: 100% !important;
+	box-shadow: 4px 4px 4px #DDD;
+}
+
+.table thead{
+	background-color: #07B201;
+	font-weight: 600;
+	text-transform: uppercase;
+	border-bottom: 2px solid #FFF;
+	color: #FFF; 
+
+}
+
+.table td{
+	border: 1px solid #cbd2d2;
+	height: 80.4px;
+	text-align: center;
+	width: 60.4px;
+}
+
+.table tbody td{
+	cursor: pointer;
+	color: #07B201;
+	font-weight: bold;
+}
+
+.table tbody td:hover{
+	background-color: rgba(0, 173, 223, 0.8);
+	color: #f9f9f9;
+}
+
+.table table .dia_atual{
+	background: #00addf;
+	color: #f9f9f9;
+}
+
+.table .mes_anterior, .table .proximo_mes{
+	color: #cbd2d2;
+} 
+
+.table .mes_anterior::hover, .table .proximo_mes::hover{
+	background-color: #98a0a0;
+} 
+
+.event{
+	position: relative;
+}
+
+.event:after{
+	content: '';
+	width: 7px;
+	height: 7px;
+	left: 50%;
+	bottom: 7px;
+	margin: -3.5px 0 0 -3.5px;
+	display: block;
+	position: absolute;
+	border-radius: 50%;
+	background-color: rgba(0, 173, 223, 0.8);;
+}
+
+.event:hover::after{
+	background-color: #f9f9f9;
+}
+
+.ano{
+	text-align: center;
+	font-weight: bolder;
+}
+
+
+
+
