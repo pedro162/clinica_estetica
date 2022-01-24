@@ -1,7 +1,7 @@
 import React from 'react';
-import estilos from './Home.module.css'
+import estilos from './Profissionais.module.css'
 import useFetch from '../../Hooks/useFetch.js';
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, HOME_ALL_POST} from '../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, PROFISSIONAIS_ALL_POST} from '../../api/endpoints/geral.js'
 import {Col, Row } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
@@ -13,24 +13,20 @@ import Load from '../Utils/Load/index.js'
 import Cadastrar from './Cadastrar/index.js'
 import Atualizar from './Atualizar/index.js'
 import {UserContex} from '../../Context/UserContex.js'
-import FormHome from './FormHome/index.js'
-import Calendario  from '../Utils/Calendario/index.js'
-import Horario  from '../Utils/Calendario/Horario.js'
+import FormProfissionais from './FormProfissionais/index.js'
 
 
-const Home = (props)=>{
+const Profissionais = (props)=>{
 
-    const {data, error, request, loading} = useFetch();
-    const [Home, setHome] = React.useState([])
+	const {data, error, request, loading} = useFetch();
+    const [profissionais, setProfissionais] = React.useState([])
     const [exemplos, setExemplos] = React.useState([])
     const [exemplosTitleTable, setExemplosTitleTable] = React.useState([])
-    const [showModalCriarCliente, setShowModalCriarCliente] = React.useState(false)
-    const [showModalAtualizarCliente, setShowModalAtualizarCliente] = React.useState(false)
-    const [clientChoice, setClienteChoice] = React.useState(null);
+    const [showModalCriarProfissionais, setShowModalCriarProfissionais] = React.useState(false)
+    const [showModalAtualizarProfissionais, setShowModalAtualizarProfissionais] = React.useState(false)
+    const [profissionaisChoice, setProfissionaisChoice] = React.useState(null);
     const [atualizarCadastro, setAtualizarCadastro] = React.useState(false)    
-    const [cadastrarCliente, setCadastrarCliente] = React.useState(false)    
-    const [dataGrupo, setDataGrupo] = React.useState(null)
-    const [tpView, setTpView] = React.useState('semana')//mes
+    const [cadastrarProfissionais, setCadastrarProfissionais] = React.useState(false)    
 
 
     const {getToken} = React.useContext(UserContex);
@@ -54,15 +50,15 @@ const Home = (props)=>{
             options:[
                 {
                     hasLabel: true,
-                    contentLabel:'Por semana',
+                    contentLabel:'Teste Radio 01',
                     atributsFormLabel:{},
-                    atributsFormControl:{'type':'radio', value:'semana', size:"sm",'checked': (tpView == 'semana'),'name':'nome',onChange:(ev)=>setTpView(ev.target.value),    onBlur:(ev)=>setTpView(ev.target.value)},
+                    atributsFormControl:{'type':'radio', value:'12', size:"sm",'checked':true,'name':'nome',onChange:alerta,    onBlur:alerta},
                 },
                 {
                     hasLabel: true,
-                    contentLabel:'Por mes',
+                    contentLabel:'Teste Radio',
                     atributsFormLabel:{},
-                    atributsFormControl:{'type':'radio', value:'mes', size:"sm",'checked':(tpView == 'mes'),'name':'nome',onChange:(ev)=>setTpView(ev.target.value),    onBlur:(ev)=>setTpView(ev.target.value)},
+                    atributsFormControl:{'type':'radio', value:'12', size:"sm",'checked':true,'name':'nome',onChange:alerta,    onBlur:alerta},
                 }
             ],  
             hasLabel: true,
@@ -87,12 +83,12 @@ const Home = (props)=>{
     const acoesBottomCard=[{
             label:'Pesquisar',
             icon:<FontAwesomeIcon icon={faSearch} />,
-            props:{onClick:()=>requestAllClients(), className:'btn btn-sm botao_success'}
+            props:{onClick:()=>requestAllProfissionais(), className:'btn btn-sm botao_success'}
         },
         {
             label:'Cadastrar',
             icon:<FontAwesomeIcon icon={faPlus} />,
-            props:{onClick:()=>setCadastrarCliente(true), className:'btn btn-sm mx-2 btn-secondary'}
+            props:{onClick:()=>setCadastrarProfissionais(true), className:'btn btn-sm mx-2 btn-secondary'}
         }
     ];
     const gerarExemplos = ()=>{
@@ -133,13 +129,13 @@ const Home = (props)=>{
         return exemplos;
     }
 
-    const gerarTableHome = ()=>{
+    const gerarTableProfissionais = ()=>{
        
         let data = [];
-        let dataHome = Home.mensagem
-        if(dataHome && Array.isArray(dataHome) && dataHome.length > 0){
-            for(let i=0; !(i == dataHome.length); i++){
-                let atual = dataHome[i];
+        let dataProfissionais = profissionais.mensagem
+        if(dataProfissionais && Array.isArray(dataProfissionais) && dataProfissionais.length > 0){
+            for(let i=0; !(i == dataProfissionais.length); i++){
+                let atual = dataProfissionais[i];
                 if(atual){
 
 
@@ -148,7 +144,7 @@ const Home = (props)=>{
                         {
                             propsRow:{id:(atual.id)},
                             acoes:[
-                                {acao:()=>setClienteChoice(atual.id), label:'Editar', propsOption:{}, propsLabel:{}},
+                                {acao:()=>setProfissionaisChoice(atual.id), label:'Editar', propsOption:{}, propsLabel:{}},
                                 {acao:()=>alert('Agenda qui: '+(atual.id)), label:'Agenda', propsOption:{}, propsLabel:{}},
                                 {acao:()=>alert('Histórico de atentimentos: '+(atual.id)), label:'Histórico de atendimentos', propsOption:{}, propsLabel:{}},
                                 {acao:()=>alert('Central do cliente: '+(atual.id)), label:'Central do cliente', propsOption:{}, propsLabel:{}},
@@ -161,7 +157,7 @@ const Home = (props)=>{
                                 },
                                 {
 
-                                    label:atual.name,
+                                    label:atual.name_pessoa,
                                     propsRow:{}
                                 },
                                 {
@@ -171,12 +167,22 @@ const Home = (props)=>{
                                 },
                                 {
 
-                                    label:atual.email,
+                                    label:atual.documento,
                                     propsRow:{}
                                 },
                                 {
 
-                                    label:atual.sexo,
+                                    label:atual.name_especialidade,
+                                    propsRow:{}
+                                },
+                                {
+
+                                    label:atual.nr_doc,
+                                    propsRow:{}
+                                },
+                                {
+
+                                    label:atual.org_expedidor,
                                     propsRow:{}
                                 }
                             ]
@@ -203,61 +209,40 @@ const Home = (props)=>{
                 props:{}
             },
             {
-                label:'Sobremone',
+                label:'Nome complementar',
                 props:{}
             },
             {
-                label:'Email',
+                label:'CPF / CNPJ',
                 props:{}
             },
             {
-                label:'Sexo',
+                label:'Especialidade',
                 props:{}
             },
+            {
+                label:'Documento',
+                props:{}
+            },
+            {
+                label:'Orgão expedidor',
+                props:{}
+            }
         ]
 
         return tableTitle;
     }
-    //------------
-   /* React.useEffect( ()=>{
-        const requestToken = async() =>{
+
+    const requestAllProfissionais = async() =>{
        
-           const {url, options} = TOKEN_POST({
-                'grant_type':'password',
-                'client_id': CLIENT_ID,
-                'client_secret':CLIENT_SECRET,
-                'username':'admin@gmail.com',
-                'password':'123456'
-             });
-
-
-            const {response, json} = await request(url, options);
-
-            
-        }
-
-        requestToken();
-        
-    }, []);*/
-
-    //----
-    /*React.useEffect(()=>{
-
-        setExemplos(gerarExemplos());
-        setExemplosTitleTable(gerarTitleTable());
-
-    }, [])*/
-
-    const requestAllClients = async() =>{
-       
-        const {url, options} = HOME_ALL_POST({}, getToken());
+        const {url, options} = PROFISSIONAIS_ALL_POST({}, getToken());
 
 
         const {response, json} = await request(url, options);
         console.log('All clients here')
         console.log(json)
         if(json){
-               setHome(json)
+               setProfissionais(json)
         }
 
             
@@ -265,48 +250,45 @@ const Home = (props)=>{
 
     React.useEffect(()=>{
 
-        const requestAllClientsEffect = async() =>{
+        const requestAllProfissionaisEffect = async() =>{
        
-           await requestAllClients();
+           await requestAllProfissionais();
 
             
         }
 
-        requestAllClientsEffect();
+        requestAllProfissionaisEffect();
 
         
     }, [])
 
     React.useEffect(()=>{
 
-        if(clientChoice > 0){
+        if(profissionaisChoice > 0){
             setAtualizarCadastro(true);
         }else{
             setAtualizarCadastro(false);
         }
 
         
-    }, [clientChoice])
+    }, [profissionaisChoice])
 
     React.useEffect(()=>{
 
-        if(cadastrarCliente == true){
-            setShowModalCriarCliente(true);
+        if(cadastrarProfissionais == true){
+            setShowModalCriarProfissionais(true);
         }else{
-            setShowModalCriarCliente(false);
+            setShowModalCriarProfissionais(false);
         }
 
         
-    }, [cadastrarCliente])
+    }, [cadastrarProfissionais])
 
-    //---
-    console.log('View: '+tpView) 
-    //---
     
-    const rowsTableArr = gerarTableHome();    
+    const rowsTableArr = gerarTableProfissionais();    
     const titulosTableArr = gerarTitleTable();
-    return(
-        <div className={`container-fluid back_container ${estilos.local_container}`}>
+	return(
+		<>
             <Breadcrumbs
                 items={[
                         {
@@ -315,7 +297,7 @@ const Home = (props)=>{
                         },
                         {
                             props:{},
-                            label:'Home'
+                            label:'Profissionais'
                         }
                     ]}
             />
@@ -327,37 +309,25 @@ const Home = (props)=>{
                     />
                 </Col>
                 <Col  xs="12" sm="12" md="9">
-                    {
-                        tpView == 'mes'
-                        ?
-                            (
-                                <Calendario/>
-                            )
-                        :
-                            (
-                                <Horario
-                                    titulosTableArr={titulosTableArr}
-                                    rowsTableArr={rowsTableArr}
-                                    loading={loading}
+                    <Table
+                        titulosTableArr={titulosTableArr}
+                        rowsTableArr={rowsTableArr}
+                        loading={loading}
 
-                                />
-                            )
-
-                    }
-                    
+                    />
                 </Col>
             </Row>
             {
-                cadastrarCliente && <Cadastrar cadastrarCliente={cadastrarCliente} setCadastrarCliente={setCadastrarCliente} atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro}  idCliente={clientChoice} setIdcliente={setClienteChoice} callback={requestAllClients} />
+                cadastrarProfissionais && <Cadastrar cadastrarProfissionais={cadastrarProfissionais} setCadastrarProfissionais={setCadastrarProfissionais} atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro}  idProfissionais={profissionaisChoice} setIdProfissionais={setProfissionaisChoice} callback={requestAllProfissionais} />
             }
             
             {
                 atualizarCadastro &&
-                <Atualizar atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro}  idCliente={clientChoice} setIdcliente={setClienteChoice} callback={requestAllClients} />
+                <Atualizar atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro}  idProfissionais={profissionaisChoice} setIdProfissionais={setProfissionaisChoice} callback={requestAllProfissionais} />
             }
-         </div>
+         </>
 
-    )
+	)
 }
 
-export default Home;
+export default Profissionais;

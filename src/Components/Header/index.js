@@ -77,10 +77,19 @@ const Header = (props)=>{
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Something</NavDropdown.Item>
                             <NavDropdown.Divider />
                                 <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Separated link</NavDropdown.Item>
+                        </NavDropdown>                        
+                        <NavDropdown title="Profissonais" id="collasible-nav-dropdown">
+                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} to="/especialidades/painel" >Especialidades</Link></NavDropdown.Item>
+                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} to="/profissionais/painel" >Profissionais</Link></NavDropdown.Item>
+                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} to="/categoria/eventos/painel" >Horários profissionais</Link></NavDropdown.Item>
+                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} to="/categoria/eventos/painel" >Dias profissionais</Link></NavDropdown.Item>
+                            <NavDropdown.Divider />
+                                <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Separated link</NavDropdown.Item>
                         </NavDropdown>
                         <NavDropdown title="Agenda" id="collasible-nav-dropdown">
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} to="/home/painel" >Agenda</Link></NavDropdown.Item>
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} to="/agenda/eventos/painel" >Evento de agenda</Link></NavDropdown.Item>
+                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} to="/categoria/eventos/painel" >Categoria de eventos</Link></NavDropdown.Item>
                             <NavDropdown.Divider />
                                 <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Separated link</NavDropdown.Item>
                         </NavDropdown>

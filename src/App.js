@@ -1,7 +1,7 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
-import {Home, NotFound, Login, ProtectedRoute, PainelInicial, Clientes, Grupos, ContasReceber, Caixa, Filial, Parametro, Pais, Estado, Cidade, AgendaEvento} from './View/index.js'
+import {Home, NotFound, Login, ProtectedRoute, PainelInicial, Clientes, Grupos, ContasReceber, Caixa, Filial, Parametro, Pais, Estado, Cidade, AgendaEvento, CategoriaEvento, Especialidade, Profissionais} from './View/index.js'
 import {Router, Route, Switch} from 'react-router'
 import {history} from './history.js'
 import {UserStorange, UserContex} from './Context/UserContex.js'
@@ -32,6 +32,18 @@ function App() {
                         component={AgendaEvento}
                       />
 
+                      <ProtectedRoute
+                        exact path="/categoria/eventos/painel" 
+                        component={CategoriaEvento}
+                      />
+                      <ProtectedRoute
+                        exact path="/especialidades/painel" 
+                        component={Especialidade}
+                      />
+                      <ProtectedRoute
+                        exact path="/profissionais/painel" 
+                        component={Profissionais}
+                      />
                        <ProtectedRoute
                         exact path="/clientes/painel" 
                         component={Clientes}

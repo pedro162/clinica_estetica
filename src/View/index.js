@@ -14,5 +14,8 @@ import Filial from '../Components/Filial/index.js'
 import Parametro from '../Components/Parametro/index.js'
 import User from '../Components/User/index.js'
 import AgendaEvento from '../Components/AgendaEvento/index.js'
+import CategoriaEvento from '../Components/CategoriaEvento/index.js'
+import Especialidade from '../Components/EspecialidadeProfissional/index.js'
+import Profissionais from '../Components/Profissionais/index.js'
 
-export {Home, NotFound, Login, ProtectedRoute, PainelInicial,Clientes,Grupos, ContasReceber, Caixa, Filial, Parametro, User, Pais, Estado, Cidade, AgendaEvento}
+export {Home, NotFound, Login, ProtectedRoute, PainelInicial,Clientes,Grupos, ContasReceber, Caixa, Filial, Parametro, User, Pais, Estado, Cidade, AgendaEvento, CategoriaEvento, Especialidade, Profissionais}

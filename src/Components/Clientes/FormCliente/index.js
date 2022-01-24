@@ -505,7 +505,7 @@ const FormCliente = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, sho
 
 				                                        },
 				                                        atributsFormControl:{
-				                                            type:'text',
+				                                            type:'date',
 				                                            name:'nascimento_fundacao',
 				                                            placeholder:'fulano de tal',
 				                                            id:'nascimento_fundacao',

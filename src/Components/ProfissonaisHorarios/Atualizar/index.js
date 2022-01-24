@@ -1,6 +1,6 @@
 import React from 'react';
 import useFetch from '../../../Hooks/useFetch.js';
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, AGENDA_EVENTO_ONE_GET, CATEGORIA_EVENTO_ALL_POST} from '../../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, AGENDA_EVENTO_ONE_GET, ESTADO_ALL_POST} from '../../../api/endpoints/geral.js'
 import {UserContex} from '../../../Context/UserContex.js'
 import FormAgendaEvento from '../FormAgendaEvento/index.js'
 import Pesquisar from '../Pesquisar/index.js'
@@ -13,22 +13,22 @@ const Atualizar = ({idAgendaEvento, setIdAgendaEvento, callback, atualizarCadast
     const [showModalAtualizarAgendaEvento, setShowModalAtualizarAgendaEvento] = React.useState(false)
     const [carregando, setCarregando] = React.useState(false)
     const [dataAgendaEvento, setDataAgendaEvento] = React.useState(null)
-    const [dataCategoria, setDataCategoria] = React.useState(null)
+    const [dataEstado, setDataEstado] = React.useState(null)
 	const {getToken, dataUser} = React.useContext(UserContex);
 
 	const {data, error, request, loading} = useFetch();
 	React.useEffect(()=>{
 		
 		const getEstado = async ()=>{
-			const {url, options} = CATEGORIA_EVENTO_ALL_POST({}, getToken());
+			const {url, options} = ESTADO_ALL_POST({}, getToken());
 
 	        const {response, json} = await request(url, options);
 	        console.log('All estados here')
 	        console.log(json)
 	        if(json){
-	            setDataCategoria(json)
+	            setDataEstado(json)
 	        }else{
-	        	setDataCategoria(null)
+	        	setDataEstado(null)
 	        }
 		}
 
@@ -67,7 +67,7 @@ const Atualizar = ({idAgendaEvento, setIdAgendaEvento, callback, atualizarCadast
 				</Modal>
 			}
 			{dataAgendaEvento &&
-				<FormAgendaEvento dataCategoria={dataCategoria} setIdAgendaEvento={setIdAgendaEvento} idAgendaEvento={idAgendaEvento} carregando={false} dataAgendaEventoChoice={dataAgendaEvento} setAtualizarCadastro={setAtualizarCadastro} atualizarCadastro={atualizarCadastro} showModalCriarAgendaEvento={showModalAtualizarAgendaEvento} setShowModalCriarAgendaEvento={setShowModalAtualizarAgendaEvento} callback={callback} />
+				<FormAgendaEvento dataEstado={dataEstado} setIdAgendaEvento={setIdAgendaEvento} idAgendaEvento={idAgendaEvento} carregando={false} dataAgendaEventoChoice={dataAgendaEvento} setAtualizarCadastro={setAtualizarCadastro} atualizarCadastro={atualizarCadastro} showModalCriarAgendaEvento={showModalAtualizarAgendaEvento} setShowModalCriarAgendaEvento={setShowModalAtualizarAgendaEvento} callback={callback} />
 			}
 		</>
 	)
