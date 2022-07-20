@@ -1,9 +1,9 @@
 
-export const CLIENT_ID = 1;//4;//
-export const CLIENT_SECRET = 'tnuEoPmIQ1fS46X6kKlqMPQDrNfNbY40UpUIdGvZ';//'4mjSEP4YSokEwWyyrkV3Jqb4ABylEAT0stjpKVae';//
+export const CLIENT_ID = 3;//4;//
+export const CLIENT_SECRET = '2sCnLO2NjsijhpgBLrRRgmBBPKDhsovxpPnv83VK';//'4mjSEP4YSokEwWyyrkV3Jqb4ABylEAT0stjpKVae';//
 
 const SANDBOX = false;
-const BASE_URL =  (SANDBOX == true) ? "http://1.josepedro.tmp.k8.com.br/api" : 'http://localhost:8080';///api
+const BASE_URL =  (SANDBOX == true) ? "http://1.josepedro.tmp.k8.com.br/api" : 'http://localhost:8081';///api
 
 export const TOKEN_POST = (data)=>{
    
