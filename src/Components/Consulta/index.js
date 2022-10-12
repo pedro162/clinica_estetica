@@ -114,29 +114,29 @@ const Consulta = (props)=>{
                                 },
                                 {
 
-                                    label:atual.nmEStado,
+                                    label:atual.dt_marcado,
                                     propsRow:{}
                                 },
                                 {
 
-                                    label:atual.codConsulta,
+                                    label:atual.hr_marcado,
                                     propsRow:{}
                                 },
                                 {
 
-                                    label:atual.nmPais,
+                                    label:atual.name_pessoa,
                                     propsRow:{}
                                 },
                                 {
 
-                                    label:atual.cdPais,
+                                    label:atual.prioridade,
                                     propsRow:{}
                                 },
                                 {
 
-                                    label:atual.padrao,
+                                    label:atual.status,
                                     propsRow:{}
-                                }
+                                },
                             ]
                         }
 
