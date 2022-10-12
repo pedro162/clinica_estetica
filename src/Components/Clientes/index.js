@@ -26,8 +26,10 @@ const Clientes = (props)=>{
     const [showModalAtualizarCliente, setShowModalAtualizarCliente] = React.useState(false)
     const [clientChoice, setClienteChoice] = React.useState(null);
     const [atualizarCadastro, setAtualizarCadastro] = React.useState(false)    
-    const [cadastrarCliente, setCadastrarCliente] = React.useState(false)    
+    const [cadastrarCliente, setCadastrarCliente] = React.useState(false)     
+    const [marcarConsulta, setMarcarConsulta] = React.useState(false)    
     const [dataGrupo, setDataGrupo] = React.useState(null)
+    const [acao, setAcao] = React.useState(null)
 
 
     const {getToken} = React.useContext(UserContex);
@@ -145,7 +147,8 @@ const Clientes = (props)=>{
                         {
                             propsRow:{id:(atual.id)},
                             acoes:[
-                                {acao:()=>setClienteChoice(atual.id), label:'Editar', propsOption:{}, propsLabel:{}},
+                                {acao:()=>atualizarCliente(atual.id), label:'Editar', propsOption:{}, propsLabel:{}},
+                                {acao:()=>novoAtendimento(atual.id), label:'Atendimento', propsOption:{}, propsLabel:{}},
                                 {acao:()=>alert('Agenda qui: '+(atual.id)), label:'Agenda', propsOption:{}, propsLabel:{}},
                                 {acao:()=>alert('Histórico de atentimentos: '+(atual.id)), label:'Histórico de atendimentos', propsOption:{}, propsLabel:{}},
                                 {acao:()=>alert('Central do cliente: '+(atual.id)), label:'Central do cliente', propsOption:{}, propsLabel:{}},
@@ -216,34 +219,6 @@ const Clientes = (props)=>{
         return tableTitle;
     }
     //------------
-   /* React.useEffect( ()=>{
-        const requestToken = async() =>{
-       
-           const {url, options} = TOKEN_POST({
-                'grant_type':'password',
-                'client_id': CLIENT_ID,
-                'client_secret':CLIENT_SECRET,
-                'username':'admin@gmail.com',
-                'password':'123456'
-             });
-
-
-            const {response, json} = await request(url, options);
-
-            
-        }
-
-        requestToken();
-        
-    }, []);*/
-
-    //----
-	/*React.useEffect(()=>{
-
-        setExemplos(gerarExemplos());
-        setExemplosTitleTable(gerarTitleTable());
-
-    }, [])*/
 
     const requestAllClients = async() =>{
        
@@ -275,16 +250,31 @@ const Clientes = (props)=>{
     }, [])
 
     React.useEffect(()=>{
+        switch(acao){
+            case 'editar':
+                if(clientChoice > 0){
+                    setAtualizarCadastro(true);
+                }else{
+                    setAtualizarCadastro(false);
+                }
+                break;
+            case 'consultar':
+                if(clientChoice > 0){
+                    setMarcarConsulta(true);
+                }else{
+                    setMarcarConsulta(false);
+                }
+            break;
+            default:
+                setAtualizarCadastro(false);
+                setMarcarConsulta(false);
+                break;
 
-        if(clientChoice > 0){
-            setAtualizarCadastro(true);
-        }else{
-            setAtualizarCadastro(false);
         }
-
         
-    }, [clientChoice])
-
+    }, [clientChoice, acao])
+    
+    
     React.useEffect(()=>{
 
         if(cadastrarCliente == true){
@@ -295,6 +285,18 @@ const Clientes = (props)=>{
 
         
     }, [cadastrarCliente])
+
+    const atualizarCliente = (idCliente)=>{
+        setClienteChoice(idCliente)
+        setAcao('editar')
+        setAtualizarCadastro(true);
+    }
+
+    const novoAtendimento = (idCliente)=>{
+        setClienteChoice(idCliente)
+        setAcao('consultar')
+        setAtualizarCadastro(true);
+    }
 
     
     const rowsTableArr = gerarTableClientes();    
@@ -337,6 +339,12 @@ const Clientes = (props)=>{
                 atualizarCadastro &&
                 <Atualizar atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro}  idCliente={clientChoice} setIdcliente={setClienteChoice} callback={requestAllClients} />
             }
+
+            {
+                marcarConsulta &&
+                <Atualizar marcarConsulta={marcarConsulta} setMarcarConsulta={setMarcarConsulta}  idCliente={clientChoice} setIdcliente={setClienteChoice} callback={requestAllClients} />
+            }
+
          </>
 
 	)

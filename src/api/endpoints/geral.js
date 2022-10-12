@@ -3,7 +3,7 @@ export const CLIENT_ID = 3;//4;//
 export const CLIENT_SECRET = '2sCnLO2NjsijhpgBLrRRgmBBPKDhsovxpPnv83VK';//'4mjSEP4YSokEwWyyrkV3Jqb4ABylEAT0stjpKVae';//
 
 const SANDBOX = false;
-const BASE_URL =  (SANDBOX == true) ? "http://1.josepedro.tmp.k8.com.br/api" : 'http://localhost:8081';///api
+const BASE_URL =  (SANDBOX === true) ? "http://1.josepedro.tmp.k8.com.br/api" : 'http://localhost:8081';///api
 
 export const TOKEN_POST = (data)=>{
    
@@ -956,6 +956,120 @@ export const PROFISSIONAIS_DELETE_POST = (id, token)=>{
 
 }
 //------------
+
+
+
+
+
+//--- CONSULTA  ----------------------------------
+export const CONSULTA_ALL_POST = (data, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'POST',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        body:JSON.stringify(data)
+   };
+
+   return{
+        url:BASE_URL+'/api/atendimento/json',
+        options:myInit
+    }
+
+}
+export const CONSULTA_ONE_GET = (id, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'GET',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        //body:JSON.stringify(data)
+   };
+
+   return{
+        url:BASE_URL+'/api/atendimento/info/'+id,
+        options:myInit
+    }
+
+}
+
+export const CONSULTA_SAVE_POST = (data, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'POST',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        body:JSON.stringify(data)
+   };
+
+   return{
+        url:BASE_URL+'/api/atendimento/store',
+        options:myInit
+    }
+
+}
+
+export const CONSULTA_UPDATE_POST = (id,data, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'PUT',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        body:JSON.stringify(data)
+   };
+
+   return{
+        url:BASE_URL+'/api/atendimento/update/'+id,
+        options:myInit
+    }
+
+}
+
+export const CONSULTA_DELETE_POST = (id, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'GET',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+   };
+
+   return{
+        url:BASE_URL+'/api/atendimento/destroy/'+id,
+        options:myInit
+    }
+
+}
+
 
 
 

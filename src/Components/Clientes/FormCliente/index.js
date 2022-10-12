@@ -11,6 +11,7 @@ import {UserContex} from '../../../Context/UserContex.js'
 import Load from '../../Utils/Load/index.js'
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CLIENTES_SAVE_POST, CLIENTES_UPDATE_POST, CLIENTES_ONE_GET} from '../../../api/endpoints/geral.js'
 import Atualizar from '../Atualizar/index.js'
+import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible'
 
 const FormCliente = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, showModalCriarCliente, setShowModalCriarCliente, callback, atualizarCadastro, setAtualizarCadastro, carregando})=>{
     
@@ -43,6 +44,7 @@ const FormCliente = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, sho
 			email,
 			bairro,
             groupo_id,
+			nascimento_fundacao,
 		})=>{
 
     	const data = {
@@ -50,7 +52,7 @@ const FormCliente = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, sho
     		'name_opcional':sobrenome,
     		'documento':documento,
             'documento_complementar':doc_complementar,
-            'nascimento_fundacao':null,
+            'nascimento_fundacao':nascimento_fundacao,
             'sexo':'m',
             'email':email,
             'cep':cep,
@@ -67,6 +69,7 @@ const FormCliente = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, sho
             'telefone':telefone,
             'idUser':1,
             'groupo_id':groupo_id,
+			'pais_id':pais,
 
     	}
 
@@ -128,6 +131,10 @@ const FormCliente = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, sho
     			obj.doc_complementar = data.documento_complementar;
     		}
 
+			if(data.hasOwnProperty('nascimento_fundacao')){
+    			obj.nascimento_fundacao = data.nascimento_fundacao;
+    		}
+
             if(data.hasOwnProperty('email')){
                 obj.email = data.email;
             }
@@ -151,6 +158,12 @@ const FormCliente = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, sho
     						obj.complemento = atual.complemento;
     						obj.numero = atual.numero;
                             obj.bairro = atual.bairro;
+
+							if(atual.hasOwnProperty('estado_logradouro') && atual.estado_logradouro.hasOwnProperty('pais_id')){
+								obj.pais = atual.estado_logradouro.pais_id;
+
+							}
+
     						break;
     					}
     				}
@@ -355,7 +368,9 @@ const FormCliente = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, sho
                     )=>(
 
                         <Modal  handleConcluir={()=>{handleSubmit(); }}  title={ (atualizarCadastro == true ? 'Atualizar' : 'Cadastrar')+' Cliente'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarCliente} showHide={()=>{setShowModalCriarCliente();setAtualizarCadastro(false);setIdcliente(null);}}>
-                                {
+                                
+								{
+									
                                     carregando && carregando==true
                                     ?
                                         (<Load/>)
@@ -367,6 +382,13 @@ const FormCliente = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, sho
 	                        			<span className="label_title_grup_forms">Dados básicos</span>
 	                        		</Col>
 	                        	</Row>
+								{
+									error && <Row className="my-3">
+	                        			<Col xs="12" sm="12" md="12">
+											<AlertaDismissible title="Atenção:" message={error} variant={"danger"} />
+	                        			</Col>
+									</Row>
+								}
 	                        	<Row className="mb-1">
 	                        		<Col xs="12" sm="12" md="6">
 	                        			 <Field

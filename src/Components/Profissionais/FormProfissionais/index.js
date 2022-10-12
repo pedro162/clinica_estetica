@@ -269,7 +269,7 @@ const FormProfissionais = ({dataProfissionaisChoice, setIdProfissionais, idProfi
                         }
 
                         if(!values.especialidade_id){
-                            errors.especialidade_id="Obrigatório"
+                            //errors.especialidade_id="Obrigatório"
                         }
 
                         if(!values.dt_emiss_doc){
@@ -301,7 +301,7 @@ const FormProfissionais = ({dataProfissionaisChoice, setIdProfissionais, idProfi
                         }
                         
                         if( !values.naturalidade){
-                            errors.naturalidade="Obrigatório";
+                           // errors.naturalidade="Obrigatório";
                         }
                         
                         if( !values.name_mae){
@@ -313,7 +313,7 @@ const FormProfissionais = ({dataProfissionaisChoice, setIdProfissionais, idProfi
                         }
                         
                         if( !values.nr_serie_cnh){
-                            errors.nr_serie_cnh="Obrigatório";
+                            //errors.nr_serie_cnh="Obrigatório";
                         }
                         
                         if( !values.name_banco_salario){
@@ -333,15 +333,15 @@ const FormProfissionais = ({dataProfissionaisChoice, setIdProfissionais, idProfi
                         }
                         
                         if( !values.estado_civil){
-                            errors.estado_civil="Obrigatório";
+                            //errors.estado_civil="Obrigatório";
                         }
                         
                         if( !values.grau_instrucao){
-                            errors.grau_instrucao="Obrigatório";
+                           // errors.grau_instrucao="Obrigatório";
                         }
                         
                         if( !values.status){
-                            errors.status="Obrigatório";
+                           // errors.status="Obrigatório";
                         }
                         
                         if( !values.tipo_contrato){
@@ -353,7 +353,7 @@ const FormProfissionais = ({dataProfissionaisChoice, setIdProfissionais, idProfi
                         }
                         
                         if( !values.uf_cnh_id){
-                            errors.uf_cnh_id="Obrigatório";
+                            //errors.uf_cnh_id="Obrigatório";
                         }
 
                         if( !values.cargo){
@@ -363,14 +363,13 @@ const FormProfissionais = ({dataProfissionaisChoice, setIdProfissionais, idProfi
                         if( !values.dt_admissao){
                             errors.dt_admissao="Obrigatório";
                         }
-                        
+                        console.log(errors)
 
                         return errors;
                     }
                 }
 
                 onSubmit={async (values, {setSubmitting})=>{
-                    
                     await sendData({...values});
 
                 }}
@@ -388,7 +387,7 @@ const FormProfissionais = ({dataProfissionaisChoice, setIdProfissionais, idProfi
                         }
                     )=>(
 
-                        <Modal  handleConcluir={()=>{handleSubmit(); }}  title={ (atualizarCadastro == true ? 'Atualizar' : 'Cadastrar')+' profissional'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarProfissionais} showHide={()=>{setShowModalCriarProfissionais();setAtualizarCadastro(false);setIdProfissionais(null);}}>
+                        <Modal  handleConcluir={()=>{handleSubmit();}}  title={ (atualizarCadastro == true ? 'Atualizar' : 'Cadastrar')+' profissional'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarProfissionais} showHide={()=>{setShowModalCriarProfissionais();setAtualizarCadastro(false);setIdProfissionais(null);}}>
                                 {
                                     carregando && carregando==true
                                     ?
@@ -405,9 +404,40 @@ const FormProfissionais = ({dataProfissionaisChoice, setIdProfissionais, idProfi
 
                                 <Row className="mb-3">
                                     <Col xs="12" sm="12" md="6">
-                                        
-                                            <Required
-                                                 data={
+                                       
+                                        <Required
+                                               data={
+                                                {
+                                                    hasLabel:true,
+                                                    contentLabel:'Filial *',
+                                                    atributsFormLabel:{
+
+                                                    },
+                                                    atributsFormControl:{
+                                                        type:'text',
+                                                        name:'filial_id',
+                                                        placeholder:'',
+                                                        id:'filial_id',
+                                                        name_cod:'filial_id',
+                                                        name_desacription:'filial_name',
+                                                        onChange:handleChange,
+                                                        onBlur:handleBlur,
+                                                        value:values.filial_id,
+                                                        className:`${estilos.input}`,
+                                                        size:"sm"
+                                                    },
+                                                    atributsContainer:{
+                                                        className:''
+                                                    },
+                                                    hookToLoadFromDescription:CLIENTES_ALL_POST,
+                                                }
+                                            }
+                                         />  
+                                    </Col>
+
+                                    <Col xs="12" sm="12" md="6">
+                                         <Field
+                                                data={
                                                     {
                                                         hasLabel:true,
                                                         contentLabel:'Profissional *',
@@ -419,6 +449,8 @@ const FormProfissionais = ({dataProfissionaisChoice, setIdProfissionais, idProfi
                                                             name:'pessoa_id',
                                                             placeholder:'Ex: fulano de tal',
                                                             id:'pessoa_id',
+                                                            name_cod:'pessoa_id',
+                                                            name_desacription:'pessoa_name',
                                                             onChange:handleChange,
                                                             onBlur:handleBlur,
                                                             value:values.pessoa_id,
@@ -431,26 +463,31 @@ const FormProfissionais = ({dataProfissionaisChoice, setIdProfissionais, idProfi
                                                         hookToLoadFromDescription:CLIENTES_ALL_POST,
                                                     }
                                                 }
-                                            />
+                                                component={Required}
+                                         >   </Field>    
+                                          <ErrorMessage className="alerta_error_form_label" name="pessoa_id" component="div" />
                                     </Col>
 
+                                        
+                                </Row>
+                                <Row className="mb-3">
                                     <Col xs="12" sm="12" md="6">
-                                         <Field
+                                        <Field
                                                 data={
                                                     {
                                                         hasLabel:true,
-                                                        contentLabel:'Especialidade ',
+                                                        contentLabel:'CNH ',
                                                         atributsFormLabel:{
 
                                                         },
                                                         atributsFormControl:{
                                                             type:'text',
-                                                            name:'especialidade_id',
-                                                            placeholder:'Especialidade',
-                                                            id:'especialidade_id',
+                                                            name:'nr_serie_cnh',
+                                                            placeholder:'Nº cnh',
+                                                            id:'nr_serie_cnh',
                                                             onChange:handleChange,
                                                             onBlur:handleBlur,
-                                                            value:values.especialidade_id,
+                                                            value:values.nr_serie_cnh,
                                                             className:`${estilos.input}`,
                                                             size:"sm"
                                                         },
@@ -463,11 +500,44 @@ const FormProfissionais = ({dataProfissionaisChoice, setIdProfissionais, idProfi
                                                 component={FormControlInput}
                                             >
                                         </Field>
-                                            <ErrorMessage className="alerta_error_form_label" name="especialidade_id" component="div" />
+                                            <ErrorMessage className="alerta_error_form_label" name="nr_serie_cnh" component="div" />
+                                    </Col>
+
+                                    <Col xs="12" sm="12" md="6">
+                                        <Required
+                                               data={
+                                                {
+                                                    hasLabel:true,
+                                                    contentLabel:'UF CNH',
+                                                    atributsFormLabel:{
+
+                                                    },
+                                                    atributsFormControl:{
+                                                        type:'text',
+                                                        name:'uf_cnh_id',
+                                                        placeholder:'UF CNH',
+                                                        id:'uf_cnh_id',
+                                                        name_cod:'uf_cnh_id',
+                                                        name_desacription:'uf_cnh_name',
+                                                        onChange:handleChange,
+                                                        onBlur:handleBlur,
+                                                        value:values.uf_cnh_id,
+                                                        className:`${estilos.input}`,
+                                                        size:"sm"
+                                                    },
+                                                    atributsContainer:{
+                                                        className:''
+                                                    },
+                                                    hookToLoadFromDescription:CLIENTES_ALL_POST,
+                                                }
+                                            }
+                                         />  
+                                         
                                     </Col>
 
                                         
-                                </Row><Row className="mb-3">
+                                </Row>
+                                <Row className="mb-3">
                                     <Col xs="12" sm="12" md="6">
                                          <Field
                                                 data={

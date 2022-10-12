@@ -12,7 +12,7 @@ import Modal from '../Utils/Modal/index.js'
 import Profissionais from '../Profissionais/index.js';
 import Clientes from '../Clientes/index.js';
 
-const Required = ({data, url_btn, callback_selected, props_btn_search, label_btn_search})=>{
+const Required = ({data, url_btn, callback_selected, props_btn_search, label_btn_search, ...props})=>{
     const [cod, setCod] = React.useState('');
     const [description, setDescription] = React.useState(''); 
     const[activeSuggestion, setActiveSuggestion] = React.useState(0);
@@ -28,16 +28,26 @@ const Required = ({data, url_btn, callback_selected, props_btn_search, label_btn
     const atributsFormLabel =  data.hasOwnProperty('atributsFormLabel') ? data.atributsFormLabel : {};
 
     const atributsFormControl =  data.hasOwnProperty('atributsFormControl') ? data.atributsFormControl : {};
+    const name_cod = atributsFormControl.hasOwnProperty('name_cod') ? atributsFormControl.name_cod : null;
+    const name_description = atributsFormControl.hasOwnProperty('name_desacription') ? atributsFormControl.name_desacription : null;
+    
     const atributsContainer =  data.hasOwnProperty('atributsContainer') ? data.atributsContainer : {};
     const hookToLoadFromDescription =  data.hasOwnProperty('hookToLoadFromDescription') ? data.hookToLoadFromDescription : ()=>null;
     
 
-    const handleChangeCod = ({target})=>{
+    const handleChangeCod = ({target, ...event})=>{
         console.log('Cod: '+target.value);
+        setCod(target.value)
+       // atributsFormControl.onChange({event})
+        console.log('-------------------------------- here ------------------')
+        console.log(event)
+        console.log('-------------------------------- here ------------------')
     }
 
-    const handleBlurCod = ({target})=>{
+    const handleBlurCod = ({target, ...event})=>{
         console.log('Cod: '+target.value);
+        setCod(target.value)
+        //atributsFormControl.onBlur(event)
     }
 
     const handleChangeDescription = async ({target, ...ev})=>{
@@ -124,6 +134,7 @@ const Required = ({data, url_btn, callback_selected, props_btn_search, label_btn
 
         
     }, [cadastrarProfissionais])
+    
 
     return(
         <Row >
@@ -144,11 +155,11 @@ const Required = ({data, url_btn, callback_selected, props_btn_search, label_btn
                                 },
                                 atributsFormControl:{
                                     type:'text',
-                                    name:'descricao',
-                                    placeholder:'fulano de tal',
-                                    id:'descricao',
-                                    onChange:handleChangeCod,
-                                    onBlur:handleBlurCod,
+                                    name:name_cod,
+                                    placeholder:'Cód',
+                                    id:name_cod,
+                                    onChange:(ev)=>{atributsFormControl.onChange(ev);handleChangeCod(ev)},
+                                    onBlur:(ev)=>{atributsFormControl.onBlur(ev);handleBlurCod(ev)},
                                     value:cod,
                                     className:"",
                                     size:"sm",
@@ -177,9 +188,9 @@ const Required = ({data, url_btn, callback_selected, props_btn_search, label_btn
                                 },
                                 atributsFormControl:{
                                     type:'text',
-                                    name:'descricao',
+                                    name:name_description,
                                     placeholder:'fulano de tal',
-                                    id:'descricao',
+                                    id:name_description,
                                     onChange:(ev)=>handleChangeDescription(ev),
                                     onBlur:(ev)=>handleBlurDescription(ev),
                                     onKeyDown:(ev)=>onKeyDownSugestion(ev),
