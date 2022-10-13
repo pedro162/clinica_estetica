@@ -6,8 +6,10 @@ import FormConsulta from '../FormConsulta/index.js'
 import Pesquisar from '../Pesquisar/index.js'
 import Modal from '../../Utils/Modal/index.js'
 import Load from '../../Utils/Load/index.js'
+import {Col, Row} from 'react-bootstrap';
+import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible'
 
-const Atualizar = ({idConsulta, setIdcliente, callback, atualizarCadastro, setAtualizarCadastro})=>{
+const Atualizar = ({idConsulta, setIdConsulta, callback, atualizarConsulta, setAtualizarConsulta})=>{
 
     
     const [showModalAtualizarConsulta, setShowModalAtualizarConsulta] = React.useState(false)
@@ -19,19 +21,6 @@ const Atualizar = ({idConsulta, setIdcliente, callback, atualizarCadastro, setAt
 	const {data, error, request, loading} = useFetch();
 	React.useEffect(()=>{
 		
-		const getGrupo = async ()=>{
-			const {url, options} = GRUPOS_ALL_POST({}, getToken());
-
-	        const {response, json} = await request(url, options);
-	        console.log('All grupos here')
-	        console.log(json)
-	        if(json){
-	            setDataGrupo(json)
-	        }else{
-	        	setDataGrupo(null)
-	        }
-		}
-
 		const getConsulta = async ()=>{
 			if(idConsulta > 0){
 				const {url, options} = CONSULTA_ONE_GET(idConsulta, getToken());
@@ -47,14 +36,13 @@ const Atualizar = ({idConsulta, setIdcliente, callback, atualizarCadastro, setAt
 			}
 		}
 
-		getGrupo();
 		getConsulta();
 		
 	}, [idConsulta])
 
 	/*
-		atualizarCadastro && 
-                <Atualizar setCarregandoDadosConsulta={null} atualizarCadastro={setAtualizarCadastro} idConsulta={clientChoice} setDataConsulta={null} setShowModalCriarConsulta={setShowModalAtualizarConsulta} />
+		atualizarConsulta && 
+                <Atualizar setCarregandoDadosConsulta={null} atualizarConsulta={setAtualizarConsulta} idConsulta={clientChoice} setDataConsulta={null} setShowModalCriarConsulta={setShowModalAtualizarConsulta} />
 	*/
 	//<Pesquisar idConsulta={idConsulta} setDataConsulta={setDataConsulta} setCarregandoDadosConsulta={setCarregando} />
 	return(
@@ -64,8 +52,9 @@ const Atualizar = ({idConsulta, setIdcliente, callback, atualizarCadastro, setAt
 					<Load/>
 				</Modal>
 			}
-			{dataConsulta &&
-				<FormConsulta dataGrupo={dataGrupo} setIdcliente={setIdcliente} idConsulta={idConsulta} carregando={false} dataConsultaChoice={dataConsulta} setAtualizarCadastro={setAtualizarCadastro} atualizarCadastro={atualizarCadastro} showModalCriarConsulta={showModalAtualizarConsulta} setShowModalCriarConsulta={setShowModalAtualizarConsulta} callback={callback} />
+
+			{dataConsulta && 
+				<FormConsulta setIdConsulta={setIdConsulta} idConsulta={idConsulta} carregando={false} dataConsultaChoice={dataConsulta} setAtualizarConsulta={setAtualizarConsulta} atualizarConsulta={atualizarConsulta} showModalCriarConsulta={showModalAtualizarConsulta} setShowModalCriarConsulta={setShowModalAtualizarConsulta} callback={callback} />
 			}
 		</>
 	)

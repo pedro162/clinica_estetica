@@ -7,7 +7,7 @@ import Pesquisar from '../Pesquisar/index.js'
 import Modal from '../../Utils/Modal/index.js'
 import Load from '../../Utils/Load/index.js'
 
-const Cadastrar = ({idConsulta, setIdConsulta, callback, atualizarCadastro, setAtualizarCadastro, cadastrarConsulta, setCadastrarConsulta})=>{
+const Cadastrar = ({idConsulta, setIdConsulta, callback, atualizarConsulta, setAtualizarConsulta, cadastrarConsulta, setCadastrarConsulta})=>{
 
     
     const [showModalAtualizarConsulta, setShowModalAtualizarConsulta] = React.useState(false)
@@ -40,8 +40,8 @@ const Cadastrar = ({idConsulta, setIdConsulta, callback, atualizarCadastro, setA
 	}, [cadastrarConsulta])
 
 	/*
-		atualizarCadastro && 
-                <Atualizar setCarregandoDadosConsulta={null} atualizarCadastro={setAtualizarCadastro} idConsulta={clientChoice} setDataConsulta={null} setShowModalCriarConsulta={setShowModalAtualizarConsulta} />
+		atualizarConsulta && 
+                <Atualizar setCarregandoDadosConsulta={null} atualizarConsulta={setAtualizarConsulta} idConsulta={clientChoice} setDataConsulta={null} setShowModalCriarConsulta={setShowModalAtualizarConsulta} />
 	*/
 	//<Pesquisar idConsulta={idConsulta} setDataConsulta={setDataConsulta} setCarregandoDadosConsulta={setCarregando} />
 	return(
@@ -52,7 +52,7 @@ const Cadastrar = ({idConsulta, setIdConsulta, callback, atualizarCadastro, setA
 				</Modal>
 			}
 			{dataGrupo &&
-				<FormConsulta dataGrupo={dataGrupo} setIdConsulta={setIdConsulta} idConsulta={idConsulta} carregando={false} dataConsultaChoice={dataConsulta} setAtualizarCadastro={setAtualizarCadastro} atualizarCadastro={atualizarCadastro} showModalCriarConsulta={showModalAtualizarConsulta} setShowModalCriarConsulta={()=>{setShowModalAtualizarConsulta();setCadastrarConsulta()}} callback={callback} />
+				<FormConsulta dataGrupo={dataGrupo} setIdConsulta={setIdConsulta} idConsulta={idConsulta} carregando={false} dataConsultaChoice={dataConsulta} setAtualizarConsulta={setAtualizarConsulta} atualizarConsulta={atualizarConsulta} showModalCriarConsulta={showModalAtualizarConsulta} setShowModalCriarConsulta={()=>{setShowModalAtualizarConsulta();setCadastrarConsulta()}} callback={callback} />
 			}
 		</>
 	)

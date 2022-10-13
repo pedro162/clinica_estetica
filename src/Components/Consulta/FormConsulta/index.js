@@ -10,11 +10,12 @@ import useFetch from '../../../Hooks/useFetch.js';
 import {UserContex} from '../../../Context/UserContex.js'
 import Required from '../../FormControl/Required.js';
 import Load from '../../Utils/Load/index.js'
+import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible'
 
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CONSULTA_SAVE_POST, CONSULTA_ALL_POST, CONSULTA_UPDATE_POST} from '../../../api/endpoints/geral.js'
 
 
-const FormConsulta = ({dataConsultaChoice, setIdcliente, idConsulta, showModalCriarConsulta, setShowModalCriarConsulta, callback, atualizarCadastro, setAtualizarCadastro, carregando})=>{
+const FormConsulta = ({dataConsultaChoice, setIdConsulta, idConsulta, showModalCriarConsulta, setShowModalCriarConsulta, callback, atualizarConsulta, setAtualizarConsulta, carregando})=>{
 
 	const {data, error, request, loading} = useFetch();
 	const dataRequest = useFetch();
@@ -37,7 +38,7 @@ const FormConsulta = ({dataConsultaChoice, setIdcliente, idConsulta, showModalCr
 			profissional_id,
 			filial_id,
 		})=>{
-
+			
 
     	const data = {
     		'name':name,
@@ -51,7 +52,7 @@ const FormConsulta = ({dataConsultaChoice, setIdcliente, idConsulta, showModalCr
     		'filial_id':filial_id,
     	}
 
-		if(atualizarCadastro == true){
+		if(atualizarConsulta == true){
             const {url, options} = CONSULTA_UPDATE_POST(idConsulta, data, getToken());
 
 
@@ -64,8 +65,8 @@ const FormConsulta = ({dataConsultaChoice, setIdcliente, idConsulta, showModalCr
                 
                 callback();
                 setShowModalCriarConsulta();
-                setAtualizarCadastro(false);
-                setIdcliente(null);
+                setAtualizarConsulta(false);
+                setIdConsulta(null);
             }
 
         }else{
@@ -83,7 +84,7 @@ const FormConsulta = ({dataConsultaChoice, setIdcliente, idConsulta, showModalCr
             	
             	callback();
             	setShowModalCriarConsulta();
-                setAtualizarCadastro(false);
+                setAtualizarConsulta(false);
             }
 
         }
@@ -95,7 +96,7 @@ const FormConsulta = ({dataConsultaChoice, setIdcliente, idConsulta, showModalCr
 
 
         const {response, json} = await dataRequest.request(url, options);
-        console.log('All Paises here')
+        console.log('All consultas here')
         console.log(json)
         if(json){
             setDataConsulta(json)
@@ -139,17 +140,25 @@ const FormConsulta = ({dataConsultaChoice, setIdcliente, idConsulta, showModalCr
 			if(data.hasOwnProperty('filial_id')){
                 obj.filial_id = data.filial_id;
             }
+
+			if(data.hasOwnProperty('pessoa_id')){
+                obj.pessoa_id = data.pessoa_id;
+            }
+
+			if(data.hasOwnProperty('profissional_id')){
+                obj.profissional_id = data.profissional_id;
+            }
 			
     		if(data.hasOwnProperty('pessoa')){
-    			if(data.pessoa.hasOwnProperty('pessoa_id')){
-					obj.pessoa_id = data.pessoa.pessoa_id;
+    			if(data.pessoa.hasOwnProperty('id')){
+					obj.pessoa_id = data.pessoa.id;
 				}
     			
     		}
 
 			if(data.hasOwnProperty('profissional')){
-    			if(data.pessoa.hasOwnProperty('profissional_id')){
-					obj.profissional_id = data.pessoa.profissional_id;
+    			if(data.profissional.hasOwnProperty('id')){
+					obj.profissional_id = data.profissional.id;
 				}
     			
     		}
@@ -176,15 +185,15 @@ const FormConsulta = ({dataConsultaChoice, setIdcliente, idConsulta, showModalCr
 		<>
 			 <Formik 
 
-                initialValues={{... dataToFormConsulta()}}
+                initialValues={{...dataToFormConsulta()}}
                 validate={
                     values=>{
 
                         const errors = {}
 
-                        if(!values.name){
+                        /* if(!values.name){
                             errors.name="Obrigatório"
-                        }
+                        } */
 
                         if(!values.historico){
                             errors.historico="Obrigatório"
@@ -207,9 +216,9 @@ const FormConsulta = ({dataConsultaChoice, setIdcliente, idConsulta, showModalCr
 						    errors.prioridade="Obrigatório"
 						}
 
-						if(!values.status){
+						/* if(!values.status){
 						    errors.status="Obrigatório"
-						}
+						} */
 
 						if(!values.profissional_id){
 						    errors.profissional_id="Obrigatório"
@@ -228,8 +237,9 @@ const FormConsulta = ({dataConsultaChoice, setIdcliente, idConsulta, showModalCr
                         alert(JSON.stringify(values, null, 2));
                         setSubmitting(false);
                       }, 400);*/
-                      //alert(values.name)
-                      await sendData({...values});
+                      //alert('aqui')
+					 
+                     await sendData({...values});
                 }}
             >
                 {
@@ -245,7 +255,7 @@ const FormConsulta = ({dataConsultaChoice, setIdcliente, idConsulta, showModalCr
                         }
                     )=>(
 
-                        <Modal  handleConcluir={()=>{handleSubmit(); }}  title={'Cadastrar Consulta'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarConsulta} showHide={setShowModalCriarConsulta}>
+						<Modal  handleConcluir={()=>{handleSubmit(); }}  title={ (atualizarConsulta == true ? 'Atualizar' : 'Cadastrar')+' Consulta'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarConsulta} showHide={()=>{setShowModalCriarConsulta();setAtualizarConsulta(false);setIdConsulta(null);}}>
 							{
 									
                                 carregando && carregando==true
@@ -259,6 +269,14 @@ const FormConsulta = ({dataConsultaChoice, setIdcliente, idConsulta, showModalCr
 													<span className="label_title_grup_forms">Dados básicos</span>
 												</Col>
 											</Row>
+
+											{
+												error && <Row className="my-3">
+													<Col xs="12" sm="12" md="12">
+														<AlertaDismissible title="Atenção:" message={error} variant={"danger"} />
+													</Col>
+												</Row>
+											}
 											<Row className="mb-1">
 											<Col xs="12" sm="12" md="6">
 													<Field
@@ -308,7 +326,7 @@ const FormConsulta = ({dataConsultaChoice, setIdcliente, idConsulta, showModalCr
 																		placeholder:'Ex: fulano de tal',
 																		id:'filial_id',
 																		name_cod:'filial_id',
-																		name_desacription:'pessoa_name',
+																		name_desacription:'filial_name',
 																		onChange:handleChange,
 																		onBlur:handleBlur,
 																		value:values.filial_id,
@@ -340,14 +358,14 @@ const FormConsulta = ({dataConsultaChoice, setIdcliente, idConsulta, showModalCr
 																	},
 																	atributsFormControl:{
 																		type:'text',
-																		name:'pessoa_id',
+																		name:'profissional_id',
 																		placeholder:'Ex: fulano de tal',
-																		id:'pessoa_id',
-																		name_cod:'pessoa_id',
-																		name_desacription:'pessoa_name',
+																		id:'profissional_id',
+																		name_cod:'profissional_id',
+																		name_desacription:'profissional_name',
 																		onChange:handleChange,
 																		onBlur:handleBlur,
-																		value:values.pessoa_id,
+																		value:values.profissional_id,
 																		className:`${estilos.input}`,
 																		size:"sm"
 																	},
@@ -359,7 +377,7 @@ const FormConsulta = ({dataConsultaChoice, setIdcliente, idConsulta, showModalCr
 															}
 															component={Required}
 													>   </Field>    
-													<ErrorMessage className="alerta_error_form_label" name="pessoa_id" component="div" />
+													<ErrorMessage className="alerta_error_form_label" name="profissional_id" component="div" />
 												</Col>
 												<Col xs="12" sm="12" md="6">
 													<Field
@@ -388,7 +406,7 @@ const FormConsulta = ({dataConsultaChoice, setIdcliente, idConsulta, showModalCr
 																}
 															}
 														
-															component={FormControlSelect}
+															component={FormControlInput}
 														></Field>
 														<ErrorMessage className="alerta_error_form_label" name="dt_marcado" component="div" />
 												</Col>
@@ -422,9 +440,9 @@ const FormConsulta = ({dataConsultaChoice, setIdcliente, idConsulta, showModalCr
 																}
 															}
 														
-															component={FormControlSelect}
+															component={FormControlInput}
 														></Field>
-														<ErrorMessage className="alerta_error_form_label" name="dt_marcado" component="div" />
+														<ErrorMessage className="alerta_error_form_label" name="hr_marcado" component="div" />
 												</Col>
 												<Col xs="12" sm="12" md="6">
 													<Field
@@ -455,7 +473,7 @@ const FormConsulta = ({dataConsultaChoice, setIdcliente, idConsulta, showModalCr
 														
 															component={FormControlSelect}
 														></Field>
-														<ErrorMessage className="alerta_error_form_label" name="dt_marcado" component="div" />
+														<ErrorMessage className="alerta_error_form_label" name="prioridade" component="div" />
 												</Col>
 											</Row> 
 											<Row>
@@ -472,7 +490,7 @@ const FormConsulta = ({dataConsultaChoice, setIdcliente, idConsulta, showModalCr
 																	atributsFormControl:{
 																		type:'text',
 																		name:'historico',
-																		placeholder:'HH:ii',
+																		placeholder:'Observação',
 																		id:'historico',
 																		onChange:handleChange,
 																		onBlur:handleBlur,
@@ -487,7 +505,7 @@ const FormConsulta = ({dataConsultaChoice, setIdcliente, idConsulta, showModalCr
 																}
 															}
 														
-															component={FormControlSelect}
+															component={FormControlInput}
 														></Field>
 														<ErrorMessage className="alerta_error_form_label" name="historico" component="div" />
 												</Col>

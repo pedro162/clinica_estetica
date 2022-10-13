@@ -23,9 +23,10 @@ const Consulta = (props)=>{
     const [exemplos, setExemplos] = React.useState([])
     const [exemplosTitleTable, setExemplosTitleTable] = React.useState([])
     const [showModalCriarConsulta, setShowModalCriarConstula] = React.useState(false)
-    const [clientChoice, setConsultaChoice] = React.useState(null);
-    const [atualizarCadastro, setAtualizarCadastro] = React.useState(false)    
+    const [consultaChoice, setConsultaChoice] = React.useState(null);
+    const [atualizarConsulta, setAtualizarConsulta] = React.useState(false)    
     const [cadastrarConsulta, setCadastrarConsulta] = React.useState(false) 
+    const [acao, setAcao] = React.useState(null)
 
 
     const {getToken} = React.useContext(UserContex);
@@ -88,9 +89,49 @@ const Consulta = (props)=>{
     {
         label:'Cadastrar',
         icon:<FontAwesomeIcon icon={faPlus} />,
-        props:{onClick:()=>setShowModalCriarConstula(true), className:'btn btn-sm mx-2 btn-secondary'}
+        props:{onClick:()=>setCadastrarConsulta(true), className:'btn btn-sm mx-2 btn-secondary'}
     }
     ];
+
+    React.useEffect(()=>{
+        switch(acao){
+            case 'editar':
+                if(consultaChoice > 0){
+                    setAtualizarConsulta(true);
+                }else{
+                    setAtualizarConsulta(false);
+                }
+                break;
+            default:
+                
+                break;
+
+        }
+        
+    }, [consultaChoice, acao])
+
+    React.useEffect(()=>{
+
+        if(cadastrarConsulta == true){
+            setShowModalCriarConstula(true);
+        }else{
+            setShowModalCriarConstula(false);
+        }
+
+        
+    }, [cadastrarConsulta])
+
+    const atualizarConsultaAction = (idConsulta)=>{
+        setConsultaChoice(idConsulta)
+        setAcao('editar')
+        setAtualizarConsulta(true);
+    }
+
+    const novaConsulta = (idConsulta)=>{
+        setConsultaChoice(idConsulta)
+        setAcao('consultar')
+        setAtualizarConsulta(true);
+    }
 
     const gerarTableConsulta = ()=>{
        
@@ -106,6 +147,10 @@ const Consulta = (props)=>{
 
                         {
                             propsRow:{id:(atual.id)},
+                            acoes:[
+                                {acao:()=>atualizarConsultaAction(atual.id), label:'Editar', propsOption:{}, propsLabel:{}},
+                                {acao:()=>alert('Detalhes qui: '+(atual.id)), label:'Detalhes', propsOption:{}, propsLabel:{}},
+                            ],
                             celBodyTableArr:[
                                 {
 
@@ -247,12 +292,12 @@ const Consulta = (props)=>{
             </Row>
 
             {
-                cadastrarConsulta && <Cadastrar cadastrarConsulta={cadastrarConsulta} setCadastrarConsulta={setCadastrarConsulta} atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro}  idConsulta={clientChoice} setIdConsulta={setConsultaChoice} callback={requestAllConsultas} />
+                cadastrarConsulta && <Cadastrar cadastrarConsulta={cadastrarConsulta} setCadastrarConsulta={setCadastrarConsulta} atualizarConsulta={atualizarConsulta} setAtualizarConsulta={setAtualizarConsulta}  idConsulta={consultaChoice} setIdConsulta={setConsultaChoice} callback={requestAllConsultas} />
             }
             
             {
-                atualizarCadastro &&
-                <Atualizar atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro}  idConsulta={clientChoice} setIdConsulta={setConsultaChoice} callback={requestAllConsultas} />
+                atualizarConsulta &&
+                <Atualizar atualizarConsulta={atualizarConsulta} setAtualizarConsulta={setAtualizarConsulta}  idConsulta={consultaChoice} setIdConsulta={setConsultaChoice} callback={requestAllConsultas} />
             }
            
          </>
