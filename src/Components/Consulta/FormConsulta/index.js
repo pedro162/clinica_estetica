@@ -37,6 +37,10 @@ const FormConsulta = ({dataConsultaChoice, setIdConsulta, idConsulta, showModalC
 			status,
 			profissional_id,
 			filial_id,
+			dt_fim,
+			hr_fim,
+			name_atendido,
+			tipo,
 		})=>{
 			
 
@@ -50,6 +54,10 @@ const FormConsulta = ({dataConsultaChoice, setIdConsulta, idConsulta, showModalC
     		'status':status,
     		'profissional_id':profissional_id,
     		'filial_id':filial_id,
+			'dt_fim':dt_fim,
+			'hr_fim':hr_fim,
+			'name_atendido':name_atendido,
+			'tipo':tipo,
     	}
 
 		if(atualizarConsulta == true){
@@ -109,7 +117,8 @@ const FormConsulta = ({dataConsultaChoice, setIdConsulta, idConsulta, showModalC
     }
 
 	const dataToFormConsulta = ()=>{
-    	let obj = {name:'', historico:'', pessoa_id:'',	dt_marcado:'', hr_marcado:'', prioridade:'', status:'', profissional_id:'', filial_id:''}
+    	let obj = {name:'', historico:'', pessoa_id:'',	dt_marcado:'', hr_marcado:'', prioridade:'', status:'', profissional_id:'',
+		filial_id:'', dt_fim:'', hr_fim:'', name_atendido:'', tipo:''}
     	if(dataConsultaChoice && dataConsultaChoice.hasOwnProperty('mensagem')){
     		let data = dataConsultaChoice.mensagem;
            
@@ -163,6 +172,22 @@ const FormConsulta = ({dataConsultaChoice, setIdConsulta, idConsulta, showModalC
     			
     		}
 
+			if(data.hasOwnProperty('dt_fim')){
+    			obj.dt_fim = data.dt_fim;    			
+    		}
+
+			if(data.hasOwnProperty('hr_fim')){
+    			obj.hr_fim = data.hr_fim;    			
+    		}
+
+			if(data.hasOwnProperty('name_atendido')){
+    			obj.name_atendido = data.name_atendido;    			
+    		}
+
+			if(data.hasOwnProperty('tipo')){
+    			obj.tipo = data.tipo;    			
+    		}
+
     		
     	}
 
@@ -214,6 +239,22 @@ const FormConsulta = ({dataConsultaChoice, setIdConsulta, idConsulta, showModalC
 
 						if(!values.prioridade){
 						    errors.prioridade="Obrigatório"
+						}
+
+						if(!values.dt_fim){
+							errors.dt_fim="Obrigatório" 			
+						}
+			
+						if(!values.hr_fim){
+							errors.hr_fim="Obrigatório"			
+						}
+			
+						if(!values.name_atendido){
+							errors.name_atendido="Obrigatório"   			
+						}
+			
+						if(!values.tipo){
+							errors.tipo="Obrigatório"    			
 						}
 
 						/* if(!values.status){
@@ -278,7 +319,7 @@ const FormConsulta = ({dataConsultaChoice, setIdConsulta, idConsulta, showModalC
 												</Row>
 											}
 											<Row className="mb-1">
-											<Col xs="12" sm="12" md="6">
+												<Col xs="12" sm="12" md="6">
 													<Field
 															data={
 																{
@@ -316,6 +357,41 @@ const FormConsulta = ({dataConsultaChoice, setIdConsulta, idConsulta, showModalC
 															data={
 																{
 																	hasLabel:true,
+																	contentLabel:'Pessoa do contato *',
+																	atributsFormLabel:{
+
+																	},
+																	atributsFormControl:{
+																		type:'text',
+																		name:'name_atendido',
+																		placeholder:'Ex: fulano de tal',
+																		id:'name_atendido',
+																		name_cod:'name_atendido',
+																		name_desacription:'pessoa_name',
+																		onChange:handleChange,
+																		onBlur:handleBlur,
+																		value:values.name_atendido,
+																		className:`${estilos.input}`,
+																		size:"sm"
+																	},
+																	atributsContainer:{
+																		className:''
+																	},
+																	hookToLoadFromDescription:CONSULTA_ALL_POST,
+																}
+															}
+															component={FormControlInput}
+													>   </Field>    
+													<ErrorMessage className="alerta_error_form_label" name="name_atendido" component="div" />
+												</Col>
+											</Row>
+											<Row className="mb-1">
+												
+												<Col xs="12" sm="12" md="6">
+													<Field
+															data={
+																{
+																	hasLabel:true,
 																	contentLabel:'Filial *',
 																	atributsFormLabel:{
 
@@ -343,7 +419,38 @@ const FormConsulta = ({dataConsultaChoice, setIdConsulta, idConsulta, showModalC
 													>   </Field>    
 													<ErrorMessage className="alerta_error_form_label" name="filial_id" component="div" />
 												</Col>
-												
+												<Col>
+													<Field
+															data={
+																{
+																	hasLabel:true,
+																	contentLabel:'Tipo',
+																	atributsFormLabel:{
+
+																	},
+																	atributsFormControl:{
+																		type:'text',
+																		name:'tipo',
+																		placeholder:'Informe a tipo',
+																		id:'tipo',
+																		onChange:handleChange,
+																		onBlur:handleBlur,
+																		value:values.tipo,
+																		className:estilos.input,
+																		size:"sm"
+																	},
+																	options:[{label:'Selecione...',valor:'',props:{selected:'selected', disabled:'disabled'}},{label:'Serviço',valor:'servico',props:{}},{label:'Avaliacao',valor:'avaliacao',props:{}},{label:'Consulta',valor:'consulta',props:{}},{label:'Retorno',valor:'retorno',props:{}}],
+																	atributsContainer:{
+																		className:''
+																	}
+																}
+															}
+														
+															component={FormControlSelect}
+														></Field>
+														<ErrorMessage className="alerta_error_form_label" name="tipo" component="div" />
+												</Col>
+
 											</Row>
 
 											<Row className="mb-1">
@@ -379,71 +486,7 @@ const FormConsulta = ({dataConsultaChoice, setIdConsulta, idConsulta, showModalC
 													>   </Field>    
 													<ErrorMessage className="alerta_error_form_label" name="profissional_id" component="div" />
 												</Col>
-												<Col xs="12" sm="12" md="6">
-													<Field
-															data={
-																{
-																	hasLabel:true,
-																	contentLabel:'Data',
-																	atributsFormLabel:{
 
-																	},
-																	atributsFormControl:{
-																		type:'date',
-																		name:'dt_marcado',
-																		placeholder:'DD/MM/AAAA',
-																		id:'dt_marcado',
-																		onChange:handleChange,
-																		onBlur:handleBlur,
-																		value:values.dt_marcado,
-																		className:estilos.input,
-																		size:"sm"
-																	},
-																	options:[],
-																	atributsContainer:{
-																		className:''
-																	}
-																}
-															}
-														
-															component={FormControlInput}
-														></Field>
-														<ErrorMessage className="alerta_error_form_label" name="dt_marcado" component="div" />
-												</Col>
-											</Row>
-											<Row>
-												
-												<Col xs="12" sm="12" md="6">
-													<Field
-															data={
-																{
-																	hasLabel:true,
-																	contentLabel:'Horário',
-																	atributsFormLabel:{
-
-																	},
-																	atributsFormControl:{
-																		type:'time',
-																		name:'hr_marcado',
-																		placeholder:'HH:ii',
-																		id:'hr_marcado',
-																		onChange:handleChange,
-																		onBlur:handleBlur,
-																		value:values.hr_marcado,
-																		className:estilos.input,
-																		size:"sm"
-																	},
-																	options:[],
-																	atributsContainer:{
-																		className:''
-																	}
-																}
-															}
-														
-															component={FormControlInput}
-														></Field>
-														<ErrorMessage className="alerta_error_form_label" name="hr_marcado" component="div" />
-												</Col>
 												<Col xs="12" sm="12" md="6">
 													<Field
 															data={
@@ -474,6 +517,139 @@ const FormConsulta = ({dataConsultaChoice, setIdConsulta, idConsulta, showModalC
 															component={FormControlSelect}
 														></Field>
 														<ErrorMessage className="alerta_error_form_label" name="prioridade" component="div" />
+												</Col>
+											</Row>
+											<Row>
+												
+												<Col xs="12" sm="12" md="6">
+													<Field
+															data={
+																{
+																	hasLabel:true,
+																	contentLabel:'Data iníco',
+																	atributsFormLabel:{
+
+																	},
+																	atributsFormControl:{
+																		type:'date',
+																		name:'dt_marcado',
+																		placeholder:'DD/MM/AAAA',
+																		id:'dt_marcado',
+																		onChange:handleChange,
+																		onBlur:handleBlur,
+																		value:values.dt_marcado,
+																		className:estilos.input,
+																		size:"sm"
+																	},
+																	options:[],
+																	atributsContainer:{
+																		className:''
+																	}
+																}
+															}
+														
+															component={FormControlInput}
+														></Field>
+														<ErrorMessage className="alerta_error_form_label" name="dt_marcado" component="div" />
+												</Col>
+
+												<Col xs="12" sm="12" md="6">
+													<Field
+															data={
+																{
+																	hasLabel:true,
+																	contentLabel:'Horário início',
+																	atributsFormLabel:{
+
+																	},
+																	atributsFormControl:{
+																		type:'time',
+																		name:'hr_marcado',
+																		placeholder:'HH:ii',
+																		id:'hr_marcado',
+																		onChange:handleChange,
+																		onBlur:handleBlur,
+																		value:values.hr_marcado,
+																		className:estilos.input,
+																		size:"sm"
+																	},
+																	options:[],
+																	atributsContainer:{
+																		className:''
+																	}
+																}
+															}
+														
+															component={FormControlInput}
+														></Field>
+														<ErrorMessage className="alerta_error_form_label" name="hr_marcado" component="div" />
+												</Col>
+											</Row> 
+
+											<Row>
+												
+												<Col xs="12" sm="12" md="6">
+													<Field
+															data={
+																{
+																	hasLabel:true,
+																	contentLabel:'Data fim',
+																	atributsFormLabel:{
+
+																	},
+																	atributsFormControl:{
+																		type:'date',
+																		name:'dt_fim',
+																		placeholder:'DD/MM/AAAA',
+																		id:'dt_fim',
+																		onChange:handleChange,
+																		onBlur:handleBlur,
+																		value:values.dt_fim,
+																		className:estilos.input,
+																		size:"sm"
+																	},
+																	options:[],
+																	atributsContainer:{
+																		className:''
+																	}
+																}
+															}
+														
+															component={FormControlInput}
+														></Field>
+														<ErrorMessage className="alerta_error_form_label" name="dt_fim" component="div" />
+												</Col>
+
+												<Col xs="12" sm="12" md="6">
+													<Field
+															data={
+																{
+																	hasLabel:true,
+																	contentLabel:'Horário fim',
+																	atributsFormLabel:{
+
+																	},
+																	atributsFormControl:{
+																		type:'time',
+																		name:'hr_fim',
+																		placeholder:'HH:ii',
+																		id:'hr_fim',
+																		onChange:handleChange,
+																		onBlur:handleBlur,
+																		value:values.hr_fim,
+																		className:estilos.input,
+																		size:"sm"
+																	},
+																	options:[],
+																	atributsContainer:{
+																		className:''
+																	}
+																}
+															}
+														
+															component={FormControlInput}
+														></Field>
+														<ErrorMessage className="alerta_error_form_label" name="hr_fim" component="div" />
 												</Col>
 											</Row> 
 											<Row>

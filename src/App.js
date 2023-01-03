@@ -1,7 +1,7 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
-import {Home, NotFound, Login, ProtectedRoute, PainelInicial, Clientes, Grupos, ContasReceber, Caixa, Filial, Parametro, Pais, Estado, Cidade, AgendaEvento, CategoriaEvento, Especialidade, Profissionais, Consulta} from './View/index.js'
+import {Home, NotFound, Login, ProtectedRoute, PainelInicial, Clientes, Grupos, ContasReceber, Caixa, Filial, Parametro, Pais, Estado, Cidade, AgendaEvento, CategoriaEvento, Especialidade, Profissionais, Consulta, ConstrutorFicha} from './View/index.js'
 import {Router, Route, Switch} from 'react-router'
 import {history} from './history.js'
 import {UserStorange, UserContex} from './Context/UserContex.js'
@@ -90,6 +90,11 @@ function App() {
                       <Route
                         path="/configuracoes/cidade" 
                         component={Cidade}
+                      />
+
+                      <Route
+                        path="/configuracoes/construtor/ficha" 
+                        component={ConstrutorFicha}
                       />
 
                       <Route

@@ -18,5 +18,7 @@ import CategoriaEvento from '../Components/CategoriaEvento/index.js'
 import Especialidade from '../Components/EspecialidadeProfissional/index.js'
 import Profissionais from '../Components/Profissionais/index.js'
 import Consulta from '../Components/Consulta/index.js'
+import ConstrutorFicha from '../Components/ConstrutorFicha/index.js'
 
-export {Home, NotFound, Login, ProtectedRoute, PainelInicial,Clientes,Grupos, ContasReceber, Caixa, Filial, Parametro, User, Pais, Estado, Cidade, AgendaEvento, CategoriaEvento, Especialidade, Profissionais, Consulta}
+export {Home, NotFound, Login, ProtectedRoute, PainelInicial,Clientes,Grupos, ContasReceber, Caixa, Filial, Parametro, User, Pais,
+     Estado, Cidade, AgendaEvento, CategoriaEvento, Especialidade, Profissionais, Consulta, ConstrutorFicha}
