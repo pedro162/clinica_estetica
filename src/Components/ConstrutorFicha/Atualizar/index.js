@@ -1,18 +1,18 @@
 import React from 'react';
 import useFetch from '../../../Hooks/useFetch.js';
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CLIENTES_ONE_GET, GRUPOS_ALL_POST} from '../../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, FORMULARIO_ONE_GET, GRUPOS_ALL_POST} from '../../../api/endpoints/geral.js'
 import {UserContex} from '../../../Context/UserContex.js'
 import FormCliente from '../FormCliente/index.js'
 import Pesquisar from '../Pesquisar/index.js'
 import Modal from '../../Utils/Modal/index.js'
 import Load from '../../Utils/Load/index.js'
 
-const Atualizar = ({idCliente, setIdcliente, callback, atualizarCadastro, setAtualizarCadastro})=>{
+const Atualizar = ({idRegistro, setIdRegistro, callback, atualizarCadastro, setAtualizarCadastro})=>{
 
     
-    const [showModalAtualizarCliente, setShowModalAtualizarCliente] = React.useState(false)
+    const [showModalAtualizarRegistro, setShowModalAtualizarRegistro] = React.useState(false)
     const [carregando, setCarregando] = React.useState(false)
-    const [dataCliente, setDataCliente] = React.useState(null)
+    const [dataRegistro, setDataRegistro] = React.useState(null)
     const [dataGrupo, setDataGrupo] = React.useState(null)
 	const {getToken, dataUser} = React.useContext(UserContex);
 
@@ -32,42 +32,42 @@ const Atualizar = ({idCliente, setIdcliente, callback, atualizarCadastro, setAtu
 	        }
 		}
 
-		const getCliente = async ()=>{
-			if(idCliente > 0){
-				const {url, options} = CLIENTES_ONE_GET(idCliente, getToken());
+		const getRegistro = async ()=>{
+			if(idRegistro > 0){
+				const {url, options} = FORMULARIO_ONE_GET(idRegistro, getToken());
 				const {response, json} = await request(url, options);
 				if(json){
 					
-					setDataCliente(json)
-					setShowModalAtualizarCliente(true)
+					setDataRegistro(json)
+					setShowModalAtualizarRegistro(true)
 					 
 		        }else{
-		        	setDataCliente([])
+		        	setDataRegistro([])
 		        }
 			}
 		}
 
 		
 
-		getGrupo();
-		getCliente();
+		//getGrupo();
+		getRegistro();
 		
-	}, [idCliente])
+	}, [idRegistro])
 
 	/*
 		atualizarCadastro && 
-                <Atualizar setCarregandoDadosCliente={null} atualizarCadastro={setAtualizarCadastro} idCliente={clientChoice} setDataCliente={null} setShowModalCriarCliente={setShowModalAtualizarCliente} />
+                <Atualizar setCarregandoDadosCliente={null} atualizarCadastro={setAtualizarCadastro} idRegistro={clientChoice} setDataRegistro={null} setShowModalCriarRegistro={setShowModalAtualizarRegistro} />
 	*/
-	//<Pesquisar idCliente={idCliente} setDataCliente={setDataCliente} setCarregandoDadosCliente={setCarregando} />
+	//<Pesquisar idRegistro={idRegistro} setDataRegistro={setDataRegistro} setCarregandoDadosCliente={setCarregando} />
 	return(
 		<>
-			{! dataCliente &&
-				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={()=>null}  title={'Atualizar Cliente'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="" show={setShowModalAtualizarCliente} showHide={()=>{setShowModalAtualizarCliente();}}>
+			{! dataRegistro &&
+				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={()=>null}  title={'Atualizar formulário'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="" show={setShowModalAtualizarRegistro} showHide={()=>{setShowModalAtualizarRegistro();}}>
 					<Load/>
 				</Modal>
 			}
-			{dataCliente &&
-				<FormCliente dataGrupo={dataGrupo} setIdcliente={setIdcliente} idCliente={idCliente} carregando={false} dataClienteChoice={dataCliente} setAtualizarCadastro={setAtualizarCadastro} atualizarCadastro={atualizarCadastro} showModalCriarCliente={showModalAtualizarCliente} setShowModalCriarCliente={setShowModalAtualizarCliente} callback={callback} />
+			{dataRegistro &&
+				<FormCliente dataGrupo={dataGrupo} setIdRegistro={setIdRegistro} idRegistro={idRegistro} carregando={false} dataRegistroChoice={dataRegistro} setAtualizarCadastro={setAtualizarCadastro} atualizarCadastro={atualizarCadastro} showModalCriarRegistro={showModalAtualizarRegistro} setShowModalCriarRegistro={setShowModalAtualizarRegistro} callback={callback} />
 			}
 		</>
 	)

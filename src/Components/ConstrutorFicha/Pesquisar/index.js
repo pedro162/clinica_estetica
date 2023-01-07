@@ -1,35 +1,35 @@
 import React from 'react';
 import useFetch from '../../../Hooks/useFetch.js';
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CLIENTES_ONE_GET} from '../../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, FORMULARIO_ONE_GET} from '../../../api/endpoints/geral.js'
 import {UserContex} from '../../../Context/UserContex.js'
 
-const Pesquisar = ({idCliente, setDataCliente, setCarregandoDadosCliente})=>{
+const Pesquisar = ({idRegistro, setDataRegistro, setCarregandoDadosRegistro})=>{
 	const {getToken, dataUser} = React.useContext(UserContex);
 
 	const {data, error, request, loading} = useFetch();
-	setCarregandoDadosCliente(loading)
+	setCarregandoDadosRegistro(loading)
 	React.useEffect(()=>{
 		
 		const getCliente = async ()=>{
-			if(idCliente > 0){
-				const {url, options} = CLIENTES_ONE_GET(idCliente, getToken());
+			if(idRegistro > 0){
+				const {url, options} = FORMULARIO_ONE_GET(idRegistro, getToken());
 				const {response, json} = await request(url, options);
 				if(json){
 					
-					setDataCliente(json)
+					setDataRegistro(json)
 					 
 		        }else{
-		        	setDataCliente([])
+		        	setDataRegistro([])
 		        }
 			}
 		}
 
 		getCliente();
 		
-	}, [idCliente])
+	}, [idRegistro])
 	/*
 		atualizarCadastro && 
-                <Atualizar setCarregandoDadosCliente={null} atualizarCadastro={setAtualizarCadastro} idCliente={clientChoice} setDataCliente={null} setShowModalCriarCliente={setShowModalAtualizarCliente} />
+                <Atualizar setCarregandoDadosRegistro={null} atualizarCadastro={setAtualizarCadastro} idRegistro={clientChoice} setDataRegistro={null} setShowModalCriarCliente={setShowModalAtualizarCliente} />
 	*/
 	return(
 		<>

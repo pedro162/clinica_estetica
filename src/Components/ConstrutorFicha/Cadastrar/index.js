@@ -7,12 +7,12 @@ import Pesquisar from '../Pesquisar/index.js'
 import Modal from '../../Utils/Modal/index.js'
 import Load from '../../Utils/Load/index.js'
 
-const Cadastrar = ({idCliente, setIdcliente, callback, atualizarCadastro, setAtualizarCadastro, cadastrarCliente, setCadastrarCliente})=>{
+const Cadastrar = ({idRegistro, setIdRegistro, callback, atualizarCadastro, setAtualizarCadastro, cadastrarRegistro, setCadastrarRegistro})=>{
 
     
-    const [showModalAtualizarCliente, setShowModalAtualizarCliente] = React.useState(false)
+    const [showModalAtualizarRegistro, setShowModalAtualizarRegistro] = React.useState(false)
     const [carregando, setCarregando] = React.useState(false)
-    const [dataCliente, setDataCliente] = React.useState(null)
+    const [dataRegistro, setDataRegistro] = React.useState(null)
     const [dataGrupo, setDataGrupo] = React.useState(null)
 	const {getToken, dataUser} = React.useContext(UserContex);
 
@@ -27,32 +27,32 @@ const Cadastrar = ({idCliente, setIdcliente, callback, atualizarCadastro, setAtu
 	        console.log(json)
 	        if(json){
 	            setDataGrupo(json)
-	            setShowModalAtualizarCliente(true)
+	            setShowModalAtualizarRegistro(true)
 	        }else{
 	        	setDataGrupo(null)
 	        }
 		}
-		if(cadastrarCliente == true){
+		if(cadastrarRegistro == true){
 			getGrupo();
 		}
 		
 		
-	}, [cadastrarCliente])
+	}, [cadastrarRegistro])
 
 	/*
 		atualizarCadastro && 
-                <Atualizar setCarregandoDadosCliente={null} atualizarCadastro={setAtualizarCadastro} idCliente={clientChoice} setDataCliente={null} setShowModalCriarCliente={setShowModalAtualizarCliente} />
+                <Atualizar setCarregandoDadosCliente={null} atualizarCadastro={setAtualizarCadastro} idRegistro={clientChoice} setDataRegistro={null} setShowModalCriarRegistro={setShowModalAtualizarRegistro} />
 	*/
-	//<Pesquisar idCliente={idCliente} setDataCliente={setDataCliente} setCarregandoDadosCliente={setCarregando} />
+	//<Pesquisar idRegistro={idRegistro} setDataRegistro={setDataRegistro} setCarregandoDadosCliente={setCarregando} />
 	return(
 		<>
 			{! dataGrupo &&
-				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={()=>null}  title={'Cadastrar Cliente'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="" show={setShowModalAtualizarCliente} showHide={()=>{setShowModalAtualizarCliente();}}>
+				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={()=>null}  title={'Cadastrar Formulário'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="" show={setShowModalAtualizarRegistro} showHide={()=>{setShowModalAtualizarRegistro();}}>
 					<Load/>
 				</Modal>
 			}
 			{dataGrupo &&
-				<FormCliente dataGrupo={dataGrupo} setIdcliente={setIdcliente} idCliente={idCliente} carregando={false} dataClienteChoice={dataCliente} setAtualizarCadastro={setAtualizarCadastro} atualizarCadastro={atualizarCadastro} showModalCriarCliente={showModalAtualizarCliente} setShowModalCriarCliente={()=>{setShowModalAtualizarCliente();setCadastrarCliente()}} callback={callback} />
+				<FormCliente dataGrupo={dataGrupo} setIdRegistro={setIdRegistro} idRegistro={idRegistro} carregando={false} dataRegistroChoice={dataRegistro} setAtualizarCadastro={setAtualizarCadastro} atualizarCadastro={atualizarCadastro} showModalCriarRegistro={showModalAtualizarRegistro} setShowModalCriarRegistro={()=>{setShowModalAtualizarRegistro();setCadastrarRegistro()}} callback={callback} />
 			}
 		</>
 	)

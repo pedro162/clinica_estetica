@@ -17,17 +17,19 @@ import { DragDropContext } from 'react-beautiful-dnd';
 import TableForm from '../../Relatorio/TableForm/index.js';
 
 
-const FormCliente = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, showModalCriarCliente, setShowModalCriarCliente, callback, atualizarCadastro, setAtualizarCadastro, carregando})=>{
+const FormCliente = ({dataRegistroChoice, dataGrupo, setIdRegistro, idRegistro, showModalCriarRegistro, setShowModalCriarRegistro, callback, atualizarCadastro, setAtualizarCadastro, carregando})=>{
     
     const [carregandoDadosChoice, setCarregandoDadosChoice] = React.useState(false)
 
 	const {data, error, request, loading} = useFetch();
-	const fetchToClient = useFetch();
+	const fetchToRegistro = useFetch();
 	const {getToken, dataUser} = React.useContext(UserContex);
 	const [dataContrutorFicha, setDataContrutorFicha] = React.useState([]);
 	const [grupo, setGrupo] = React.useState('')
 	const [dataGrupos, setDataGrupos] = React.useState([]);
 	const [posicao, setPosicao] = React.useState(1)
+	const [idGrupo, setIdGrupo] = React.useState(null)
+	
 	const userLogar =  ()=>{
         console.log('Aqui............')
     }
@@ -53,16 +55,16 @@ const FormCliente = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, sho
 
 		data.grupos = {}
 
-		let dataClientes = dataGrupos
-        if(dataClientes && Array.isArray(dataClientes) && dataClientes.length > 0){
-            for(let i=0; !(i == dataClientes.length); i++){
-                let atual = dataClientes[i];
-				data.grupos[i] = {name:atual?.grupo, nr_ordem:atual?.posicao}
+		let dataRegistro = dataGrupos
+        if(dataRegistro && Array.isArray(dataRegistro) && dataRegistro.length > 0){
+            for(let i=0; !(i == dataRegistro.length); i++){
+                let atual = dataRegistro[i];
+				data.grupos[i] = {name:atual?.grupo, nr_ordem:atual?.posicao, id:atual?.id}
 			}
 		}
 
         if(atualizarCadastro == true){
-            const {url, options} = FORMULARIO_UPDATE_POST(idCliente, data, getToken());
+            const {url, options} = FORMULARIO_UPDATE_POST(idRegistro, data, getToken());
 
 
             const {response, json} = await request(url, options);
@@ -73,9 +75,9 @@ const FormCliente = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, sho
                 console.log(json)
                 
                 callback();
-                setShowModalCriarCliente();
+                setShowModalCriarRegistro();
                 setAtualizarCadastro(false);
-                setIdcliente(null);
+                setIdRegistro(null);
             }
 
         }else{
@@ -92,7 +94,7 @@ const FormCliente = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, sho
             	console.log(json)
             	
             	callback();
-            	setShowModalCriarCliente();
+            	setShowModalCriarRegistro();
                 setAtualizarCadastro(false);
             }
 
@@ -100,14 +102,20 @@ const FormCliente = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, sho
     }
 
 
-    const dataToFormCliente = ()=>{
-    	let obj = {grupo:'', groupo_id:''}
-    	if(dataClienteChoice && dataClienteChoice.hasOwnProperty('mensagem')){
-    		let data = dataClienteChoice.mensagem;
+    const dataToFormRegistro = ()=>{
+    	let obj = {name:'', id:'', grupo:[]}
+    	if(dataRegistroChoice && dataRegistroChoice.hasOwnProperty('mensagem')){
+    		let data = dataRegistroChoice.mensagem;
            
-    		if(data.hasOwnProperty('formulario')){
-                obj.formulario = data.formulario;
+    		if(data.hasOwnProperty('name')){
+                obj.formulario = data.name;
     		}
+
+			if(data.hasOwnProperty('id')){
+                obj.id = data.id;
+    		}
+
+			
     		
     		
 
@@ -118,15 +126,70 @@ const FormCliente = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, sho
     	return obj;
     }
 
+	React.useEffect(()=>{
+		if(dataRegistroChoice && dataRegistroChoice.hasOwnProperty('mensagem')){
+			let data = dataRegistroChoice.mensagem;
+			if(data.hasOwnProperty('grupo')){
+                //let data = dataRegistroChoice.mensagem;
+				//data.grupo;
+				let grupoCarregado = [];
+				if(Array.isArray(data.grupo) && data.grupo.length > 0){
+					for(let i = 0; !(i == data.grupo.length); i++){
+						let atual = data.grupo[i];
+						let {name, nr_ordem, formulario_id, props_grupo, id} = atual;
+						
+						grupoCarregado.push( {grupo:name, posicao:nr_ordem, formulario_id, props_grupo, id})
+						
+					}
+
+				}
+				setDataGrupos([...grupoCarregado])
+				let contador = dataGrupos.length;
+				setPosicao(contador + 1)
+				//adicionarGrupo
+				console.log("aqui oooo")
+				console.log(grupoCarregado)
+    		}
+		}
+	}, [dataRegistroChoice])
+
 
 	const adicionarGrupo = ()=>{
 		let contador = dataGrupos.length
 		if(String(grupo).trim().length > 0){
-			setDataGrupos([...dataGrupos, {grupo, posicao}])
-			contador += 1;
+			
+			if(atualizarCadastro == true){
+				if(Array.isArray(dataGrupos) && dataGrupos.length > 0){
+					let novoDtg = [] 
+					let encontrou = false;
+					dataGrupos.forEach((item, index, dadosArr)=>{
+						let idGr = item?.id;
+						idGr = Number(idGr)
+						//let atual = item;
+						if(idGrupo > 0 && idGr > 0 && idGrupo == idGr){
+							item.grupo		= grupo;
+							item.posicao 	= posicao;
+							encontrou = true;
+							
+						}
+						novoDtg.push(item)
+					})
+					if(! encontrou){
+						novoDtg.push({grupo, posicao})						
+					}
+					setDataGrupos([...novoDtg])
+					contador = Number(posicao) + 1;
+				}
+			}else{
+				setDataGrupos([...dataGrupos, {grupo, posicao}])
+				contador += 1;
+			}
+			
+			
 		}
 		setGrupo('')
-		setPosicao(contador + 1)
+		setPosicao(contador)
+		setIdGrupo(null)
 				
 	}
 
@@ -144,24 +207,31 @@ const FormCliente = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, sho
 		console.log('Adicionar grupo');
 	} 
 
-	const gerarTableClientes = ()=>{
+	const gerarTableRegistro = ()=>{
        
         let data = [];
-        let dataClientes = dataGrupos
-        if(dataClientes && Array.isArray(dataClientes) && dataClientes.length > 0){
-            for(let i=0; !(i == dataClientes.length); i++){
-                let atual = dataClientes[i];
+        let dataRegistro = dataGrupos
+        if(dataRegistro && Array.isArray(dataRegistro) && dataRegistro.length > 0){
+            for(let i=0; !(i == dataRegistro.length); i++){
+                let atual = dataRegistro[i];
 				let indexAtual = (i+1);
                 if(atual){
 						//grupo, posicao
+					let acoesArr = [];
+					if(atualizarCadastro == true && atual?.id > 0){
+						acoesArr.push({acao:()=>{
+								setGrupo(atual?.grupo);
+								setPosicao(atual?.posicao);
+								setIdGrupo(atual?.id)
+
+							}, label:'Editar', propsOption:{'className':'btn btn-sm'}, propsLabel:{}})
+					}
 
                     data.push(
 
                         {
                             propsRow:{id:indexAtual},
-                            acoes:[
-                                {acao:()=>console.log(indexAtual), label:'Editar', propsOption:{'className':'btn btn-sm'}, propsLabel:{}},
-                            ],
+                            acoes:acoesArr,
 							acaoTrash:()=>removeGroup(i),
                             celBodyTableArr:[
                                 
@@ -206,14 +276,14 @@ const FormCliente = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, sho
     //------------
 
 	console.log('Grupo', grupo)
-    const rowsTableArr = gerarTableClientes();    
+    const rowsTableArr = gerarTableRegistro();    
     const titulosTableArr = gerarTitleTable();
 	return(
 
 		<>
 			 <Formik 
 
-                initialValues={{... dataToFormCliente()}}
+                initialValues={{... dataToFormRegistro()}}
                 validate={
                     values=>{
 
@@ -247,7 +317,7 @@ const FormCliente = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, sho
                         }
                     )=>(
 						
-                        <Modal  handleConcluir={()=>{handleSubmit(); }}  title={ (atualizarCadastro == true ? 'Atualizar' : 'Cadastrar')+' Cliente'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarCliente} showHide={()=>{setShowModalCriarCliente();setAtualizarCadastro(false);setIdcliente(null);}}>
+                        <Modal  handleConcluir={()=>{handleSubmit(); }}  title={ (atualizarCadastro == true ? 'Atualizar' : 'Cadastrar')+' Formulário'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarRegistro} showHide={()=>{setShowModalCriarRegistro();setAtualizarCadastro(false);setIdRegistro(null);}}>
                                 
 								{
 									

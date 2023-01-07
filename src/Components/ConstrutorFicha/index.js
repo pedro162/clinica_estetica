@@ -19,14 +19,14 @@ import FormCliente from './FormCliente/index.js'
 const ConstrutorFicha = (props)=>{
 
 	const {data, error, request, loading} = useFetch();
-    const [clientes, setClientes] = React.useState([])
+    const [registro, setRegistro] = React.useState([])
     const [exemplos, setExemplos] = React.useState([])
     const [exemplosTitleTable, setExemplosTitleTable] = React.useState([])
-    const [showModalCriarCliente, setShowModalCriarCliente] = React.useState(false)
-    const [showModalAtualizarCliente, setShowModalAtualizarCliente] = React.useState(false)
-    const [clientChoice, setClienteChoice] = React.useState(null);
+    const [showModalCriarRegistro, setShowModalCriarRegistro] = React.useState(false)
+    const [showModalAtualizarRegistro, setShowModalAtualizarRegistro] = React.useState(false)
+    const [registroChoice, setRegistroChoice] = React.useState(null);
     const [atualizarCadastro, setAtualizarCadastro] = React.useState(false)    
-    const [cadastrarCliente, setCadastrarCliente] = React.useState(false)     
+    const [cadastrarRegistro, setCadastrarRegistro] = React.useState(false)     
     const [marcarConsulta, setMarcarConsulta] = React.useState(false)    
     const [dataGrupo, setDataGrupo] = React.useState(null)
     const [acao, setAcao] = React.useState(null)
@@ -42,43 +42,10 @@ const ConstrutorFicha = (props)=>{
             type:'text',
             options:[], 
             hasLabel: true,
-            contentLabel:'Teste',
+            contentLabel:'Nome',
             atributsFormLabel:{},
             atributsContainer:{xs:"12", sm:"12", md:"12",className:'mb-2'},
             atributsFormControl:{'type':'text', size:"sm",'name':'nome',onChange:alerta,    onBlur:alerta},
-
-        },
-        {
-            type:'radio',
-            options:[
-                {
-                    hasLabel: true,
-                    contentLabel:'Teste Radio 01',
-                    atributsFormLabel:{},
-                    atributsFormControl:{'type':'radio', value:'12', size:"sm",'checked':true,'name':'nome',onChange:alerta,    onBlur:alerta},
-                },
-                {
-                    hasLabel: true,
-                    contentLabel:'Teste Radio',
-                    atributsFormLabel:{},
-                    atributsFormControl:{'type':'radio', value:'12', size:"sm",'checked':true,'name':'nome',onChange:alerta,    onBlur:alerta},
-                }
-            ],  
-            hasLabel: true,
-            contentLabel:'Teste',
-            atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"12",className:'mb-2',},
-            atributsFormControl:{},
-
-        }
-        ,{
-            type:'checkbox',
-            options:[], 
-            hasLabel: true,
-            contentLabel:'Teste',
-            atributsFormLabel:{},
-            atributsContainer:{ xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'checkbox', value:'12',size:"sm",'checked':false,'name':'nome',onChange:alerta, onBlur:alerta},
 
         }
     ]
@@ -86,12 +53,12 @@ const ConstrutorFicha = (props)=>{
     const acoesBottomCard=[{
             label:'Pesquisar',
             icon:<FontAwesomeIcon icon={faSearch} />,
-            props:{onClick:()=>requestAllClients(), className:'btn btn-sm botao_success'}
+            props:{onClick:()=>requestAllRegistros(), className:'btn btn-sm botao_success'}
         },
         {
             label:'Cadastrar',
             icon:<FontAwesomeIcon icon={faPlus} />,
-            props:{onClick:()=>setCadastrarCliente(true), className:'btn btn-sm mx-2 btn-secondary'}
+            props:{onClick:()=>setCadastrarRegistro(true), className:'btn btn-sm mx-2 btn-secondary'}
         }
     ];
     const gerarExemplos = ()=>{
@@ -132,13 +99,13 @@ const ConstrutorFicha = (props)=>{
         return exemplos;
     }
 
-    const gerarTableClientes = ()=>{
+    const gerarTableRegistro = ()=>{
        
         let data = [];
-        let dataClientes = clientes.mensagem
-        if(dataClientes && Array.isArray(dataClientes) && dataClientes.length > 0){
-            for(let i=0; !(i == dataClientes.length); i++){
-                let atual = dataClientes[i];
+        let dataRegistro = registro.mensagem
+        if(dataRegistro && Array.isArray(dataRegistro) && dataRegistro.length > 0){
+            for(let i=0; !(i == dataRegistro.length); i++){
+                let atual = dataRegistro[i];
                 if(atual){
 
 
@@ -147,11 +114,10 @@ const ConstrutorFicha = (props)=>{
                         {
                             propsRow:{id:(atual.id)},
                             acoes:[
-                                {acao:()=>atualizarCliente(atual.id), label:'Editar', propsOption:{}, propsLabel:{}},
-                                {acao:()=>novoAtendimento(atual.id), label:'Atendimento', propsOption:{}, propsLabel:{}},
-                                {acao:()=>alert('Agenda qui: '+(atual.id)), label:'Agenda', propsOption:{}, propsLabel:{}},
-                                {acao:()=>alert('Histórico de atentimentos: '+(atual.id)), label:'Histórico de atendimentos', propsOption:{}, propsLabel:{}},
-                                {acao:()=>alert('Central do cliente: '+(atual.id)), label:'Central do cliente', propsOption:{}, propsLabel:{}},
+                                {acao:()=>atualizarRegistro(atual.id), label:'Editar', propsOption:{}, propsLabel:{}},
+                                {acao:()=>novoAtendimento(atual.id), label:'Excluir', propsOption:{}, propsLabel:{}},
+                                {acao:()=>novoAtendimento(atual.id), label:'Grupos', propsOption:{}, propsLabel:{}},
+                                {acao:()=>novoAtendimento(atual.id), label:'Campos', propsOption:{}, propsLabel:{}},
                             ],
                             celBodyTableArr:[
                                 {
@@ -193,7 +159,7 @@ const ConstrutorFicha = (props)=>{
     }
     //------------
 
-    const requestAllClients = async() =>{
+    const requestAllRegistros = async() =>{
        
         const {url, options} = FORMULARIO_ALL_POST({}, getToken());
 
@@ -202,7 +168,7 @@ const ConstrutorFicha = (props)=>{
         console.log('All clients here')
         console.log(json)
         if(json){
-               setClientes(json)
+               setRegistro(json)
         }
 
             
@@ -210,14 +176,14 @@ const ConstrutorFicha = (props)=>{
 
     React.useEffect(()=>{
 
-        const requestAllClientsEffect = async() =>{
+        const requestAllRegistrosEffect = async() =>{
        
-           await requestAllClients();
+           await requestAllRegistros();
 
             
         }
 
-        requestAllClientsEffect();
+        requestAllRegistrosEffect();
 
         
     }, [])
@@ -225,14 +191,14 @@ const ConstrutorFicha = (props)=>{
     React.useEffect(()=>{
         switch(acao){
             case 'editar':
-                if(clientChoice > 0){
+                if(registroChoice > 0){
                     setAtualizarCadastro(true);
                 }else{
                     setAtualizarCadastro(false);
                 }
                 break;
             case 'consultar':
-                if(clientChoice > 0){
+                if(registroChoice > 0){
                     setMarcarConsulta(true);
                 }else{
                     setMarcarConsulta(false);
@@ -245,34 +211,34 @@ const ConstrutorFicha = (props)=>{
 
         }
         
-    }, [clientChoice, acao])
+    }, [registroChoice, acao])
     
     
     React.useEffect(()=>{
 
-        if(cadastrarCliente == true){
-            setShowModalCriarCliente(true);
+        if(cadastrarRegistro == true){
+            setShowModalCriarRegistro(true);
         }else{
-            setShowModalCriarCliente(false);
+            setShowModalCriarRegistro(false);
         }
 
         
-    }, [cadastrarCliente])
+    }, [cadastrarRegistro])
 
-    const atualizarCliente = (idCliente)=>{
-        setClienteChoice(idCliente)
+    const atualizarRegistro = (idRegistro)=>{
+        setRegistroChoice(idRegistro)
         setAcao('editar')
         setAtualizarCadastro(true);
     }
 
-    const novoAtendimento = (idCliente)=>{
-        setClienteChoice(idCliente)
+    const novoAtendimento = (idRegistro)=>{
+        setRegistroChoice(idRegistro)
         setAcao('consultar')
         setAtualizarCadastro(true);
     }
 
     
-    const rowsTableArr = gerarTableClientes();    
+    const rowsTableArr = gerarTableRegistro();    
     const titulosTableArr = gerarTitleTable();
 	return(
 		<>
@@ -305,17 +271,17 @@ const ConstrutorFicha = (props)=>{
                 </Col>
             </Row>
             {
-                cadastrarCliente && <Cadastrar cadastrarCliente={cadastrarCliente} setCadastrarCliente={setCadastrarCliente} atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro}  idCliente={clientChoice} setIdcliente={setClienteChoice} callback={requestAllClients} />
+                cadastrarRegistro && <Cadastrar cadastrarRegistro={cadastrarRegistro} setCadastrarRegistro={setCadastrarRegistro} atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro}  idRegistro={registroChoice} setIdRegistro={setRegistroChoice} callback={requestAllRegistros} />
             }
             
             {
                 atualizarCadastro &&
-                <Atualizar atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro}  idCliente={clientChoice} setIdcliente={setClienteChoice} callback={requestAllClients} />
+                <Atualizar atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro}  idRegistro={registroChoice} setIdRegistro={setRegistroChoice} callback={requestAllRegistros} />
             }
 
             {
                 marcarConsulta &&
-                <Atualizar marcarConsulta={marcarConsulta} setMarcarConsulta={setMarcarConsulta}  idCliente={clientChoice} setIdcliente={setClienteChoice} callback={requestAllClients} />
+                <Atualizar marcarConsulta={marcarConsulta} setMarcarConsulta={setMarcarConsulta}  idRegistro={registroChoice} setIdRegistro={setRegistroChoice} callback={requestAllRegistros} />
             }
 
          </>
@@ -325,4 +291,4 @@ const ConstrutorFicha = (props)=>{
 
 export default ConstrutorFicha;
 
-//<FormCliente dataGrupo={dataGrupo} dataClienteChoice={[]}  atualizarCadastro={false} setAtualizarCadastro={setAtualizarCadastro}  idCliente={null} setIdcliente={setClienteChoice}  showModalCriarCliente={showModalCriarCliente} setShowModalCriarCliente={setShowModalCriarCliente} callback={requestAllClients} />
+//<FormCliente dataGrupo={dataGrupo} dataClienteChoice={[]}  atualizarCadastro={false} setAtualizarCadastro={setAtualizarCadastro}  idRegistro={null} setIdRegistro={setRegistroChoice}  showModalCriarRegistro={showModalCriarRegistro} setShowModalCriarRegistro={setShowModalCriarRegistro} callback={requestAllRegistros} />
