@@ -102,39 +102,6 @@ const Consulta = (props)=>{
             atributsFormControl:{'type':'date', size:"sm",'dt_fim':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
 
         },
-        {
-            type:'radio',
-            options:[
-                {
-                    hasLabel: true,
-                    contentLabel:'Teste Radio 01',
-                    atributsFormLabel:{},
-                    atributsFormControl:{'type':'radio', value:'12', size:"sm",'checked':true,'name':'nome',onChange:alerta,    onBlur:alerta},
-                },
-                {
-                    hasLabel: true,
-                    contentLabel:'Teste Radio',
-                    atributsFormLabel:{},
-                    atributsFormControl:{'type':'radio', value:'12', size:"sm",'checked':true,'name':'nome',onChange:alerta,    onBlur:alerta},
-                }
-            ],  
-            hasLabel: true,
-            contentLabel:'Teste',
-            atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"12",className:'mb-2',},
-            atributsFormControl:{},
-
-        }
-        ,{
-            type:'checkbox',
-            options:[], 
-            hasLabel: true,
-            contentLabel:'Teste',
-            atributsFormLabel:{},
-            atributsContainer:{ xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'checkbox', value:'12',size:"sm",'checked':false,'name':'nome',onChange:alerta, onBlur:alerta},
-
-        }
     ]
 
     const acoesBottomCard=[{
@@ -215,12 +182,12 @@ const Consulta = (props)=>{
                                 },
                                 {
 
-                                    label:atual.dt_marcado,
+                                    label:atual.filial_id,
                                     propsRow:{}
                                 },
                                 {
 
-                                    label:atual.hr_marcado,
+                                    label:atual.pessoa_id,
                                     propsRow:{}
                                 },
                                 {
@@ -230,12 +197,32 @@ const Consulta = (props)=>{
                                 },
                                 {
 
+                                    label:atual.status,
+                                    propsRow:{}
+                                },
+                                {
+
                                     label:atual.prioridade,
                                     propsRow:{}
                                 },
                                 {
 
-                                    label:atual.status,
+                                    label:atual.profissional_id,
+                                    propsRow:{}
+                                },
+                                {
+
+                                    label:atual.name_profissional,
+                                    propsRow:{}
+                                },
+                                {
+
+                                    label:atual.dt_inicio,
+                                    propsRow:{}
+                                },
+                                {
+
+                                    label:atual.hr_inicio,
                                     propsRow:{}
                                 },
                             ]
@@ -258,11 +245,11 @@ const Consulta = (props)=>{
                 props:{}
             },
             {
-                label:'Data',
+                label:'Cód. filial',
                 props:{}
             },
             {
-                label:'Horário',
+                label:'Cód. pessoa',
                 props:{}
             },
             {
@@ -270,18 +257,34 @@ const Consulta = (props)=>{
                 props:{}
             },
             {
+                label:'Status',
+                props:{}
+            },
+            {
                 label:'Prioridade',
                 props:{}
             },
             {
-                label:'Status',
+                label:'Cód. profissional',
+                props:{}
+            },
+            {
+                label:'Profissional',
+                props:{}
+            },
+            {
+                label:'Data',
+                props:{}
+            },
+            {
+                label:'Horário',
                 props:{}
             }
         ]
 
         return tableTitle;
     }
-   
+   //name_profissional
 
     //------------
 
