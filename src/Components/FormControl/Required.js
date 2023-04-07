@@ -21,6 +21,8 @@ const Required = ({data, url_btn, callback_selected, props_btn_search, label_btn
     const [showModalCriarProfissionais, setShowModalCriarProfissionais] = React.useState(false)
     const [cadastrarProfissionais, setCadastrarProfissionais] = React.useState(false)    
 
+    const refControll         = React.useRef()
+
     const {error, request, loading} = useFetch();
 
     const hasLabel = data.hasOwnProperty('hasLabel') ? data.hasLabel : false;
@@ -33,6 +35,7 @@ const Required = ({data, url_btn, callback_selected, props_btn_search, label_btn
     
     const atributsContainer =  data.hasOwnProperty('atributsContainer') ? data.atributsContainer : {};
     const hookToLoadFromDescription =  data.hasOwnProperty('hookToLoadFromDescription') ? data.hookToLoadFromDescription : ()=>null;
+
     
 
     const handleChangeCod = async ({target, ...event})=>{
@@ -177,7 +180,8 @@ const Required = ({data, url_btn, callback_selected, props_btn_search, label_btn
                                     value:cod,
                                     className:"",
                                     size:"sm",
-                                    style:{'marginRight':'0px'}
+                                    style:{'marginRight':'0px'},
+                                    ref:refControll
                                 },
                                 atributsContainer:{
                                     className:'',
