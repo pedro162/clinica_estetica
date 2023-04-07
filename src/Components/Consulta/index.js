@@ -224,6 +224,15 @@ const Consulta = (props)=>{
 
                                     label:atual.hr_inicio,
                                     propsRow:{}
+                                },{
+
+                                    label:atual.dt_fim,
+                                    propsRow:{}
+                                },
+                                {
+
+                                    label:atual.hr_fim,
+                                    propsRow:{}
                                 },
                             ]
                         }
@@ -273,11 +282,19 @@ const Consulta = (props)=>{
                 props:{}
             },
             {
-                label:'Data',
+                label:'Data início',
                 props:{}
             },
             {
-                label:'Horário',
+                label:'Horário início',
+                props:{}
+            },
+            {
+                label:'Data fim',
+                props:{}
+            },
+            {
+                label:'Horário fim',
                 props:{}
             }
         ]

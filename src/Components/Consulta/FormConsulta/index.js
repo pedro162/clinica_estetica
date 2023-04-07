@@ -12,7 +12,7 @@ import Required from '../../FormControl/Required.js';
 import Load from '../../Utils/Load/index.js'
 import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible'
 
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CONSULTA_SAVE_POST, CONSULTA_ALL_POST, CONSULTA_UPDATE_POST} from '../../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CONSULTA_SAVE_POST, CONSULTA_ALL_POST, CONSULTA_UPDATE_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST} from '../../../api/endpoints/geral.js'
 
 
 const FormConsulta = ({dataConsultaChoice, setIdConsulta, idConsulta, showModalCriarConsulta, setShowModalCriarConsulta, callback, atualizarConsulta, setAtualizarConsulta, carregando})=>{
@@ -31,8 +31,8 @@ const FormConsulta = ({dataConsultaChoice, setIdConsulta, idConsulta, showModalC
     		name,
     		historico,
 			pessoa_id,
-			dt_marcado,
-			hr_marcado,
+			dt_inicio,
+			hr_inicio,
 			prioridade,
 			status,
 			profissional_id,
@@ -48,8 +48,8 @@ const FormConsulta = ({dataConsultaChoice, setIdConsulta, idConsulta, showModalC
     		'name':name,
     		'historico':historico,
     		'pessoa_id':pessoa_id,
-    		'dt_marcado':dt_marcado,
-    		'hr_marcado':hr_marcado,
+    		'dt_inicio':dt_inicio,
+    		'hr_inicio':hr_inicio,
     		'prioridade':prioridade,
     		'status':status,
     		'profissional_id':profissional_id,
@@ -117,7 +117,7 @@ const FormConsulta = ({dataConsultaChoice, setIdConsulta, idConsulta, showModalC
     }
 
 	const dataToFormConsulta = ()=>{
-    	let obj = {name:'', historico:'', pessoa_id:'',	dt_marcado:'', hr_marcado:'', prioridade:'', status:'', profissional_id:'',
+    	let obj = {name:'', historico:'', pessoa_id:'',	dt_inicio:'', hr_inicio:'', prioridade:'', status:'', profissional_id:'',
 		filial_id:'', dt_fim:'', hr_fim:'', name_atendido:'', tipo:''}
     	if(dataConsultaChoice && dataConsultaChoice.hasOwnProperty('mensagem')){
     		let data = dataConsultaChoice.mensagem;
@@ -130,12 +130,12 @@ const FormConsulta = ({dataConsultaChoice, setIdConsulta, idConsulta, showModalC
     			obj.historico = data.historico;
     		}
     		
-    		if(data.hasOwnProperty('dt_marcado')){
-    			obj.dt_marcado = data.dt_marcado;
+    		if(data.hasOwnProperty('dt_inicio')){
+    			obj.dt_inicio = data.dt_inicio;
     		}
 
-			if(data.hasOwnProperty('hr_marcado')){
-    			obj.hr_marcado = data.hr_marcado;
+			if(data.hasOwnProperty('hr_inicio')){
+    			obj.hr_inicio = data.hr_inicio;
     		}
 
             if(data.hasOwnProperty('prioridade')){
@@ -225,16 +225,16 @@ const FormConsulta = ({dataConsultaChoice, setIdConsulta, idConsulta, showModalC
                         }
 
 
-                        if(!values.dt_marcado){
-                            errors.dt_marcado="Obrigatório"
+                        if(!values.dt_inicio){
+                            errors.dt_inicio="Obrigatório"
                         }
 
                         if(!values.pessoa_id){
                             errors.pessoa_id="Obrigatório"
                         }
 						
-						if(!values.hr_marcado){
-						    errors.hr_marcado="Obrigatório"
+						if(!values.hr_inicio){
+						    errors.hr_inicio="Obrigatório"
 						}
 
 						if(!values.prioridade){
@@ -344,7 +344,7 @@ const FormConsulta = ({dataConsultaChoice, setIdConsulta, idConsulta, showModalC
 																	atributsContainer:{
 																		className:''
 																	},
-																	hookToLoadFromDescription:CONSULTA_ALL_POST,
+																	hookToLoadFromDescription:CLIENTES_ALL_POST,
 																}
 															}
 															component={Required}
@@ -377,7 +377,7 @@ const FormConsulta = ({dataConsultaChoice, setIdConsulta, idConsulta, showModalC
 																	atributsContainer:{
 																		className:''
 																	},
-																	hookToLoadFromDescription:CONSULTA_ALL_POST,
+																	hookToLoadFromDescription:CLIENTES_ALL_POST,
 																}
 															}
 															component={FormControlInput}
@@ -412,7 +412,7 @@ const FormConsulta = ({dataConsultaChoice, setIdConsulta, idConsulta, showModalC
 																	atributsContainer:{
 																		className:''
 																	},
-																	hookToLoadFromDescription:CONSULTA_ALL_POST,
+																	hookToLoadFromDescription:CLIENTES_ALL_POST,
 																}
 															}
 															component={Required}
@@ -479,7 +479,7 @@ const FormConsulta = ({dataConsultaChoice, setIdConsulta, idConsulta, showModalC
 																	atributsContainer:{
 																		className:''
 																	},
-																	hookToLoadFromDescription:CONSULTA_ALL_POST,
+																	hookToLoadFromDescription:PROFISSIONAIS_ALL_POST,
 																}
 															}
 															component={Required}
@@ -532,12 +532,12 @@ const FormConsulta = ({dataConsultaChoice, setIdConsulta, idConsulta, showModalC
 																	},
 																	atributsFormControl:{
 																		type:'date',
-																		name:'dt_marcado',
+																		name:'dt_inicio',
 																		placeholder:'DD/MM/AAAA',
-																		id:'dt_marcado',
+																		id:'dt_inicio',
 																		onChange:handleChange,
 																		onBlur:handleBlur,
-																		value:values.dt_marcado,
+																		value:values.dt_inicio,
 																		className:estilos.input,
 																		size:"sm"
 																	},
@@ -550,7 +550,7 @@ const FormConsulta = ({dataConsultaChoice, setIdConsulta, idConsulta, showModalC
 														
 															component={FormControlInput}
 														></Field>
-														<ErrorMessage className="alerta_error_form_label" name="dt_marcado" component="div" />
+														<ErrorMessage className="alerta_error_form_label" name="dt_inicio" component="div" />
 												</Col>
 
 												<Col xs="12" sm="12" md="6">
@@ -564,12 +564,12 @@ const FormConsulta = ({dataConsultaChoice, setIdConsulta, idConsulta, showModalC
 																	},
 																	atributsFormControl:{
 																		type:'time',
-																		name:'hr_marcado',
+																		name:'hr_inicio',
 																		placeholder:'HH:ii',
-																		id:'hr_marcado',
+																		id:'hr_inicio',
 																		onChange:handleChange,
 																		onBlur:handleBlur,
-																		value:values.hr_marcado,
+																		value:values.hr_inicio,
 																		className:estilos.input,
 																		size:"sm"
 																	},
@@ -582,7 +582,7 @@ const FormConsulta = ({dataConsultaChoice, setIdConsulta, idConsulta, showModalC
 														
 															component={FormControlInput}
 														></Field>
-														<ErrorMessage className="alerta_error_form_label" name="hr_marcado" component="div" />
+														<ErrorMessage className="alerta_error_form_label" name="hr_inicio" component="div" />
 												</Col>
 											</Row> 
 
