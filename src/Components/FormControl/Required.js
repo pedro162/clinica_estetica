@@ -36,8 +36,8 @@ const Required = ({data, url_btn, callback_selected, props_btn_search, label_btn
     
 
     const handleChangeCod = async ({target, ...event})=>{
-       
-        let data_get = target.value;
+        setCod(target.value)
+        /*let data_get = target.value;
 
         const {url, options} = hookToLoadFromDescription({to_require:true, codigo_to_search:data_get}, getToken());
         const {response, json} = await request(url, options);
@@ -45,7 +45,7 @@ const Required = ({data, url_btn, callback_selected, props_btn_search, label_btn
             let registro = json.mensagem[0];
             setCod(registro?.value)
             setDescription(registro?.label)
-        }
+        }*/
     }
 
     const handleBlurCod = async ({target, ...event})=>{
@@ -54,10 +54,13 @@ const Required = ({data, url_btn, callback_selected, props_btn_search, label_btn
 
         const {url, options} = hookToLoadFromDescription({to_require:true, codigo_to_search:data_get}, getToken());
         const {response, json} = await request(url, options);
-        if(json && json.hasOwnProperty('mensagem')){
+        if(json && json.hasOwnProperty('mensagem') && json.mensagem.length > 0){
             let registro = json.mensagem[0];
             setCod(registro?.value)
             setDescription(registro?.label)
+        }else{
+            setCod('')
+            setDescription('')
         }
     }
 

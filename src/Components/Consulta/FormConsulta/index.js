@@ -204,7 +204,7 @@ const FormConsulta = ({dataConsultaChoice, setIdConsulta, idConsulta, showModalC
     }, []);
 
     console.log('----------------------------- data pais ----------------------------------')
-    console.log(dataConsulta)
+    console.log(dataToFormConsulta())
 	return(
 
 		<>
@@ -348,6 +348,7 @@ const FormConsulta = ({dataConsultaChoice, setIdConsulta, idConsulta, showModalC
 																}
 															}
 															component={Required}
+															
 													>   </Field>    
 													<ErrorMessage className="alerta_error_form_label" name="pessoa_id" component="div" />
 												</Col>
