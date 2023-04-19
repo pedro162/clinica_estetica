@@ -11,6 +11,8 @@ const Header = (props)=>{
         return <></>
 
     }
+
+    ///home/painel
     return(
         <Navbar collapseOnSelect expand="lg" className={[estilos.containerHeader]} fixed="top" >
             <Container fluid>
@@ -88,7 +90,7 @@ const Header = (props)=>{
                                 <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Separated link</NavDropdown.Item>
                         </NavDropdown>
                         <NavDropdown title="Agenda" id="collasible-nav-dropdown">
-                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} to="/home/painel" >Agenda</Link></NavDropdown.Item>
+                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} to="/agenda/painel" >Agenda</Link></NavDropdown.Item>
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} to="/agenda/eventos/painel" >Evento de agenda</Link></NavDropdown.Item>
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} to="/categoria/eventos/painel" >Categoria de eventos</Link></NavDropdown.Item>
                             <NavDropdown.Divider />

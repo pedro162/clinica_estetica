@@ -172,11 +172,6 @@ const Profissionais = (props)=>{
                                 },
                                 {
 
-                                    label:atual.name_especialidade,
-                                    propsRow:{}
-                                },
-                                {
-
                                     label:atual.nr_doc,
                                     propsRow:{}
                                 },
@@ -214,10 +209,6 @@ const Profissionais = (props)=>{
             },
             {
                 label:'CPF / CNPJ',
-                props:{}
-            },
-            {
-                label:'Especialidade',
                 props:{}
             },
             {

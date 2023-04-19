@@ -13,6 +13,7 @@ import Cidade from '../Components/Cidade/index.js'
 import Filial from '../Components/Filial/index.js'
 import Parametro from '../Components/Parametro/index.js'
 import User from '../Components/User/index.js'
+import Agenda from '../Components/Agenda/index.js'
 import AgendaEvento from '../Components/AgendaEvento/index.js'
 import CategoriaEvento from '../Components/CategoriaEvento/index.js'
 import Especialidade from '../Components/EspecialidadeProfissional/index.js'
@@ -21,4 +22,4 @@ import Consulta from '../Components/Consulta/index.js'
 import ConstrutorFicha from '../Components/ConstrutorFicha/index.js'
 
 export {Home, NotFound, Login, ProtectedRoute, PainelInicial,Clientes,Grupos, ContasReceber, Caixa, Filial, Parametro, User, Pais,
-     Estado, Cidade, AgendaEvento, CategoriaEvento, Especialidade, Profissionais, Consulta, ConstrutorFicha}
+     Estado, Cidade, Agenda, AgendaEvento, CategoriaEvento, Especialidade, Profissionais, Consulta, ConstrutorFicha}

@@ -1069,7 +1069,27 @@ export const CONSULTA_DELETE_POST = (id, token)=>{
     }
 
 }
+export const CONSULTA_CANCELAR_POST = (id,data, token)=>{
 
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'PUT',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        body:JSON.stringify(data)
+   };
+
+   return{
+        url:BASE_URL+'/api/atendimento/cancelar/'+id,
+        options:myInit
+    }
+
+}
 
 
 //--- Formularis  ----------------------------------
@@ -1176,6 +1196,115 @@ export const FORMULARIO_DELETE_POST = (id, token)=>{
 
    return{
         url:BASE_URL+'/api/formulario/destroy/'+id,
+        options:myInit
+    }
+
+}
+
+//--- Agenda  ----------------------------------
+export const AGENDA_ALL_POST = (data, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'POST',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        body:JSON.stringify(data)
+   };
+
+   return{
+        url:BASE_URL+'/api/agenda/json',
+        options:myInit
+    }
+
+}
+export const AGENDA_ONE_GET = (id, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'GET',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        //body:JSON.stringify(data)
+   };
+
+   return{
+        url:BASE_URL+'/api/agenda/info/'+id,
+        options:myInit
+    }
+
+}
+
+export const AGENDA_SAVE_POST = (data, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'POST',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        body:JSON.stringify(data)
+   };
+
+   return{
+        url:BASE_URL+'/api/agenda/store',
+        options:myInit
+    }
+
+}
+
+export const AGENDA_UPDATE_POST = (id,data, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'PUT',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        body:JSON.stringify(data)
+   };
+
+   return{
+        url:BASE_URL+'/api/agenda/update/'+id,
+        options:myInit
+    }
+
+}
+
+export const AGENDA_DELETE_POST = (id, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'GET',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+   };
+
+   return{
+        url:BASE_URL+'/api/agenda/destroy/'+id,
         options:myInit
     }
 

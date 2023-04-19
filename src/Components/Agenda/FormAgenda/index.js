@@ -4,7 +4,7 @@ import FormControlInput from '../../FormControl/index.js'
 import FormControlSelect from '../../FormControl/Select.js'
 import {Col, Row} from 'react-bootstrap';
 import Button from '../../FormControl/Button.js';
-import estilos from './FormCidade.module.css'
+import estilos from './FormAgenda.module.css'
 import Modal from '../../Utils/Modal/index.js'
 import useFetch from '../../../Hooks/useFetch.js';
 import {UserContex} from '../../../Context/UserContex.js'
@@ -12,12 +12,12 @@ import Load from '../../Utils/Load/index.js'
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CIDADE_SAVE_POST, CIDADE_UPDATE_POST, CIDADE_ONE_GET} from '../../../api/endpoints/geral.js'
 import Atualizar from '../Atualizar/index.js'
 
-const FormCidade = ({dataCidadeChoice, dataEstado, setIdCidade, idCidade, showModalCriarCidade, setShowModalCriarCidade, callback, atualizarCadastro, setAtualizarCadastro, carregando})=>{
+const FormAgenda = ({dataAgendaChoice, dataEstado, setIdAgenda, idAgenda, showModalCriarAgenda, setShowModalCriarAgenda, callback, atualizarCadastro, setAtualizarCadastro, carregando})=>{
     
     const [carregandoDadosChoice, setCarregandoDadosChoice] = React.useState(false)
-    //dataEstado={dataEstado} setIdCidade={setIdCidade} idCidade={idCidade} carregando={false} dataCidadeChoice={dataCidade} setAtualizarCadastro={setAtualizarCadastro} atualizarCadastro={atualizarCadastro} showModalCriarCidade={showModalAtualizarCidade} setShowModalCriarCidade={()=>{setShowModalAtualizarCidade();setCadastrarCidade()}} callback={callback} 
+    //dataEstado={dataEstado} setIdAgenda={setIdAgenda} idAgenda={idAgenda} carregando={false} dataAgendaChoice={dataAgenda} setAtualizarCadastro={setAtualizarCadastro} atualizarCadastro={atualizarCadastro} showModalCriarAgenda={showModalAtualizarAgenda} setShowModalCriarAgenda={()=>{setShowModalAtualizarAgenda();setCadastrarAgenda()}} callback={callback} 
 	const {data, error, request, loading} = useFetch();
-	const fetchToCidade = useFetch();
+	const fetchToAgenda = useFetch();
 
 	const {getToken, dataUser} = React.useContext(UserContex);
 	const userLogar =  ()=>{
@@ -32,8 +32,8 @@ const FormCidade = ({dataCidadeChoice, dataEstado, setIdCidade, idCidade, showMo
 		})=>{
 
     	const data = {
-    		'nmCidade':nome,
-    		'cdCidade':cd_cidade,
+    		'nmAgenda':nome,
+    		'cdAgenda':cd_cidade,
     		'sigla':sigla,
             'estado_id':estado_id,
             'idUser':1,
@@ -41,7 +41,7 @@ const FormCidade = ({dataCidadeChoice, dataEstado, setIdCidade, idCidade, showMo
     	}
 
         if(atualizarCadastro == true){
-            const {url, options} = CIDADE_UPDATE_POST(idCidade, data, getToken());
+            const {url, options} = CIDADE_UPDATE_POST(idAgenda, data, getToken());
 
 
             const {response, json} = await request(url, options);
@@ -52,9 +52,9 @@ const FormCidade = ({dataCidadeChoice, dataEstado, setIdCidade, idCidade, showMo
                 console.log(json)
                 
                 callback();
-                setShowModalCriarCidade();
+                setShowModalCriarAgenda();
                 setAtualizarCadastro(false);
-                setIdCidade(null);
+                setIdAgenda(null);
             }
 
         }else{
@@ -71,7 +71,7 @@ const FormCidade = ({dataCidadeChoice, dataEstado, setIdCidade, idCidade, showMo
             	console.log(json)
             	
             	callback();
-            	setShowModalCriarCidade();
+            	setShowModalCriarAgenda();
                 setAtualizarCadastro(false);
             }
 
@@ -80,17 +80,17 @@ const FormCidade = ({dataCidadeChoice, dataEstado, setIdCidade, idCidade, showMo
     }
 
 
-    const dataToFormCidade = ()=>{
+    const dataToFormAgenda = ()=>{
     	let obj = {nome:'', cd_cidade:'', sigla:'', estado_id:''}
-    	if(dataCidadeChoice && dataCidadeChoice.hasOwnProperty('registro')){
-    		let data = dataCidadeChoice.registro;
+    	if(dataAgendaChoice && dataAgendaChoice.hasOwnProperty('registro')){
+    		let data = dataAgendaChoice.registro;
            
-    		if(data.hasOwnProperty('nmCidade')){
-                obj.nome = data.nmCidade;
+    		if(data.hasOwnProperty('nmAgenda')){
+                obj.nome = data.nmAgenda;
     		}
 
-    		if(data.hasOwnProperty('cdCidade')){
-    			obj.cd_cidade = data.cdCidade;
+    		if(data.hasOwnProperty('cdAgenda')){
+    			obj.cd_cidade = data.cdAgenda;
     		}
     		if(data.hasOwnProperty('sigla')){
     			obj.sigla = data.sigla;
@@ -107,18 +107,18 @@ const FormCidade = ({dataCidadeChoice, dataEstado, setIdCidade, idCidade, showMo
     
    /* if(atualizarCadastro){
         return(
-            <Modal  handleConcluir={()=>null}  title={'Cadastrar Cliente ..'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarCidade} showHide={()=>{setShowModalCriarCidade();}}>
+            <Modal  handleConcluir={()=>null}  title={'Cadastrar Cliente ..'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarAgenda} showHide={()=>{setShowModalCriarAgenda();}}>
                 {carregandoDadosChoice && <Load/>}
                 <Atualizar
-                    idCidade={idCidade} 
-                    setDataCliente={setDataCidadeChoice}
+                    idAgenda={idAgenda} 
+                    setDataCliente={setDataAgendaChoice}
                     setCarregandoDadosCliente={setCarregandoDadosChoice}
                 />
              </Modal>
         )
     }
    */
-    const preparaCidadeToForm = ()=>{
+    const preparaAgendaToForm = ()=>{
         let grupoFormat = [{label:'Selecione...',valor:'',props:{selected:'selected', disabled:'disabled'}}]
         if(dataEstado && dataEstado.hasOwnProperty('mensagem') ){
             
@@ -151,7 +151,7 @@ const FormCidade = ({dataCidadeChoice, dataEstado, setIdCidade, idCidade, showMo
 		<>
 			 <Formik 
 
-                initialValues={{... dataToFormCidade()}}
+                initialValues={{... dataToFormAgenda()}}
                 validate={
                     values=>{
 
@@ -196,7 +196,7 @@ const FormCidade = ({dataCidadeChoice, dataEstado, setIdCidade, idCidade, showMo
                         }
                     )=>(
 
-                        <Modal  handleConcluir={()=>{handleSubmit(); }}  title={ (atualizarCadastro == true ? 'Atualizar' : 'Cadastrar')+' Cidade'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarCidade} showHide={()=>{setShowModalCriarCidade();setAtualizarCadastro(false);setIdCidade(null);}}>
+                        <Modal  handleConcluir={()=>{handleSubmit(); }}  title={ (atualizarCadastro == true ? 'Atualizar' : 'Cadastrar')+' Agenda'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarAgenda} showHide={()=>{setShowModalCriarAgenda();setAtualizarCadastro(false);setIdAgenda(null);}}>
                                 {
                                     carregando && carregando==true
                                     ?
@@ -281,7 +281,7 @@ const FormCidade = ({dataCidadeChoice, dataEstado, setIdCidade, idCidade, showMo
                                                 data={
                                                     {
                                                         hasLabel:true,
-                                                        contentLabel:'CD. Cidade *',
+                                                        contentLabel:'CD. Agenda *',
                                                         atributsFormLabel:{
 
                                                         },
@@ -326,7 +326,7 @@ const FormCidade = ({dataCidadeChoice, dataEstado, setIdCidade, idCidade, showMo
 				                                            className:estilos.input,
 				                                            size:"sm"
 				                                        },
-				                                        options:[...preparaCidadeToForm()],
+				                                        options:[...preparaAgendaToForm()],
 				                                        atributsContainer:{
 				                                            className:''
 				                                        }
@@ -351,4 +351,4 @@ const FormCidade = ({dataCidadeChoice, dataEstado, setIdCidade, idCidade, showMo
 	)
 }
 
-export default FormCidade;
+export default FormAgenda;

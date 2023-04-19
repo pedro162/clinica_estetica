@@ -1,18 +1,18 @@
 import React from 'react';
 import useFetch from '../../../Hooks/useFetch.js';
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CIDADE_ONE_GET, ESTADO_ALL_POST} from '../../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, AGENDA_ONE_GET, ESTADO_ALL_POST} from '../../../api/endpoints/geral.js'
 import {UserContex} from '../../../Context/UserContex.js'
-import FormCidade from '../FormCidade/index.js'
+import FormAgenda from '../FormAgenda/index.js'
 import Pesquisar from '../Pesquisar/index.js'
 import Modal from '../../Utils/Modal/index.js'
 import Load from '../../Utils/Load/index.js'
 
-const Atualizar = ({idCidade, setIdCidade, callback, atualizarCadastro, setAtualizarCadastro})=>{
+const Atualizar = ({idAgenda, setIdAgenda, callback, atualizarCadastro, setAtualizarCadastro})=>{
 
     
-    const [showModalAtualizarCidade, setShowModalAtualizarCidade] = React.useState(false)
+    const [showModalAtualizarAgenda, setShowModalAtualizarAgenda] = React.useState(false)
     const [carregando, setCarregando] = React.useState(false)
-    const [dataCidade, setDataCidade] = React.useState(null)
+    const [dataAgenda, setDataAgenda] = React.useState(null)
     const [dataEstado, setDataEstado] = React.useState(null)
 	const {getToken, dataUser} = React.useContext(UserContex);
 
@@ -32,42 +32,42 @@ const Atualizar = ({idCidade, setIdCidade, callback, atualizarCadastro, setAtual
 	        }
 		}
 
-		const getCidade = async ()=>{
-			if(idCidade > 0){
-				const {url, options} = CIDADE_ONE_GET(idCidade, getToken());
+		const getAgenda = async ()=>{
+			if(idAgenda > 0){
+				const {url, options} = AGENDA_ONE_GET(idAgenda, getToken());
 				const {response, json} = await request(url, options);
 				if(json){
 					
-					setDataCidade(json)
-					setShowModalAtualizarCidade(true)
+					setDataAgenda(json)
+					setShowModalAtualizarAgenda(true)
 					 
 		        }else{
-		        	setDataCidade([])
+		        	setDataAgenda([])
 		        }
 			}
 		}
 
 		
 
-		getEstado();
-		getCidade();
+		//getEstado();
+		getAgenda();
 		
-	}, [idCidade])
+	}, [idAgenda])
 
 	/*
 		atualizarCadastro && 
-                <Atualizar setCarregandoDadosCliente={null} atualizarCadastro={setAtualizarCadastro} idCidade={clientChoice} setDataCidade={null} setShowModalCriarCidade={setShowModalAtualizarCidade} />
+                <Atualizar setCarregandoDadosCliente={null} atualizarCadastro={setAtualizarCadastro} idAgenda={clientChoice} setDataAgenda={null} setShowModalCriarAgenda={setShowModalAtualizarAgenda} />
 	*/
-	//<Pesquisar idCidade={idCidade} setDataCidade={setDataCidade} setCarregandoDadosCliente={setCarregando} />
+	//<Pesquisar idAgenda={idAgenda} setDataAgenda={setDataAgenda} setCarregandoDadosCliente={setCarregando} />
 	return(
 		<>
-			{! dataCidade &&
-				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={()=>null}  title={'Atualizar Cidade'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="" show={setShowModalAtualizarCidade} showHide={()=>{setShowModalAtualizarCidade();}}>
+			{! dataAgenda &&
+				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={()=>null}  title={'Atualizar Agenda'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="" show={setShowModalAtualizarAgenda} showHide={()=>{setShowModalAtualizarAgenda();}}>
 					<Load/>
 				</Modal>
 			}
-			{dataCidade &&
-				<FormCidade dataEstado={dataEstado} setIdCidade={setIdCidade} idCidade={idCidade} carregando={false} dataCidadeChoice={dataCidade} setAtualizarCadastro={setAtualizarCadastro} atualizarCadastro={atualizarCadastro} showModalCriarCidade={showModalAtualizarCidade} setShowModalCriarCidade={setShowModalAtualizarCidade} callback={callback} />
+			{dataAgenda &&
+				<FormAgenda dataEstado={dataEstado} setIdAgenda={setIdAgenda} idAgenda={idAgenda} carregando={false} dataAgendaChoice={dataAgenda} setAtualizarCadastro={setAtualizarCadastro} atualizarCadastro={atualizarCadastro} showModalCriarAgenda={showModalAtualizarAgenda} setShowModalCriarAgenda={setShowModalAtualizarAgenda} callback={callback} />
 			}
 		</>
 	)

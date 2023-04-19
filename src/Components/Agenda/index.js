@@ -1,7 +1,7 @@
 import React from 'react';
-import estilos from './Cidade.module.css'
+import estilos from './Agenda.module.css'
 import useFetch from '../../Hooks/useFetch.js';
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CIDADE_ALL_POST} from '../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, AGENDA_ALL_POST} from '../../api/endpoints/geral.js'
 import {Col, Row } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
@@ -13,21 +13,23 @@ import Load from '../Utils/Load/index.js'
 import Cadastrar from './Cadastrar/index.js'
 import Atualizar from './Atualizar/index.js'
 import {UserContex} from '../../Context/UserContex.js'
-import FormCidade from './FormCidade/index.js'
+import FormAgenda from './FormAgenda/index.js'
 
 
-const Cidade = (props)=>{
+const Agenda = (props)=>{
 
 	const {data, error, request, loading} = useFetch();
-    const [cidade, setCidade] = React.useState([])
+    const [cidade, setAgenda] = React.useState([])
     const [exemplos, setExemplos] = React.useState([])
     const [exemplosTitleTable, setExemplosTitleTable] = React.useState([])
-    const [showModalCriarCidade, setShowModalCriarCidade] = React.useState(false)
-    const [showModalAtualizarCidade, setShowModalAtualizarCidade] = React.useState(false)
-    const [cidadeChoice, setCidadeChoice] = React.useState(null);
+    const [showModalCriarAgenda, setShowModalCriarAgenda] = React.useState(false)
+    const [showModalAtualizarAgenda, setShowModalAtualizarAgenda] = React.useState(false)
+    const [cidadeChoice, setAgendaChoice] = React.useState(null);
     const [atualizarCadastro, setAtualizarCadastro] = React.useState(false)    
-    const [cadastrarCidade, setCadastrarCidade] = React.useState(false)    
+    const [cadastrarAgenda, setCadastrarAgenda] = React.useState(false)    
     const [dataEstado, setDataEstado] = React.useState(null)
+    const [pessoa, setPessoa] = React.useState('')
+    const [agenda_id, setAgendaId] = React.useState('')
 
 
     const {getToken} = React.useContext(UserContex);
@@ -40,43 +42,50 @@ const Cidade = (props)=>{
             type:'text',
             options:[], 
             hasLabel: true,
-            contentLabel:'Teste',
+            contentLabel:'Código',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"12",className:'mb-2'},
+            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'name':agenda_id,onChange:setAgendaId,    onBlur:setAgendaId},
+
+        },
+        {
+            type:'text',
+            options:[], 
+            hasLabel: true,
+            contentLabel:'Código pessoa',
+            atributsFormLabel:{},
+            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'name':pessoa,onChange:setPessoa,    onBlur:setPessoa},
+
+        },
+        {
+            type:'text',
+            options:[], 
+            hasLabel: true,
+            contentLabel:'Pessoa',
+            atributsFormLabel:{},
+            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
             atributsFormControl:{'type':'text', size:"sm",'name':'nome',onChange:alerta,    onBlur:alerta},
 
         },
         {
-            type:'radio',
-            options:[
-                {
-                    hasLabel: true,
-                    contentLabel:'Teste Radio 01',
-                    atributsFormLabel:{},
-                    atributsFormControl:{'type':'radio', value:'12', size:"sm",'checked':true,'name':'nome',onChange:alerta,    onBlur:alerta},
-                },
-                {
-                    hasLabel: true,
-                    contentLabel:'Teste Radio',
-                    atributsFormLabel:{},
-                    atributsFormControl:{'type':'radio', value:'12', size:"sm",'checked':true,'name':'nome',onChange:alerta,    onBlur:alerta},
-                }
-            ],  
-            hasLabel: true,
-            contentLabel:'Teste',
-            atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"12",className:'mb-2',},
-            atributsFormControl:{},
-
-        }
-        ,{
-            type:'checkbox',
+            type:'text',
             options:[], 
             hasLabel: true,
-            contentLabel:'Teste',
+            contentLabel:'Status',
             atributsFormLabel:{},
-            atributsContainer:{ xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'checkbox', value:'12',size:"sm",'checked':false,'name':'nome',onChange:alerta, onBlur:alerta},
+            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'name':'nome',onChange:alerta,    onBlur:alerta},
+
+        },
+        {
+            type:'text',
+            options:[], 
+            hasLabel: true,
+            contentLabel:'Histórico',
+            atributsFormLabel:{},
+            atributsContainer:{xs:"12", sm:"12", md:"12",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'name':'nome',onChange:alerta,    onBlur:alerta},
 
         }
     ]
@@ -84,12 +93,12 @@ const Cidade = (props)=>{
     const acoesBottomCard=[{
             label:'Pesquisar',
             icon:<FontAwesomeIcon icon={faSearch} />,
-            props:{onClick:()=>requestAllCidade(), className:'btn btn-sm botao_success'}
+            props:{onClick:()=>requestAllAgenda(), className:'btn btn-sm botao_success'}
         },
         {
             label:'Cadastrar',
             icon:<FontAwesomeIcon icon={faPlus} />,
-            props:{onClick:()=>setCadastrarCidade(true), className:'btn btn-sm mx-2 btn-secondary'}
+            props:{onClick:()=>setCadastrarAgenda(true), className:'btn btn-sm mx-2 btn-secondary'}
         }
     ];
     const gerarExemplos = ()=>{
@@ -130,13 +139,13 @@ const Cidade = (props)=>{
         return exemplos;
     }
 
-    const gerarTableCidade = ()=>{
+    const gerarTableAgenda = ()=>{
        
         let data = [];
-        let dataCidade = cidade.registro
-        if(dataCidade && Array.isArray(dataCidade) && dataCidade.length > 0){
-            for(let i=0; !(i == dataCidade.length); i++){
-                let atual = dataCidade[i];
+        let dataAgenda = cidade.mensagem
+        if(dataAgenda && Array.isArray(dataAgenda) && dataAgenda.length > 0){
+            for(let i=0; !(i == dataAgenda.length); i++){
+                let atual = dataAgenda[i];
                 if(atual){
 
 
@@ -145,7 +154,7 @@ const Cidade = (props)=>{
                         {
                             propsRow:{id:(atual.id)},
                             acoes:[
-                                {acao:()=>setCidadeChoice(atual.id), label:'Editar', propsOption:{}, propsLabel:{}},
+                                {acao:()=>setAgendaChoice(atual.id), label:'Editar', propsOption:{}, propsLabel:{}},
                                 {acao:()=>alert('Agenda qui: '+(atual.id)), label:'Agenda', propsOption:{}, propsLabel:{}},
                                 {acao:()=>alert('Histórico de atentimentos: '+(atual.id)), label:'Histórico de atendimentos', propsOption:{}, propsLabel:{}},
                                 {acao:()=>alert('Central do cliente: '+(atual.id)), label:'Central do cliente', propsOption:{}, propsLabel:{}},
@@ -153,27 +162,42 @@ const Cidade = (props)=>{
                             celBodyTableArr:[
                                 {
 
-                                    label:atual.id,
+                                    label:atual?.id,
                                     propsRow:{}
                                 },
                                 {
 
-                                    label:atual.nmCidade,
+                                    label:atual?.name_pessoa,
                                     propsRow:{}
                                 },
                                 {
 
-                                    label:atual.sigla,
+                                    label:atual?.status,
                                     propsRow:{}
                                 },
                                 {
 
-                                    label:atual.cdCiade,
+                                    label:atual?.descricao,
                                     propsRow:{}
                                 },
                                 {
 
-                                    label:atual.nmEStado,
+                                    label:atual?.data_format,
+                                    propsRow:{}
+                                },
+                                {
+
+                                    label:atual?.hora,
+                                    propsRow:{}
+                                },
+                                {
+
+                                    label:atual?.name_pessoa_cancelamento,
+                                    propsRow:{}
+                                },
+                                {
+
+                                    label:atual?.dt_cancelamento,
                                     propsRow:{}
                                 }
                             ]
@@ -196,65 +220,50 @@ const Cidade = (props)=>{
                 props:{}
             },
             {
-                label:'Nome',
+                label:'Pessoa',
                 props:{}
             },
             {
-                label:'Sigla',
+                label:'Status',
                 props:{}
             },
             {
-                label:'CD IBGE',
+                label:'Histórico',
                 props:{}
             },
             {
-                label:'Estado',
+                label:'Data',
+                props:{}
+            },
+            {
+                label:'Hora',
+                props:{}
+            },
+            {
+                label:'Cancelado por',
+                props:{}
+            },
+            {
+                label:'Cancelado em',
                 props:{}
             },
         ]
 
         return tableTitle;
     }
-    //------------
-   /* React.useEffect( ()=>{
-        const requestToken = async() =>{
-       
-           const {url, options} = TOKEN_POST({
-                'grant_type':'password',
-                'client_id': CLIENT_ID,
-                'client_secret':CLIENT_SECRET,
-                'username':'admin@gmail.com',
-                'password':'123456'
-             });
 
-
-            const {response, json} = await request(url, options);
-
-            
-        }
-
-        requestToken();
+    const requestAllAgenda = async() =>{
+        const fil = {'name':pessoa, 'id':agenda_id};
+        console.log(fil)
         
-    }, []);*/
-
-    //----
-	/*React.useEffect(()=>{
-
-        setExemplos(gerarExemplos());
-        setExemplosTitleTable(gerarTitleTable());
-
-    }, [])*/
-
-    const requestAllCidade = async() =>{
-       
-        const {url, options} = CIDADE_ALL_POST({}, getToken());
+        const {url, options} = AGENDA_ALL_POST({}, getToken());
 
 
         const {response, json} = await request(url, options);
         console.log('All clients here')
         console.log(json)
         if(json){
-               setCidade(json)
+               setAgenda(json)
         }
 
             
@@ -262,14 +271,14 @@ const Cidade = (props)=>{
 
     React.useEffect(()=>{
 
-        const requestAllCidadeEffect = async() =>{
+        const requestAllAgendaEffect = async() =>{
        
-           await requestAllCidade();
+           await requestAllAgenda();
 
             
         }
 
-        requestAllCidadeEffect();
+        requestAllAgendaEffect();
 
         
     }, [])
@@ -287,17 +296,17 @@ const Cidade = (props)=>{
 
     React.useEffect(()=>{
 
-        if(cadastrarCidade == true){
-            setShowModalCriarCidade(true);
+        if(cadastrarAgenda == true){
+            setShowModalCriarAgenda(true);
         }else{
-            setShowModalCriarCidade(false);
+            setShowModalCriarAgenda(false);
         }
 
         
-    }, [cadastrarCidade])
+    }, [cadastrarAgenda])
 
     
-    const rowsTableArr = gerarTableCidade();    
+    const rowsTableArr = gerarTableAgenda();    
     const titulosTableArr = gerarTitleTable();
 	return(
 		<>
@@ -309,7 +318,7 @@ const Cidade = (props)=>{
                         },
                         {
                             props:{},
-                            label:'Cidade'
+                            label:'Agenda'
                         }
                     ]}
             />
@@ -330,18 +339,18 @@ const Cidade = (props)=>{
                 </Col>
             </Row>
             {
-                cadastrarCidade && <Cadastrar cadastrarCidade={cadastrarCidade} setCadastrarCidade={setCadastrarCidade} atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro}  idCidade={cidadeChoice} setIdCidade={setCidadeChoice} callback={requestAllCidade} />
+                cadastrarAgenda && <Cadastrar cadastrarAgenda={cadastrarAgenda} setCadastrarAgenda={setCadastrarAgenda} atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro}  idAgenda={cidadeChoice} setIdAgenda={setAgendaChoice} callback={requestAllAgenda} />
             }
             
             {
                 atualizarCadastro &&
-                <Atualizar atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro}  idCidade={cidadeChoice} setIdCidade={setCidadeChoice} callback={requestAllCidade} />
+                <Atualizar atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro}  idAgenda={cidadeChoice} setIdAgenda={setAgendaChoice} callback={requestAllAgenda} />
             }
          </>
 
 	)
 }
 
-export default Cidade;
+export default Agenda;
 
-//<FormCidade dataEstado={dataEstado} dataClienteChoice={[]}  atualizarCadastro={false} setAtualizarCadastro={setAtualizarCadastro}  idCidade={null} setIdCidade={setCidadeChoice}  showModalCriarCidade={showModalCriarCidade} setShowModalCriarCidade={setShowModalCriarCidade} callback={requestAllCidade} />
+//<FormAgenda dataEstado={dataEstado} dataClienteChoice={[]}  atualizarCadastro={false} setAtualizarCadastro={setAtualizarCadastro}  idAgenda={null} setIdAgenda={setAgendaChoice}  showModalCriarAgenda={showModalCriarAgenda} setShowModalCriarAgenda={setShowModalCriarAgenda} callback={requestAllAgenda} />

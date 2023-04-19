@@ -1,35 +1,35 @@
 import React from 'react';
 import useFetch from '../../../Hooks/useFetch.js';
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CIDADE_ONE_GET} from '../../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, AGENDA_ONE_GET} from '../../../api/endpoints/geral.js'
 import {UserContex} from '../../../Context/UserContex.js'
 
-const Pesquisar = ({idCidade, setDataCidade, setCarregandoDadosCidade})=>{
+const Pesquisar = ({idAgenda, setDataAgenda, setCarregandoDadosAgenda})=>{
 	const {getToken, dataUser} = React.useContext(UserContex);
 
 	const {data, error, request, loading} = useFetch();
-	setCarregandoDadosCidade(loading)
+	setCarregandoDadosAgenda(loading)
 	React.useEffect(()=>{
 		
-		const getCidade = async ()=>{
-			if(idCidade > 0){
-				const {url, options} = CIDADE_ONE_GET(idCidade, getToken());
+		const getAgenda = async ()=>{
+			if(idAgenda > 0){
+				const {url, options} = AGENDA_ONE_GET(idAgenda, getToken());
 				const {response, json} = await request(url, options);
 				if(json){
 					
-					setDataCidade(json)
+					setDataAgenda(json)
 					 
 		        }else{
-		        	setDataCidade([])
+		        	setDataAgenda([])
 		        }
 			}
 		}
 
-		getCidade();
+		getAgenda();
 		
-	}, [idCidade])
+	}, [idAgenda])
 	/*
 		atualizarCadastro && 
-                <Atualizar setCarregandoDadosCidade={null} atualizarCadastro={setAtualizarCadastro} idCidade={clientChoice} setDataCidade={null} setShowModalCriarCliente={setShowModalAtualizarCliente} />
+                <Atualizar setCarregandoDadosAgenda={null} atualizarCadastro={setAtualizarCadastro} idAgenda={clientChoice} setDataAgenda={null} setShowModalCriarCliente={setShowModalAtualizarCliente} />
 	*/
 	return(
 		<>

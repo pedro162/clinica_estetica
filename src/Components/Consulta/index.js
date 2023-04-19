@@ -2,6 +2,7 @@ import React from 'react';
 import estilos from './Consulta.module.css'
 import useFetch from '../../Hooks/useFetch.js';
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CONSULTA_ALL_POST} from '../../api/endpoints/geral.js'
+import {FORMAT_DATA_PT_BR} from '../../functions/index.js'
 import {Col, Row } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
@@ -14,6 +15,7 @@ import {UserContex} from '../../Context/UserContex.js'
 import FormConsulta from './FormConsulta/index.js'
 import Cadastrar from './Cadastrar/index.js'
 import Atualizar from './Atualizar/index.js'
+import Cancelar from './Cancelar/index.js'
 
 
 const Consulta = (props)=>{
@@ -24,7 +26,8 @@ const Consulta = (props)=>{
     const [exemplosTitleTable, setExemplosTitleTable] = React.useState([])
     const [showModalCriarConsulta, setShowModalCriarConstula] = React.useState(false)
     const [consultaChoice, setConsultaChoice] = React.useState(null);
-    const [atualizarConsulta, setAtualizarConsulta] = React.useState(false)    
+    const [atualizarConsulta, setAtualizarConsulta] = React.useState(false)   
+    const [cancelarConsulta, setCancelarConsulta] = React.useState(false)    
     const [cadastrarConsulta, setCadastrarConsulta] = React.useState(false) 
     const [acao, setAcao] = React.useState(null)
     const [pessoa, setPessoa] = React.useState('')
@@ -125,7 +128,14 @@ const Consulta = (props)=>{
                     setAtualizarConsulta(false);
                 }
                 break;
-            default:
+            case 'cancelar':
+                if(consultaChoice > 0){
+                    setCancelarConsulta(true);
+                }else{
+                    setCancelarConsulta(false);
+                }
+                break;
+            default://
                 
                 break;
 
@@ -149,7 +159,12 @@ const Consulta = (props)=>{
         setAcao('editar')
         setAtualizarConsulta(true);
     }
-
+    const cancelarConsultaAction = (idConsulta)=>{
+        setConsultaChoice(idConsulta)
+        setAcao('cancelar')
+        setCancelarConsulta(true);
+    }
+    //cancelarConsulta, setCancelarConsulta
     const novaConsulta = (idConsulta)=>{
         setConsultaChoice(idConsulta)
         setAcao('consultar')
@@ -172,6 +187,10 @@ const Consulta = (props)=>{
                             propsRow:{id:(atual.id)},
                             acoes:[
                                 {acao:()=>atualizarConsultaAction(atual.id), label:'Editar', propsOption:{}, propsLabel:{}},
+                                {acao:()=>cancelarConsultaAction(atual.id), label:'Cancelar', propsOption:{}, propsLabel:{}},
+                                {acao:()=>atualizarConsultaAction(atual.id), label:'Exames', propsOption:{}, propsLabel:{}},
+                                {acao:()=>atualizarConsultaAction(atual.id), label:'Diagnóstico', propsOption:{}, propsLabel:{}},
+                                {acao:()=>atualizarConsultaAction(atual.id), label:'Ficha', propsOption:{}, propsLabel:{}},
                                 {acao:()=>alert('Detalhes qui: '+(atual.id)), label:'Detalhes', propsOption:{}, propsLabel:{}},
                             ],
                             celBodyTableArr:[
@@ -217,7 +236,7 @@ const Consulta = (props)=>{
                                 },
                                 {
 
-                                    label:atual.dt_inicio,
+                                    label:FORMAT_DATA_PT_BR(atual.dt_inicio),
                                     propsRow:{}
                                 },
                                 {
@@ -226,7 +245,7 @@ const Consulta = (props)=>{
                                     propsRow:{}
                                 },{
 
-                                    label:atual.dt_fim,
+                                    label:FORMAT_DATA_PT_BR(atual.dt_fim),
                                     propsRow:{}
                                 },
                                 {
@@ -375,6 +394,11 @@ const Consulta = (props)=>{
             {
                 atualizarConsulta &&
                 <Atualizar atualizarConsulta={atualizarConsulta} setAtualizarConsulta={setAtualizarConsulta}  idConsulta={consultaChoice} setIdConsulta={setConsultaChoice} callback={requestAllConsultas} />
+            }
+
+            {
+                cancelarConsulta &&
+                <Cancelar cancelarConsulta={cancelarConsulta} setCancelarConsulta={setCancelarConsulta}  idConsulta={consultaChoice} setIdConsulta={setConsultaChoice} callback={requestAllConsultas} />
             }
            
          </>
