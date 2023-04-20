@@ -179,19 +179,61 @@ const Consulta = (props)=>{
             for(let i=0; !(i == dataConsulta.length); i++){
                 let atual = dataConsulta[i];
                 if(atual){
+                    let acoesArr = [];
+                    let btnCancelar         = true;
+                    let btnEditar           = true;
+                    let btnExames           = true;
+                    let btnDiagnostico      = true;
+                    let btnFicha            = true;
+                    let btnDetalhes         = true;
+                    let btnGerarFinanceiro  = true;
 
+                    if(atual.status == 'cancelado'){
+                        btnCancelar         = false;
+                        btnEditar           = false;
+                        btnGerarFinanceiro  = false;
+                    }
 
+                    if(atual.status == 'finalizado'){
+                        btnCancelar = false;
+                        btnEditar   = false;
+                    }
+
+                    if(btnGerarFinanceiro){
+                        acoesArr.push({acao:()=>atualizarConsultaAction(atual.id), label:'Gerar financeiro', propsOption:{}, propsLabel:{}})
+                    }
+
+                    if(btnEditar){
+                        acoesArr.push({acao:()=>atualizarConsultaAction(atual.id), label:'Editar', propsOption:{}, propsLabel:{}})
+                    }
+
+                    if(btnCancelar){
+                        acoesArr.push({acao:()=>cancelarConsultaAction(atual.id), label:'Cancelar', propsOption:{}, propsLabel:{}})
+                    }
+
+                    if(btnExames){
+                        acoesArr.push({acao:()=>atualizarConsultaAction(atual.id), label:'Exames', propsOption:{}, propsLabel:{}})
+                    }
+
+                    if(btnDiagnostico){
+                        acoesArr.push({acao:()=>atualizarConsultaAction(atual.id), label:'Diagnóstico', propsOption:{}, propsLabel:{}})
+                    }
+                    if(btnFicha){
+                        acoesArr.push({acao:()=>atualizarConsultaAction(atual.id), label:'Ficha', propsOption:{}, propsLabel:{}})
+                    }
+
+                    if(btnDetalhes){
+                        acoesArr.push({acao:()=>alert('Detalhes qui: '+(atual.id)), label:'Detalhes', propsOption:{}, propsLabel:{}})
+                    }
+
+                    
+                    //'remarcado','finalizado','cancelado','pendente'
                     data.push(
 
                         {
                             propsRow:{id:(atual.id)},
                             acoes:[
-                                {acao:()=>atualizarConsultaAction(atual.id), label:'Editar', propsOption:{}, propsLabel:{}},
-                                {acao:()=>cancelarConsultaAction(atual.id), label:'Cancelar', propsOption:{}, propsLabel:{}},
-                                {acao:()=>atualizarConsultaAction(atual.id), label:'Exames', propsOption:{}, propsLabel:{}},
-                                {acao:()=>atualizarConsultaAction(atual.id), label:'Diagnóstico', propsOption:{}, propsLabel:{}},
-                                {acao:()=>atualizarConsultaAction(atual.id), label:'Ficha', propsOption:{}, propsLabel:{}},
-                                {acao:()=>alert('Detalhes qui: '+(atual.id)), label:'Detalhes', propsOption:{}, propsLabel:{}},
+                                ...acoesArr
                             ],
                             celBodyTableArr:[
                                 {
@@ -245,12 +287,22 @@ const Consulta = (props)=>{
                                     propsRow:{}
                                 },{
 
-                                    label:FORMAT_DATA_PT_BR(atual.dt_fim),
+                                    label:String(FORMAT_DATA_PT_BR(atual.dt_fim)).length > 0 && FORMAT_DATA_PT_BR(atual.dt_fim),
                                     propsRow:{}
                                 },
                                 {
 
                                     label:atual.hr_fim,
+                                    propsRow:{}
+                                },
+                                {
+
+                                    label:String(FORMAT_DATA_PT_BR(atual.dt_cancelamento)).length > 0 && FORMAT_DATA_PT_BR(atual.dt_cancelamento),
+                                    propsRow:{}
+                                },
+                                {
+
+                                    label:atual.ds_cancelamento,
                                     propsRow:{}
                                 },
                             ]
@@ -315,7 +367,15 @@ const Consulta = (props)=>{
             {
                 label:'Horário fim',
                 props:{}
-            }
+            },
+            {
+                label:'Cancelado em',
+                props:{}
+            },
+            {
+                label:'Motivo cancelamento',
+                props:{}
+            },
         ]
 
         return tableTitle;

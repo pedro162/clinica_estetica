@@ -20,12 +20,12 @@ const FormCancelarConsulta = ({dataConsultaChoice, setIdConsulta, idConsulta, sh
 	const [dataConsulta, setDataConsulta] = React.useState([])
 
     const sendData = async ({
-			dsCancelamento
+			ds_cancelamento
 		})=>{
 			
 
     	const data = {
-    		'dsCancelamento':dsCancelamento,
+    		'ds_cancelamento':ds_cancelamento,
     	}
 
 		const {url, options} = CONSULTA_CANCELAR_POST(idConsulta, data, getToken());
@@ -157,7 +157,7 @@ const FormCancelarConsulta = ({dataConsultaChoice, setIdConsulta, idConsulta, sh
     
 
 	const handleSubmit = ()=>{
-		sendData({dsCancelamento:'Desistiu'})
+		sendData({ds_cancelamento:'Desistiu'})
 	}
 	const dataFormatCancel = dataToFormCancelarConsulta();
 	return(
