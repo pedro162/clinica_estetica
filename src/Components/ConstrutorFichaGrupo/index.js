@@ -1,7 +1,7 @@
 import React from 'react';
-import estilos from './Clientes.module.css'
+import estilos from './Grupo.module.css'
 import useFetch from '../../Hooks/useFetch.js';
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, FORMULARIO_ALL_POST} from '../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, FORMULARIO_GRUPO_ALL_POST} from '../../api/endpoints/geral.js'
 import {Col, Row } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
@@ -13,25 +13,17 @@ import Load from '../Utils/Load/index.js'
 import Cadastrar from './Cadastrar/index.js'
 import Atualizar from './Atualizar/index.js'
 import {UserContex} from '../../Context/UserContex.js'
-import FormCliente from './FormCliente/index.js'
-import ConstrutorFichaGrupo from '../ConstrutorFichaGrupo/index.js'
+import FormGrupo from './FormGrupo/index.js'
 
 
 const ConstrutorFicha = (props)=>{
 
 	const {data, error, request, loading} = useFetch();
     const [registro, setRegistro] = React.useState([])
-    const [exemplos, setExemplos] = React.useState([])
-    const [exemplosTitleTable, setExemplosTitleTable] = React.useState([])
     const [showModalCriarRegistro, setShowModalCriarRegistro] = React.useState(false)
-    const [showModalGrupo, setShowModalGrupo] = React.useState(false)
-    const [showModalAtualizarRegistro, setShowModalAtualizarRegistro] = React.useState(false)
     const [registroChoice, setRegistroChoice] = React.useState(null);
     const [atualizarCadastro, setAtualizarCadastro] = React.useState(false)    
-    const [cadastrarRegistro, setCadastrarRegistro] = React.useState(false)    
-    const [listarGrupo, setListarGrupo] = React.useState(false)     
-    const [marcarConsulta, setMarcarConsulta] = React.useState(false)    
-    const [dataGrupo, setDataGrupo] = React.useState(null)
+    const [cadastrarRegistro, setCadastrarRegistro] = React.useState(false)     
     const [acao, setAcao] = React.useState(null)
 
 
@@ -119,7 +111,7 @@ const ConstrutorFicha = (props)=>{
                             acoes:[
                                 {acao:()=>atualizarRegistro(atual.id), label:'Editar', propsOption:{}, propsLabel:{}},
                                 {acao:()=>novoAtendimento(atual.id), label:'Excluir', propsOption:{}, propsLabel:{}},
-                                {acao:()=>exbirListaGrupo(atual.id), label:'Grupos', propsOption:{}, propsLabel:{}},
+                                {acao:()=>novoAtendimento(atual.id), label:'Grupos', propsOption:{}, propsLabel:{}},
                                 {acao:()=>novoAtendimento(atual.id), label:'Campos', propsOption:{}, propsLabel:{}},
                             ],
                             celBodyTableArr:[
@@ -164,11 +156,11 @@ const ConstrutorFicha = (props)=>{
 
     const requestAllRegistros = async() =>{
        
-        const {url, options} = FORMULARIO_ALL_POST({}, getToken());
+        const {url, options} = FORMULARIO_GRUPO_ALL_POST({}, getToken());
 
 
         const {response, json} = await request(url, options);
-        console.log('All clients here')
+        console.log('All groups form here')
         console.log(json)
         if(json){
                setRegistro(json)
@@ -200,15 +192,6 @@ const ConstrutorFicha = (props)=>{
                     setAtualizarCadastro(false);
                 }
                 break;
-            
-            case 'listar_grupo':
-                if(registroChoice > 0){
-                    setListarGrupo(true);
-                }else{
-                    setListarGrupo(false);
-                }
-                break;
-                
             default:
                 setAtualizarCadastro(false);
                 break;
@@ -241,13 +224,7 @@ const ConstrutorFicha = (props)=>{
         setAtualizarCadastro(true);
     }
 
-    const exbirListaGrupo = (idRegistro)=>{
-        setRegistroChoice(idRegistro)
-        setAcao('listar_grupo')
-        setListarGrupo(true);
-    }
-
-    //listarGrupo, setListarGrupo
+    
     const rowsTableArr = gerarTableRegistro();    
     const titulosTableArr = gerarTitleTable();
 	return(
@@ -260,7 +237,7 @@ const ConstrutorFicha = (props)=>{
                         },
                         {
                             props:{},
-                            label:'Clientes'
+                            label:'Grupo'
                         }
                     ]}
             />
@@ -288,17 +265,6 @@ const ConstrutorFicha = (props)=>{
                 atualizarCadastro &&
                 <Atualizar atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro}  idRegistro={registroChoice} setIdRegistro={setRegistroChoice} callback={requestAllRegistros} />
             }
-
-            {
-                listarGrupo &&
-                <Modal  noBtnConcluir={true} handleConcluir={()=>null}  title={'Grupo'} size="xl" propsConcluir={{'disabled':loading}} labelConcluir={null} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={listarGrupo} showHide={()=>{setShowModalGrupo();setListarGrupo(false);setRegistroChoice(null);}}>
-                                
-                    <ConstrutorFichaGrupo listarGrupo={listarGrupo} setListarGrupo={setListarGrupo}  idRegistro={registroChoice} setIdRegistro={setRegistroChoice} callback={requestAllRegistros} />
-                
-                </Modal>
-            }
-
- 
          </>
 
 	)
@@ -306,4 +272,4 @@ const ConstrutorFicha = (props)=>{
 
 export default ConstrutorFicha;
 
-//<FormCliente dataGrupo={dataGrupo} dataClienteChoice={[]}  atualizarCadastro={false} setAtualizarCadastro={setAtualizarCadastro}  idRegistro={null} setIdRegistro={setRegistroChoice}  showModalCriarRegistro={showModalCriarRegistro} setShowModalCriarRegistro={setShowModalCriarRegistro} callback={requestAllRegistros} />
+//<FormGrupo dataGrupo={dataGrupo} dataGrupoChoice={[]}  atualizarCadastro={false} setAtualizarCadastro={setAtualizarCadastro}  idRegistro={null} setIdRegistro={setRegistroChoice}  showModalCriarRegistro={showModalCriarRegistro} setShowModalCriarRegistro={setShowModalCriarRegistro} callback={requestAllRegistros} />

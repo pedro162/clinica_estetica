@@ -1,13 +1,14 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
-import {Home, NotFound, Login, ProtectedRoute, PainelInicial, Clientes, Grupos, ContasReceber, Caixa, Filial, Parametro, Pais, Estado, Cidade, Agenda, AgendaEvento, CategoriaEvento, Especialidade, Profissionais, Consulta, ConstrutorFicha} from './View/index.js'
+import {Home, NotFound, Login, ProtectedRoute, PainelInicial, Clientes, Grupos, ContasReceber, Caixa, Filial, Parametro, Pais, Estado, Cidade, Agenda, AgendaEvento, CategoriaEvento, Especialidade, Profissionais, Consulta, ConstrutorFicha, ConstrutorFichaItem} from './View/index.js'
 import {Router, Route, Switch} from 'react-router'
 import {history} from './history.js'
 import {UserStorange, UserContex} from './Context/UserContex.js'
 import Header from './Components/Header/index.js'
 import { Container} from 'react-bootstrap';
 import {isAuthenticated} from './api/Auth/index.js'
+import ConstrutorFichaGrupo from './Components/ConstrutorFichaItem';
 
 function App() {
  
@@ -100,6 +101,16 @@ function App() {
                       <Route
                         path="/configuracoes/construtor/ficha" 
                         component={ConstrutorFicha}
+                      />
+
+                      <Route
+                        path="/configuracoes/construtor/ficha/grupo" 
+                        component={ConstrutorFichaGrupo}
+                      />
+
+                      <Route
+                        path="/configuracoes/construtor/ficha/item" 
+                        component={ConstrutorFichaItem}
                       />
 
                       <Route

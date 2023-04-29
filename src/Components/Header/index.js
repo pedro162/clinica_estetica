@@ -52,16 +52,10 @@ const Header = (props)=>{
                             <NavDropdown.Divider />
                                 <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Separated link</NavDropdown.Item>
                         </NavDropdown>
-                        <NavDropdown title="Serviços" id="collasible-nav-dropdown">
-                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Action</NavDropdown.Item>
-                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Another action</NavDropdown.Item>
-                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Something</NavDropdown.Item>
-                            <NavDropdown.Divider />
-                                <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Separated link</NavDropdown.Item>
-                        </NavDropdown>
-                        <NavDropdown title="Procedimentos" id="collasible-nav-dropdown">
-                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Action</NavDropdown.Item>
-                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Another action</NavDropdown.Item>
+                        <NavDropdown title="Serviço" id="collasible-nav-dropdown">
+                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Ordem de serviço</NavDropdown.Item>
+                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Serviço</NavDropdown.Item>
+                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Categoria de serviço</NavDropdown.Item>
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Something</NavDropdown.Item>
                             <NavDropdown.Divider />
                                 <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Separated link</NavDropdown.Item>

@@ -119,6 +119,7 @@ const Consulta = (props)=>{
     }
     ];
 
+
     React.useEffect(()=>{
         switch(acao){
             case 'editar':

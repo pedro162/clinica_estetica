@@ -12,6 +12,7 @@ import Modal from '../Utils/Modal/index.js'
 import Load from '../Utils/Load/index.js'
 import Cadastrar from './Cadastrar/index.js'
 import Atualizar from './Atualizar/index.js'
+import Ficha from './Ficha/index.js'
 import {UserContex} from '../../Context/UserContex.js'
 import FormCliente from './FormCliente/index.js'
 
@@ -27,7 +28,8 @@ const Clientes = (props)=>{
     const [clientChoice, setClienteChoice] = React.useState(null);
     const [atualizarCadastro, setAtualizarCadastro] = React.useState(false)    
     const [cadastrarCliente, setCadastrarCliente] = React.useState(false)     
-    const [marcarConsulta, setMarcarConsulta] = React.useState(false)    
+    const [marcarConsulta, setMarcarConsulta] = React.useState(false)     
+    const [ficha, setFicha] = React.useState(false)    
     const [dataGrupo, setDataGrupo] = React.useState(null)
     const [acao, setAcao] = React.useState(null)
 
@@ -149,6 +151,7 @@ const Clientes = (props)=>{
                             acoes:[
                                 {acao:()=>atualizarCliente(atual.id), label:'Editar', propsOption:{}, propsLabel:{}},
                                 {acao:()=>novoAtendimento(atual.id), label:'Atendimento', propsOption:{}, propsLabel:{}},
+                                {acao:()=>fichaAtendimento(atual.id), label:'Ficha', propsOption:{}, propsLabel:{}},
                                 {acao:()=>alert('Agenda qui: '+(atual.id)), label:'Agenda', propsOption:{}, propsLabel:{}},
                                 {acao:()=>alert('Histórico de atentimentos: '+(atual.id)), label:'Histórico de atendimentos', propsOption:{}, propsLabel:{}},
                                 {acao:()=>alert('Central do cliente: '+(atual.id)), label:'Central do cliente', propsOption:{}, propsLabel:{}},
@@ -265,9 +268,17 @@ const Clientes = (props)=>{
                     setMarcarConsulta(false);
                 }
             break;
+            case 'ficha':
+                if(clientChoice > 0){
+                    setFicha(true);
+                }else{
+                    setFicha(false);
+                }
+            break;
             default:
                 setAtualizarCadastro(false);
                 setMarcarConsulta(false);
+                setFicha(false);
                 break;
 
         }
@@ -298,6 +309,12 @@ const Clientes = (props)=>{
         setAtualizarCadastro(true);
     }
 
+    const fichaAtendimento = (idCliente)=>{
+        setClienteChoice(idCliente)
+        setAcao('ficha')
+        setFicha(true);
+    }
+    
     
     const rowsTableArr = gerarTableClientes();    
     const titulosTableArr = gerarTitleTable();
@@ -343,6 +360,11 @@ const Clientes = (props)=>{
             {
                 marcarConsulta &&
                 <Atualizar marcarConsulta={marcarConsulta} setMarcarConsulta={setMarcarConsulta}  idCliente={clientChoice} setIdcliente={setClienteChoice} callback={requestAllClients} />
+            }
+
+            {
+                ficha &&
+                <Ficha ficha={ficha} setFicha={setFicha}  idCliente={clientChoice} setIdcliente={setClienteChoice} callback={requestAllClients} />
             }
 
          </>
