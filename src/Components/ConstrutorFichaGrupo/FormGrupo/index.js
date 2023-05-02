@@ -9,7 +9,7 @@ import Modal from '../../Utils/Modal/index.js'
 import useFetch from '../../../Hooks/useFetch.js';
 import {UserContex} from '../../../Context/UserContex.js'
 import Load from '../../Utils/Load/index.js'
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, FORMULARIO_SAVE_POST, FORMULARIO_UPDATE_POST, FORMULARIO_ONE_GET} from '../../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, FORMULARIO_GRUPO_SAVE_POST, FORMULARIO_GRUPO_UPDATE_POST, FORMULARIO_ONE_GET} from '../../../api/endpoints/geral.js'
 import Atualizar from '../Atualizar/index.js'
 import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible'
 import ItemFormGrupo from './ItemForm.js'
@@ -25,46 +25,108 @@ const FormGrupo = ({dataRegistroChoice, dataGrupo, setIdRegistro, idRegistro, sh
 	const fetchToRegistro = useFetch();
 	const {getToken, dataUser} = React.useContext(UserContex);
 	const [dataContrutorFicha, setDataContrutorFicha] = React.useState([]);
-	const [grupo, setGrupo] = React.useState('')
-	const [dataGrupos, setDataGrupos] = React.useState([]);
+	const [item, setItem] = React.useState('')
+	const [type, setType] = React.useState('')
+	const [options, setOptions] = React.useState('')
+	const [defaultValue, setDefaultValue] = React.useState('')
+	const [label, setLabel] = React.useState('')
+	const [nrLinha, setNrLinha] = React.useState('')
+	const [nrColuna, setNrColuna] = React.useState('')
+	const [dataItens, setDataItens] = React.useState([]);
 	const [posicao, setPosicao] = React.useState(1)
-	const [idGrupo, setIdGrupo] = React.useState(null)
+	const [idItem, setIdItem] = React.useState(null)
 	
 	const userLogar =  ()=>{
         console.log('Aqui............')
     }
 
-	const handleChangeGroup = ({target})=>{
-		setGrupo(target.value)
+	const handleChangeItem = ({target})=>{
+		setItem(target.value)
+	}
+	const handleChangeType = ({target})=>{
+		setType(target.value)
 	}
 
-	const handleChangePosicaoGroup = ({target})=>{
+	const handleChangeOptions = ({target})=>{
+		setOptions(target.value)
+	}
+
+	const handleChangeDefaultValue = ({target})=>{
+		setDefaultValue(target.value)
+	}
+
+	const handleChangeLabel = ({target})=>{
+		setLabel(target.value)
+	}
+
+	const handleChangeNrLinha = ({target})=>{
+		setNrLinha(target.value)
+	}
+
+	const handleChangeNrColuna = ({target})=>{
+		setNrColuna(target.value)
+	}
+
+	const handleChangePosicaoItem = ({target})=>{
 		setPosicao(target.value)
 	}
 
     const sendData = async ({
-			formulario,
-            formulario_id,
+			name,
+            id,
 		})=>{
 
     	const data = {
-    		'name':formulario,
-            'id':formulario_id,
+    		'name':name,
+            'id':id,
 
     	}
 
-		data.grupos = {}
+		data.items = {}
 
-		let dataRegistro = dataGrupos
+		let dataRegistro = dataItens
+		/* console.log('data: ====================================')
+        console.log(data)
+		console.log(dataRegistro) */
         if(dataRegistro && Array.isArray(dataRegistro) && dataRegistro.length > 0){
             for(let i=0; !(i == dataRegistro.length); i++){
                 let atual = dataRegistro[i];
-				data.grupos[i] = {name:atual?.grupo, nr_ordem:atual?.posicao, id:atual?.id}
+				
+				console.log('atual: ====================================')
+        		console.log(atual)
+				data.items[i] = {
+					id:				atual?.id,
+					name:			atual?.item,
+					type:			atual?.type,
+					options:		atual?.options,
+					default_value:	atual?.defaultValue,
+					label:			atual?.label,
+					nr_linha:		atual?.nrLinha,
+					nr_coluna:		atual?.nrColuna
+				}
 			}
 		}
+		
+		console.log('data: ====================================')
+        console.log(data)
+		const {url, options} = FORMULARIO_GRUPO_UPDATE_POST(idRegistro, data, getToken());
 
-        if(atualizarCadastro == true){
-            const {url, options} = FORMULARIO_UPDATE_POST(idRegistro, data, getToken());
+
+        const {response, json} = await request(url, options);
+        console.log('Save form fields here')
+        console.log(json)
+        if(json){
+			console.log('Response Save form fields here')
+			console.log(json)
+			
+			callback();
+			setShowModalCriarRegistro();
+			setAtualizarCadastro(false);
+			setIdRegistro(null);
+        }
+
+        /*if(atualizarCadastro == true){
+            const {url, options} = FORMULARIO_GRUPO_UPDATE_POST(idRegistro, data, getToken());
 
 
             const {response, json} = await request(url, options);
@@ -83,7 +145,7 @@ const FormGrupo = ({dataRegistroChoice, dataGrupo, setIdRegistro, idRegistro, sh
         }else{
 
 
-        	const {url, options} = FORMULARIO_SAVE_POST(data, getToken());
+        	const {url, options} = FORMULARIO_GRUPO_SAVE_POST(data, getToken());
 
 
             const {response, json} = await request(url, options);
@@ -98,131 +160,173 @@ const FormGrupo = ({dataRegistroChoice, dataGrupo, setIdRegistro, idRegistro, sh
                 setAtualizarCadastro(false);
             }
 
-        }
+        }*/
     }
 
 
     const dataToFormRegistro = ()=>{
-    	let obj = {name:'', id:'', grupo:[]}
+    	let obj = {name:'', id:'', item:[]}
     	if(dataRegistroChoice && dataRegistroChoice.hasOwnProperty('mensagem')){
     		let data = dataRegistroChoice.mensagem;
            
     		if(data.hasOwnProperty('name')){
-                obj.formulario = data.name;
+                obj.name = data.name;
     		}
 
 			if(data.hasOwnProperty('id')){
                 obj.id = data.id;
     		}
-
-			
-    		
-    		
-
     		
     	}
-    	console.log('dados para formulario ----------')
-    	//console.log(obj)
+    	console.log('dados para grupo ----------')
+    	console.log(dataRegistroChoice)
     	return obj;
     }
 
 	React.useEffect(()=>{
 		if(dataRegistroChoice && dataRegistroChoice.hasOwnProperty('mensagem')){
 			let data = dataRegistroChoice.mensagem;
-			if(data.hasOwnProperty('grupo')){
+			if(data.hasOwnProperty('item')){
                 //let data = dataRegistroChoice.mensagem;
-				//data.grupo;
-				let grupoCarregado = [];
-				if(Array.isArray(data.grupo) && data.grupo.length > 0){
-					for(let i = 0; !(i == data.grupo.length); i++){
-						let atual = data.grupo[i];
-						let {name, nr_ordem, formulario_id, props_grupo, id} = atual;
+				//data.item;
+				let itemCarregado = [];
+				if(Array.isArray(data.item) && data.item.length > 0){
+					for(let i = 0; !(i == data.item.length); i++){
+						let atual = data.item[i];
+						let {name, nr_ordem, grupo_id, props_item, id} = atual;
 						
-						grupoCarregado.push( {grupo:name, posicao:nr_ordem, formulario_id, props_grupo, id})
+						itemCarregado.push( {item:name, posicao:nr_ordem, grupo_id, props_item, id})
 						
 					}
 
 				}
-				setDataGrupos([...grupoCarregado])
-				let contador = dataGrupos.length;
+				setDataItens([...itemCarregado])
+				let contador = dataItens.length;
 				setPosicao(contador + 1)
-				//adicionarGrupo
+				//adicionarItem
 				console.log("aqui oooo")
-				console.log(grupoCarregado)
+				console.log(itemCarregado)
     		}
 		}
 	}, [dataRegistroChoice])
 
 
-	const adicionarGrupo = ()=>{
-		let contador = dataGrupos.length
-		if(String(grupo).trim().length > 0){
+	const adicionarItem = ()=>{
+		let contador = dataItens.length
+		if(String(item).trim().length > 0){
 			
 			if(atualizarCadastro == true){
-				if(Array.isArray(dataGrupos) && dataGrupos.length > 0){
+				
+				if(Array.isArray(dataItens) && dataItens.length > 0){
+					
 					let novoDtg = [] 
 					let encontrou = false;
-					dataGrupos.forEach((item, index, dadosArr)=>{
-						let idGr = item?.id;
-						idGr = Number(idGr)
+					dataItens.forEach((item, index, dadosArr)=>{
+						let idIt = item?.id;
+						idIt = Number(idIt)
 						//let atual = item;
-						if(idGrupo > 0 && idGr > 0 && idGrupo == idGr){
-							item.grupo		= grupo;
-							item.posicao 	= posicao;
+						if(idItem > 0 && idIt > 0 && idItem == idIt){
+							item.item				= item;
+							item.label				=  label;
+							item.type				=  type;
+							item.options			=  options;
+							item.defaultValue		=  defaultValue;
+							item.nrLinha			=  nrLinha;
+							item.nrColuna			=  nrColuna;
 							encontrou = true;
 							
 						}
 						novoDtg.push(item)
+						
 					})
+
 					if(! encontrou){
-						novoDtg.push({grupo, posicao})						
+						let itemPush = {}
+						itemPush.item				= item;
+						itemPush.label				=  label;
+						itemPush.type				=  type;
+						itemPush.options			=  options;
+						itemPush.defaultValue		=  defaultValue;
+						itemPush.nrLinha			=  nrLinha;
+						itemPush.nrColuna			=  nrColuna;
+						novoDtg.push(itemPush)						
 					}
-					setDataGrupos([...novoDtg])
+					setDataItens([...novoDtg])
+					contador = Number(posicao) + 1;
+
+				}else{	
+
+					let itemPush = {}
+					itemPush.item				= item;
+					itemPush.label				=  label;
+					itemPush.type				=  type;
+					itemPush.options			=  options;
+					itemPush.defaultValue		=  defaultValue;
+					itemPush.nrLinha			=  nrLinha;
+					itemPush.nrColuna			=  nrColuna;
+							
+					setDataItens([...dataItens, itemPush])
 					contador = Number(posicao) + 1;
 				}
+				
 			}else{
-				setDataGrupos([...dataGrupos, {grupo, posicao}])
+				let itemPush = {}
+				itemPush.item				= item;
+				itemPush.label				=  label;
+				itemPush.type				=  type;
+				itemPush.options			=  options;
+				itemPush.defaultValue		=  defaultValue;
+				itemPush.nrLinha			=  nrLinha;
+				itemPush.nrColuna			=  nrColuna;
+				setDataItens([...dataItens, itemPush])
 				contador += 1;
 			}
 			
 			
 		}
-		setGrupo('')
+		setItem('')
+		setType('')
+		setOptions('')
+		setDefaultValue('')
+		setLabel('')
+		setNrLinha('')
+		setNrColuna('')
 		setPosicao(contador)
-		setIdGrupo(null)
+		setIdItem(null)
+		
 				
 	}
 
-	const removeGroup = (index)=>{
+	const removeItem = (index)=>{
 		console.log(index)
-		if(Array.isArray(dataGrupos) && dataGrupos.length > 0){
-			const newData = dataGrupos.filter((item, indexArr, Arr)=>{
+		if(Array.isArray(dataItens) && dataItens.length > 0){
+			const newData = dataItens.filter((item, indexArr, Arr)=>{
 				return indexArr != index
 			})
-			setDataGrupos(newData)
+			setDataItens(newData)
 		}
 	}
     
 	const messag = ()=>{
-		console.log('Adicionar grupo');
+		console.log('Adicionar item');
 	} 
 
 	const gerarTableRegistro = ()=>{
        
         let data = [];
-        let dataRegistro = dataGrupos
+        let dataRegistro = dataItens
         if(dataRegistro && Array.isArray(dataRegistro) && dataRegistro.length > 0){
             for(let i=0; !(i == dataRegistro.length); i++){
                 let atual = dataRegistro[i];
 				let indexAtual = (i+1);
                 if(atual){
-						//grupo, posicao
+						//item, posicao
 					let acoesArr = [];
 					if(atualizarCadastro == true && atual?.id > 0){
 						acoesArr.push({acao:()=>{
-								setGrupo(atual?.grupo);
+								setItem(atual?.item);
 								setPosicao(atual?.posicao);
-								setIdGrupo(atual?.id)
+								setIdItem(atual?.id)
 
 							}, label:'Editar', propsOption:{'className':'btn btn-sm'}, propsLabel:{}})
 					}
@@ -232,17 +336,42 @@ const FormGrupo = ({dataRegistroChoice, dataGrupo, setIdRegistro, idRegistro, sh
                         {
                             propsRow:{id:indexAtual},
                             acoes:acoesArr,
-							acaoTrash:()=>removeGroup(i),
+							acaoTrash:()=>removeItem(i),
                             celBodyTableArr:[
                                 
                                 {
 
-                                    label:atual?.grupo,
+                                    label:atual?.item,
                                     propsRow:{}
                                 },
 								{
 
-                                    label:atual?.posicao,
+                                    label:atual?.label,
+                                    propsRow:{}
+                                },
+								{
+
+                                    label:atual?.type,
+                                    propsRow:{}
+                                },
+								{
+
+                                    label:atual?.options,
+                                    propsRow:{}
+                                },
+								{
+
+                                    label:atual?.defaultValue,
+                                    propsRow:{}
+                                },
+								{
+
+                                    label:atual?.nrLinha,
+                                    propsRow:{}
+                                },
+								{
+
+                                    label:atual?.nrColuna,
                                     propsRow:{}
                                 },
 
@@ -262,11 +391,31 @@ const FormGrupo = ({dataRegistroChoice, dataGrupo, setIdRegistro, idRegistro, sh
 	const gerarTitleTable = ()=>{
         let tableTitle = [
             {
-                label:'Nome',
+                label:'Chave',
                 props:{}
             },
 			{
-                label:'Posição',
+                label:'Label',
+                props:{}
+            },
+			{
+                label:'Tipo',
+                props:{}
+            },
+			{
+                label:'Options',
+                props:{}
+            },
+			{
+                label:'Vr. padrão',
+                props:{}
+            },
+			{
+                label:'Nº. linha',
+                props:{}
+            },
+			{
+                label:'Nº. coluna',
                 props:{}
             }
         ]
@@ -275,7 +424,7 @@ const FormGrupo = ({dataRegistroChoice, dataGrupo, setIdRegistro, idRegistro, sh
     }
     //------------
 
-	console.log('Grupo', grupo)
+	console.log('Grupo', item)
     const rowsTableArr = gerarTableRegistro();    
     const titulosTableArr = gerarTitleTable();
 	return(
@@ -301,6 +450,7 @@ const FormGrupo = ({dataRegistroChoice, dataGrupo, setIdRegistro, idRegistro, sh
                         setSubmitting(false);
                       }, 400);*/
                       //alert(values.nome)
+					  //console.table({...values})
                       await sendData({...values});
                 }}
             >
@@ -317,7 +467,7 @@ const FormGrupo = ({dataRegistroChoice, dataGrupo, setIdRegistro, idRegistro, sh
                         }
                     )=>(
 						
-                        <Modal  handleConcluir={()=>{handleSubmit(); }}  title={ (atualizarCadastro == true ? 'Atualizar' : 'Cadastrar')+' Formulário'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarRegistro} showHide={()=>{setShowModalCriarRegistro();setAtualizarCadastro(false);setIdRegistro(null);}}>
+                        <Modal  handleConcluir={()=>{handleSubmit(); }}  title={ (atualizarCadastro == true ? 'Atualizar' : 'Cadastrar')+' Grupo'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarRegistro} showHide={()=>{setShowModalCriarRegistro();setAtualizarCadastro(false);setIdRegistro(null);}}>
                                 
 								{
 									
@@ -346,18 +496,18 @@ const FormGrupo = ({dataRegistroChoice, dataGrupo, setIdRegistro, idRegistro, sh
 				                                data={
 				                                    {
 				                                        hasLabel:true,
-				                                        contentLabel:'Formulário *',
+				                                        contentLabel:'Grupo *',
 				                                        atributsFormLabel:{
 
 				                                        },
 				                                        atributsFormControl:{
 				                                            type:'text',
-				                                            name:'formulario',
-				                                            placeholder:'Formulário',
-				                                            id:'formulario',
+				                                            name:'name',
+				                                            placeholder:'Grupo',
+				                                            id:'name',
 				                                            onChange:handleChange,
 				                                            onBlur:handleBlur,
-				                                            value:values.formulario,
+				                                            value:values.name,
 				                                            className:`${estilos.input}`,
 				                                            size:"sm"
 				                                        },
@@ -369,7 +519,7 @@ const FormGrupo = ({dataRegistroChoice, dataGrupo, setIdRegistro, idRegistro, sh
 				                               
 				                                component={FormControlInput}
 				                            ></Field>
-				                            <ErrorMessage className="alerta_error_form_label" name="formulario" component="div" />
+				                            <ErrorMessage className="alerta_error_form_label" name="name" component="div" />
 	                        		</Col>
 
 	                        		
@@ -377,9 +527,9 @@ const FormGrupo = ({dataRegistroChoice, dataGrupo, setIdRegistro, idRegistro, sh
 								
 								<Row className="my-3">
 	                        		<Col xs="12" sm="12" md="12">
-	                        			<span className="label_title_grup_forms">Grupos do formulario</span>
+	                        			<span className="label_title_grup_forms">Campos do formulário</span>
 	                        		</Col>
-									<Col className="mt-3" xs="12" sm="12" md="8">
+									<Col className="mt-3" xs="12" sm="12" md="3">
 										
 										<FormControlInput 
 											data={
@@ -391,12 +541,12 @@ const FormGrupo = ({dataRegistroChoice, dataGrupo, setIdRegistro, idRegistro, sh
 													},
 													atributsFormControl:{
 														type:'text',
-														name:'name_group',
-														placeholder:'Nome do grupo',
-														id:'name_group',
-														onChange:handleChangeGroup,
-														onBlur:handleChangeGroup,
-														value:grupo,
+														name:'name_item',
+														placeholder:'Chave',
+														id:'name_item',
+														onChange:handleChangeItem,
+														onBlur:handleChangeItem,
+														value:item,
 														className:`${estilos.input}`,
 														size:"sm"
 													},
@@ -407,7 +557,120 @@ const FormGrupo = ({dataRegistroChoice, dataGrupo, setIdRegistro, idRegistro, sh
 											}
 										/>
 									</Col>
-									<Col className="mt-3" xs="12" sm="12" md="2">
+									<Col className="mt-3" xs="12" sm="12" md="3">
+										
+										<FormControlInput 
+											data={
+												{
+													hasLabel:true,
+													contentLabel:'',
+													atributsFormLabel:{
+
+													},
+													atributsFormControl:{
+														type:'text',
+														name:'name_item',
+														placeholder:'Label',
+														id:'name_item',
+														onChange:handleChangeLabel,
+														onBlur:handleChangeLabel,
+														value:label,
+														className:`${estilos.input}`,
+														size:"sm"
+													},
+													atributsContainer:{
+														className:''
+													}
+												}
+											}
+										/>
+									</Col>
+									<Col className="mt-3" xs="12" sm="12" md="3">
+										
+										<FormControlInput 
+											data={
+												{
+													hasLabel:true,
+													contentLabel:'',
+													atributsFormLabel:{
+
+													},
+													atributsFormControl:{
+														type:'text',
+														name:'type',
+														placeholder:'Tipo',
+														id:'type',
+														onChange:handleChangeType,
+														onBlur:handleChangeType,
+														value:type,
+														className:`${estilos.input}`,
+														size:"sm"
+													},
+													atributsContainer:{
+														className:''
+													}
+												}
+											}
+										/>
+									</Col>
+									<Col className="mt-3" xs="12" sm="12" md="3">
+										
+										<FormControlInput 
+											data={
+												{
+													hasLabel:true,
+													contentLabel:'',
+													atributsFormLabel:{
+
+													},
+													atributsFormControl:{
+														type:'text',
+														name:'name_label',
+														placeholder:'Options',
+														id:'name_label',
+														onChange:handleChangeOptions,
+														onBlur:handleChangeOptions,
+														value:options,
+														className:`${estilos.input}`,
+														size:"sm"
+													},
+													atributsContainer:{
+														className:''
+													}
+												}
+											}
+										/>
+									</Col>
+									<Col className="mt-3" xs="12" sm="12" md="3">
+										
+										<FormControlInput 
+											data={
+												{
+													hasLabel:true,
+													contentLabel:'',
+													atributsFormLabel:{
+
+													},
+													atributsFormControl:{
+														type:'text',
+														name:'default_value',
+														placeholder:'Valor padrao',
+														id:'default_value',
+														onChange:handleChangeDefaultValue,
+														onBlur:handleChangeDefaultValue,
+														value:defaultValue,
+														className:`${estilos.input}`,
+														size:"sm"
+													},
+													atributsContainer:{
+														className:''
+													}
+												}
+											}
+										/>
+									</Col>
+
+									<Col className="mt-3" xs="12" sm="12" md="3">
 										
 										<FormControlInput 
 											data={
@@ -419,12 +682,12 @@ const FormGrupo = ({dataRegistroChoice, dataGrupo, setIdRegistro, idRegistro, sh
 													},
 													atributsFormControl:{
 														type:'number',
-														name:'posicao_group',
-														placeholder:'Posição',
-														id:'posicao_group',
-														onChange:handleChangePosicaoGroup,
-														onBlur:handleChangePosicaoGroup,
-														value:posicao,
+														name:'nr_linha',
+														placeholder:'Nº linha',
+														id:'nr_linha',
+														onChange:handleChangeNrLinha,
+														onBlur:handleChangeNrLinha,
+														value:nrLinha,
 														className:`${estilos.input}`,
 														size:"sm"
 													},
@@ -435,8 +698,36 @@ const FormGrupo = ({dataRegistroChoice, dataGrupo, setIdRegistro, idRegistro, sh
 											}
 										/>
 									</Col>
-									<Col className="mt-3" xs="12" sm="12" md="2">
-										<Button onClick={adicionarGrupo} className='btn btn-sm botao_success' >Adicionar</Button>
+									<Col className="mt-3" xs="12" sm="12" md="3">
+										
+										<FormControlInput 
+											data={
+												{
+													hasLabel:true,
+													contentLabel:'',
+													atributsFormLabel:{
+
+													},
+													atributsFormControl:{
+														type:'number',
+														name:'nr_coluna',
+														placeholder:'Nº coluna',
+														id:'nr_coluna',
+														onChange:handleChangeNrColuna,
+														onBlur:handleChangeNrColuna,
+														value:nrColuna,
+														className:`${estilos.input}`,
+														size:"sm"
+													},
+													atributsContainer:{
+														className:''
+													}
+												}
+											}
+										/>
+									</Col>
+									<Col className="mt-3" xs="12" sm="12" md="3">
+										<Button onClick={adicionarItem} className='btn btn-sm botao_success' >Adicionar</Button>
 									</Col>
 	                        	</Row>
 

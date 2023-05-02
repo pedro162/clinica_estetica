@@ -1,6 +1,6 @@
 import React from 'react';
 import useFetch from '../../../Hooks/useFetch.js';
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, FORMULARIO_ONE_GET, GRUPOS_ALL_POST} from '../../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, FORMULARIO_GRUPO_ONE_GET, GRUPOS_ALL_POST} from '../../../api/endpoints/geral.js'
 import {UserContex} from '../../../Context/UserContex.js'
 import FormGrupo from '../FormGrupo/index.js'
 import Pesquisar from '../Pesquisar/index.js'
@@ -34,7 +34,7 @@ const Atualizar = ({idRegistro, setIdRegistro, callback, atualizarCadastro, setA
 
 		const getRegistro = async ()=>{
 			if(idRegistro > 0){
-				const {url, options} = FORMULARIO_ONE_GET(idRegistro, getToken());
+				const {url, options} = FORMULARIO_GRUPO_ONE_GET(idRegistro, getToken());
 				const {response, json} = await request(url, options);
 				if(json){
 					

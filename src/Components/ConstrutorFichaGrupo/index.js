@@ -111,7 +111,8 @@ const ConstrutorFicha = (props)=>{
                             acoes:[
                                 {acao:()=>atualizarRegistro(atual.id), label:'Editar', propsOption:{}, propsLabel:{}},
                                 {acao:()=>novoAtendimento(atual.id), label:'Excluir', propsOption:{}, propsLabel:{}},
-                                {acao:()=>novoAtendimento(atual.id), label:'Grupos', propsOption:{}, propsLabel:{}},
+                                {acao:()=>novoAtendimento(atual.id), label:'Atualizar itens', propsOption:{}, propsLabel:{}},
+                                {acao:()=>novoAtendimento(atual.id), label:'Itens', propsOption:{}, propsLabel:{}},
                                 {acao:()=>novoAtendimento(atual.id), label:'Campos', propsOption:{}, propsLabel:{}},
                             ],
                             celBodyTableArr:[
@@ -237,7 +238,7 @@ const ConstrutorFicha = (props)=>{
                         },
                         {
                             props:{},
-                            label:'Grupo'
+                            label:'Grupos'
                         }
                     ]}
             />

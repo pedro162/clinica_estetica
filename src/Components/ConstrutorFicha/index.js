@@ -260,7 +260,7 @@ const ConstrutorFicha = (props)=>{
                         },
                         {
                             props:{},
-                            label:'Clientes'
+                            label:'Fichas'
                         }
                     ]}
             />
