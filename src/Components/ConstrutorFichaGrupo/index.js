@@ -14,16 +14,19 @@ import Cadastrar from './Cadastrar/index.js'
 import Atualizar from './Atualizar/index.js'
 import {UserContex} from '../../Context/UserContex.js'
 import FormGrupo from './FormGrupo/index.js'
+import ConstrutorFichaItem from '../ConstrutorFichaItem/index.js'
 
 
-const ConstrutorFicha = (props)=>{
+const ConstrutorFichaGrupo = (props)=>{
 
 	const {data, error, request, loading} = useFetch();
     const [registro, setRegistro] = React.useState([])
     const [showModalCriarRegistro, setShowModalCriarRegistro] = React.useState(false)
+    const [showModalItem, setShowModalItem] = React.useState(false)
     const [registroChoice, setRegistroChoice] = React.useState(null);
     const [atualizarCadastro, setAtualizarCadastro] = React.useState(false)    
     const [cadastrarRegistro, setCadastrarRegistro] = React.useState(false)     
+    const [listarItems, setListarItem] = React.useState(false)        
     const [acao, setAcao] = React.useState(null)
 
 
@@ -112,8 +115,7 @@ const ConstrutorFicha = (props)=>{
                                 {acao:()=>atualizarRegistro(atual.id), label:'Editar', propsOption:{}, propsLabel:{}},
                                 {acao:()=>novoAtendimento(atual.id), label:'Excluir', propsOption:{}, propsLabel:{}},
                                 {acao:()=>novoAtendimento(atual.id), label:'Atualizar itens', propsOption:{}, propsLabel:{}},
-                                {acao:()=>novoAtendimento(atual.id), label:'Itens', propsOption:{}, propsLabel:{}},
-                                {acao:()=>novoAtendimento(atual.id), label:'Campos', propsOption:{}, propsLabel:{}},
+                                {acao:()=>exbirListaItem(atual.id), label:'Itens', propsOption:{}, propsLabel:{}},
                             ],
                             celBodyTableArr:[
                                 {
@@ -193,6 +195,14 @@ const ConstrutorFicha = (props)=>{
                     setAtualizarCadastro(false);
                 }
                 break;
+            
+            case 'listar_item':
+                if(registroChoice > 0){
+                    setListarItem(true);
+                }else{
+                    setListarItem(false);
+                }
+                break;
             default:
                 setAtualizarCadastro(false);
                 break;
@@ -223,6 +233,12 @@ const ConstrutorFicha = (props)=>{
         setRegistroChoice(idRegistro)
         setAcao('consultar')
         setAtualizarCadastro(true);
+    }
+
+    const exbirListaItem = (idRegistro)=>{
+        setRegistroChoice(idRegistro)
+        setAcao('listar_item')
+        setListarItem(true);
     }
 
     
@@ -266,11 +282,20 @@ const ConstrutorFicha = (props)=>{
                 atualizarCadastro &&
                 <Atualizar atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro}  idRegistro={registroChoice} setIdRegistro={setRegistroChoice} callback={requestAllRegistros} />
             }
+
+{
+                listarItems &&
+                <Modal  noBtnConcluir={true} handleConcluir={()=>null}  title={'Items'} size="xl" propsConcluir={{'disabled':loading}} labelConcluir={null}  dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={listarItems} showHide={()=>{setShowModalItem();setListarItem(false);setRegistroChoice(null);}}>
+                                
+                    <ConstrutorFichaItem listarItems={listarItems} setListarItem={setListarItem}  idRegistro={registroChoice} setIdRegistro={setRegistroChoice} callback={requestAllRegistros} />
+                
+                </Modal>
+            }
          </>
 
 	)
 }
 
-export default ConstrutorFicha;
+export default ConstrutorFichaGrupo;
 
 //<FormGrupo dataGrupo={dataGrupo} dataGrupoChoice={[]}  atualizarCadastro={false} setAtualizarCadastro={setAtualizarCadastro}  idRegistro={null} setIdRegistro={setRegistroChoice}  showModalCriarRegistro={showModalCriarRegistro} setShowModalCriarRegistro={setShowModalCriarRegistro} callback={requestAllRegistros} />

@@ -136,8 +136,8 @@ const Table = ({children, titulosTableArr, rowsTableArr,loading,... props})=>{
 							  						celBodyTableArr && Array.isArray(celBodyTableArr) && celBodyTableArr.length > 0 ? (
 														celBodyTableArr.map((itemCel, indexCel, arrCel)=>{
 															let labelCel = itemCel.hasOwnProperty('label') ? itemCel.label :'';
-															let propsCelBodyTable 	= item.hasOwnProperty('propsRow') ? item.propsRow: {};
-															return <td key={indexCel}>{labelCel}</td>
+															let propsCelBodyTable 	= itemCel.hasOwnProperty('props') ? itemCel.props : {};
+															return <td key={indexCel} {...propsCelBodyTable}>{labelCel}</td>
 														})
 
 													) : ('')

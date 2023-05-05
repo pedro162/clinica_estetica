@@ -193,9 +193,10 @@ const FormGrupo = ({dataRegistroChoice, dataGrupo, setIdRegistro, idRegistro, sh
 				if(Array.isArray(data.item) && data.item.length > 0){
 					for(let i = 0; !(i == data.item.length); i++){
 						let atual = data.item[i];
-						let {name, nr_ordem, grupo_id, props_item, id} = atual;
+						//`id`, `name`, `type`, `options`, ``, ``, `label`, `props_label`, `nr_linha`, `nr_coluna`
+						let {name, type, formulario_grupo_id, formulario_id, options, default_value, props, label, props_label, nr_coluna, nr_linha, id} = atual;
 						
-						itemCarregado.push( {item:name, posicao:nr_ordem, grupo_id, props_item, id})
+						itemCarregado.push( {item:name, name, type, formulario_grupo_id, formulario_id, options, default_value, props, label, props_label, nr_coluna, nrColuna:nr_coluna, nr_linha, nrLinha:nr_linha, id})
 						
 					}
 
@@ -221,22 +222,22 @@ const FormGrupo = ({dataRegistroChoice, dataGrupo, setIdRegistro, idRegistro, sh
 					
 					let novoDtg = [] 
 					let encontrou = false;
-					dataItens.forEach((item, index, dadosArr)=>{
-						let idIt = item?.id;
+					dataItens.forEach((registroItem, index, dadosArr)=>{
+						let idIt = registroItem?.id;
 						idIt = Number(idIt)
-						//let atual = item;
+						//let atual = registroItem;
 						if(idItem > 0 && idIt > 0 && idItem == idIt){
-							item.item				= item;
-							item.label				=  label;
-							item.type				=  type;
-							item.options			=  options;
-							item.defaultValue		=  defaultValue;
-							item.nrLinha			=  nrLinha;
-							item.nrColuna			=  nrColuna;
+							registroItem.item		= item;
+							registroItem.label				=  label;
+							registroItem.type				=  type;
+							registroItem.options			=  options;
+							registroItem.defaultValue		=  defaultValue;
+							registroItem.nrLinha			=  nrLinha;
+							registroItem.nrColuna			=  nrColuna;
 							encontrou = true;
 							
 						}
-						novoDtg.push(item)
+						novoDtg.push(registroItem)
 						
 					})
 
@@ -324,9 +325,14 @@ const FormGrupo = ({dataRegistroChoice, dataGrupo, setIdRegistro, idRegistro, sh
 					let acoesArr = [];
 					if(atualizarCadastro == true && atual?.id > 0){
 						acoesArr.push({acao:()=>{
-								setItem(atual?.item);
-								setPosicao(atual?.posicao);
+								setItem(atual?.name);
 								setIdItem(atual?.id)
+								setType(atual?.type);
+								setOptions(atual?.options);
+								setDefaultValue(atual?.default_value);
+								setLabel(atual?.label);
+								setNrLinha(atual?.nr_linha);
+								setNrColuna(atual?.nr_coluna);
 
 							}, label:'Editar', propsOption:{'className':'btn btn-sm'}, propsLabel:{}})
 					}

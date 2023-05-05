@@ -1,6 +1,6 @@
 import React from 'react';
 import useFetch from '../../../Hooks/useFetch.js';
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, FORMULARIO_ONE_GET} from '../../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, FORMULARIO_ITEM_ONE_GET} from '../../../api/endpoints/geral.js'
 import {UserContex} from '../../../Context/UserContex.js'
 
 const Pesquisar = ({idRegistro, setDataRegistro, setCarregandoDadosRegistro})=>{
@@ -12,7 +12,7 @@ const Pesquisar = ({idRegistro, setDataRegistro, setCarregandoDadosRegistro})=>{
 		
 		const getCliente = async ()=>{
 			if(idRegistro > 0){
-				const {url, options} = FORMULARIO_ONE_GET(idRegistro, getToken());
+				const {url, options} = FORMULARIO_ITEM_ONE_GET(idRegistro, getToken());
 				const {response, json} = await request(url, options);
 				if(json){
 					

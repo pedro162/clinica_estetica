@@ -1,7 +1,7 @@
 import React from 'react';
 import estilos from './Item.module.css'
 import useFetch from '../../Hooks/useFetch.js';
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, FORMULARIO_ALL_POST} from '../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, FORMULARIO_ITEM_ALL_POST} from '../../api/endpoints/geral.js'
 import {Col, Row } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
@@ -16,7 +16,7 @@ import {UserContex} from '../../Context/UserContex.js'
 import FormItem from './FormItem/index.js'
 
 
-const ConstrutorFichaGrupo = (props)=>{
+const ConstrutorFichaItem = (props)=>{
 
 	const {data, error, request, loading} = useFetch();
     const [registro, setRegistro] = React.useState([])
@@ -58,43 +58,6 @@ const ConstrutorFichaGrupo = (props)=>{
             props:{onClick:()=>setCadastrarRegistro(true), className:'btn btn-sm mx-2 btn-secondary'}
         }
     ];
-    const gerarExemplos = ()=>{
-         let exemplos = [];
-        for(let i=0; !(i == 10); i++){
-            exemplos.push(
-
-                    {
-                        propsRow:{id:(i+1)},
-                        celBodyTableArr:[
-                            {
-
-                                label:'1',
-                                propsRow:{}
-                            },
-                            {
-
-                                label:'Peddro',
-                                propsRow:{}
-                            },
-                            {
-
-                                label:'(98) 98425-7623',
-                                propsRow:{}
-                            },
-                            {
-
-                                label:'phedroclooney@gmail.com',
-                                propsRow:{}
-                            }
-                        ]
-                    }
-
-                )
-
-        }
-
-        return exemplos;
-    }
 
     const gerarTableRegistro = ()=>{
        
@@ -113,19 +76,64 @@ const ConstrutorFichaGrupo = (props)=>{
                             acoes:[
                                 {acao:()=>atualizarRegistro(atual.id), label:'Editar', propsOption:{}, propsLabel:{}},
                                 {acao:()=>novoAtendimento(atual.id), label:'Excluir', propsOption:{}, propsLabel:{}},
-                                {acao:()=>novoAtendimento(atual.id), label:'Grupos', propsOption:{}, propsLabel:{}},
-                                {acao:()=>novoAtendimento(atual.id), label:'Campos', propsOption:{}, propsLabel:{}},
                             ],
                             celBodyTableArr:[
                                 {
 
                                     label:atual.id,
-                                    propsRow:{}
+                                    props:{}
+                                },
+                                {
+
+                                    label:atual.formulario_grupo_id,
+                                    props:{}
                                 },
                                 {
 
                                     label:atual.name,
-                                    propsRow:{}
+                                    props:{
+                                        style:{
+                                            minWidth:'250px'
+                                        },
+                                    }
+                                },
+                                {
+
+                                    label:atual.label,
+                                    props:{
+                                        style:{
+                                            minWidth:'250px'
+                                        },
+                                    }
+                                },
+                                {
+
+                                    label:atual.type,
+                                    props:{}
+                                },
+                                {
+
+                                    label:atual.options,
+                                    props:{
+                                        style:{
+                                            minWidth:'250px'
+                                        },
+                                    }
+                                },
+                                {
+
+                                    label:atual.default_value,
+                                    props:{}
+                                },
+                                {
+
+                                    label:atual.nr_linha,
+                                    props:{}
+                                },
+                                {
+
+                                    label:atual.nr_coluna,
+                                    props:{}
                                 },
                             ]
                         }
@@ -147,7 +155,47 @@ const ConstrutorFichaGrupo = (props)=>{
                 props:{}
             },
             {
-                label:'Nome',
+                label:'Cód. grupo',
+                props:{}
+            },
+            {
+                label:'Chave',
+                props:{
+                    style:{
+                        minWidth:'250px'
+                    },
+                }
+            },
+            {
+                label:'Pergunta',
+                props:{
+                    style:{
+                        minWidth:'250px'
+                    },
+                }
+            },
+            {
+                label:'Tipo',
+                props:{}
+            },
+            {
+                label:'Opt. valor',
+                props:{
+                    style:{
+                        minWidth:'250px'
+                    },
+                }
+            },
+            {
+                label:'Vr. padrão',
+                props:{}
+            },
+            {
+                label:'Nº linha',
+                props:{}
+            },
+            {
+                label:'Nº coluna',
                 props:{}
             },
         ]
@@ -158,11 +206,11 @@ const ConstrutorFichaGrupo = (props)=>{
 
     const requestAllRegistros = async() =>{
        
-        const {url, options} = FORMULARIO_ALL_POST({}, getToken());
+        const {url, options} = FORMULARIO_ITEM_ALL_POST({}, getToken());
 
 
         const {response, json} = await request(url, options);
-        console.log('All clients here')
+        console.log('All itens here')
         console.log(json)
         if(json){
                setRegistro(json)
@@ -240,7 +288,7 @@ const ConstrutorFichaGrupo = (props)=>{
                         },
                         {
                             props:{},
-                            label:'Item'
+                            label:'Items'
                         }
                     ]}
             />
@@ -251,7 +299,7 @@ const ConstrutorFichaGrupo = (props)=>{
                         actionsArr={acoesBottomCard}
                     />
                 </Col>
-                <Col  xs="12" sm="12" md="9">
+                <Col  xs="12" sm="12" md="9" className={estilos.table_overflow} >
                     <Table
                         titulosTableArr={titulosTableArr}
                         rowsTableArr={rowsTableArr}
@@ -276,6 +324,6 @@ const ConstrutorFichaGrupo = (props)=>{
 	)
 }
 
-export default ConstrutorFichaGrupo;
+export default ConstrutorFichaItem;
 
 //<FormItem dataGrupo={dataGrupo} dataItemChoice={[]}  atualizarCadastro={false} setAtualizarCadastro={setAtualizarCadastro}  idRegistro={null} setIdRegistro={setRegistroChoice}  showModalCriarRegistro={showModalCriarRegistro} setShowModalCriarRegistro={setShowModalCriarRegistro} callback={requestAllRegistros} />
