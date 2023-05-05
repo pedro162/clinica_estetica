@@ -62,7 +62,7 @@ const Atualizar = ({idCidade, setIdCidade, callback, atualizarCadastro, setAtual
 	return(
 		<>
 			{! dataCidade &&
-				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={()=>null}  title={'Atualizar Cidade'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="" show={setShowModalAtualizarCidade} showHide={()=>{setShowModalAtualizarCidade();}}>
+				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={()=>null}  title={'Atualizar Cidade'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="" show={setShowModalAtualizarCidade} showHide={()=>{setShowModalAtualizarCidade();}}>
 					<Load/>
 				</Modal>
 			}

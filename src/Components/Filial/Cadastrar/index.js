@@ -61,7 +61,7 @@ const Cadastrar = ({showModalCriarFilial, setShowModalCriarFilial})=>{
 	}
 	return(
 		<>
-			<Modal  handleConcluir={()=>{handleSubmit();setShowModalCriarFilial(); }} children={<FormModal/>} title={'Cadastrar Filial'} size="lg" labelConcluir="Concluir" dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarFilial} showHide={setShowModalCriarFilial}/>
+			<Modal  handleConcluir={()=>{handleSubmit();setShowModalCriarFilial(); }} children={<FormModal/>} title={'Cadastrar Filial'} size="lg" labelConcluir="Concluir" dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarFilial} showHide={setShowModalCriarFilial}/>
 			
 		</>
 	)

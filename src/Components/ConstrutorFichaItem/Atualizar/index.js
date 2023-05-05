@@ -62,7 +62,7 @@ const Atualizar = ({idRegistro, setIdRegistro, callback, atualizarCadastro, setA
 	return(
 		<>
 			{! dataRegistro &&
-				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={()=>null}  title={'Atualizar formulário'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="" show={setShowModalAtualizarRegistro} showHide={()=>{setShowModalAtualizarRegistro();}}>
+				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={()=>null}  title={'Atualizar formulário'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="" show={setShowModalAtualizarRegistro} showHide={()=>{setShowModalAtualizarRegistro();}}>
 					<Load/>
 				</Modal>
 			}

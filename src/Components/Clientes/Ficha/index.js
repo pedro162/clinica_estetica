@@ -58,19 +58,19 @@ const Ficha = ({idCliente, setIdcliente, callback, FichaCadastro, setFicha})=>{
 
 	/*
 		FichaCadastro && 
-             <Modal  handleConcluir={()=>{handleSubmit(); }}  title={ (atualizarCadastro == true ? 'Atualizar' : 'Cadastrar')+' Cliente'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarCliente} showHide={()=>{setShowModalCriarCliente();setAtualizarCadastro(false);setIdcliente(null);}}>
+             <Modal  handleConcluir={()=>{handleSubmit(); }}  title={ (atualizarCadastro == true ? 'Atualizar' : 'Cadastrar')+' Cliente'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarCliente} showHide={()=>{setShowModalCriarCliente();setAtualizarCadastro(false);setIdcliente(null);}}>
                                 
 	*/
 	//<Pesquisar idCliente={idCliente} setDataCliente={setDataCliente} setCarregandoDadosCliente={setCarregando} />
 	return(
 		<>
 			{! dataCliente &&
-				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={()=>null}  title={'Ficha Cliente'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="" show={setShowModalFichaCliente} showHide={()=>{setShowModalFichaCliente();}}>
+				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={()=>null}  title={'Ficha Cliente'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="" show={setShowModalFichaCliente} showHide={()=>{setShowModalFichaCliente();}}>
 					<Load/>
 				</Modal>
 			}
 			{dataCliente &&
-				<Modal  handleConcluir={()=>null} noBtnConcluir={true}  title={'Ficha do cliente'} size="lg" propsConcluir={null} labelConcluir={null} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalFichaCliente} showHide={()=>{setShowModalVerFichaCliente();setFicha(false);setIdcliente(null);}}>
+				<Modal  handleConcluir={()=>null} noBtnConcluir={true}  title={'Ficha do cliente'} size="lg" propsConcluir={null} labelConcluir={null} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalFichaCliente} showHide={()=>{setShowModalVerFichaCliente();setFicha(false);setIdcliente(null);}}>
                     
                        
 					<Ver dataGrupo={dataGrupo} setIdcliente={setIdcliente} idCliente={idCliente} carregando={false} dataClienteChoice={dataCliente} setFicha={setFicha} FichaCadastro={FichaCadastro} showModalCriarCliente={showModalFichaCliente} setShowModalCriarCliente={setShowModalVerFichaCliente} callback={callback} />

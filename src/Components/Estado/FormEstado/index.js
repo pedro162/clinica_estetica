@@ -154,7 +154,7 @@ const FormEstado = ({showModalCriarEstado, setShowModalCriarEstado, callback})=>
                         }
                     )=>(
 
-                        <Modal  handleConcluir={()=>{handleSubmit(); }}  title={'Cadastrar Estado'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarEstado} showHide={setShowModalCriarEstado}>
+                        <Modal  handleConcluir={()=>{handleSubmit(); }}  title={'Cadastrar Estado'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarEstado} showHide={setShowModalCriarEstado}>
 
 	                        <form onSubmit={handleSubmit}>
 	                            <Row className="my-3">

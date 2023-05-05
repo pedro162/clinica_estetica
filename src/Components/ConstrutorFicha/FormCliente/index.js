@@ -317,7 +317,7 @@ const FormCliente = ({dataRegistroChoice, dataGrupo, setIdRegistro, idRegistro, 
                         }
                     )=>(
 						
-                        <Modal  handleConcluir={()=>{handleSubmit(); }}  title={ (atualizarCadastro == true ? 'Atualizar' : 'Cadastrar')+' Formulário'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarRegistro} showHide={()=>{setShowModalCriarRegistro();setAtualizarCadastro(false);setIdRegistro(null);}}>
+                        <Modal  handleConcluir={()=>{handleSubmit(); }}  title={ (atualizarCadastro == true ? 'Atualizar' : 'Cadastrar')+' Formulário'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarRegistro} showHide={()=>{setShowModalCriarRegistro();setAtualizarCadastro(false);setIdRegistro(null);}}>
                                 
 								{
 									

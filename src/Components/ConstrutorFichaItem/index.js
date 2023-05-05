@@ -293,13 +293,13 @@ const ConstrutorFichaItem = (props)=>{
                     ]}
             />
             <Row>
-                <Col  xs="12" sm="12" md="3">
+                <Col  xs="12" sm="12" md="3" xl="3">
                     <Filter
                         filtersArr={filtersArr}
                         actionsArr={acoesBottomCard}
                     />
                 </Col>
-                <Col  xs="12" sm="12" md="9" className={estilos.table_overflow} >
+                <Col  xs="12" sm="12" md="9" xl="9" >
                     <Table
                         titulosTableArr={titulosTableArr}
                         rowsTableArr={rowsTableArr}

@@ -473,7 +473,7 @@ const FormGrupo = ({dataRegistroChoice, dataGrupo, setIdRegistro, idRegistro, sh
                         }
                     )=>(
 						
-                        <Modal  handleConcluir={()=>{handleSubmit(); }}  title={ (atualizarCadastro == true ? 'Atualizar' : 'Cadastrar')+' Grupo'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarRegistro} showHide={()=>{setShowModalCriarRegistro();setAtualizarCadastro(false);setIdRegistro(null);}}>
+                        <Modal  handleConcluir={()=>{handleSubmit(); }}  title={ (atualizarCadastro == true ? 'Atualizar' : 'Cadastrar')+' Grupo'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarRegistro} showHide={()=>{setShowModalCriarRegistro();setAtualizarCadastro(false);setIdRegistro(null);}}>
                                 
 								{
 									

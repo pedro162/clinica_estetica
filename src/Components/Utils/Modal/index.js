@@ -13,7 +13,7 @@ const Modal = ({children, title, labelConcluir, labelCanelar, dialogClassName, s
 	       <ModalBootstrap show={show} onHide={handleClose} 
         	backdrop="static"
        		keyboard={false}
-        	dialogClassName={dialogClassName ? dialogClassName: "modal-90w"}
+        	dialogClassName={dialogClassName ? dialogClassName: ""}
         	{...props}
          >
 	        <ModalBootstrap.Header className="header_modal" closeButton>

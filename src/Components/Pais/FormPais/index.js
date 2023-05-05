@@ -100,7 +100,7 @@ const FormPais = ({showModalCriarPais, setShowModalCriarPais, callback})=>{
                         }
                     )=>(
 
-                        <Modal  handleConcluir={()=>{handleSubmit(); }}  title={'Cadastrar Pais'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarPais} showHide={setShowModalCriarPais}>
+                        <Modal  handleConcluir={()=>{handleSubmit(); }}  title={'Cadastrar Pais'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarPais} showHide={setShowModalCriarPais}>
 
 	                        <form onSubmit={handleSubmit}>
 	                            <Row className="my-3">

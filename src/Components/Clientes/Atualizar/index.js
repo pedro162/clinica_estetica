@@ -62,7 +62,7 @@ const Atualizar = ({idCliente, setIdcliente, callback, atualizarCadastro, setAtu
 	return(
 		<>
 			{! dataCliente &&
-				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={()=>null}  title={'Atualizar Cliente'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="" show={setShowModalAtualizarCliente} showHide={()=>{setShowModalAtualizarCliente();}}>
+				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={()=>null}  title={'Atualizar Cliente'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="" show={setShowModalAtualizarCliente} showHide={()=>{setShowModalAtualizarCliente();}}>
 					<Load/>
 				</Modal>
 			}

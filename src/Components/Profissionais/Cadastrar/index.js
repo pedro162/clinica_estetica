@@ -47,7 +47,7 @@ const Cadastrar = ({idProfissionais, setIdProfissionais, callback, atualizarCada
 	return(
 		<>
 			{! dataPessoa &&
-				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={()=>null}  title={'Cadastrar Profissionais'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="" show={setShowModalAtualizarProfissionais} showHide={()=>{setShowModalAtualizarProfissionais();}}>
+				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={()=>null}  title={'Cadastrar Profissionais'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="" show={setShowModalAtualizarProfissionais} showHide={()=>{setShowModalAtualizarProfissionais();}}>
 					<Load/>
 				</Modal>
 			}

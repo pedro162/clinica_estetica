@@ -196,7 +196,7 @@ const FormCidade = ({dataCidadeChoice, dataEstado, setIdCidade, idCidade, showMo
                         }
                     )=>(
 
-                        <Modal  handleConcluir={()=>{handleSubmit(); }}  title={ (atualizarCadastro == true ? 'Atualizar' : 'Cadastrar')+' Cidade'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarCidade} showHide={()=>{setShowModalCriarCidade();setAtualizarCadastro(false);setIdCidade(null);}}>
+                        <Modal  handleConcluir={()=>{handleSubmit(); }}  title={ (atualizarCadastro == true ? 'Atualizar' : 'Cadastrar')+' Cidade'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarCidade} showHide={()=>{setShowModalCriarCidade();setAtualizarCadastro(false);setIdCidade(null);}}>
                                 {
                                     carregando && carregando==true
                                     ?

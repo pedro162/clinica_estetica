@@ -263,7 +263,7 @@ const Required = ({data, url_btn, callback_selected, props_btn_search, label_btn
                     (null)
                 }
             </Col>
-            <Modal  handleConcluir={()=>null}  title={"Pessoas"} size="lg" noBtnConcluir={true} dialogClassName={'modal-100w modal-xl'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarProfissionais} showHide={()=>{setShowModalCriarProfissionais();setCadastrarProfissionais(false)}}>
+            <Modal  handleConcluir={()=>null}  title={"Pessoas"} size="lg" noBtnConcluir={true} dialogClassName={'modal-90w modal-xl'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarProfissionais} showHide={()=>{setShowModalCriarProfissionais();setCadastrarProfissionais(false)}}>
                 <Clientes/>
             </Modal>
         </Row>

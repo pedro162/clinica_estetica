@@ -387,7 +387,7 @@ const FormProfissionais = ({dataProfissionaisChoice, setIdProfissionais, idProfi
                         }
                     )=>(
 
-                        <Modal  handleConcluir={()=>{handleSubmit();}}  title={ (atualizarCadastro == true ? 'Atualizar' : 'Cadastrar')+' profissional'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarProfissionais} showHide={()=>{setShowModalCriarProfissionais();setAtualizarCadastro(false);setIdProfissionais(null);}}>
+                        <Modal  handleConcluir={()=>{handleSubmit();}}  title={ (atualizarCadastro == true ? 'Atualizar' : 'Cadastrar')+' profissional'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarProfissionais} showHide={()=>{setShowModalCriarProfissionais();setAtualizarCadastro(false);setIdProfissionais(null);}}>
                                 {
                                     carregando && carregando==true
                                     ?

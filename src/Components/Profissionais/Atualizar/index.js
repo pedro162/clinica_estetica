@@ -62,7 +62,7 @@ const Atualizar = ({idProfissionais, setIdProfissionais, callback, atualizarCada
 	return(
 		<>
 			{! dataProfissionais &&
-				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={()=>null}  title={'Atualizar Profissionais'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="" show={setShowModalAtualizarProfissionais} showHide={()=>{setShowModalAtualizarProfissionais();}}>
+				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={()=>null}  title={'Atualizar Profissionais'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="" show={setShowModalAtualizarProfissionais} showHide={()=>{setShowModalAtualizarProfissionais();}}>
 					<Load/>
 				</Modal>
 			}

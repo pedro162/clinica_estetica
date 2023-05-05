@@ -22,7 +22,7 @@ const MenuOpcoes = ({opcoes, showModal, setShowModal, props})=>{
 
 	return(
 		<>
-			<Modal noBtnConcluir={true}  title={'Menu de opções'} size="xs" propsConcluir={{}} labelConcluir={'TEste'} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModal} showHide={setShowModal} >
+			<Modal noBtnConcluir={true}  title={'Menu de opções'} size="xs" propsConcluir={{}} labelConcluir={'TEste'} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModal} showHide={setShowModal} >
 				{Array.isArray(dataOpcoes) && dataOpcoes.length > 0 
 				?
 					dataOpcoes.map(({acao, label, propsOption, propsLabel}, index, arr)=>(

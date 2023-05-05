@@ -47,7 +47,7 @@ const Cadastrar = ({idCliente, setIdcliente, callback, atualizarCadastro, setAtu
 	return(
 		<>
 			{! dataGrupo &&
-				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={()=>null}  title={'Cadastrar Cliente'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="" show={setShowModalAtualizarCliente} showHide={()=>{setShowModalAtualizarCliente();}}>
+				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={()=>null}  title={'Cadastrar Cliente'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="" show={setShowModalAtualizarCliente} showHide={()=>{setShowModalAtualizarCliente();}}>
 					<Load/>
 				</Modal>
 			}
