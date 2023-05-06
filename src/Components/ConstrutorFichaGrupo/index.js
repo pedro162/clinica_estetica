@@ -283,7 +283,7 @@ const ConstrutorFichaGrupo = (props)=>{
                 <Atualizar atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro}  idRegistro={registroChoice} setIdRegistro={setRegistroChoice} callback={requestAllRegistros} />
             }
 
-{
+            {
                 listarItems &&
                 <Modal  noBtnConcluir={true} handleConcluir={()=>null}  title={'Items'} size="xl" propsConcluir={{'disabled':loading}} labelConcluir={null}  dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={listarItems} showHide={()=>{setShowModalItem();setListarItem(false);setRegistroChoice(null);}}>
                                 
