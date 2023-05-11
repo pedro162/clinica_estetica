@@ -459,9 +459,6 @@ const FormOrdemServico = ({dataOrdemServicoChoice, setIdOrdemServico, idOrdemSer
 														<Tab eventKey="servicos" title="Serviços">
 															<FormOrdemServicoItens/>
 														</Tab>
-														<Tab eventKey="questionario" title="Questionário">
-															
-														</Tab>
 														<Tab eventKey="cobrancas" title="Cobranças">
 															
 														</Tab>
