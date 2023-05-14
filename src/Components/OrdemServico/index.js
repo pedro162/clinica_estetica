@@ -1,7 +1,7 @@
 import React from 'react';
 import estilos from './OrdemServico.module.css'
 import useFetch from '../../Hooks/useFetch.js';
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, SERVICO_ALL_POST} from '../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, ORDEM_SERVICO_ALL_POST} from '../../api/endpoints/geral.js'
 import {FORMAT_DATA_PT_BR} from '../../functions/index.js'
 import {Col, Row } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
@@ -15,6 +15,7 @@ import {UserContex} from '../../Context/UserContex.js'
 import FormOrdemServico from './FormOrdemServico/index.js'
 import Cadastrar from './Cadastrar/index.js'
 import Atualizar from './Atualizar/index.js'
+import Iniciar from './Iniciar/index.js'
 
 
 const OrdemServico = (props)=>{
@@ -27,7 +28,8 @@ const OrdemServico = (props)=>{
     const [consultaChoice, setOrdemServicoChoice] = React.useState(null);
     const [atualizarOrdemServico, setAtualizarOrdemServico] = React.useState(false)   
     const [cancelarOrdemServico, setCancelarOrdemServico] = React.useState(false)    
-    const [cadastrarOrdemServico, setCadastrarOrdemServico] = React.useState(false) 
+    const [cadastrarOrdemServico, setCadastrarOrdemServico] = React.useState(false)  
+    const [incicarOrdemServico, setIniciarOrdemServico] = React.useState(false) 
     const [acao, setAcao] = React.useState(null)
     const [pessoa, setPessoa] = React.useState('')
 
@@ -114,7 +116,7 @@ const OrdemServico = (props)=>{
     {
         label:'Cadastrar',
         icon:<FontAwesomeIcon icon={faPlus} />,
-        props:{onClick:()=>setCadastrarOrdemServico(true), className:'btn btn-sm mx-2 btn-secondary'}
+        props:{onClick:()=>setIniciarOrdemServico(true), className:'btn btn-sm mx-2 btn-secondary'}
     }
     ];
 
@@ -171,6 +173,12 @@ const OrdemServico = (props)=>{
         setAtualizarOrdemServico(true);
     }
 
+    const iniciarOrdemServico = (idOrdemServico)=>{
+        setIniciarOrdemServico(idOrdemServico)
+        setAcao('iniciar')
+        setIniciarOrdemServico(true);
+    }
+
     const gerarTableOrdemServico = ()=>{
        
         let data = [];
@@ -203,12 +211,42 @@ const OrdemServico = (props)=>{
                                 },
                                 {
 
+                                    label:atual.name_filial,
+                                    propsRow:{}
+                                },
+                                {
+
                                     label:atual.name,
                                     propsRow:{}
                                 },
                                 {
 
-                                    label:atual.vrOrdemServico,
+                                    label:atual.status,
+                                    propsRow:{}
+                                },
+                                {
+
+                                    label:atual.name_profissional,
+                                    propsRow:{}
+                                },
+                                {
+
+                                    label:atual.name_rca,
+                                    propsRow:{}
+                                },
+                                {
+
+                                    label:atual.observacao,
+                                    propsRow:{}
+                                },
+                                {
+
+                                    label:atual.created_at,
+                                    propsRow:{}
+                                },
+                                {
+
+                                    label:atual.vr_final,
                                     propsRow:{}
                                 },
                             ]
@@ -231,7 +269,31 @@ const OrdemServico = (props)=>{
                 props:{}
             },
             {
-                label:'Descrição',
+                label:'Filial',
+                props:{}
+            },
+            {
+                label:'Cliente',
+                props:{}
+            },
+            {
+                label:'Status',
+                props:{}
+            },
+            {
+                label:'Profissional',
+                props:{}
+            },
+            {
+                label:'Vendedor',
+                props:{}
+            },
+            {
+                label:'Observação',
+                props:{}
+            },
+            {
+                label:'Iniciado em',
                 props:{}
             },
             {
@@ -248,7 +310,7 @@ const OrdemServico = (props)=>{
 
     const requestAllOrdemServicos = async() =>{
        
-        const {url, options} = SERVICO_ALL_POST({'name_servico':pessoa}, getToken());
+        const {url, options} = ORDEM_SERVICO_ALL_POST({'name_servico':pessoa}, getToken());
 
 
         const {response, json} = await request(url, options);
@@ -289,7 +351,7 @@ const OrdemServico = (props)=>{
                         },
                         {
                             props:{},
-                            label:'OrdemServico'
+                            label:'Ordem de servico'
                         }
                     ]}
             />
@@ -317,6 +379,11 @@ const OrdemServico = (props)=>{
             {
                 atualizarOrdemServico &&
                 <Atualizar atualizarOrdemServico={atualizarOrdemServico} setAtualizarOrdemServico={setAtualizarOrdemServico}  idOrdemServico={consultaChoice} setIdOrdemServico={setOrdemServicoChoice} callback={requestAllOrdemServicos} />
+            }
+
+            {
+                incicarOrdemServico &&
+                <Iniciar incicarOrdemServico={incicarOrdemServico} setIniciarOrdemServico={setIniciarOrdemServico} atualizarOrdemServico={atualizarOrdemServico} setAtualizarOrdemServico={setAtualizarOrdemServico}  idOrdemServico={consultaChoice} setIdOrdemServico={setOrdemServicoChoice} callback={requestAllOrdemServicos} />
             }
            
          </>

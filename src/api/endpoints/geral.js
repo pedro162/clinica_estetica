@@ -1531,6 +1531,226 @@ export const SERVICO_DELETE_POST = (id, token)=>{
 
 }
 
+
+//--- Ordem de Serviço  ----------------------------------
+export const ORDEM_SERVICO_ALL_POST = (data, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'POST',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        body:JSON.stringify(data)
+   };
+
+   return{
+        url:BASE_URL+'/api/ordem/servico/json',
+        options:myInit
+    }
+
+}
+export const ORDEM_SERVICO_ONE_GET = (id, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'GET',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        //body:JSON.stringify(data)
+   };
+
+   return{
+        url:BASE_URL+'/api/ordem/servico/info/'+id,
+        options:myInit
+    }
+
+}
+
+export const ORDEM_SERVICO_SAVE_POST = (data, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'POST',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        body:JSON.stringify(data)
+   };
+
+   return{
+        url:BASE_URL+'/api/ordem/servico/store',
+        options:myInit
+    }
+
+}
+
+export const ORDEM_SERVICO_UPDATE_POST = (id,data, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'PUT',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        body:JSON.stringify(data)
+   };
+
+   return{
+        url:BASE_URL+'/api/ordem/servico/update/'+id,
+        options:myInit
+    }
+
+}
+
+export const ORDEM_SERVICO_DELETE_POST = (id, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'GET',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+   };
+
+   return{
+        url:BASE_URL+'/api/ordem/servico/destroy/'+id,
+        options:myInit
+    }
+
+}
+
+
+//--- RCA  ----------------------------------
+export const RCA_ALL_POST = (data, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'POST',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        body:JSON.stringify(data)
+   };
+
+   return{
+        url:BASE_URL+'/api/rca/json',
+        options:myInit
+    }
+
+}
+export const RCA_ONE_GET = (id, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'GET',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        //body:JSON.stringify(data)
+   };
+
+   return{
+        url:BASE_URL+'/api/rca/info/'+id,
+        options:myInit
+    }
+
+}
+
+export const RCA_SAVE_POST = (data, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'POST',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        body:JSON.stringify(data)
+   };
+
+   return{
+        url:BASE_URL+'/api/rca/store',
+        options:myInit
+    }
+
+}
+
+export const RCA_UPDATE_POST = (id,data, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'PUT',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        body:JSON.stringify(data)
+   };
+
+   return{
+        url:BASE_URL+'/api/rca/update/'+id,
+        options:myInit
+    }
+
+}
+
+export const RCA_DELETE_POST = (id, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'GET',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+   };
+
+   return{
+        url:BASE_URL+'/api/rca/destroy/'+id,
+        options:myInit
+    }
+
+}
+
 //--- Agenda  ----------------------------------
 export const AGENDA_ALL_POST = (data, token)=>{
 
