@@ -14,118 +14,103 @@ import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible.js'
 import OrdemServicoItens from '../../OrdemServicoItens/index.js'
 import TableForm from '../../Relatorio/TableForm/index.js';
 
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, SERVICO_SAVE_POST, SERVICO_ALL_POST, SERVICO_UPDATE_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST} from '../../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, SERVICO_SAVE_POST, SERVICO_ALL_POST, SERVICO_UPDATE_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST, ORDEM_SERVICO_ONE_GET} from '../../../api/endpoints/geral.js'
 
 
-const FormOrdemServicoItens = ({dataOrdemServicoChoice, setIdOrdemServico, idOrdemServico, showModalCriarOrdemServico, setShowModalCriarOrdemServico, callback, atualizarOrdemServico, setAtualizarOrdemServico, carregando})=>{
-
+const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrdem ,callback,carregando})=>{
+	
 	const {data, error, request, loading} = useFetch();
 	const dataRequest = useFetch();
 
 	const {getToken, dataUser} = React.useContext(UserContex);
 	const [dataFiliais, setDataFiliais] = React.useState([])
-	const [dataItens, setDataItens] = React.useState([]);
+	const [dataItens, setDataItens] = React.useState(itensOrdem);
+    const [dataOrdemServico, setDataOrdemServico] = React.useState(null)
 
 	const userLogar =  ()=>{
         console.log('Aqui............')
     }
 
     const sendData = async ({
-    		name,
-    		vrDesconto,
+    		servico_id,
+    		vr_desconto,
+    		vrItem,
 		})=>{
 			
 
     	const data = {
-    		'name':name,
-    		'vrDesconto':vrDesconto,
+    		'servico_id':servico_id,
+    		'vr_desconto':vr_desconto,
+    		'vrItem':vrItem,
     	}
 
-		if(atualizarOrdemServico == true){
-            const {url, options} = SERVICO_UPDATE_POST(idOrdemServico, data, getToken());
+		const {url, options} = SERVICO_UPDATE_POST(idOrdemServico, data, getToken());
 
 
-            const {response, json} = await request(url, options);
-            console.log('Save consulta here')
-            console.log(json)
-            if(json){
-                console.log('Response Save consulta here')
-                console.log(json)
-                
-                callback();
-                setShowModalCriarOrdemServico();
-                setAtualizarOrdemServico(false);
-                setIdOrdemServico(null);
-            }
-
-        }else{
-
-
-        	const {url, options} = SERVICO_SAVE_POST(data, getToken());
-
-
-            const {response, json} = await request(url, options);
-            console.log('Save consulta here')
-            console.log(json)
-            if(json){
-                console.log('Response Save consulta here')
-            	console.log(json)
-            	
-            	callback();
-            	setShowModalCriarOrdemServico();
-                setAtualizarOrdemServico(false);
-            }
-
-        }
+		const {response, json} = await request(url, options);
+		console.log('Save consulta here')
+		console.log(json)
+		if(json){
+			console.log('Response Save consulta here')
+			console.log(json)
+			
+			callback();
+		}
     }
 
-    const requestAllFiliais = async() =>{
-       
-        const {url, options} = SERVICO_ALL_POST({}, getToken());
+	React.useEffect(()=>{
+		
+		const getOrdemServico = async ()=>{
+			if(dataOrdemServicoChoice > 0){
+				const {url, options} = ORDEM_SERVICO_ONE_GET(idOrdemServico, getToken());
+				const {response, json} = await request(url, options);
+				if(json){
+					
+					setDataOrdemServico(json)
+					 
+		        }else{
+		        	setDataOrdemServico([])
+		        }
+			}
+		}
 
-
-        const {response, json} = await dataRequest.request(url, options);
-        console.log('All consultas here')
-        console.log(json)
-        if(json){
-            setDataFiliais(json)
-        }else{
-
-        	setDataFiliais([]);
-        }
-
-            
-    }
+		getOrdemServico();
+		
+	}, [dataOrdemServicoChoice])
 
 	const dataToFormOrdemServicoItens = ()=>{
-    	let obj = {name:'', vrDesconto:''}
+    	let obj = {name:'', vr_desconto:'', id:'', servico_id:'', vrTotal:''}
     	if(dataOrdemServicoChoice && dataOrdemServicoChoice.hasOwnProperty('mensagem')){
     		let data = dataOrdemServicoChoice.mensagem;
            
+			if(data.hasOwnProperty('id')){
+                obj.id = data.id;
+    		}
+
     		if(data.hasOwnProperty('name')){
                 obj.name = data.name;
     		}
 
-    		if(data.hasOwnProperty('vrDesconto')){
-    			obj.vrDesconto = data.vrDesconto;
+			if(data.hasOwnProperty('servico_id')){
+                obj.servico_id = data.servico_id;
+    		}
+
+    		if(data.hasOwnProperty('vr_desconto')){
+    			obj.vr_desconto = data.vr_desconto;
+    		}
+
+			if(data.hasOwnProperty('vrTotal')){
+    			obj.vrTotal = data.vrTotal;
+    		}
+
+			if(data.hasOwnProperty('vrItem')){
+    			obj.vrItem = data.vrItem;
     		}
     		
     		
     	}
 
     	return obj;
-    }
-
-
-
-    const preparaFilialToForm = ()=>{
-    	if(dataFiliais.hasOwnProperty('mensagem') && Array.isArray(dataFiliais.mensagem) && dataFiliais.mensagem.length > 0){
-    		let filiais = dataFiliais.mensagem.map(({id, name}, index, arr)=>({label:name,valor:id,props:{}}))
-    		filiais.unshift({label:'Selecione...',valor:'',props:{selected:'selected', disabled:'disabled'}})
-    		
-    		return filiais;
-    	}
-    	return []
     }
 
 	const removeItem = (index)=>{
@@ -137,17 +122,6 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, setIdOrdemServico, idOrd
 			setDataItens(newData)
 		}
 	}
-
-	
-    React.useEffect(()=>{
-    	const requesFiliais = async ()=>{
-    		await requestAllFiliais();
-    	}
-    	
-    	requesFiliais();
-
-    }, []);
-
 
 	const gerarTableOrdemServico = ()=>{
        
@@ -176,15 +150,39 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, setIdOrdemServico, idOrd
                             acoes:acoesArr,
 							acaoTrash:()=>removeItem(i),
                             celBodyTableArr:[
-                                
                                 {
 
-                                    label:atual?.grupo,
+                                    label:atual?.servico_id,
+                                    propsRow:{}
+                                },
+                                {
+
+                                    label:atual?.servico?.name,
                                     propsRow:{}
                                 },
 								{
 
-                                    label:atual?.posicao,
+                                    label:atual?.qtd,
+                                    propsRow:{}
+                                },
+								{
+
+                                    label:atual?.vrItem,
+                                    propsRow:{}
+                                },
+								{
+
+                                    label:atual?.vrTotal,
+                                    propsRow:{}
+                                },
+								{
+
+                                    label:atual?.vr_desconto,
+                                    propsRow:{}
+                                },
+								{
+
+                                    label:atual?.vr_final,
                                     propsRow:{}
                                 },
 
@@ -212,7 +210,23 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, setIdOrdemServico, idOrd
                 props:{}
             },
             {
-                label:'Valor',
+                label:'QTDE',
+                props:{}
+            },
+            {
+                label:'VR ITEM',
+                props:{}
+            },
+            {
+                label:'TOT BRUTO',
+                props:{}
+            },
+            {
+                label:'VR DESCONTO',
+                props:{}
+            },
+            {
+                label:'VR FINAL',
                 props:{}
             }
         ]
@@ -234,17 +248,17 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, setIdOrdemServico, idOrd
 
                         const errors = {}
 
-                        /* if(!values.name){
-                            errors.name="Obrigatório"
-                        } */
+                        if(!values.servico_id){
+                            errors.servico_id="Obrigatório"
+                        }
 									
-						if(!values.vrDesconto){
-							errors.vrDesconto="Obrigatório"    			
+						if(!values.vrItem){
+							errors.vrItem="Obrigatório"    			
 						}
 
 
-						if(!values.name){
-						    errors.name="Obrigatório"
+						if(!values.qtd){
+						    errors.qtd="Obrigatório"
 						}
 
 						
@@ -329,7 +343,7 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, setIdOrdemServico, idOrd
 																			atributsContainer:{
 																				className:''
 																			},
-																			hookToLoadFromDescription:CLIENTES_ALL_POST,
+																			hookToLoadFromDescription:SERVICO_ALL_POST,
 																		}
 																	}
 																	component={Required}
@@ -351,12 +365,12 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, setIdOrdemServico, idOrd
 																		},
 																		atributsFormControl:{
 																			type:'text',
-																			name:'vrServico',
+																			name:'vrItem',
 																			placeholder:'0,00',
-																			id:'vrServico',
+																			id:'vrItem',
 																			onChange:handleChange,
 																			onBlur:handleBlur,
-																			value:values.vrServico,
+																			value:values.vrItem,
 																			className:estilos.input,
 																			size:"sm"
 																		},
@@ -369,7 +383,7 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, setIdOrdemServico, idOrd
 															
 																component={FormControlInput}
 															></Field>
-															<ErrorMessage className="alerta_error_form_label" name="vrServico" component="div" />
+															<ErrorMessage className="alerta_error_form_label" name="vrItem" component="div" />
 															
 														</Col>
 
@@ -384,12 +398,12 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, setIdOrdemServico, idOrd
 																		},
 																		atributsFormControl:{
 																			type:'text',
-																			name:'qtdServico',
+																			name:'qtd',
 																			placeholder:'0,00',
-																			id:'qtdServico',
+																			id:'qtd',
 																			onChange:handleChange,
 																			onBlur:handleBlur,
-																			value:values.qtdServico,
+																			value:values.qtd,
 																			className:estilos.input,
 																			size:"sm"
 																		},
@@ -402,7 +416,7 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, setIdOrdemServico, idOrd
 															
 																component={FormControlInput}
 															></Field>
-															<ErrorMessage className="alerta_error_form_label" name="qtdServico" component="div" />
+															<ErrorMessage className="alerta_error_form_label" name="qtd" component="div" />
 															
 														</Col>
 													</Row>
@@ -419,12 +433,12 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, setIdOrdemServico, idOrd
 																		},
 																		atributsFormControl:{
 																			type:'text',
-																			name:'vrDesconto',
+																			name:'vr_desconto',
 																			placeholder:'0,00',
-																			id:'vrDesconto',
+																			id:'vr_desconto',
 																			onChange:handleChange,
 																			onBlur:handleBlur,
-																			value:values.vrDesconto,
+																			value:values.vr_desconto,
 																			className:estilos.input,
 																			size:"sm"
 																		},
@@ -437,7 +451,7 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, setIdOrdemServico, idOrd
 															
 																component={FormControlInput}
 															></Field>
-															<ErrorMessage className="alerta_error_form_label" name="vrDesconto" component="div" />
+															<ErrorMessage className="alerta_error_form_label" name="vr_desconto" component="div" />
 															
 														</Col>
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import useFetch from '../../../Hooks/useFetch.js';
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, SERVICO_ONE_GET, GRUPOS_ALL_POST} from '../../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, ORDEM_SERVICO_ONE_GET, GRUPOS_ALL_POST} from '../../../api/endpoints/geral.js'
 import {UserContex} from '../../../Context/UserContex.js'
 import FormOrdemServico from '../FormOrdemServico/index.js'
 import Pesquisar from '../Pesquisar/index.js'
@@ -23,7 +23,7 @@ const Atualizar = ({idOrdemServico, setIdOrdemServico, callback, atualizarOrdemS
 		
 		const getOrdemServico = async ()=>{
 			if(idOrdemServico > 0){
-				const {url, options} = SERVICO_ONE_GET(idOrdemServico, getToken());
+				const {url, options} = ORDEM_SERVICO_ONE_GET(idOrdemServico, getToken());
 				const {response, json} = await request(url, options);
 				if(json){
 					

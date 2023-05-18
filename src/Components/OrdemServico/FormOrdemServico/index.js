@@ -13,7 +13,7 @@ import Load from '../../Utils/Load/index.js'
 import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible.js'
 import FormOrdemServicoItens from '../FormOrdemServicoItens/index.js'
 
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, SERVICO_SAVE_POST, SERVICO_ALL_POST, SERVICO_UPDATE_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST} from '../../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, SERVICO_SAVE_POST, SERVICO_ALL_POST, ORDEM_SERVICO_UPDATE_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST} from '../../../api/endpoints/geral.js'
 
 
 const FormOrdemServico = ({dataOrdemServicoChoice, setIdOrdemServico, idOrdemServico, showModalCriarOrdemServico, setShowModalCriarOrdemServico, callback, atualizarOrdemServico, setAtualizarOrdemServico, carregando})=>{
@@ -22,59 +22,45 @@ const FormOrdemServico = ({dataOrdemServicoChoice, setIdOrdemServico, idOrdemSer
 	const dataRequest = useFetch();
 
 	const {getToken, dataUser} = React.useContext(UserContex);
-	const [dataFiliais, setDataFiliais] = React.useState([])
+	const [dataFiliais, setDataFiliais] 	= React.useState([])
+	const [dataItens, setDataitens]		 	= React.useState([])
 
 	const userLogar =  ()=>{
         console.log('Aqui............')
     }
 
     const sendData = async ({
-    		name,
-    		vrDesconto,
+			rca_id,
+			filial_id,
+			pessoa_id,
+			profissional_id,
+			name_pessoa_contato
 		})=>{
 			
 
-    	const data = {
-    		'name':name,
-    		'vrDesconto':vrDesconto,
-    	}
+		const data = {
+			rca_id,
+			filial_id,
+			pessoa_id,
+			profissional_id,
+			name_pessoa_contato
+		}
 
-		if(atualizarOrdemServico == true){
-            const {url, options} = SERVICO_UPDATE_POST(idOrdemServico, data, getToken());
-
-
-            const {response, json} = await request(url, options);
-            console.log('Save consulta here')
-            console.log(json)
-            if(json){
-                console.log('Response Save consulta here')
-                console.log(json)
-                
-                callback();
-                setShowModalCriarOrdemServico();
-                setAtualizarOrdemServico(false);
-                setIdOrdemServico(null);
-            }
-
-        }else{
+		const {url, options} = ORDEM_SERVICO_UPDATE_POST(idOrdemServico, data, getToken());
 
 
-        	const {url, options} = SERVICO_SAVE_POST(data, getToken());
-
-
-            const {response, json} = await request(url, options);
-            console.log('Save consulta here')
-            console.log(json)
-            if(json){
-                console.log('Response Save consulta here')
-            	console.log(json)
-            	
-            	callback();
-            	setShowModalCriarOrdemServico();
-                setAtualizarOrdemServico(false);
-            }
-
-        }
+		const {response, json} = await request(url, options);
+		console.log('Save consulta here')
+		console.log(json)
+		if(json){
+			console.log('Response Save consulta here')
+			console.log(json)
+			
+			callback();
+			setShowModalCriarOrdemServico();
+			setAtualizarOrdemServico(false);
+			setIdOrdemServico(null);
+		}
     }
 
     const requestAllFiliais = async() =>{
@@ -96,18 +82,63 @@ const FormOrdemServico = ({dataOrdemServicoChoice, setIdOrdemServico, idOrdemSer
     }
 
 	const dataToFormOrdemServico = ()=>{
-    	let obj = {name:'', vrDesconto:''}
+    	let obj = {filial_id:'', vrTotal:'',
+			status:'', observacao:'', dsArquivo:'', pessoa_id:'', pessoa_rca_id:'', filial_id:'', user_id:'', user_update_id:'', active:'', deleted_at:'', created_at:'', updated_at:'', vr_final:'', vr_desconto:'', pct_acrescimo:'', vr_acrescimo:'', profissional_id:'', pct_desconto:''
+		}
     	if(dataOrdemServicoChoice && dataOrdemServicoChoice.hasOwnProperty('mensagem')){
     		let data = dataOrdemServicoChoice.mensagem;
-           
-    		if(data.hasOwnProperty('name')){
-                obj.name = data.name;
+			
+    		if(data.hasOwnProperty('filial_id')){
+                obj.filial_id = data.filial_id;
     		}
 
-    		if(data.hasOwnProperty('vrDesconto')){
-    			obj.vrDesconto = data.vrDesconto;
+    		if(data.hasOwnProperty('vrTotal')){
+    			obj.vrTotal = data.vrTotal;
     		}
-    		
+			
+			if(data.hasOwnProperty('status')){
+    			obj.status = data.status;
+    		}
+
+			if(data.hasOwnProperty('observacao')){
+    			obj.observacao = data.observacao;
+    		}
+
+			if(data.hasOwnProperty('dsArquivo')){
+    			obj.dsArquivo = data.dsArquivo;
+    		}
+
+			if(data.hasOwnProperty('pessoa_id')){
+    			obj.pessoa_id = data.pessoa_id;
+    		}
+
+			if(data.hasOwnProperty('pessoa_rca_id')){
+    			obj.pessoa_rca_id = data.pessoa_rca_id;
+    		}
+
+			if(data.hasOwnProperty('vr_final')){
+    			obj.vr_final = data.vr_final;
+    		}
+
+			if(data.hasOwnProperty('vr_desconto')){
+    			obj.vr_desconto = data.vr_desconto;
+    		}
+
+			if(data.hasOwnProperty('pct_acrescimo')){
+    			obj.pct_acrescimo = data.pct_acrescimo;
+    		}
+
+			if(data.hasOwnProperty('vr_acrescimo')){
+    			obj.vr_acrescimo = data.vr_acrescimo;
+    		}
+
+			if(data.hasOwnProperty('profissional_id')){
+    			obj.profissional_id = data.profissional_id;
+    		}
+
+			if(data.hasOwnProperty('pct_desconto')){
+    			obj.pct_desconto = data.pct_desconto;
+    		}
     		
     	}
 
@@ -125,6 +156,15 @@ const FormOrdemServico = ({dataOrdemServicoChoice, setIdOrdemServico, idOrdemSer
     	}
     	return []
     }
+
+	React.useEffect(()=>{
+
+		if(dataOrdemServicoChoice && dataOrdemServicoChoice.hasOwnProperty('mensagem')){
+			let data = dataOrdemServicoChoice.mensagem;
+			setDataitens(data?.item)
+		}
+		
+	}, [])
 
     React.useEffect(()=>{
     	const requesFiliais = async ()=>{
@@ -152,15 +192,18 @@ const FormOrdemServico = ({dataOrdemServicoChoice, setIdOrdemServico, idOrdemSer
                             errors.name="Obrigatório"
                         } */
 									
-						if(!values.vrDesconto){
-							errors.vrDesconto="Obrigatório"    			
+						if(!values.filial_id){
+							errors.filial_id="Obrigatório"    			
 						}
 
 
-						if(!values.name){
-						    errors.name="Obrigatório"
+						if(!values.pessoa_rca_id){
+						    errors.pessoa_rca_id="Obrigatório"
 						}
 
+						if(!values.pessoa_id){
+						    errors.pessoa_id="Obrigatório"
+						}
 						
 
                         return errors;
@@ -457,7 +500,12 @@ const FormOrdemServico = ({dataOrdemServicoChoice, setIdOrdemServico, idOrdemSer
 													fill
 													>
 														<Tab eventKey="servicos" title="Serviços">
-															<FormOrdemServicoItens/>
+															<FormOrdemServicoItens
+
+																idOrdemServico={idOrdemServico}
+																itensOrdem={dataItens}
+																setDataitens={setDataitens}
+															/>
 														</Tab>
 														<Tab eventKey="cobrancas" title="Cobranças">
 															
