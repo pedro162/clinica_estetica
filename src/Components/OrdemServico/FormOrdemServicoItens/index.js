@@ -14,7 +14,7 @@ import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible.js'
 import OrdemServicoItens from '../../OrdemServicoItens/index.js'
 import TableForm from '../../Relatorio/TableForm/index.js';
 
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, SERVICO_SAVE_POST, SERVICO_ALL_POST, SERVICO_UPDATE_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST, ORDEM_SERVICO_ONE_GET} from '../../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, SERVICO_SAVE_POST, SERVICO_ALL_POST, SERVICO_UPDATE_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST, ORDEM_SERVICO_ONE_GET, ORDEM_SERVICO_ADD_ITEM_POST, ORDEM_SERVICO_DELETE_ITEM_POST} from '../../../api/endpoints/geral.js'
 
 
 const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrdem ,callback,carregando})=>{
@@ -24,8 +24,9 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
 
 	const {getToken, dataUser} = React.useContext(UserContex);
 	const [dataFiliais, setDataFiliais] = React.useState([])
-	const [dataItens, setDataItens] = React.useState(itensOrdem);
+	const [dataItens, setDataItens] = React.useState([]);//itensOrdem
     const [dataOrdemServico, setDataOrdemServico] = React.useState(null)
+	const [dataBodyTable, setDataBodyTable] = React.useState([])
 
 	const userLogar =  ()=>{
         console.log('Aqui............')
@@ -35,48 +36,56 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
     		servico_id,
     		vr_desconto,
     		vrItem,
+			qtd,
 		})=>{
 			
-
+			console.log('Save consulta here')
     	const data = {
     		'servico_id':servico_id,
     		'vr_desconto':vr_desconto,
     		'vrItem':vrItem,
+			'qtd':qtd,
     	}
 
-		const {url, options} = SERVICO_UPDATE_POST(idOrdemServico, data, getToken());
+		const {url, options} = ORDEM_SERVICO_ADD_ITEM_POST(idOrdemServico, data, getToken());
 
 
 		const {response, json} = await request(url, options);
 		console.log('Save consulta here')
 		console.log(json)
 		if(json){
-			console.log('Response Save consulta here')
+			console.log('Response Save consulta here =====')
 			console.log(json)
-			
-			callback();
+			await getOrdemServico(idOrdemServico);
+			//callback();
 		}
     }
-
-	React.useEffect(()=>{
-		
-		const getOrdemServico = async ()=>{
-			if(dataOrdemServicoChoice > 0){
-				const {url, options} = ORDEM_SERVICO_ONE_GET(idOrdemServico, getToken());
-				const {response, json} = await request(url, options);
-				if(json){
-					
-					setDataOrdemServico(json)
-					 
-		        }else{
-		        	setDataOrdemServico([])
-		        }
+	const getOrdemServico = async (idOrdemServico)=>{
+		if(idOrdemServico > 0){
+			const {url, options} = ORDEM_SERVICO_ONE_GET(idOrdemServico, getToken());
+			const {response, json} = await request(url, options);
+			
+			if(json){
+				
+				setDataOrdemServico(json)
+				if(json && json.hasOwnProperty('mensagem')){
+					let data = json.mensagem;
+					setDataItens(data?.item)
+					console.log("=============== itens aqui =====================")
+					console.log(data?.item)
+				}
+				 
+			}else{
+				setDataOrdemServico([])
+				setDataItens([])
 			}
 		}
-
-		getOrdemServico();
+	}
+	React.useEffect(()=>{
 		
-	}, [dataOrdemServicoChoice])
+		getOrdemServico(idOrdemServico);
+		
+	}, [idOrdemServico])
 
 	const dataToFormOrdemServicoItens = ()=>{
     	let obj = {name:'', vr_desconto:'', id:'', servico_id:'', vrTotal:''}
@@ -113,13 +122,23 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
     	return obj;
     }
 
-	const removeItem = (index)=>{
-		console.log(index)
-		if(Array.isArray(dataItens) && dataItens.length > 0){
-			const newData = dataItens.filter((item, indexArr, Arr)=>{
-				return indexArr != index
-			})
-			setDataItens(newData)
+	const excluirItem = async (idItem)=>{
+
+		if(idItem > 0){
+			const {url, options} = ORDEM_SERVICO_DELETE_ITEM_POST(idItem, getToken());
+			const {response, json} = await request(url, options);
+			
+			if(json){
+				
+				await getOrdemServico(idOrdemServico);
+				 
+			}
+		}
+	}
+
+	const removeItem = (idItem)=>{
+		if(idItem > 0){
+			excluirItem(idItem)
 		}
 	}
 
@@ -148,7 +167,7 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
                         {
                             propsRow:{id:indexAtual},
                             acoes:acoesArr,
-							acaoTrash:()=>removeItem(i),
+							acaoTrash:()=>removeItem(atual?.id),
                             celBodyTableArr:[
                                 {
 
@@ -273,7 +292,7 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
                         setSubmitting(false);
                       }, 400);*/
                       //alert('aqui')
-					 
+					 console.log('=================kkkkk jfajflja======')
                      await sendData({...values});
                 }}
             >
@@ -348,7 +367,7 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
 																	}
 																	component={Required}
 															>   </Field>    
-															<ErrorMessage className="alerta_error_form_label" name="pessoa_id" component="div" />
+															<ErrorMessage className="alerta_error_form_label" name="servico_id" component="div" />
 														</Col>
 														
 													</Row>

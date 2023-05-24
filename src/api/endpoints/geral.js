@@ -1619,6 +1619,48 @@ export const ORDEM_SERVICO_UPDATE_POST = (id,data, token)=>{
     }
 
 }
+export const ORDEM_SERVICO_ADD_ITEM_POST = (id,data, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'PUT',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        body:JSON.stringify(data)
+   };
+
+   return{
+        url:BASE_URL+'/api/ordem/servico/adicionar/item/'+id,
+        options:myInit
+    }
+
+}
+export const ORDEM_SERVICO_DELETE_ITEM_POST = (id,token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'PUT',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        //body:JSON.stringify(data)
+   };
+
+   return{
+        url:BASE_URL+'/api/ordem/servico/remover/item/'+id,
+        options:myInit
+    }
+
+}
 
 export const ORDEM_SERVICO_DELETE_POST = (id, token)=>{
 
