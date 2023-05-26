@@ -57,6 +57,7 @@ const Required = ({data, url_btn, callback_selected, props_btn_search, label_btn
         //console.log(json)
         if(json && json.hasOwnProperty('mensagem')){
             let registro = json.mensagem[0];
+            callbackDataItemChoice(registro)
             console.log('R3egistro')
             console.log(registro)
             setCod(registro?.value)
@@ -64,6 +65,7 @@ const Required = ({data, url_btn, callback_selected, props_btn_search, label_btn
             setActiveSuggestion(0)
             setShowSuggestions(false)
         }else{
+            callbackDataItemChoice([])
             setCod('')
             setActiveSuggestion(0)
             setShowSuggestions(false)
@@ -100,6 +102,7 @@ const Required = ({data, url_btn, callback_selected, props_btn_search, label_btn
         //console.log(json)
         if(json && json.hasOwnProperty('mensagem')){
             let registro = json.mensagem[0];
+            callbackDataItemChoice(registro)
             console.log('R3egistro')
             console.log(registro)
             setCod(registro?.value)
@@ -107,6 +110,7 @@ const Required = ({data, url_btn, callback_selected, props_btn_search, label_btn
             setActiveSuggestion(0)
             setShowSuggestions(false)
         }else{
+            callbackDataItemChoice([])
             setCod('')
             setActiveSuggestion(0)
             setShowSuggestions(false)
@@ -153,6 +157,7 @@ const Required = ({data, url_btn, callback_selected, props_btn_search, label_btn
         setDescription(label)
         setActiveSuggestion(0)
         setShowSuggestions(false)
+        callbackDataItemChoice({label, value})
     }
 
     const onKeyDownSugestion = e => {
@@ -169,6 +174,7 @@ const Required = ({data, url_btn, callback_selected, props_btn_search, label_btn
             if(filteredSuggestions[activeSuggestion].hasOwnProperty('value')){
                 setCod(filteredSuggestions[activeSuggestion].value)
             }
+            callbackDataItemChoice(filteredSuggestions[activeSuggestion])
           }
           
 

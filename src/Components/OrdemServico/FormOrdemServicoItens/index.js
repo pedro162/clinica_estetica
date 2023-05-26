@@ -375,7 +375,7 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
 																				className:''
 																			},
 																			hookToLoadFromDescription:SERVICO_ALL_POST,
-																			callbackDataItemChoice:(param)=>console.log(param)
+																			callbackDataItemChoice:(param)=>{console.log('Dados do serviço excolhido');console.log(param);}
 																		}
 																	}
 																	component={Required}
