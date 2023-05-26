@@ -29,31 +29,50 @@ const Required = ({data, url_btn, callback_selected, props_btn_search, label_btn
     const contentLabel = data.hasOwnProperty('contentLabel') ? data.contentLabel : null;
     const atributsFormLabel =  data.hasOwnProperty('atributsFormLabel') ? data.atributsFormLabel : {};
 
-    const atributsFormControl =  data.hasOwnProperty('atributsFormControl') ? data.atributsFormControl : {};
+    const atributsFormControl = data.hasOwnProperty('atributsFormControl') ? data.atributsFormControl : {};
+    const atributsFormControlForm  = atributsFormControl;
+
     const name_cod = atributsFormControl.hasOwnProperty('name_cod') ? atributsFormControl.name_cod : null;
     const name_description = atributsFormControl.hasOwnProperty('name_desacription') ? atributsFormControl.name_desacription : null;
     
     const atributsContainer =  data.hasOwnProperty('atributsContainer') ? data.atributsContainer : {};
     const hookToLoadFromDescription =  data.hasOwnProperty('hookToLoadFromDescription') ? data.hookToLoadFromDescription : ()=>null;
+    const callbackDataItemChoice =  data.hasOwnProperty('callbackDataItemChoice') ? data.callbackDataItemChoice : ()=>null;
 
     
 
     const handleChangeCod = async ({target, ...event})=>{
-        setCod(target.value)
-        /*let data_get = target.value;
+        //setCod(registro?.value)
+        let data_get = target.value;
+        if(! (String(data_get).trim().length > 0)){
+            setCod('')
+            setDescription('')
+            setFilteredSuggestions([])
+            return false;
+        }
 
         const {url, options} = hookToLoadFromDescription({to_require:true, codigo_to_search:data_get}, getToken());
         const {response, json} = await request(url, options);
+        console.log('R3egistro')
+        //console.log(json)
         if(json && json.hasOwnProperty('mensagem')){
             let registro = json.mensagem[0];
+            console.log('R3egistro')
+            console.log(registro)
             setCod(registro?.value)
             setDescription(registro?.label)
-        }*/
+            setActiveSuggestion(0)
+            setShowSuggestions(false)
+        }else{
+            setCod('')
+            setActiveSuggestion(0)
+            setShowSuggestions(false)
+        }
     }
 
     const handleBlurCod = async ({target, ...event})=>{
         
-        let data_get = target.value;
+        /* let data_get = target.value;
 
         const {url, options} = hookToLoadFromDescription({to_require:true, codigo_to_search:data_get}, getToken());
         const {response, json} = await request(url, options);
@@ -61,9 +80,36 @@ const Required = ({data, url_btn, callback_selected, props_btn_search, label_btn
             let registro = json.mensagem[0];
             setCod(registro?.value)
             setDescription(registro?.label)
+            callbackDataItemChoice(registro)
         }else{
             setCod('')
             setDescription('')
+        } */
+
+        let data_get = target.value;
+        if(! (String(data_get).trim().length > 0)){
+            setCod('')
+            setDescription('')
+            setFilteredSuggestions([])
+            return false;
+        }
+
+        const {url, options} = hookToLoadFromDescription({to_require:true, codigo_to_search:data_get}, getToken());
+        const {response, json} = await request(url, options);
+        console.log('R3egistro')
+        //console.log(json)
+        if(json && json.hasOwnProperty('mensagem')){
+            let registro = json.mensagem[0];
+            console.log('R3egistro')
+            console.log(registro)
+            setCod(registro?.value)
+            setDescription(registro?.label)
+            setActiveSuggestion(0)
+            setShowSuggestions(false)
+        }else{
+            setCod('')
+            setActiveSuggestion(0)
+            setShowSuggestions(false)
         }
     }
 
@@ -175,8 +221,8 @@ const Required = ({data, url_btn, callback_selected, props_btn_search, label_btn
                                     name:name_cod,
                                     placeholder:'Cód',
                                     id:name_cod,
-                                    onChange:(ev)=>{atributsFormControl.onChange(ev);handleChangeCod(ev)},
-                                    onBlur:(ev)=>{atributsFormControl.onBlur(ev);handleBlurCod(ev)},
+                                    onChange:(ev)=>{atributsFormControlForm.onChange(ev);handleChangeCod(ev)},
+                                    onBlur:(ev)=>{atributsFormControlForm.onBlur(ev);handleBlurCod(ev)},
                                     value:cod,
                                     className:"",
                                     size:"sm",

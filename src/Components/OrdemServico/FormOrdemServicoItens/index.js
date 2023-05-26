@@ -34,7 +34,9 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
 
     const sendData = async ({
     		servico_id,
+			vrItemBruto,
     		vr_desconto,
+			pct_desconto,
     		vrItem,
 			qtd,
 		})=>{
@@ -43,7 +45,9 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
     	const data = {
     		'servico_id':servico_id,
     		'vr_desconto':vr_desconto,
+			'pct_desconto':pct_desconto,
     		'vrItem':vrItem,
+    		'vrItemBruto':vrItemBruto,
 			'qtd':qtd,
     	}
 
@@ -88,7 +92,7 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
 	}, [idOrdemServico])
 
 	const dataToFormOrdemServicoItens = ()=>{
-    	let obj = {name:'', vr_desconto:'', id:'', servico_id:'', vrTotal:''}
+    	let obj = {name:'', vr_desconto:'', pct_desconto: '', id:'', servico_id:'', vrTotal:'', vrItemBruto:''}
     	if(dataOrdemServicoChoice && dataOrdemServicoChoice.hasOwnProperty('mensagem')){
     		let data = dataOrdemServicoChoice.mensagem;
            
@@ -108,12 +112,20 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
     			obj.vr_desconto = data.vr_desconto;
     		}
 
+			if(data.hasOwnProperty('pct_desconto')){
+    			obj.pct_desconto = data.pct_desconto;
+    		}
+			
 			if(data.hasOwnProperty('vrTotal')){
     			obj.vrTotal = data.vrTotal;
     		}
 
 			if(data.hasOwnProperty('vrItem')){
     			obj.vrItem = data.vrItem;
+    		}
+
+			if(data.hasOwnProperty('vrItemBruto')){
+    			obj.vrItemBruto = data.vrItemBruto;
     		}
     		
     		
@@ -363,6 +375,7 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
 																				className:''
 																			},
 																			hookToLoadFromDescription:SERVICO_ALL_POST,
+																			callbackDataItemChoice:(param)=>console.log(param)
 																		}
 																	}
 																	component={Required}
@@ -372,6 +385,40 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
 														
 													</Row>
 													<Row className='mb-3'>
+
+														<Col xs="12" sm="12" md="6">
+															<Field
+																data={
+																	{
+																		hasLabel:true,
+																		contentLabel:'Valor bruto *',
+																		atributsFormLabel:{
+
+																		},
+																		atributsFormControl:{
+																			type:'text',
+																			name:'vrItemBruto',
+																			placeholder:'0,00',
+																			id:'vrItemBruto',
+																			onChange:handleChange,
+																			onBlur:handleBlur,
+																			value:values.vrItemBruto,
+																			className:estilos.input,
+																			size:"sm",
+																			readonly:"readonly"
+																		},
+																		options:[],
+																		atributsContainer:{
+																			className:''
+																		}
+																	}
+																}
+															
+																component={FormControlInput}
+															></Field>
+															<ErrorMessage className="alerta_error_form_label" name="vrItemBruto" component="div" />
+															
+														</Col>
 
 														<Col xs="12" sm="12" md="6">
 															<Field
@@ -405,7 +452,9 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
 															<ErrorMessage className="alerta_error_form_label" name="vrItem" component="div" />
 															
 														</Col>
-
+														
+													</Row>
+													<Row className='mb-3'>
 														<Col xs="12" sm="12" md="6">
 															<Field
 																data={
@@ -438,15 +487,49 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
 															<ErrorMessage className="alerta_error_form_label" name="qtd" component="div" />
 															
 														</Col>
-													</Row>
-													<Row className='mb-3'>
 
 														<Col xs="12" sm="12" md="6">
 															<Field
 																data={
 																	{
 																		hasLabel:true,
-																		contentLabel:'Desconto *',
+																		contentLabel:'% Desconto',
+																		atributsFormLabel:{
+
+																		},
+																		atributsFormControl:{
+																			type:'text',
+																			name:'pct_desconto',
+																			placeholder:'0,00',
+																			id:'pct_desconto',
+																			onChange:handleChange,
+																			onBlur:handleBlur,
+																			value:values.pct_desconto,
+																			className:estilos.input,
+																			size:"sm"
+																		},
+																		options:[],
+																		atributsContainer:{
+																			className:''
+																		}
+																	}
+																}
+															
+																component={FormControlInput}
+															></Field>
+															<ErrorMessage className="alerta_error_form_label" name="pct_desconto" component="div" />
+															
+														</Col>
+
+													</Row>
+
+													<Row className='mb-3'>
+													<Col xs="12" sm="12" md="6">
+															<Field
+																data={
+																	{
+																		hasLabel:true,
+																		contentLabel:'R$ Desconto',
 																		atributsFormLabel:{
 
 																		},
@@ -459,7 +542,8 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
 																			onBlur:handleBlur,
 																			value:values.vr_desconto,
 																			className:estilos.input,
-																			size:"sm"
+																			size:"sm",
+																			readonly:"readonly"
 																		},
 																		options:[],
 																		atributsContainer:{
