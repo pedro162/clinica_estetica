@@ -93,6 +93,7 @@ const Required = ({data, url_btn, callback_selected, props_btn_search, label_btn
             setCod('')
             setDescription('')
             setFilteredSuggestions([])
+            callbackDataItemChoice([])
             return false;
         }
 

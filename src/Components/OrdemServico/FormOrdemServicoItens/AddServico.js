@@ -17,25 +17,19 @@ import TableForm from '../../Relatorio/TableForm/index.js';
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, SERVICO_SAVE_POST, SERVICO_ALL_POST, SERVICO_UPDATE_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST, SERVICO_ONE_GET, ORDEM_SERVICO_ONE_GET, ORDEM_SERVICO_ADD_ITEM_POST, ORDEM_SERVICO_DELETE_ITEM_POST} from '../../../api/endpoints/geral.js'
 
 
-const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrdem ,callback,carregando})=>{
+const FormAddServico = ({dataServicoEscolhido, setIdServicoEscolhido, idOrdemServico, itensOrdem ,callback,carregando})=>{
 	
 	const {data, error, request, loading} = useFetch();
 	const dataRequest = useFetch();
 
 	const {getToken, dataUser} = React.useContext(UserContex);
-	const [dataFiliais, setDataFiliais] = React.useState([])
-	const [dataItens, setDataItens] = React.useState([]);//itensOrdem
-    const [dataOrdemServico, setDataOrdemServico] = React.useState(null)
-	const [dataBodyTable, setDataBodyTable] = React.useState([])
-	const [idServicoEscolhido, setIdServicoEscolhido] = React.useState(0)
-	const [dataServicoEscolhido, setDataServicoEscolhido] = React.useState([])
-	const [qtdSevicoForm, setQtdServicoForm] = React.useState(0)					//--- Controla a quantidade do serviço
-	const [pctDescontoServicoForm, setPctDescontoServicoForm] = React.useState(0) 	//--- Contrla o percentual de desconto do serviço
-	const [vrServicoForm, setVrServicoForm] = React.useState(0)						//--- Controla o valor do servico
 
 	const userLogar =  ()=>{
         console.log('Aqui............')
     }
+
+    console.log("dataServicoEscolhido")
+    console.log(dataServicoEscolhido)
 
     const sendData = async ({
     		servico_id,
@@ -65,63 +59,12 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
 		if(json){
 			console.log('Response Save consulta here =====')
 			console.log(json)
-			await getOrdemServico(idOrdemServico);
+			///await getOrdemServico(idOrdemServico);
 			//callback();
 		}
     }
-	const getOrdemServico = async (idOrdemServico)=>{
-		if(idOrdemServico > 0){
-			const {url, options} = ORDEM_SERVICO_ONE_GET(idOrdemServico, getToken());
-			const {response, json} = await request(url, options);
-			
-			if(json){
-				
-				setDataOrdemServico(json)
-				if(json && json.hasOwnProperty('mensagem')){
-					let data = json.mensagem;
-					setDataItens(data?.item)
-					
-				}
-				 
-			}else{
-				setDataOrdemServico([])
-				setDataItens([])
-			}
-		}
-	}
-	React.useEffect(()=>{
-		
-		getOrdemServico(idOrdemServico);
-		
-	}, [idOrdemServico])
 
-	const getServicoOrdem = async (idServico)=>{
-		if(idServico > 0){
-
-			const {url, options} = SERVICO_ONE_GET(idServico, getToken());
-			const {response, json} = await request(url, options);
-			
-			if(json){
-				
-				if(json && json.hasOwnProperty('mensagem')){
-					let data = json.mensagem;
-					console.log("Item escolhido: ",data)
-					setDataServicoEscolhido(data)
-				}else{
-					setDataServicoEscolhido([])
-				}
-				 
-			}else{
-				setDataServicoEscolhido([])
-			}
-		}
-	}
-
-	React.useEffect(()=>{
-		if(idServicoEscolhido > 0){
-			getServicoOrdem(idServicoEscolhido)
-		}
-	}, [idServicoEscolhido])
+    
 
 	const dataToFormOrdemServicoItens = ()=>{
     	let obj = {name:'', vr_desconto:0, pct_desconto: 0, id:'', servico_id:'', vrItem:0, vrTotal:0, vr_final:0 , vrItemBruto:0, qtd:1}
@@ -197,161 +140,16 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
     	return obj;
     }
 
-	React.useEffect(()=>{
 
-	}, [qtdSevicoForm])
-
-	React.useEffect(()=>{
-
-	}, [pctDescontoServicoForm])
-
-	React.useEffect(()=>{
-		
-
-
-	}, [vrServicoForm])
-
-	const excluirItem = async (idItem)=>{
-
-		if(idItem > 0){
-			const {url, options} = ORDEM_SERVICO_DELETE_ITEM_POST(idItem, getToken());
-			const {response, json} = await request(url, options);
-			
-			if(json){
-				
-				await getOrdemServico(idOrdemServico);
-				 
-			}
-		}
-	}
-
-	const removeItem = (idItem)=>{
-		if(idItem > 0){
-			excluirItem(idItem)
-		}
-	}
-
-	const gerarTableOrdemServico = ()=>{
-       
-        let data = [];
-        let dataRegistro = dataItens
-        if(dataRegistro && Array.isArray(dataRegistro) && dataRegistro.length > 0){
-            for(let i=0; !(i == dataRegistro.length); i++){
-                let atual = dataRegistro[i];
-				let indexAtual = (i+1);
-                if(atual){
-						//grupo, posicao
-					let acoesArr = [];
-					if(atual?.id > 0){
-						acoesArr.push({acao:()=>{
-								///setGrupo(atual?.grupo);
-								//setPosicao(atual?.posicao);
-								//setIdGrupo(atual?.id)
-
-							}, label:'Editar', propsOption:{'className':'btn btn-sm'}, propsLabel:{}})
-					}
-
-                    data.push(
-
-                        {
-                            propsRow:{id:indexAtual},
-                            acoes:acoesArr,
-							acaoTrash:()=>removeItem(atual?.id),
-                            celBodyTableArr:[
-                                {
-
-                                    label:atual?.servico_id,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual?.servico?.name,
-                                    propsRow:{}
-                                },
-								{
-
-                                    label:atual?.qtd,
-                                    propsRow:{}
-                                },
-								{
-
-                                    label:atual?.vrItem,
-                                    propsRow:{}
-                                },
-								{
-
-                                    label:atual?.vrTotal,
-                                    propsRow:{}
-                                },
-								{
-
-                                    label:atual?.vr_desconto,
-                                    propsRow:{}
-                                },
-								{
-
-                                    label:atual?.vr_final,
-                                    propsRow:{}
-                                },
-
-                            ]
-                        }
-
-                    )
-
-                }
-
-            }
-        }
-
-        return data;
-    }
-
-    const gerarTitleCobTable = ()=>{
-        let tableTitle = [
-            {
-                label:'Código',
-                props:{}
-            },
-            {
-                label:'Descrição',
-                props:{}
-            },
-            {
-                label:'QTDE',
-                props:{}
-            },
-            {
-                label:'VR ITEM',
-                props:{}
-            },
-            {
-                label:'TOT BRUTO',
-                props:{}
-            },
-            {
-                label:'VR DESCONTO',
-                props:{}
-            },
-            {
-                label:'VR FINAL',
-                props:{}
-            }
-        ]
-
-        return tableTitle;
-    }
-
-    const rowsTableArr 		= gerarTableOrdemServico();    
-    const titulosTableArr 	= gerarTitleCobTable();
-	const dataFormSev 		= dataToFormOrdemServicoItens()
+	const dataFormSev = dataToFormOrdemServicoItens()
+    console.log('dataFormSev')
+		console.log(dataFormSev)
 	return(
 
 		<>
 			 <Formik 
 
                 initialValues={{...dataFormSev}}
-				enableReinitialize={true}
                 validate={
                     values=>{
 
@@ -410,14 +208,8 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
 										<form onSubmit={handleSubmit}>
 											
 											<Row className="mb-3">
-												<Col xs="12" sm="12" md="4">
-													<Row className="my-3">
-														<Col xs="12" sm="12" md="12">
-															<span className="label_title_grup_forms">Adicionar serviço</span>
-															<hr/>
-														</Col>
-													</Row>
-
+												<Col xs="12" sm="12" md="12">
+													
 													{
 														error && <Row className="my-3">
 															<Col xs="12" sm="12" md="12">
@@ -683,30 +475,6 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
 														</Col>
 													</Row>
 												</Col>
-
-												<Col xs="12" sm="12" md="8">
-													<Row className="my-3">
-														<Col xs="12" sm="12" md="12">
-															<span className="label_title_grup_forms">Serviços adicionados</span>
-															<hr/>
-														</Col>
-													</Row>
-													<Row className="mb-3">
-														<Col xs="12" sm="12" md="12">
-															
-															<TableForm
-																titulosTableArr={titulosTableArr}
-																rowsTableArr={rowsTableArr}
-																loading={loading}
-																hasActionsCol={true}
-																hasTrashAction={true}
-																propsTrash={{className:'btn btn-sm btn-danger'}}
-
-															/>
-														</Col>
-													</Row>
-													
-												</Col>
 											</Row>
 											
 											             
@@ -725,4 +493,4 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
 	)
 }
 
-export default FormOrdemServicoItens;
+export default FormAddServico;

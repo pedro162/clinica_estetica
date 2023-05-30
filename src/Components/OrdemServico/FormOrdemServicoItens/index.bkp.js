@@ -29,9 +29,6 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
 	const [dataBodyTable, setDataBodyTable] = React.useState([])
 	const [idServicoEscolhido, setIdServicoEscolhido] = React.useState(0)
 	const [dataServicoEscolhido, setDataServicoEscolhido] = React.useState([])
-	const [qtdSevicoForm, setQtdServicoForm] = React.useState(0)					//--- Controla a quantidade do serviço
-	const [pctDescontoServicoForm, setPctDescontoServicoForm] = React.useState(0) 	//--- Contrla o percentual de desconto do serviço
-	const [vrServicoForm, setVrServicoForm] = React.useState(0)						//--- Controla o valor do servico
 
 	const userLogar =  ()=>{
         console.log('Aqui............')
@@ -80,7 +77,8 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
 				if(json && json.hasOwnProperty('mensagem')){
 					let data = json.mensagem;
 					setDataItens(data?.item)
-					
+					console.log("=============== itens aqui =====================")
+					console.log(data?.item)
 				}
 				 
 			}else{
@@ -196,20 +194,6 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
 
     	return obj;
     }
-
-	React.useEffect(()=>{
-
-	}, [qtdSevicoForm])
-
-	React.useEffect(()=>{
-
-	}, [pctDescontoServicoForm])
-
-	React.useEffect(()=>{
-		
-
-
-	}, [vrServicoForm])
 
 	const excluirItem = async (idItem)=>{
 
@@ -342,16 +326,18 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
         return tableTitle;
     }
 
-    const rowsTableArr 		= gerarTableOrdemServico();    
-    const titulosTableArr 	= gerarTitleCobTable();
-	const dataFormSev 		= dataToFormOrdemServicoItens()
+    const rowsTableArr = gerarTableOrdemServico();    
+    const titulosTableArr = gerarTitleCobTable();
+	console.log('==================================')
+	console.log(dataToFormOrdemServicoItens())
+	console.log('==================================')
+	const dataFormSev = dataToFormOrdemServicoItens()
 	return(
 
 		<>
 			 <Formik 
 
                 initialValues={{...dataFormSev}}
-				enableReinitialize={true}
                 validate={
                     values=>{
 
