@@ -154,18 +154,16 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
 			}
 
 			if(data.hasOwnProperty('pct_desconto')){
-				if(data.pct_desconto > 100){
-					obj.pct_desconto = 100
-				}else{
-					obj.pct_desconto = data.pct_desconto;
-				}
+				
+				obj.pct_desconto = data.pct_desconto;
     			
     		}else{
 				obj.pct_desconto = 0;
 			}
-
 			
-
+			if(obj.pct_desconto >= 100){
+				obj.pct_desconto = 100
+			}
 
 			if(data.hasOwnProperty('vrItemBruto')){
     			obj.vrItemBruto = data.vrItemBruto;
@@ -179,13 +177,15 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
 				obj.vrItem = data.vrServico;				
 			}
 
+			if(obj.vrItem < 0){
+				obj.vrItem = data.vrServico//obj.vrItemBruto
+			}
+
 			if(obj.vrItem > obj.vrItemBruto){
 				obj.vrItemBruto = obj.vrItem
 			}
 
-			if(obj.vrItem < 0){
-				obj.vrItem = obj.vrItemBruto
-			}
+			
 			
 			if(data.hasOwnProperty('vrTotal')){
     			obj.vrTotal = data.vrTotal;
@@ -688,12 +688,12 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
 																		},
 																		atributsFormControl:{
 																			type:'text',
-																			name:'vrTotal',
+																			name:'vr_final',
 																			placeholder:'0,00',
-																			id:'vrTotal',
+																			id:'vr_final',
 																			onChange:handleChange,
 																			onBlur:handleBlur,
-																			value:values.vrTotal,
+																			value:values.vr_final,
 																			className:estilos.input,
 																			size:"sm",
 																			readonly:"readonly"
@@ -707,7 +707,7 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
 															
 																component={FormControlInput}
 															></Field>
-															<ErrorMessage className="alerta_error_form_label" name="vrTotal" component="div" />
+															<ErrorMessage className="alerta_error_form_label" name="vr_final" component="div" />
 															
 														</Col>
 													</Row>
