@@ -142,22 +142,29 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
     		}
 
 			if(data.hasOwnProperty('qtd')){
-    			obj.qtd = data.qtd;
+    			
+				if(obj.qtd <= 0){
+					obj.qtd = 1
+				}else{
+					obj.qtd = data.qtd;
+				}
+
     		}else{
 				obj.qtd = 1;
 			}
 
-    		if(data.hasOwnProperty('vr_desconto')){
-    			obj.vr_desconto = data.vr_desconto;
-    		}else{
-				obj.vr_desconto = 0;
-			}
-
 			if(data.hasOwnProperty('pct_desconto')){
-    			obj.pct_desconto = data.pct_desconto;
+				if(data.pct_desconto > 100){
+					obj.pct_desconto = 100
+				}else{
+					obj.pct_desconto = data.pct_desconto;
+				}
+    			
     		}else{
 				obj.pct_desconto = 0;
 			}
+
+			
 
 
 			if(data.hasOwnProperty('vrItemBruto')){
@@ -169,7 +176,15 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
 			if(data.hasOwnProperty('vrItem')){
     			obj.vrItem = data.vrItem;
     		}else if(data.hasOwnProperty('vrServico')){	
-				obj.vrItem = data.vrServico;
+				obj.vrItem = data.vrServico;				
+			}
+
+			if(obj.vrItem > obj.vrItemBruto){
+				obj.vrItemBruto = obj.vrItem
+			}
+
+			if(obj.vrItem < 0){
+				obj.vrItem = obj.vrItemBruto
 			}
 			
 			if(data.hasOwnProperty('vrTotal')){
@@ -184,11 +199,21 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
 				obj.vrTotal = vrIt * qtdItem;
 			}
 
+
+
+    		if(data.hasOwnProperty('vr_desconto')){
+    			obj.vr_desconto = data.vr_desconto;
+    		}else{
+				obj.vr_desconto = (obj.vrItem * ( obj.pct_desconto/100));
+			}
+
 			if(data.hasOwnProperty('vr_final')){
     			obj.vr_final = data.vr_final;
     		}else{
-				obj.vr_final = obj.vrTotal;
+				obj.vr_final = obj.vrTotal - (obj.vr_desconto * obj.qtd);
 			}
+
+			
 			
     		
     		
@@ -198,16 +223,20 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
     }
 
 	React.useEffect(()=>{
-
+		setDataServicoEscolhido({...dataServicoEscolhido, qtd:qtdSevicoForm})
 	}, [qtdSevicoForm])
 
-	React.useEffect(()=>{
 
+	React.useEffect(()=>{
+		setDataServicoEscolhido({...dataServicoEscolhido, pct_desconto:pctDescontoServicoForm})
 	}, [pctDescontoServicoForm])
+
 
 	React.useEffect(()=>{
 		
-
+		if(vrServicoForm){
+			setDataServicoEscolhido({...dataServicoEscolhido, vrItem:vrServicoForm})
+		}
 
 	}, [vrServicoForm])
 
@@ -473,7 +502,7 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
 														<Col xs="12" sm="12" md="6">
 															<Field
 																data={
-																	{
+																	{//
 																		hasLabel:true,
 																		contentLabel:'Valor bruto *',
 																		atributsFormLabel:{
@@ -518,8 +547,10 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
 																			name:'vrItem',
 																			placeholder:'0,00',
 																			id:'vrItem',
-																			onChange:handleChange,
-																			onBlur:handleBlur,
+																			onChange:(ev)=>{ setVrServicoForm(ev.target.value);handleChange(ev)},
+																			onBlur:(ev)=>{ setVrServicoForm(ev.target.value);handleBlur(ev)},
+																			//onChange:handleChange,
+																			//onBlur:handleBlur,
 																			value:values.vrItem,
 																			className:estilos.input,
 																			size:"sm"
@@ -553,8 +584,10 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
 																			name:'qtd',
 																			placeholder:'0,00',
 																			id:'qtd',
-																			onChange:handleChange,
-																			onBlur:handleBlur,
+																			onChange:(ev)=>{ setQtdServicoForm(ev.target.value);handleChange(ev)},
+																			onBlur:(ev)=>{ setQtdServicoForm(ev.target.value);handleBlur(ev)},
+																			//onChange:handleChange,
+																			//onBlur:handleBlur,
 																			value:values.qtd,
 																			className:estilos.input,
 																			size:"sm"
@@ -586,8 +619,10 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
 																			name:'pct_desconto',
 																			placeholder:'0,00',
 																			id:'pct_desconto',
-																			onChange:handleChange,
-																			onBlur:handleBlur,
+																			onChange:(ev)=>{ setPctDescontoServicoForm(ev.target.value);handleChange(ev)},
+																			onBlur:(ev)=>{ setPctDescontoServicoForm(ev.target.value);handleBlur(ev)},
+																			//onChange:handleChange,
+																			//onBlur:handleBlur,
 																			value:values.pct_desconto,
 																			className:estilos.input,
 																			size:"sm"
