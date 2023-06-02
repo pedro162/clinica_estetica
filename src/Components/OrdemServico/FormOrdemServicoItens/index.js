@@ -138,7 +138,7 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
     		}
 
 			if(data.hasOwnProperty('servico_id')){
-                obj.servico_id = data.servico_id;
+                //obj.servico_id = data.servico_id;
     		}
 
 			if(data.hasOwnProperty('qtd')){
@@ -177,35 +177,33 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
 				obj.vrItem = data.vrServico;				
 			}
 
-			if(obj.vrItem < 0){
-				obj.vrItem = data.vrServico//obj.vrItemBruto
+			if(Number(obj.vrItem) <= 0){
+				obj.vrItem = data.vrServico //obj.vrItemBruto
 			}
 
-			if(obj.vrItem > obj.vrItemBruto){
+			if(Number(obj.vrItem) > Number(obj.vrItemBruto)){
 				obj.vrItemBruto = obj.vrItem
 			}
 
-			
+			if(data.hasOwnProperty('vr_desconto')){
+    			obj.vr_desconto = data.vr_desconto;
+    		}else{
+				obj.vr_desconto = (obj.vrItemBruto * ( obj.pct_desconto/100));
+			}
+
+			obj.vrItem = obj.vrItemBruto - obj.vr_desconto;
 			
 			if(data.hasOwnProperty('vrTotal')){
     			obj.vrTotal = data.vrTotal;
     		}else{
 
-				let vrIt = obj.hasOwnProperty('vrItem') ? obj.vrItem : 0;
+				let vrIt = obj.hasOwnProperty('vrItemBruto') ? obj.vrItemBruto : 0;
 				let qtdItem = obj.hasOwnProperty('qtd') ? obj.qtd : 1;
 				qtdItem = Number(qtdItem)
 				vrIt 	= Number(vrIt)
-				console.log('Aqui.....')
 				obj.vrTotal = vrIt * qtdItem;
 			}
 
-
-
-    		if(data.hasOwnProperty('vr_desconto')){
-    			obj.vr_desconto = data.vr_desconto;
-    		}else{
-				obj.vr_desconto = (obj.vrItem * ( obj.pct_desconto/100));
-			}
 
 			if(data.hasOwnProperty('vr_final')){
     			obj.vr_final = data.vr_final;
