@@ -14,10 +14,10 @@ import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible.js'
 import OrdemServicoItens from '../../OrdemServicoItens/index.js'
 import TableForm from '../../Relatorio/TableForm/index.js';
 
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, SERVICO_SAVE_POST, SERVICO_ALL_POST, SERVICO_UPDATE_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST, SERVICO_ONE_GET, ORDEM_SERVICO_ONE_GET, ORDEM_SERVICO_ADD_ITEM_POST, ORDEM_SERVICO_DELETE_ITEM_POST} from '../../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, SERVICO_SAVE_POST, ORDEM_SERVICO_ITENS_ONE_GET , SERVICO_ALL_POST, SERVICO_UPDATE_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST, SERVICO_ONE_GET, ORDEM_SERVICO_ONE_GET, ORDEM_SERVICO_ADD_ITEM_POST, ORDEM_SERVICO_DELETE_ITEM_POST} from '../../../api/endpoints/geral.js'
 
 
-const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrdem ,callback,carregando})=>{
+const FormOrdemServicoItens = ({dataOrdemServicoChoice, setDataOrdemServicoGlobal, idOrdemServico, itensOrdem ,callback,carregando})=>{
 	
 	const {data, error, request, loading} = useFetch();
 	const dataRequest = useFetch();
@@ -27,6 +27,8 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
 	const [dataItens, setDataItens] = React.useState([]);//itensOrdem
     const [dataOrdemServico, setDataOrdemServico] = React.useState(null)
 	const [dataBodyTable, setDataBodyTable] = React.useState([])
+	const [idItemOrdemServico, setIdItemOrdemServico] = React.useState(0)
+	const [dataServicoItemEscolhido, setDataServicoItemEscolhido] = React.useState([])
 	const [idServicoEscolhido, setIdServicoEscolhido] = React.useState(0)
 	const [dataServicoEscolhido, setDataServicoEscolhido] = React.useState([])
 	const [qtdSevicoForm, setQtdServicoForm] = React.useState(0)					//--- Controla a quantidade do serviço
@@ -66,6 +68,8 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
 			console.log('Response Save consulta here =====')
 			console.log(json)
 			await getOrdemServico(idOrdemServico);
+			setDataServicoEscolhido([])
+			setDataOrdemServico()
 			//callback();
 		}
     }
@@ -77,6 +81,7 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
 			if(json){
 				
 				setDataOrdemServico(json)
+				setDataOrdemServicoGlobal(json)
 				if(json && json.hasOwnProperty('mensagem')){
 					let data = json.mensagem;
 					setDataItens(data?.item)
@@ -123,6 +128,35 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
 		}
 	}, [idServicoEscolhido])
 
+
+	const getItemOrdemServico = async (idItemOrdemServico)=>{
+		if(idItemOrdemServico > 0){
+
+			const {url, options} = ORDEM_SERVICO_ITENS_ONE_GET(idItemOrdemServico, getToken());
+			const {response, json} = await request(url, options);
+			
+			if(json){
+				
+				if(json && json.hasOwnProperty('mensagem')){
+					let data = json.mensagem;
+					console.log("Item ordem serviço escolhido: ",data)
+					setDataServicoItemEscolhido(data)
+				}else{
+					setDataServicoItemEscolhido([])
+				}
+				 
+			}else{
+				setDataServicoItemEscolhido([])
+			}
+		}
+	}
+
+	React.useEffect(()=>{
+		if(idItemOrdemServico > 0){
+			getItemOrdemServico(idItemOrdemServico)
+		}
+	}, [idItemOrdemServico])
+
 	const dataToFormOrdemServicoItens = ()=>{
     	let obj = {name:'', vr_desconto:0, pct_desconto: 0, id:'', servico_id:'', vrItem:0, vrTotal:0, vr_final:0 , vrItemBruto:0, qtd:1}
     	if(dataServicoEscolhido){
@@ -131,6 +165,7 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
            
 			if(data.hasOwnProperty('id')){
                 obj.id = data.id;
+				obj.servico_id = data.id;
     		}
 
     		if(data.hasOwnProperty('name')){
@@ -138,7 +173,7 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
     		}
 
 			if(data.hasOwnProperty('servico_id')){
-                //obj.servico_id = data.servico_id;
+                obj.servico_id = data.servico_id;
     		}
 
 			if(data.hasOwnProperty('qtd')){
@@ -274,7 +309,7 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
 								///setGrupo(atual?.grupo);
 								//setPosicao(atual?.posicao);
 								//setIdGrupo(atual?.id)
-
+								setIdItemOrdemServico(atual?.id)
 							}, label:'Editar', propsOption:{'className':'btn btn-sm'}, propsLabel:{}})
 					}
 

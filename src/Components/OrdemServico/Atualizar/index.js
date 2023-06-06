@@ -54,7 +54,7 @@ const Atualizar = ({idOrdemServico, setIdOrdemServico, callback, atualizarOrdemS
 			}
 
 			{dataOrdemServico && 
-				<FormOrdemServico setIdOrdemServico={setIdOrdemServico} idOrdemServico={idOrdemServico} carregando={false} dataOrdemServicoChoice={dataOrdemServico} setAtualizarOrdemServico={setAtualizarOrdemServico} atualizarOrdemServico={atualizarOrdemServico} showModalCriarOrdemServico={showModalAtualizarOrdemServico} setShowModalCriarOrdemServico={setShowModalAtualizarOrdemServico} callback={callback} />
+				<FormOrdemServico setDataOrdemServico={setDataOrdemServico} setIdOrdemServico={setIdOrdemServico} idOrdemServico={idOrdemServico} carregando={false} dataOrdemServicoChoice={dataOrdemServico} setAtualizarOrdemServico={setAtualizarOrdemServico} atualizarOrdemServico={atualizarOrdemServico} showModalCriarOrdemServico={showModalAtualizarOrdemServico} setShowModalCriarOrdemServico={setShowModalAtualizarOrdemServico} callback={callback} />
 			}
 		</>
 	)

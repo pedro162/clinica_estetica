@@ -231,7 +231,7 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
 								///setGrupo(atual?.grupo);
 								//setPosicao(atual?.posicao);
 								//setIdGrupo(atual?.id)
-
+								setIdServicoEscolhido(atual?.id)
 							}, label:'Editar', propsOption:{'className':'btn btn-sm'}, propsLabel:{}})
 					}
 

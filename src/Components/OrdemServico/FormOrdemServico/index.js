@@ -16,7 +16,7 @@ import FormOrdemServicoItens from '../FormOrdemServicoItens/index.js'
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, SERVICO_SAVE_POST, SERVICO_ALL_POST, ORDEM_SERVICO_UPDATE_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST} from '../../../api/endpoints/geral.js'
 
 
-const FormOrdemServico = ({dataOrdemServicoChoice, setIdOrdemServico, idOrdemServico, showModalCriarOrdemServico, setShowModalCriarOrdemServico, callback, atualizarOrdemServico, setAtualizarOrdemServico, carregando})=>{
+const FormOrdemServico = ({dataOrdemServicoChoice, setDataOrdemServico, setIdOrdemServico, idOrdemServico, showModalCriarOrdemServico, setShowModalCriarOrdemServico, callback, atualizarOrdemServico, setAtualizarOrdemServico, carregando})=>{
 
 	const {data, error, request, loading} = useFetch();
 	const dataRequest = useFetch();
@@ -183,6 +183,7 @@ const FormOrdemServico = ({dataOrdemServicoChoice, setIdOrdemServico, idOrdemSer
 			 <Formik 
 
                 initialValues={{...dataToFormOrdemServico()}}
+				enableReinitialize={true}
                 validate={
                     values=>{
 
@@ -434,14 +435,14 @@ const FormOrdemServico = ({dataOrdemServicoChoice, setIdOrdemServico, idOrdemSer
 																	},
 																	atributsFormControl:{
 																		type:'text',
-																		name:'vrDesconto',
+																		name:'vr_desconto',
 																		placeholder:'0,00',
-																		id:'vrDesconto',
-																		name_cod:'vrDesconto',
-																		name_desacription:'vrDesconto',
+																		id:'vr_desconto',
+																		name_cod:'vr_desconto',
+																		name_desacription:'vr_desconto',
 																		onChange:handleChange,
 																		onBlur:handleBlur,
-																		value:values.vrDesconto,
+																		value:values.vr_desconto,
 																		className:`${estilos.input}`,
 																		size:"sm",
 																		readonly:'readonly',
@@ -453,7 +454,7 @@ const FormOrdemServico = ({dataOrdemServicoChoice, setIdOrdemServico, idOrdemSer
 															}
 															component={FormControlInput}
 													>   </Field>    
-													<ErrorMessage className="alerta_error_form_label" name="vrDesconto" component="div" />
+													<ErrorMessage className="alerta_error_form_label" name="vr_desconto" component="div" />
 												</Col>
 
 
@@ -468,14 +469,14 @@ const FormOrdemServico = ({dataOrdemServicoChoice, setIdOrdemServico, idOrdemSer
 																	},
 																	atributsFormControl:{
 																		type:'text',
-																		name:'vrLiquido',
+																		name:'vr_final',
 																		placeholder:'0,00',
-																		id:'vrLiquido',
-																		name_cod:'vrLiquido',
-																		name_desacription:'vrLiquido',
+																		id:'vr_final',
+																		name_cod:'vr_final',
+																		name_desacription:'vr_final',
 																		onChange:handleChange,
 																		onBlur:handleBlur,
-																		value:values.vrLiquido,
+																		value:values.vr_final,
 																		className:`${estilos.input}`,
 																		size:"sm",
 																		readonly:'readonly',
@@ -487,7 +488,7 @@ const FormOrdemServico = ({dataOrdemServicoChoice, setIdOrdemServico, idOrdemSer
 															}
 															component={FormControlInput}
 													>   </Field>    
-													<ErrorMessage className="alerta_error_form_label" name="vrLiquido" component="div" />
+													<ErrorMessage className="alerta_error_form_label" name="vr_final" component="div" />
 												</Col>
 											</Row>
 											
@@ -505,6 +506,7 @@ const FormOrdemServico = ({dataOrdemServicoChoice, setIdOrdemServico, idOrdemSer
 																idOrdemServico={idOrdemServico}
 																itensOrdem={dataItens}
 																setDataitens={setDataitens}
+																setDataOrdemServicoGlobal={setDataOrdemServico}
 															/>
 														</Tab>
 														<Tab eventKey="cobrancas" title="Cobranças">
