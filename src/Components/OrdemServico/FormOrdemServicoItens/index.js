@@ -140,7 +140,16 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, setDataOrdemServicoGloba
 				if(json && json.hasOwnProperty('mensagem')){
 					let data = json.mensagem;
 					console.log("Item ordem serviço escolhido: ",data)
+					let {id, servico_id, servico} = data
+					
 					setDataServicoItemEscolhido(data)
+
+					console.log('servico_id:',servico_id)
+					data.id = servico_id;
+					data.os_item_id = id;
+					data.name = servico?.name;
+					console.table(data)
+					setDataServicoEscolhido(data)
 				}else{
 					setDataServicoItemEscolhido([])
 				}
@@ -158,17 +167,21 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, setDataOrdemServicoGloba
 	}, [idItemOrdemServico])
 
 	const dataToFormOrdemServicoItens = ()=>{
-    	let obj = {name:'', vr_desconto:0, pct_desconto: 0, id:'', servico_id:'', vrItem:0, vrTotal:0, vr_final:0 , vrItemBruto:0, qtd:1}
+    	let obj = {name:'', vr_desconto:0, pct_desconto: 0, id:'', servico_id:'', vrItem:0, vrTotal:0, vr_final:0 , vrItemBruto:0, qtd:1, os_item_id:null}
     	if(dataServicoEscolhido){
 			console.log('Conteceu...')
     		let data = dataServicoEscolhido;
-           
+
 			if(data.hasOwnProperty('id')){
                 obj.id = data.id;
 				obj.servico_id = data.id;
     		}
+           
+			if(data.hasOwnProperty('os_item_id')){
+                obj.os_item_id = data.os_item_id;
+    		}
 
-    		if(data.hasOwnProperty('name')){
+			if(data.hasOwnProperty('name')){
                 obj.name = data.name;
     		}
 
@@ -488,9 +501,11 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, setDataOrdemServicoGloba
 														</Row>
 													}
 													<Row className='mb-3'>
+													{console.log('Serviço teste 000333: ',values.name)}
 
 														<Col xs="12" sm="12" md="12">
 															<Field
+																
 																	data={
 																		{
 																			hasLabel:true,
@@ -510,6 +525,7 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, setDataOrdemServicoGloba
 																				onChange:handleChange,
 																				onBlur:handleBlur,
 																				value:values.servico_id,
+																				name_servico:values.name,
 																				className:`${estilos.input}`,
 																				size:"sm"
 																			},

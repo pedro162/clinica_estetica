@@ -31,6 +31,7 @@ const Required = ({data, url_btn, callback_selected, props_btn_search, label_btn
 
     const atributsFormControl = data.hasOwnProperty('atributsFormControl') ? data.atributsFormControl : {};
     const atributsFormControlForm  = atributsFormControl;
+    
 
     const name_cod = atributsFormControl.hasOwnProperty('name_cod') ? atributsFormControl.name_cod : null;
     const name_description = atributsFormControl.hasOwnProperty('name_desacription') ? atributsFormControl.name_desacription : null;
@@ -39,11 +40,8 @@ const Required = ({data, url_btn, callback_selected, props_btn_search, label_btn
     const hookToLoadFromDescription =  data.hasOwnProperty('hookToLoadFromDescription') ? data.hookToLoadFromDescription : ()=>null;
     const callbackDataItemChoice =  data.hasOwnProperty('callbackDataItemChoice') ? data.callbackDataItemChoice : ()=>null;
 
-    
-
-    const handleChangeCod = async ({target, ...event})=>{
-        //setCod(registro?.value)
-        let data_get = target.value;
+    const getServicoById = async (idjServico)=>{
+        let data_get = idjServico;
         if(! (String(data_get).trim().length > 0)){
             setCod('')
             setDescription('')
@@ -70,6 +68,39 @@ const Required = ({data, url_btn, callback_selected, props_btn_search, label_btn
             setActiveSuggestion(0)
             setShowSuggestions(false)
         }
+    }
+
+    const handleChangeCod =  ({target, ...event})=>{
+        //setCod(registro?.value)
+
+        getServicoById(target?.value)
+        /* let data_get = target.value;
+        if(! (String(data_get).trim().length > 0)){
+            setCod('')
+            setDescription('')
+            setFilteredSuggestions([])
+            return false;
+        }
+
+        const {url, options} = hookToLoadFromDescription({to_require:true, codigo_to_search:data_get}, getToken());
+        const {response, json} = await request(url, options);
+        console.log('R3egistro')
+        //console.log(json)
+        if(json && json.hasOwnProperty('mensagem')){
+            let registro = json.mensagem[0];
+            callbackDataItemChoice(registro)
+            console.log('R3egistro')
+            console.log(registro)
+            setCod(registro?.value)
+            setDescription(registro?.label)
+            setActiveSuggestion(0)
+            setShowSuggestions(false)
+        }else{
+            callbackDataItemChoice([])
+            setCod('')
+            setActiveSuggestion(0)
+            setShowSuggestions(false)
+        } */
     }
 
     const handleBlurCod = async ({target, ...event})=>{
@@ -204,6 +235,13 @@ const Required = ({data, url_btn, callback_selected, props_btn_search, label_btn
 
         
     }, [cadastrarProfissionais])
+
+    React.useEffect(()=>{
+        setCod(atributsFormControlForm?.value)
+        setDescription(atributsFormControlForm?.name_servico)
+
+    }, [atributsFormControlForm.value,atributsFormControlForm?.name_servico])
+    //setCod(atributsFormControlForm?.value)
     
 
     return(
