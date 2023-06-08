@@ -46,6 +46,8 @@ const Required = ({data, url_btn, callback_selected, props_btn_search, label_btn
             setCod('')
             setDescription('')
             setFilteredSuggestions([])
+            callbackDataItemChoice([])
+            //alert('aqui')
             return false;
         }
 
@@ -53,7 +55,7 @@ const Required = ({data, url_btn, callback_selected, props_btn_search, label_btn
         const {response, json} = await request(url, options);
         console.log('R3egistro')
         //console.log(json)
-        if(json && json.hasOwnProperty('mensagem')){
+        if(json && json.hasOwnProperty('mensagem') && json.mensagem.length > 0){
             let registro = json.mensagem[0];
             callbackDataItemChoice(registro)
             console.log('R3egistro')

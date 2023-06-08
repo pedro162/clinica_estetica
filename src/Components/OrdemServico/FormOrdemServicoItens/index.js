@@ -123,9 +123,17 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, setDataOrdemServicoGloba
 	}
 
 	React.useEffect(()=>{
-		if(idServicoEscolhido > 0){
+		if(idServicoEscolhido && idServicoEscolhido > 0){
 			getServicoOrdem(idServicoEscolhido)
+			setIdItemOrdemServico(null)
+			setDataServicoItemEscolhido([])
+		}else{
+			setDataServicoEscolhido([])
+			//getServicoOrdem(null)
+			//setIdItemOrdemServico(null)
+			//setDataServicoItemEscolhido([])
 		}
+
 	}, [idServicoEscolhido])
 
 
@@ -152,18 +160,25 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, setDataOrdemServicoGloba
 					setDataServicoEscolhido(data)
 				}else{
 					setDataServicoItemEscolhido([])
+					setDataServicoEscolhido([])
 				}
 				 
 			}else{
 				setDataServicoItemEscolhido([])
+				setDataServicoEscolhido([])
 			}
+		}else{
+
+			setDataServicoItemEscolhido([])
+			setDataServicoEscolhido([])
 		}
 	}
 
 	React.useEffect(()=>{
-		if(idItemOrdemServico > 0){
+		/* if(idItemOrdemServico > 0){
 			getItemOrdemServico(idItemOrdemServico)
-		}
+		} */
+		getItemOrdemServico(idItemOrdemServico)
 	}, [idItemOrdemServico])
 
 	const dataToFormOrdemServicoItens = ()=>{
