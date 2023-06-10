@@ -13,6 +13,7 @@ import Load from '../../Utils/Load/index.js'
 import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible.js'
 import OrdemServicoItens from '../../OrdemServicoItens/index.js'
 import TableForm from '../../Relatorio/TableForm/index.js';
+import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../../functions/index.js'
 
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, SERVICO_SAVE_POST, ORDEM_SERVICO_ITENS_ONE_GET , SERVICO_ALL_POST, SERVICO_UPDATE_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST, SERVICO_ONE_GET, ORDEM_SERVICO_ONE_GET, ORDEM_SERVICO_ADD_ITEM_POST, ORDEM_SERVICO_DELETE_ITEM_POST} from '../../../api/endpoints/geral.js'
 
@@ -46,6 +47,7 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, setDataOrdemServicoGloba
 			pct_desconto,
     		vrItem,
 			qtd,
+			os_item_id,
 		})=>{
 			
 			console.log('Save consulta here')
@@ -56,6 +58,7 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, setDataOrdemServicoGloba
     		'vrItem':vrItem,
     		'vrItemBruto':vrItemBruto,
 			'qtd':qtd,
+			os_item_id,
     	}
 
 		const {url, options} = ORDEM_SERVICO_ADD_ITEM_POST(idOrdemServico, data, getToken());
@@ -181,11 +184,190 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, setDataOrdemServicoGloba
 		getItemOrdemServico(idItemOrdemServico)
 	}, [idItemOrdemServico])
 
+	const dataToFormOrdemServicoItensBkp = ()=>{
+    	let obj = {name:'', vr_desconto:0, pct_desconto: 0, id:'', servico_id:'', vrItem:0, vrTotal:0, vr_final:0 , vrItemBruto:0, qtd:1, os_item_id:null}
+    	if(dataServicoEscolhido){
+			console.log('Conteceu...')
+    		let data = dataServicoEscolhido;
+			console.table(dataServicoEscolhido)
+			console.log('Conteceu...')
+
+			if(data.hasOwnProperty('id')){
+                obj.id = data.id;
+				obj.servico_id = data.id;
+    		}
+           
+			if(data.hasOwnProperty('os_item_id')){
+                obj.os_item_id = data.os_item_id;
+    		}
+
+			if(data.hasOwnProperty('name')){
+                obj.name = data.name;
+    		}
+
+			if(data.hasOwnProperty('servico_id')){
+                obj.servico_id = data.servico_id;
+    		}
+
+
+			if(data.os_item_id > 0){
+
+				if(data.hasOwnProperty('qtd')){
+    			
+					if(obj.qtd <= 0){
+						obj.qtd = 1
+					}else{
+						obj.qtd = data.qtd;
+					}
+	
+				}else{
+					obj.qtd = 1;
+				}
+	
+				if(data.hasOwnProperty('pct_desconto')){
+					
+					obj.pct_desconto = Number(FORMAT_CALC_COD(data.pct_desconto));
+					
+				}else{
+					obj.pct_desconto = 0;
+				}
+				
+				
+	
+				if(data.hasOwnProperty('vrItemBruto')){
+					obj.vrItemBruto = Number(FORMAT_CALC_COD(data.vrItemBruto));
+				}else if(data.hasOwnProperty('vrServico')){	
+					obj.vrItemBruto = Number(FORMAT_CALC_COD(data.vrServico));
+				}
+	
+				if(data.hasOwnProperty('vrItem')){
+					obj.vrItem = Number(FORMAT_CALC_COD(data.vrItem));
+				}else if(data.hasOwnProperty('vrServico')){	
+					obj.vrItem = Number(FORMAT_CALC_COD(data.vrServico));				
+				}
+	
+	
+				if(Number(obj.vrItem) > Number(obj.vrItemBruto)){
+					obj.vrItemBruto = obj.vrItem
+				}
+	
+				if(obj.vrItemBruto > obj.vrItem){
+					let vrDes = obj.vrItemBruto - obj.vrItem;
+					vrDes = Number(vrDes)
+					if(! (vrDes > 0.01) ){
+						vrDes = 0
+					}
+					
+					obj.pct_desconto = (vrDes / Number(obj.vrItemBruto) ) * 100;
+					obj.pct_desconto = Number(FORMAT_CALC_COD(obj.pct_desconto));
+					
+				}
+	
+				if(obj.pct_desconto >= 100){
+					obj.pct_desconto = 100
+				}
+	
+				obj.vr_desconto = (obj.vrItemBruto * ( obj.pct_desconto/100));
+				obj.vr_desconto = Number(FORMAT_CALC_COD(obj.vr_desconto));
+				
+	
+				let vrIt = obj.hasOwnProperty('vrItemBruto') ? obj.vrItemBruto : 0;
+				let qtdItem = obj.hasOwnProperty('qtd') ? obj.qtd : 1;
+				qtdItem = Number(qtdItem)
+				vrIt 	= Number(vrIt)
+				obj.vrTotal = vrIt * qtdItem;
+	
+				obj.vr_final = obj.vrTotal - (obj.vr_desconto * obj.qtd); 
+			
+			}else{
+
+				if(data.hasOwnProperty('qtd')){
+    			
+					if(obj.qtd <= 0){
+						obj.qtd = 1
+					}else{
+						obj.qtd = data.qtd;
+					}
+	
+				}else{
+					obj.qtd = 1;
+				}
+	
+				if(data.hasOwnProperty('pct_desconto')){
+					
+					obj.pct_desconto = Number(FORMAT_CALC_COD(data.pct_desconto));
+					
+				}else{
+					obj.pct_desconto = 0;
+				}
+				
+				
+				console.table('vrItemBruto: ',data.vrItemBruto)
+				if(data.hasOwnProperty('vrItemBruto')){
+					obj.vrItemBruto = Number(FORMAT_CALC_COD(data.vrItemBruto));
+				}else if(data.hasOwnProperty('vrServico')){	
+					obj.vrItemBruto = Number(FORMAT_CALC_COD(data.vrServico));
+				}
+	
+				if(data.hasOwnProperty('vrItem')){
+					obj.vrItem = Number(FORMAT_CALC_COD(data.vrItem));
+				}else if(data.hasOwnProperty('vrServico')){	
+					obj.vrItem = Number(FORMAT_CALC_COD(obj.vrItemBruto));				
+				}
+	
+				/* if(Number(obj.vrItem) <= 0){
+					obj.vrItem = Number(FORMAT_CALC_COD(data.vrServico)) //obj.vrItemBruto
+				} */
+	
+				if(Number(obj.vrItem) > Number(obj.vrItemBruto)){
+					obj.vrItemBruto = obj.vrItem
+				}
+	
+				if(obj.vrItemBruto > obj.vrItem){
+					let vrDes = obj.vrItemBruto - obj.vrItem;
+					vrDes = Number(vrDes)
+					if(! (vrDes > 0.01) ){
+						vrDes = 0
+					}
+					
+					obj.pct_desconto = (vrDes / Number(obj.vrItemBruto) ) * 100;
+					obj.pct_desconto = Number(FORMAT_CALC_COD(obj.pct_desconto));
+					
+				}
+	
+				if(obj.pct_desconto >= 100){
+					obj.pct_desconto = 100
+				}
+	
+				obj.vr_desconto = (obj.vrItemBruto * ( obj.pct_desconto/100));
+				
+				/* obj.vrItem 		= obj.vrItemBruto - obj.vr_desconto;
+				obj.vrItem 		= Number(FORMAT_CALC_COD(obj.vrItem)); */
+				
+				let vrIt = obj.hasOwnProperty('vrItemBruto') ? obj.vrItemBruto : 0;
+				let qtdItem = obj.hasOwnProperty('qtd') ? obj.qtd : 1;
+				qtdItem = Number(qtdItem)
+				vrIt 	= Number(vrIt)
+				obj.vrTotal = vrIt * qtdItem;
+	
+				obj.vr_final = obj.vrTotal - (obj.vr_desconto * obj.qtd);    
+			}
+
+				
+    		
+    	}
+
+    	return obj;
+    }
+
+
 	const dataToFormOrdemServicoItens = ()=>{
     	let obj = {name:'', vr_desconto:0, pct_desconto: 0, id:'', servico_id:'', vrItem:0, vrTotal:0, vr_final:0 , vrItemBruto:0, qtd:1, os_item_id:null}
     	if(dataServicoEscolhido){
 			console.log('Conteceu...')
     		let data = dataServicoEscolhido;
+			console.table(dataServicoEscolhido)
+			console.log('Conteceu...')
 
 			if(data.hasOwnProperty('id')){
                 obj.id = data.id;
@@ -212,71 +394,57 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, setDataOrdemServicoGloba
 					obj.qtd = data.qtd;
 				}
 
-    		}else{
+			}else{
 				obj.qtd = 1;
 			}
 
 			if(data.hasOwnProperty('pct_desconto')){
 				
-				obj.pct_desconto = data.pct_desconto;
-    			
-    		}else{
+				obj.pct_desconto = Number(FORMAT_CALC_COD(data.pct_desconto));
+				
+			}else{
 				obj.pct_desconto = 0;
-			}
-			
-			if(obj.pct_desconto >= 100){
-				obj.pct_desconto = 100
-			}
-
-			if(data.hasOwnProperty('vrItemBruto')){
-    			obj.vrItemBruto = data.vrItemBruto;
-    		}else if(data.hasOwnProperty('vrServico')){	
-				obj.vrItemBruto = data.vrServico;
-			}
-
-			if(data.hasOwnProperty('vrItem')){
-    			obj.vrItem = data.vrItem;
-    		}else if(data.hasOwnProperty('vrServico')){	
-				obj.vrItem = data.vrServico;				
-			}
-
-			if(Number(obj.vrItem) <= 0){
-				obj.vrItem = data.vrServico //obj.vrItemBruto
-			}
-
-			if(Number(obj.vrItem) > Number(obj.vrItemBruto)){
-				obj.vrItemBruto = obj.vrItem
 			}
 
 			if(data.hasOwnProperty('vr_desconto')){
-    			obj.vr_desconto = data.vr_desconto;
-    		}else{
-				obj.vr_desconto = (obj.vrItemBruto * ( obj.pct_desconto/100));
+				
+				obj.vr_desconto = Number(FORMAT_CALC_COD(data.vr_desconto));
+				
+			}else{
+				obj.vr_desconto = 0;
 			}
-
-			obj.vrItem = obj.vrItemBruto - obj.vr_desconto;
-			
-			if(data.hasOwnProperty('vrTotal')){
-    			obj.vrTotal = data.vrTotal;
-    		}else{
-
-				let vrIt = obj.hasOwnProperty('vrItemBruto') ? obj.vrItemBruto : 0;
-				let qtdItem = obj.hasOwnProperty('qtd') ? obj.qtd : 1;
-				qtdItem = Number(qtdItem)
-				vrIt 	= Number(vrIt)
-				obj.vrTotal = vrIt * qtdItem;
-			}
-
-
-			if(data.hasOwnProperty('vr_final')){
-    			obj.vr_final = data.vr_final;
-    		}else{
-				obj.vr_final = obj.vrTotal - (obj.vr_desconto * obj.qtd);
-			}
-
 			
 			
-    		
+
+			if(data.hasOwnProperty('vrItemBruto')){
+				obj.vrItemBruto = Number(FORMAT_CALC_COD(data.vrItemBruto));
+			}else if(data.hasOwnProperty('vrServico')){	
+				obj.vrItemBruto = Number(FORMAT_CALC_COD(data.vrServico));
+			}
+
+			if(data.hasOwnProperty('vrItem')){
+				obj.vrItem = Number(FORMAT_CALC_COD(data.vrItem));
+			}else if(data.hasOwnProperty('vrServico')){	
+				obj.vrItem = Number(FORMAT_CALC_COD(data.vrServico));				
+			}
+
+			if(data.hasOwnProperty('vrItem')){
+				obj.vrItem = Number(FORMAT_CALC_COD(data.vrItem));
+			}else if(data.hasOwnProperty('vrServico')){	
+				obj.vrItem = Number(FORMAT_CALC_COD(data.vrServico));				
+			}
+
+			let vrIt = obj.hasOwnProperty('vrItemBruto') ? obj.vrItemBruto : 0;
+			let qtdItem = obj.hasOwnProperty('qtd') ? obj.qtd : 1;
+			qtdItem = Number(qtdItem)
+			vrIt 	= Number(vrIt)
+			obj.vrTotal = vrIt * qtdItem;
+
+			obj.vr_final = obj.vrTotal - (obj.vr_desconto * obj.qtd); 
+
+
+			
+				
     		
     	}
 
@@ -287,17 +455,255 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, setDataOrdemServicoGloba
 		setDataServicoEscolhido({...dataServicoEscolhido, qtd:qtdSevicoForm})
 	}, [qtdSevicoForm])
 
+	const calcularServico = ({pctDesconto, vrServicoForm})=>{
+		let obj = {name:'', vr_desconto:0, pct_desconto: 0, id:'', servico_id:'', vrItem:0, vrTotal:0, vr_final:0 , vrItemBruto:0, qtd:1, os_item_id:null, ...dataServicoEscolhido}
+		let data = dataServicoEscolhido;
+		//console.table(dataServicoEscolhido)
+		//console.log('Conteceu...')
 
+		let escutaVrbruto 		= false;
+		let escutaChangeVrItem 	= false;
+		let escutaChangePctItem	= false;
+		let escutaChangeQtdItem	= false;
+
+		if(data.hasOwnProperty('id')){
+			obj.id = data.id;
+			obj.servico_id = data.id;
+		}
+		
+		if(data.hasOwnProperty('os_item_id')){
+			obj.os_item_id = data.os_item_id;
+		}
+
+		if(data.hasOwnProperty('name')){
+			obj.name = data.name;
+		}
+
+		if(data.hasOwnProperty('servico_id')){
+			obj.servico_id = data.servico_id;
+		}
+
+
+		if(data.hasOwnProperty('qtd')){
+			
+			if(obj.qtd <= 0){
+				obj.qtd = 1
+			}else{
+				obj.qtd = data.qtd;
+			}
+
+		}else{
+			obj.qtd = 1;
+		}
+
+		/* if(data.hasOwnProperty('pct_desconto')){
+			
+			obj.pct_desconto = Number(FORMAT_CALC_COD(data.pct_desconto));
+			
+		}else{
+			obj.pct_desconto = 0;
+		} */
+
+		if(data.hasOwnProperty('vrItemBruto')){
+			escutaVrbruto = true;
+			obj.vrItemBruto = Number(FORMAT_CALC_COD(data.vrItemBruto));
+		}else if(data.hasOwnProperty('vrServico')){	
+			obj.vrItemBruto = Number(FORMAT_CALC_COD(data.vrServico));
+		}
+
+		if(vrServicoForm != null && vrServicoForm != undefined){
+			escutaChangeVrItem 	= true;
+			vrServicoForm 		= Number(FORMAT_CALC_COD(vrServicoForm));
+			
+
+		}
+
+		if(pctDesconto != null && pctDesconto != undefined){
+			pctDesconto 		= Number(FORMAT_CALC_COD(pctDesconto));
+			obj.pct_desconto 	= pctDesconto
+			escutaChangePctItem	= true;
+
+		}
+
+		if(pctDesconto != null && pctDesconto != undefined){
+			pctDesconto 		= Number(FORMAT_CALC_COD(pctDesconto));
+			
+			escutaChangePctItem	= true;
+
+		}else{
+
+			if(data.hasOwnProperty('pct_desconto')){
+			
+				obj.pct_desconto = Number(FORMAT_CALC_COD(data.pct_desconto));
+				
+			}else{
+				obj.pct_desconto = 0;
+			}
+		}
+
+		
+		let vrItemCalc = obj.vrItemBruto;
+
+		if(escutaChangePctItem){
+			obj.pct_desconto 	= pctDesconto
+			
+			if(obj.pct_desconto >= 100){
+				obj.pct_desconto = 100
+			}
+	
+			obj.vr_desconto = (obj.vrItemBruto * ( obj.pct_desconto/100));
+			obj.vr_desconto = Number(FORMAT_CALC_COD(obj.vr_desconto));
+
+			vrItemCalc = obj.vrItemBruto - obj.vr_desconto;
+			vrItemCalc = Number(FORMAT_CALC_COD(vrItemCalc));
+			
+			obj.vrItem  = vrItemCalc
+			
+
+		}else if(escutaChangeVrItem){
+			obj.pct_desconto = 0
+			obj.vrItem  = Number(FORMAT_CALC_COD(vrServicoForm));
+			
+			
+
+			if(escutaVrbruto &&  obj.vrItemBruto > obj.vrItem){
+				obj.vrItemBruto = data.vrServico;
+			}
+
+			if(Number(obj.vrItem) > Number(obj.vrItemBruto)){
+				obj.vrItemBruto = obj.vrItem
+			}
+
+			if(obj.vrItemBruto > obj.vrItem){
+				let vrDes = obj.vrItemBruto - obj.vrItem;
+				vrDes = Number(vrDes)
+				if(! (vrDes > 0.01) ){
+					vrDes = 0
+				}
+
+				obj.pct_desconto = (vrDes / Number(obj.vrItemBruto) ) * 100;
+				obj.pct_desconto = Number(FORMAT_CALC_COD(obj.pct_desconto));
+				
+			}
+	
+			if(obj.pct_desconto >= 100){
+				obj.pct_desconto = 100
+			}
+	
+			obj.vr_desconto = (obj.vrItemBruto * ( obj.pct_desconto/100));
+			obj.vr_desconto = Number(FORMAT_CALC_COD(obj.vr_desconto));
+			
+
+		}else if(escutaChangeQtdItem){
+			
+		}else{
+
+			if(data.hasOwnProperty('pct_desconto')){
+					
+				obj.pct_desconto = Number(FORMAT_CALC_COD(data.pct_desconto));
+				
+			}else{
+				obj.pct_desconto = 0;
+			}
+			
+
+			if(data.hasOwnProperty('vrItemBruto')){
+				obj.vrItemBruto = Number(FORMAT_CALC_COD(data.vrItemBruto));
+			}else if(data.hasOwnProperty('vrServico')){	
+				obj.vrItemBruto = Number(FORMAT_CALC_COD(data.vrServico));
+			}
+
+			if(data.hasOwnProperty('vrItem')){
+				obj.vrItem = Number(FORMAT_CALC_COD(data.vrItem));
+			}else if(data.hasOwnProperty('vrServico')){	
+				obj.vrItem = Number(FORMAT_CALC_COD(data.vrServico));				
+			}
+
+			if(obj.pct_desconto >= 100){
+				obj.pct_desconto = 100
+			}
+
+			obj.vr_desconto = (obj.vrItemBruto * ( obj.pct_desconto/100));
+			obj.vr_desconto = Number(FORMAT_CALC_COD(obj.vr_desconto));
+			
+		}
+		
+		
+		
+		
+
+		
+
+		let vrIt = obj.hasOwnProperty('vrItemBruto') ? obj.vrItemBruto : 0;
+		let qtdItem = obj.hasOwnProperty('qtd') ? obj.qtd : 1;
+		qtdItem = Number(qtdItem)
+		vrIt 	= Number(vrIt)
+		obj.vrTotal = vrIt * qtdItem;
+
+		obj.vr_final = obj.vrTotal - (obj.vr_desconto * obj.qtd); 
+		
+    	return obj;
+	}
+
+	const handleChangePctDesconto = (value)=>{
+		let pctDesconto = value
+		pctDesconto = Number(FORMAT_CALC_COD(pctDesconto));
+		if(pctDesconto >= 100){
+			pctDesconto = 100
+		}else if(pctDesconto < 0){
+			pctDesconto = 0;
+		}
+		console.log('pctDesconto======================================='+pctDesconto)
+		setPctDescontoServicoForm(pctDesconto);
+	}
 	React.useEffect(()=>{
-		setDataServicoEscolhido({...dataServicoEscolhido, pct_desconto:pctDescontoServicoForm})
+		let pctDesconto  = pctDescontoServicoForm;
+		let cloneServicoEscolhido = dataServicoEscolhido
+		if(cloneServicoEscolhido){
+
+			if(pctDesconto >= 100){
+				pctDesconto = 100
+			}else if(pctDesconto < 0){
+				pctDesconto = 0;
+			}
+			/* console.log('pctDesconto======================================='+pctDesconto)
+
+			let {vrItem, vrItemBruto, vrServico, vr_desconto} = dataServicoEscolhido
+			let vrTotBr = 0;
+
+			if(vrItemBruto){
+    			vrTotBr = Number(FORMAT_CALC_COD(vrItemBruto));
+    		}else if(vrServico){	
+				vrTotBr = Number(FORMAT_CALC_COD(vrServico));
+			}
+
+			if(pctDesconto >= 100){
+				vrItem = 0;
+			}else{
+
+				vr_desconto = (vrTotBr * ( pctDesconto/100));
+				vr_desconto = Number(FORMAT_CALC_COD(vr_desconto));
+				vrItem 		= vrTotBr - vr_desconto;
+				vrItem 		= Number(FORMAT_CALC_COD(vrItem));
+				console.log('vrItem============='+vrItem)
+			}
+
+			
+			cloneServicoEscolhido = {...cloneServicoEscolhido, vrItem} */
+		}
+		//calcularServico({pctDesconto})
+		setDataServicoEscolhido({...dataServicoEscolhido, ...calcularServico({pctDesconto}) })
 	}, [pctDescontoServicoForm])
 
 
 	React.useEffect(()=>{
 		
-		if(vrServicoForm){
-			setDataServicoEscolhido({...dataServicoEscolhido, vrItem:vrServicoForm})
-		}
+		/* if(vrServicoForm){
+			console.log('aqui bonitinho========================================')
+			setDataServicoEscolhido({...dataServicoEscolhido, vrItem:vrServicoForm, pct_desconto:0})
+		} */
+
+		setDataServicoEscolhido({...dataServicoEscolhido, ...calcularServico({vrServicoForm}) })
 
 	}, [vrServicoForm])
 
@@ -611,7 +1017,7 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, setDataOrdemServicoGloba
 																			name:'vrItem',
 																			placeholder:'0,00',
 																			id:'vrItem',
-																			onChange:(ev)=>{ setVrServicoForm(ev.target.value);handleChange(ev)},
+																			onChange:(ev)=>{ /* setVrServicoForm(ev.target.value); */handleChange(ev)},
 																			onBlur:(ev)=>{ setVrServicoForm(ev.target.value);handleBlur(ev)},
 																			//onChange:handleChange,
 																			//onBlur:handleBlur,
@@ -683,8 +1089,8 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, setDataOrdemServicoGloba
 																			name:'pct_desconto',
 																			placeholder:'0,00',
 																			id:'pct_desconto',
-																			onChange:(ev)=>{ setPctDescontoServicoForm(ev.target.value);handleChange(ev)},
-																			onBlur:(ev)=>{ setPctDescontoServicoForm(ev.target.value);handleBlur(ev)},
+																			onChange:(ev)=>{ /* handleChangePctDesconto(ev.target.value); */handleChange(ev)},
+																			onBlur:(ev)=>{ handleChangePctDesconto(ev.target.value);handleBlur(ev)},
 																			//onChange:handleChange,
 																			//onBlur:handleBlur,
 																			value:values.pct_desconto,

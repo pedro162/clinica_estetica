@@ -51,32 +51,41 @@ export const FORMAT_MONEY = (amount, decimalCount = 2, decimal = ',', thousands 
 }
 
 
-export const FORMAT_CALC_Cod= (number)=>{
+export const FORMAT_CALC_COD= (number)=>{
   try{
+    //console.log(number)
+      number = String(number);
 
-    number = String(number);
+
+      if(number.length == 0){
+          //throw new Error('Parãmetro inválido');
+      return 0;
+      }
     
-
-    if(number.length == 0){
-      return false;
+    if(number.indexOf(',') > -1){
+      
+      number = number.replace(/\./g, '');
+      number = number.replace(/,/g, '.');
+      
+      let convertido = Number(number);
+      if(! isNaN(convertido)){
+        return Number(convertido.toFixed(2));
+      }else{
+        return 0;
+      }
+      
+      
     }
-
-    let arrNumber = number.split('.');
-
-    let newNumber = '';
-    for (let i =0; !(i == arrNumber.length); i++) {
-      newNumber+=arrNumber[i]
+    let convertido = Number(number);
+    
+    if(! isNaN(convertido)){
+      return Number(convertido.toFixed(2));
     }
-
-
-    newNumber = newNumber.replace(/,/g, '.');
-
-    newNumber = parseFloat(newNumber).toFixed(2);
-
-    return newNumber;
-
+    
+    return 0;
+    
   }catch(e){
 
-    console.log(e);
+      console.log(e);
   }
 }
