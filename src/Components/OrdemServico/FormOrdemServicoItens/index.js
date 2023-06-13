@@ -159,7 +159,11 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, setDataOrdemServicoGloba
 					data.id = servico_id;
 					data.os_item_id = id;
 					data.name = servico?.name;
-					console.table(data)
+					data.vrServico = servico?.vrServico;
+					
+					console.log('Dados para formulário =======================================')
+					console.log(data)
+					console.log('Dados para formulário =======================================')
 					setDataServicoEscolhido(data)
 				}else{
 					setDataServicoItemEscolhido([])
@@ -364,10 +368,10 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, setDataOrdemServicoGloba
 	const dataToFormOrdemServicoItens = ()=>{
     	let obj = {name:'', vr_desconto:0, pct_desconto: 0, id:'', servico_id:'', vrItem:0, vrTotal:0, vr_final:0 , vrItemBruto:0, qtd:1, os_item_id:null}
     	if(dataServicoEscolhido){
-			console.log('Conteceu...')
+			console.log('Conteceu...03003=====================')
     		let data = dataServicoEscolhido;
-			console.table(dataServicoEscolhido)
-			console.log('Conteceu...')
+			console.log(dataServicoEscolhido.vrItemBruto)
+			console.log('Conteceu...03003==============')
 
 			if(data.hasOwnProperty('id')){
                 obj.id = data.id;
@@ -458,8 +462,12 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, setDataOrdemServicoGloba
 	const calcularServico = ({pctDesconto, vrServicoForm})=>{
 		let obj = {name:'', vr_desconto:0, pct_desconto: 0, id:'', servico_id:'', vrItem:0, vrTotal:0, vr_final:0 , vrItemBruto:0, qtd:1, os_item_id:null, ...dataServicoEscolhido}
 		let data = dataServicoEscolhido;
-		//console.table(dataServicoEscolhido)
-		//console.log('Conteceu...')
+		if(vrServicoForm){
+			console.log('Mudou o valor do serviço ====================== !!! ================================')
+		}
+		console.log('Conteceu...================================================')
+		console.log(dataServicoEscolhido?.vrItemBruto)
+		console.log('Conteceu...================================================')
 
 		let escutaVrbruto 		= false;
 		let escutaChangeVrItem 	= false;
@@ -568,6 +576,7 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, setDataOrdemServicoGloba
 
 			if(escutaVrbruto &&  obj.vrItemBruto > obj.vrItem){
 				obj.vrItemBruto = data.vrServico;
+				//alert(obj.vrItemBruto)
 			}
 
 			if(Number(obj.vrItem) > Number(obj.vrItemBruto)){
@@ -641,7 +650,10 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, setDataOrdemServicoGloba
 		obj.vrTotal = vrIt * qtdItem;
 
 		obj.vr_final = obj.vrTotal - (obj.vr_desconto * obj.qtd); 
-		
+		console.log('Conteceu obj ...================================================')
+		console.log(obj)
+		console.log('Conteceu obj ..================================================')
+
     	return obj;
 	}
 
