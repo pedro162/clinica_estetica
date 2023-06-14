@@ -72,6 +72,10 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, setDataOrdemServicoGloba
 			console.log(json)
 			await getOrdemServico(idOrdemServico);
 			setDataServicoEscolhido([])
+			setDataServicoItemEscolhido([])
+			setIdItemOrdemServico(null)
+			setIdServicoEscolhido(null)
+			
 			setDataOrdemServico()
 			//callback();
 		}
@@ -778,27 +782,32 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, setDataOrdemServicoGloba
                                 },
 								{
 
-                                    label:atual?.qtd,
+                                    label:FORMAT_MONEY(atual?.qtd),
                                     propsRow:{}
                                 },
 								{
 
-                                    label:atual?.vrItem,
+                                    label:FORMAT_MONEY(atual?.vrItemBruto),
+                                    propsRow:{}
+                                },								
+								{
+
+                                    label:FORMAT_MONEY(atual?.vrItem),
                                     propsRow:{}
                                 },
 								{
 
-                                    label:atual?.vrTotal,
+                                    label:FORMAT_MONEY(atual?.vrTotal),
                                     propsRow:{}
                                 },
 								{
 
-                                    label:atual?.vr_desconto,
+                                    label:FORMAT_MONEY(atual?.vr_desconto),
                                     propsRow:{}
                                 },
 								{
 
-                                    label:atual?.vr_final,
+                                    label:FORMAT_MONEY(atual?.vr_final),
                                     propsRow:{}
                                 },
 
@@ -827,6 +836,10 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, setDataOrdemServicoGloba
             },
             {
                 label:'QTDE',
+                props:{}
+            },
+            {
+                label:'VR TABELA',
                 props:{}
             },
             {
