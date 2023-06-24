@@ -12,6 +12,8 @@ import Required from '../../FormControl/Required.js';
 import Load from '../../Utils/Load/index.js'
 import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible.js'
 import FormOrdemServicoItens from '../FormOrdemServicoItens/index.js'
+import FormOrdemServicoCobrancas from '../FormOrdemServicoCobrancas/index.js'
+
 
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, SERVICO_SAVE_POST, SERVICO_ALL_POST, ORDEM_SERVICO_UPDATE_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST} from '../../../api/endpoints/geral.js'
 
@@ -510,7 +512,13 @@ const FormOrdemServico = ({dataOrdemServicoChoice, setDataOrdemServico, setIdOrd
 															/>
 														</Tab>
 														<Tab eventKey="cobrancas" title="Cobranças">
-															
+															<FormOrdemServicoCobrancas
+
+																idOrdemServico={idOrdemServico}
+																itensOrdem={dataItens}
+																setDataitens={setDataitens}
+																setDataOrdemServicoGlobal={setDataOrdemServico}
+															/>
 														</Tab>
 													</Tabs>
 												</Col>
