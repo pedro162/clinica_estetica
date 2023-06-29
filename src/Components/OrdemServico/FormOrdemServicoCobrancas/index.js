@@ -15,7 +15,7 @@ import OrdemServicoItens from '../../OrdemServicoItens/index.js'
 import TableForm from '../../Relatorio/TableForm/index.js';
 import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../../functions/index.js'
 
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, SERVICO_SAVE_POST, ORDEM_SERVICO_ITENS_ONE_GET , SERVICO_ALL_POST, SERVICO_UPDATE_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST, SERVICO_ONE_GET, ORDEM_SERVICO_ONE_GET, ORDEM_SERVICO_ADD_ITEM_POST, ORDEM_SERVICO_DELETE_ITEM_POST, FORMA_PAGAMENTOALL_POST, FORMA_PAGAMENTO_ONE_GET, PLANO_PAGAMENTOALL_POST, PLANO_PAGAMENTO_ONE_GET} from '../../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, SERVICO_SAVE_POST, ORDEM_SERVICO_ITENS_ONE_GET , SERVICO_ALL_POST, SERVICO_UPDATE_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST, SERVICO_ONE_GET, ORDEM_SERVICO_ONE_GET, ORDEM_SERVICO_ADD_ITEM_POST, ORDEM_SERVICO_DELETE_ITEM_POST, FORMA_PAGAMENTOALL_POST, FORMA_PAGAMENTO_ONE_GET, PLANO_PAGAMENTOALL_POST, PLANO_PAGAMENTO_ONE_GET, OPERADOR_FINANCEIROALL_POST} from '../../../api/endpoints/geral.js'
 
 
 const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoGlobal, idOrdemServico, itensOrdem ,callback,carregando})=>{
@@ -27,6 +27,7 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 	const [dataFiliais, setDataFiliais] = React.useState([])
 	const [dataFormaPagamento, setDataFormaPagamento] = React.useState([])
 	const [dataPlanoPagamento, setDataPlanoPagamento] = React.useState([])
+	const [dataOperadorFinanceiro, setDataOperadorFinanceiro] = React.useState([])
 	const [dataCobrancas, setDataCobrancas] = React.useState([]);//itensOrdem
     const [dataOrdemServico, setDataOrdemServico] = React.useState(null)
 	const [dataBodyTable, setDataBodyTable] = React.useState([])
@@ -177,6 +178,30 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 		}
 	}
 
+	const getOperadorFinanceiroAll = async ()=>{
+		if(!(idFormaPagamentoForm > 0)){
+			setDataOperadorFinanceiro([])
+			return false;
+		}
+
+		const {url, options} = OPERADOR_FINANCEIROALL_POST({forma_pagamentos_id:idFormaPagamentoForm}, getToken());
+		const {response, json} = await request(url, options);
+		
+		if(json){
+				
+			if(json && json.hasOwnProperty('mensagem')){
+				let data = json.mensagem;
+				console.log("Operadores financeiros: ",data)
+				setDataOperadorFinanceiro(data)
+			}else{
+				setDataOperadorFinanceiro([])
+			}
+			 
+		}else{
+			setDataOperadorFinanceiro([])
+		}
+	}
+	//
 	React.useEffect(()=>{
 		if(idServicoEscolhido && idServicoEscolhido > 0){
 			getFormaPagamentoOrdem(idServicoEscolhido)
@@ -262,195 +287,7 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 	}, [qtdSevicoForm])
 
 	const calcularServico = ({pctDesconto, vrServicoForm})=>{
-		let obj = {vr_saldo:'', vr_cobranca:'', id:'', oper_pagamentos_id:'', forma_pagamentos_id:'', plano_pagamentos_id:'', bandeira_cartao_id:'', ...dataFormaPagamentoEscolhido}
-		let data = dataFormaPagamentoEscolhido;
 		
-		let escutaVrbruto 		= false;
-		let escutaChangeVrItem 	= false;
-		let escutaChangePctItem	= false;
-		let escutaChangeQtdItem	= false;
-
-		if(data.hasOwnProperty('id')){
-			obj.id = data.id;
-			obj.servico_id = data.id;
-		}
-		
-		if(data.hasOwnProperty('os_item_id')){
-			obj.os_item_id = data.os_item_id;
-		}
-
-		if(data.hasOwnProperty('name')){
-			obj.name = data.name;
-		}
-
-		if(data.hasOwnProperty('servico_id')){
-			obj.servico_id = data.servico_id;
-		}
-
-
-		if(data.hasOwnProperty('qtd')){
-			
-			if(obj.qtd <= 0){
-				obj.qtd = 1
-			}else{
-				obj.qtd = data.qtd;
-			}
-
-		}else{
-			obj.qtd = 1;
-		}
-
-		/* if(data.hasOwnProperty('pct_desconto')){
-			
-			obj.pct_desconto = Number(FORMAT_CALC_COD(data.pct_desconto));
-			
-		}else{
-			obj.pct_desconto = 0;
-		} */
-
-		if(data.hasOwnProperty('vrItemBruto')){
-			escutaVrbruto = true;
-			obj.vrItemBruto = Number(FORMAT_CALC_COD(data.vrItemBruto));
-		}else if(data.hasOwnProperty('vrServico')){	
-			obj.vrItemBruto = Number(FORMAT_CALC_COD(data.vrServico));
-		}
-
-		if(vrServicoForm != null && vrServicoForm != undefined){
-			escutaChangeVrItem 	= true;
-			vrServicoForm 		= Number(FORMAT_CALC_COD(vrServicoForm));
-			
-
-		}
-
-		if(pctDesconto != null && pctDesconto != undefined){
-			pctDesconto 		= Number(FORMAT_CALC_COD(pctDesconto));
-			obj.pct_desconto 	= pctDesconto
-			escutaChangePctItem	= true;
-
-		}
-
-		if(pctDesconto != null && pctDesconto != undefined){
-			pctDesconto 		= Number(FORMAT_CALC_COD(pctDesconto));
-			
-			escutaChangePctItem	= true;
-
-		}else{
-
-			if(data.hasOwnProperty('pct_desconto')){
-			
-				obj.pct_desconto = Number(FORMAT_CALC_COD(data.pct_desconto));
-				
-			}else{
-				obj.pct_desconto = 0;
-			}
-		}
-
-		
-		let vrItemCalc = obj.vrItemBruto;
-
-		if(escutaChangePctItem){
-			obj.pct_desconto 	= pctDesconto
-			
-			if(obj.pct_desconto >= 100){
-				obj.pct_desconto = 100
-			}
-	
-			obj.vr_desconto = (obj.vrItemBruto * ( obj.pct_desconto/100));
-			obj.vr_desconto = Number(FORMAT_CALC_COD(obj.vr_desconto));
-
-			vrItemCalc = obj.vrItemBruto - obj.vr_desconto;
-			vrItemCalc = Number(FORMAT_CALC_COD(vrItemCalc));
-			
-			obj.vrItem  = vrItemCalc
-			
-
-		}else if(escutaChangeVrItem){
-			obj.pct_desconto = 0
-			obj.vrItem  = Number(FORMAT_CALC_COD(vrServicoForm));
-			
-			
-
-			if(escutaVrbruto &&  obj.vrItemBruto > obj.vrItem){
-				obj.vrItemBruto = data.vrServico;
-				//alert(obj.vrItemBruto)
-			}
-
-			if(Number(obj.vrItem) > Number(obj.vrItemBruto)){
-				obj.vrItemBruto = obj.vrItem
-			}
-
-			if(obj.vrItemBruto > obj.vrItem){
-				let vrDes = obj.vrItemBruto - obj.vrItem;
-				vrDes = Number(vrDes)
-				if(! (vrDes > 0.01) ){
-					vrDes = 0
-				}
-
-				obj.pct_desconto = (vrDes / Number(obj.vrItemBruto) ) * 100;
-				obj.pct_desconto = Number(FORMAT_CALC_COD(obj.pct_desconto));
-				
-			}
-	
-			if(obj.pct_desconto >= 100){
-				obj.pct_desconto = 100
-			}
-	
-			obj.vr_desconto = (obj.vrItemBruto * ( obj.pct_desconto/100));
-			obj.vr_desconto = Number(FORMAT_CALC_COD(obj.vr_desconto));
-			
-
-		}else if(escutaChangeQtdItem){
-			
-		}else{
-
-			if(data.hasOwnProperty('pct_desconto')){
-					
-				obj.pct_desconto = Number(FORMAT_CALC_COD(data.pct_desconto));
-				
-			}else{
-				obj.pct_desconto = 0;
-			}
-			
-
-			if(data.hasOwnProperty('vrItemBruto')){
-				obj.vrItemBruto = Number(FORMAT_CALC_COD(data.vrItemBruto));
-			}else if(data.hasOwnProperty('vrServico')){	
-				obj.vrItemBruto = Number(FORMAT_CALC_COD(data.vrServico));
-			}
-
-			if(data.hasOwnProperty('vrItem')){
-				obj.vrItem = Number(FORMAT_CALC_COD(data.vrItem));
-			}else if(data.hasOwnProperty('vrServico')){	
-				obj.vrItem = Number(FORMAT_CALC_COD(data.vrServico));				
-			}
-
-			if(obj.pct_desconto >= 100){
-				obj.pct_desconto = 100
-			}
-
-			obj.vr_desconto = (obj.vrItemBruto * ( obj.pct_desconto/100));
-			obj.vr_desconto = Number(FORMAT_CALC_COD(obj.vr_desconto));
-			
-		}
-		
-		
-		
-		
-
-		
-
-		let vrIt = obj.hasOwnProperty('vrItemBruto') ? obj.vrItemBruto : 0;
-		let qtdItem = obj.hasOwnProperty('qtd') ? obj.qtd : 1;
-		qtdItem = Number(qtdItem)
-		vrIt 	= Number(vrIt)
-		obj.vrTotal = vrIt * qtdItem;
-
-		obj.vr_final = obj.vrTotal - (obj.vr_desconto * obj.qtd); 
-		console.log('Conteceu obj ...================================================')
-		console.log(obj)
-		console.log('Conteceu obj ..================================================')
-
-    	return obj;
 	}
 
 	const handleChangePctDesconto = (value)=>{
@@ -464,21 +301,6 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 		console.log('pctDesconto======================================='+pctDesconto)
 		setPctDescontoServicoForm(pctDesconto);
 	}
-	React.useEffect(()=>{
-		let pctDesconto  = pctDescontoServicoForm;
-		let cloneServicoEscolhido = dataFormaPagamentoEscolhido
-		if(cloneServicoEscolhido){
-
-			if(pctDesconto >= 100){
-				pctDesconto = 100
-			}else if(pctDesconto < 0){
-				pctDesconto = 0;
-			}
-			
-		}
-		//calcularServico({pctDesconto})
-		setDataFormaPagamentoEscolhido({...dataFormaPagamentoEscolhido, ...calcularServico({pctDesconto}) })
-	}, [pctDescontoServicoForm])
 
 
 	React.useEffect(()=>{
@@ -497,6 +319,7 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 	}, []);
 
 	React.useEffect(()=>{
+		getOperadorFinanceiroAll()
 		getPlanoPagamentoAll();
 		//idFormaPagamentoForm 
 		//alert(idFormaPagamentoForm)
@@ -520,6 +343,16 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 	const preparaPlanoPagamentoToForm = ()=>{
     	if(dataPlanoPagamento && Array.isArray(dataPlanoPagamento) && dataPlanoPagamento.length > 0){
     		let formaPgto = dataPlanoPagamento.map(({id, name}, index, arr)=>({label:name,valor:id,props:{}}))
+    		formaPgto.unshift({label:'Selecione...',valor:'',props:{selected:'selected', disabled:'disabled'}})
+    		console.table(formaPgto)
+    		return formaPgto;
+    	}
+    	return []
+    }
+
+	const preparaOperadorFinanceiroToForm = ()=>{
+    	if(dataOperadorFinanceiro && Array.isArray(dataOperadorFinanceiro) && dataOperadorFinanceiro.length > 0){
+    		let formaPgto = dataOperadorFinanceiro.map(({id, name}, index, arr)=>({label:name,valor:id,props:{}}))
     		formaPgto.unshift({label:'Selecione...',valor:'',props:{selected:'selected', disabled:'disabled'}})
     		console.table(formaPgto)
     		return formaPgto;
@@ -854,7 +687,7 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 																data={
 																	{
 																		hasLabel:true,
-																		contentLabel:'Operador financeiro *',
+																		contentLabel:'Operador financeiro',
 																		atributsFormLabel:{
 
 																		},
@@ -869,7 +702,7 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 																			className:estilos.input,
 																			size:"sm"
 																		},
-																		options:preparaFormaPagamentoToForm(),
+																		options:preparaOperadorFinanceiroToForm(),
 																		atributsContainer:{
 																			className:''
 																		}
