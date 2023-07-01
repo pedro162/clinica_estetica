@@ -24,7 +24,6 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 	const dataRequest = useFetch();
 
 	const {getToken, dataUser} = React.useContext(UserContex);
-	const [dataFiliais, setDataFiliais] = React.useState([])
 	const [dataFormaPagamento, setDataFormaPagamento] = React.useState([])
 	const [dataPlanoPagamento, setDataPlanoPagamento] = React.useState([])
 	const [dataOperadorFinanceiro, setDataOperadorFinanceiro] = React.useState([])
@@ -83,6 +82,7 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 			setIdServicoEscolhido(null) */
 			limparFormulario()
 			setDataOrdemServico()
+			getFormaPagamentoAll();
 			//callback();
 		}
     }
@@ -96,7 +96,7 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 		setIdPlanoPagamentoForm(null)
 		setIdOperadorFinanceiroForm(null)
 		setVrCobrancaForm(null)
-		setIdFormaPagamentoForm(null)
+		setIdFormaPagamentoForm(0)
 		setDataFormaPagamento(null)
 		setDataPlanoPagamento(null)
 		setDataOperadorFinanceiro(null)
@@ -459,7 +459,7 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
     	if(dataFormaPagamento && Array.isArray(dataFormaPagamento) && dataFormaPagamento.length > 0){
     		let formaPgto = dataFormaPagamento.map(({id, name}, index, arr)=>({label:name,valor:id,props:{}}))
     		//formaPgto.unshift({label:'Teste',valor:'2',props:{selected:'selected'}})
-			formaPgto.unshift({label:'Selecione...',valor:'',props:{selected:'selected', }})
+			formaPgto.unshift({label:'Selecione...',valor:'0',props:{selected:'selected', }})
     		//console.table(formaPgto)
     		return formaPgto;
     	}
