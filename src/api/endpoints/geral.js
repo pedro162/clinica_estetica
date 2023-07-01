@@ -2343,6 +2343,116 @@ export const OPERADOR_FINANCEIRO_DELETE_POST = (id, token)=>{
 }
 
 
+//--- Cobrança ordem serviço ----------------------------------
+export const COBRANCA_ORDEM_ALL_POST = (data, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'POST',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        body:JSON.stringify(data)
+   };
+
+   return{
+        url:BASE_URL+'/api/ordem/servico/cobranca/json',
+        options:myInit
+    }
+
+}
+export const COBRANCA_ORDEM_ONE_GET = (id, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'GET',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        //body:JSON.stringify(data)
+   };
+
+   return{
+        url:BASE_URL+'/api/ordem/servico/cobranca/info/'+id,
+        options:myInit
+    }
+
+}
+
+export const COBRANCA_ORDEM_SAVE_POST = (data, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'POST',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        body:JSON.stringify(data)
+   };
+   
+   return{
+        url:BASE_URL+'/api/ordem/servico/cobranca/store',
+        options:myInit
+    }
+
+}
+
+export const COBRANCA_ORDEM_UPDATE_POST = (id,data, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'PUT',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        body:JSON.stringify(data)
+   };
+
+   return{
+        url:BASE_URL+'/api/ordem/servico/cobranca/update/'+id,
+        options:myInit
+    }
+
+}
+
+export const COBRANCA_ORDEM_DELETE_POST = (id, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'GET',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+   };
+
+   return{
+        url:BASE_URL+'/api/ordem/servico/cobranca/destroy/'+id,
+        options:myInit
+    }
+
+}
+
+
 
 
 
