@@ -783,32 +783,44 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, setDataOrdemServicoGloba
 								{
 
                                     label:FORMAT_MONEY(atual?.qtd),
-                                    propsRow:{}
+                                    propsRow:{},
+									toSum:0,
+									isCoin:0,
                                 },
 								{
 
                                     label:FORMAT_MONEY(atual?.vrItemBruto),
-                                    propsRow:{}
+                                    propsRow:{},
+									toSum:1,
+									isCoin:1,
                                 },								
 								{
 
                                     label:FORMAT_MONEY(atual?.vrItem),
-                                    propsRow:{}
+                                    propsRow:{},
+									toSum:1,
+									isCoin:1,
                                 },
 								{
 
                                     label:FORMAT_MONEY(atual?.vrTotal),
-                                    propsRow:{}
+                                    propsRow:{},
+									toSum:1,
+									isCoin:1,
                                 },
 								{
 
                                     label:FORMAT_MONEY(atual?.vr_desconto),
-                                    propsRow:{}
+                                    propsRow:{},
+									toSum:1,
+									isCoin:1,
                                 },
 								{
 
                                     label:FORMAT_MONEY(atual?.vr_final),
-                                    propsRow:{}
+                                    propsRow:{},
+									toSum:1,
+									isCoin:1,
                                 },
 
                             ]

@@ -541,7 +541,9 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 								{
 
                                     label:FORMAT_MONEY(atual?.vr_final),
-                                    propsRow:{}
+                                    propsRow:{},
+									toSum:1,
+									isCoin:1,
                                 },
                                 {
 

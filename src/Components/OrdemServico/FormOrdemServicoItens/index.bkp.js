@@ -255,27 +255,37 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, idOrdemServico, itensOrd
 								{
 
                                     label:atual?.qtd,
-                                    propsRow:{}
+                                    propsRow:{},
+									toSum:1,
+									isCoin:0,
                                 },
 								{
 
                                     label:atual?.vrItem,
-                                    propsRow:{}
+                                    propsRow:{},
+									toSum:1,
+									isCoin:1,
                                 },
 								{
 
                                     label:atual?.vrTotal,
-                                    propsRow:{}
+                                    propsRow:{},
+									toSum:1,
+									isCoin:1,
                                 },
 								{
 
                                     label:atual?.vr_desconto,
-                                    propsRow:{}
+                                    propsRow:{},
+									toSum:1,
+									isCoin:1,
                                 },
 								{
 
                                     label:atual?.vr_final,
-                                    propsRow:{}
+                                    propsRow:{},
+									toSum:1,
+									isCoin:1,
                                 },
 
                             ]

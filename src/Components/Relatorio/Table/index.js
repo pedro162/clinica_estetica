@@ -4,6 +4,7 @@ import Card from '../../Utils/Card/index.js'
 import Checkbox from '../../FormControl/Checkbox.js'
 import Load from '../../Utils/Load/index.js'
 import MenuOpcoes from '../MenuOpcoes/index.js'
+import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../../functions/index.js'
 
 const Table = ({children, titulosTableArr, rowsTableArr,loading,... props})=>{
 	const titulosTable = titulosTableArr ? titulosTableArr : []
@@ -76,7 +77,7 @@ const Table = ({children, titulosTableArr, rowsTableArr,loading,... props})=>{
 	const opt = [
 			{acao:()=>alert('Aqui'), label:'Editar', propsOption:{}, propsLabel:{}}
 		]
-
+	let arraySum = {};
 	return(
 		<>
 			<Card
@@ -118,7 +119,7 @@ const Table = ({children, titulosTableArr, rowsTableArr,loading,... props})=>{
 						  	}
 						  <tbody>
 						  	{	
-
+								
 						  		bodyTable && Array.isArray(bodyTable) && bodyTable.length > 0 ? (
 
 						  			bodyTable.map((item, index, arr)=>{
@@ -136,6 +137,34 @@ const Table = ({children, titulosTableArr, rowsTableArr,loading,... props})=>{
 							  						celBodyTableArr && Array.isArray(celBodyTableArr) && celBodyTableArr.length > 0 ? (
 														celBodyTableArr.map((itemCel, indexCel, arrCel)=>{
 															let labelCel = itemCel.hasOwnProperty('label') ? itemCel.label :'';
+															let toSum = itemCel.hasOwnProperty('toSum') ? itemCel.toSum :0;
+															//, 
+															let isCoin              = itemCel.hasOwnProperty('isCoin') ? itemCel.isCoin :0;
+															if(arraySum[indexCel] && arraySum[indexCel].hasOwnProperty("isCoin")){
+																if(isCoin){
+																	arraySum[indexCel]['isCoin'] = isCoin;
+																}
+																if(toSum){
+																	//arraySum[indexCel]['valor'] += Number(FORMAT_CALC_COD(labelCel))
+																	arraySum[indexCel]['valor'] = Number(FORMAT_CALC_COD(labelCel)) + Number(FORMAT_CALC_COD(arraySum[indexCel]['valor']))
+																}else{
+																	arraySum[indexCel]['valor'] = ''
+																}
+															}else{
+																arraySum[indexCel] = {'isCoin':'','valor':''}
+																if(isCoin){
+																	arraySum[indexCel]['isCoin'] = isCoin;
+																}
+																if(toSum){
+																	//arraySum[indexCel]['valor'] += Number(FORMAT_CALC_COD(labelCel))
+																	arraySum[indexCel]['valor'] = Number(FORMAT_CALC_COD(labelCel)) + Number(FORMAT_CALC_COD(arraySum[indexCel]['valor']))
+																}else{
+																	arraySum[indexCel]['valor'] = ''
+																}
+
+															}
+															
+
 															let propsCelBodyTable 	= itemCel.hasOwnProperty('props') ? itemCel.props : {};
 															return <td key={indexCel} {...propsCelBodyTable}>{labelCel}</td>
 														})
@@ -152,6 +181,32 @@ const Table = ({children, titulosTableArr, rowsTableArr,loading,... props})=>{
 			  					
 			  				}				    
 						  </tbody>
+						  <tfoot>
+							{arraySum && (
+								<tr>
+									<td></td>
+									{Object.keys(arraySum).map((ojKey, index, arr)=>{
+										let {valor,isCoin} = arraySum[ojKey]
+										
+										if(! (String(valor).trim().length > 0)){
+											return <td></td>
+										}
+			
+										let valorAtual = '';
+										if(isCoin){
+											valorAtual = FORMAT_MONEY(valor);
+										}else{
+											valorAtual = valor;
+										}
+										return <td>{valorAtual}</td>
+									})}
+
+									
+								</tr>
+
+							)}
+							
+						  </tfoot>
 						</TableBootstrap>
 
 					

@@ -16,6 +16,7 @@ import FormOrdemServico from './FormOrdemServico/index.js'
 import Cadastrar from './Cadastrar/index.js'
 import Atualizar from './Atualizar/index.js'
 import Iniciar from './Iniciar/index.js'
+import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../functions/index.js'
 
 
 const OrdemServico = (props)=>{
@@ -246,8 +247,10 @@ const OrdemServico = (props)=>{
                                 },
                                 {
 
-                                    label:atual.vr_final,
-                                    propsRow:{}
+                                    label:FORMAT_MONEY(atual?.vr_final),
+                                    propsRow:{},
+									toSum:1,
+									isCoin:1,
                                 },
                             ]
                         }

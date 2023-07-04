@@ -6,6 +6,7 @@ import Load from '../../Utils/Load/index.js'
 import MenuOpcoes from '../MenuOpcoes/index.js'
 import { faHome, faSearch, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../../functions/index.js'
 
 const TableForm = ({children, titulosTableArr, rowsTableArr,loading, hasActionsCol, hasTrashAction ,propsTrash ,... props})=>{
 	const titulosTable = titulosTableArr ? titulosTableArr : []
@@ -78,6 +79,7 @@ const TableForm = ({children, titulosTableArr, rowsTableArr,loading, hasActionsC
 	const opt = [
 			{acao:()=>alert('Aqui'), label:'Editar', propsOption:{}, propsLabel:{}}
 		]
+    let arraySum = {};
 
 	return(
 		<>
@@ -136,8 +138,33 @@ const TableForm = ({children, titulosTableArr, rowsTableArr,loading, hasActionsC
                                         {
                                             celBodyTableArr && Array.isArray(celBodyTableArr) && celBodyTableArr.length > 0 ? (
                                                 celBodyTableArr.map((itemCel, indexCel, arrCel)=>{
-                                                    let labelCel = itemCel.hasOwnProperty('label') ? itemCel.label :'';
+                                                    let labelCel            = itemCel.hasOwnProperty('label') ? itemCel.label :'';
                                                     let propsCelBodyTable 	= item.hasOwnProperty('propsRow') ? item.propsRow: {};
+                                                    let toSum               = itemCel.hasOwnProperty('toSum') ? itemCel.toSum :0;
+                                                    let isCoin              = itemCel.hasOwnProperty('isCoin') ? itemCel.isCoin :0;
+                                                    if(arraySum[indexCel] && arraySum[indexCel].hasOwnProperty("isCoin")){
+                                                        if(isCoin){
+                                                            arraySum[indexCel]['isCoin'] = isCoin;
+                                                        }
+                                                        if(toSum){
+                                                            arraySum[indexCel]['valor'] = Number(FORMAT_CALC_COD(labelCel)) + Number(FORMAT_CALC_COD(arraySum[indexCel]['valor']))
+                                                        }else{
+                                                            arraySum[indexCel]['valor'] = ''
+                                                        }
+                                                    }else{
+                                                        arraySum[indexCel] = {'isCoin':'','valor':''}
+                                                        if(isCoin){
+                                                            arraySum[indexCel]['isCoin'] = isCoin;
+                                                        }
+                                                        if(toSum){
+                                                            arraySum[indexCel]['valor'] = Number(FORMAT_CALC_COD(labelCel)) + Number(FORMAT_CALC_COD(arraySum[indexCel]['valor']))
+                                                        }else{
+                                                            arraySum[indexCel]['valor'] = ''
+                                                        }
+
+                                                    }
+                                                    
+                                                    
                                                     return <td key={indexCel}>{labelCel}</td>
                                                 })
 
@@ -171,6 +198,27 @@ const TableForm = ({children, titulosTableArr, rowsTableArr,loading, hasActionsC
                         
                     }				    
                 </tbody>
+                <tfoot style={{border:'none !important'}}>
+					<tr style={{border:'none !important'}}>
+					    <td style={{border:'none !important'}}></td>
+                        {Object.keys(arraySum).map((ojKey, index, arr)=>{
+                            let item = arraySum[ojKey];
+
+                            if(! (String(item['valor']).trim().length > 0)){
+                                return <td></td>
+                            }
+
+                            let valorAtual = '';
+                            if(item['isCoin']){
+                                valorAtual = FORMAT_MONEY(item['valor']);
+                            }else{
+                                valorAtual = item['valor'];
+                            }
+                            return <td>{valorAtual}</td>
+                        })}
+                        {hasActionsCol &&  <td></td>}
+				    </tr>
+				</tfoot>
                 </TableBootstrap>
 
 
