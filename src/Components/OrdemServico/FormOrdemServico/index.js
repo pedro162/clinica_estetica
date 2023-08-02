@@ -15,7 +15,7 @@ import FormOrdemServicoItens from '../FormOrdemServicoItens/index.js'
 import FormOrdemServicoCobrancas from '../FormOrdemServicoCobrancas/index.js'
 
 
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, SERVICO_SAVE_POST, SERVICO_ALL_POST, ORDEM_SERVICO_UPDATE_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST} from '../../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, SERVICO_SAVE_POST, SERVICO_ALL_POST, ORDEM_SERVICO_FINALIZAR_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST} from '../../../api/endpoints/geral.js'
 
 
 const FormOrdemServico = ({dataOrdemServicoChoice, setDataOrdemServico, setIdOrdemServico, idOrdemServico, showModalCriarOrdemServico, setShowModalCriarOrdemServico, callback, atualizarOrdemServico, setAtualizarOrdemServico, carregando})=>{
@@ -33,22 +33,25 @@ const FormOrdemServico = ({dataOrdemServicoChoice, setDataOrdemServico, setIdOrd
 
     const sendData = async ({
 			rca_id,
+			pessoa_rca_id,
 			filial_id,
 			pessoa_id,
 			profissional_id,
 			name_pessoa_contato
 		})=>{
 			
-
+		rca_id= pessoa_rca_id > 0 && !rca_id ?  pessoa_rca_id : rca_id;
 		const data = {
 			rca_id,
+			pessoa_rca_id,
 			filial_id,
 			pessoa_id,
 			profissional_id,
 			name_pessoa_contato
 		}
+		
 
-		const {url, options} = ORDEM_SERVICO_UPDATE_POST(idOrdemServico, data, getToken());
+		const {url, options} = ORDEM_SERVICO_FINALIZAR_POST(idOrdemServico, data, getToken());
 
 
 		const {response, json} = await request(url, options);

@@ -15,7 +15,7 @@ import OrdemServicoItens from '../../OrdemServicoItens/index.js'
 import TableForm from '../../Relatorio/TableForm/index.js';
 import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../../functions/index.js'
 
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, SERVICO_SAVE_POST, ORDEM_SERVICO_ITENS_ONE_GET , SERVICO_ALL_POST, SERVICO_UPDATE_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST, SERVICO_ONE_GET, ORDEM_SERVICO_ONE_GET, ORDEM_SERVICO_ADD_ITEM_POST, COBRANCA_ORDEM_DELETE_POST, FORMA_PAGAMENTOALL_POST, FORMA_PAGAMENTO_ONE_GET, PLANO_PAGAMENTOALL_POST, PLANO_PAGAMENTO_ONE_GET, OPERADOR_FINANCEIROALL_POST, COBRANCA_ORDEM_SAVE_POST} from '../../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, COBRANCA_ORDEM_ONE_GET ,  ORDEM_SERVICO_ONE_GET, COBRANCA_ORDEM_DELETE_POST, FORMA_PAGAMENTOALL_POST, FORMA_PAGAMENTO_ONE_GET, PLANO_PAGAMENTOALL_POST, PLANO_PAGAMENTO_ONE_GET, OPERADOR_FINANCEIROALL_POST, COBRANCA_ORDEM_SAVE_POST, COBRANCA_ORDEM_UPDATE_POST} from '../../../api/endpoints/geral.js'
 
 
 const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoGlobal, idOrdemServico, itensOrdem ,callback,carregando})=>{
@@ -30,21 +30,21 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 	const [dataCobrancas, setDataCobrancas] = React.useState([]);//itensOrdem
     const [dataOrdemServico, setDataOrdemServico] = React.useState(null)
 	const [dataBodyTable, setDataBodyTable] = React.useState([])
-	const [idFormaPagamentoOrdemServico, setIdFormaPagamentoOrdemServico] = React.useState(0)
+	const [idCobrancaEcolhidaOrdemServico, setIdCobrancaEscolhidaOrdemServico] = React.useState(0)
 	const [dataServicoItemEscolhido, setDataServicoItemEscolhido] = React.useState([])
 	const [idServicoEscolhido, setIdServicoEscolhido] = React.useState(0)
 	const [dataFormaPagamentoEscolhido, setDataFormaPagamentoEscolhido] = React.useState([])
 	const [idFormaPagamentoForm, setIdFormaPagamentoForm] = React.useState(0)				//--- Controla a quantidade do serviço
 	const [vrCobrancaForm, setVrCobrancaForm] = React.useState(0)					//--- Controla a quantidade do serviço
 	const [idPlanoPagamentoForm, setIdPlanoPagamentoForm] = React.useState(0)		//--- Controla a quantidade do serviço
-	const [idOperadorFinanceiroForm, setIdOperadorFinanceiroForm] = React.useState(0)	
+	const [idOperadorFinanceiroForm, setIdOperadorFinanceiroForm] = React.useState(0)
+	const [nrDocForm, setNrDocForm] = React.useState('')	
 
 	const userLogar =  ()=>{
         console.log('Aqui............')
     }
 
     const sendData = async ({
-		ordem_servico_id,
 		forma_pagamento_id,
 		operador_financeiro_id,
 		plano_pagamento_id,
@@ -66,31 +66,51 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 			'vr_cobranca':vr_cobranca,
 			cobranca_id,
     	}
-		console.log(data)
-		const {url, options} = COBRANCA_ORDEM_SAVE_POST(data, getToken());
+		let jsonResponse = null;
+		if(Number(idCobrancaEcolhidaOrdemServico) > 0){
+			//console.log(data)
+			//COBRANCA_ORDEM_UPDATE_POST = (id,data, token)
+			const {url, options} = COBRANCA_ORDEM_UPDATE_POST(idCobrancaEcolhidaOrdemServico, data, getToken());
 
 
-		const {response, json} = await request(url, options);
-		//console.log('Save cobrança here')
-		//console.log(json)
-		if(json){
+			const {response, json} = await request(url, options);
+			//console.log('Save cobrança here')
+			//console.log(json)
+			jsonResponse = json
+
+		}else{
+
+		
+			//console.log(data)
+			const {url, options} = COBRANCA_ORDEM_SAVE_POST(data, getToken());
+
+
+			const {response, json} = await request(url, options);
+			//console.log('Save cobrança here')
+			//console.log(json)
+			jsonResponse = json
 			
+		}
+
+		if(jsonResponse){
+				
 			await getOrdemServico(idOrdemServico);
 			/* setDataFormaPagamentoEscolhido([])
 			setDataServicoItemEscolhido([])
-			setIdFormaPagamentoOrdemServico(null)
+			setIdCobrancaEscolhidaOrdemServico(null)
 			setIdServicoEscolhido(null) */
 			limparFormulario()
 			setDataOrdemServico()
 			getFormaPagamentoAll();
 			//callback();
 		}
+
     }
 
 	const limparFormulario = ()=>{
 		setDataFormaPagamentoEscolhido([])
 		setDataServicoItemEscolhido([])
-		setIdFormaPagamentoOrdemServico(null)
+		setIdCobrancaEscolhidaOrdemServico(null)
 		setIdServicoEscolhido(null)
 
 		setIdPlanoPagamentoForm(null)
@@ -222,22 +242,22 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 	React.useEffect(()=>{
 		if(idServicoEscolhido && idServicoEscolhido > 0){
 			getFormaPagamentoOrdem(idServicoEscolhido)
-			setIdFormaPagamentoOrdemServico(null)
+			setIdCobrancaEscolhidaOrdemServico(null)
 			setDataServicoItemEscolhido([])
 		}else{
 			setDataFormaPagamentoEscolhido([])
 			//getFormaPagamentoOrdem(null)
-			//setIdFormaPagamentoOrdemServico(null)
+			//setIdCobrancaEscolhidaOrdemServico(null)
 			//setDataServicoItemEscolhido([])
 		}
 
 	}, [idServicoEscolhido])
 
 
-	const getItemCobrancaOrdemServico = async (idFormaPagamentoOrdemServico)=>{
-		if(idFormaPagamentoOrdemServico > 0){
+	const getItemCobrancaOrdemServico = async (idCobrancaEcolhidaOrdemServico)=>{
+		if(idCobrancaEcolhidaOrdemServico > 0){
 
-			const {url, options} = ORDEM_SERVICO_ITENS_ONE_GET(idFormaPagamentoOrdemServico, getToken());
+			const {url, options} = COBRANCA_ORDEM_ONE_GET(idCobrancaEcolhidaOrdemServico, getToken());
 			const {response, json} = await request(url, options);
 			
 			if(json){
@@ -247,18 +267,22 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 					//console.log("Item ordem serviço escolhido: ",data)
 					let {id, servico_id, servico} = data
 					
-					setDataServicoItemEscolhido(data)
+					//setDataServicoItemEscolhido(data)
 
 					//console.log('servico_id:',servico_id)
-					data.id = servico_id;
+					/* data.id = servico_id;
 					data.os_item_id = id;
 					data.name = servico?.name;
-					data.vrServico = servico?.vrServico;
+					data.vrServico = servico?.vrServico; */
 					
-					//console.log('Dados para formulário =======================================')
-					//console.log(data)
-					//console.log('Dados para formulário =======================================')
+					console.log('Dados para formulário =======================================')
+					console.log(data)
+					console.log('Dados para formulário =======================================')
 					setDataFormaPagamentoEscolhido(data)
+					setIdFormaPagamentoForm(data?.forma_pagamento_id)
+					setIdPlanoPagamentoForm(data?.plano_pagamento_id)//
+					setIdOperadorFinanceiroForm(data?.operador_financeiro_id)
+					setNrDocForm(data?.nr_doc)
 				}else{
 					setDataServicoItemEscolhido([])
 					setDataFormaPagamentoEscolhido([])
@@ -276,11 +300,11 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 	}
 
 	React.useEffect(()=>{
-		/* if(idFormaPagamentoOrdemServico > 0){
-			getItemCobrancaOrdemServico(idFormaPagamentoOrdemServico)
+		/* if(idCobrancaEcolhidaOrdemServico > 0){
+			getItemCobrancaOrdemServico(idCobrancaEcolhidaOrdemServico)
 		} */
-		getItemCobrancaOrdemServico(idFormaPagamentoOrdemServico)
-	}, [idFormaPagamentoOrdemServico])
+		getItemCobrancaOrdemServico(idCobrancaEcolhidaOrdemServico)
+	}, [idCobrancaEcolhidaOrdemServico])
 
 
 	const dataToFormOrdemServicoCobrancas = ()=>{
@@ -334,6 +358,10 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 	React.useEffect(()=>{
 		setDataFormaPagamentoEscolhido({...dataFormaPagamentoEscolhido, ...calcularCobranca({idOperadorFinanceiroForm})})
 	}, [idOperadorFinanceiroForm])
+
+	React.useEffect(()=>{
+		setDataFormaPagamentoEscolhido({...dataFormaPagamentoEscolhido, ...calcularCobranca({nrDocForm})})
+	}, [nrDocForm])
 
 	React.useEffect(()=>{
 		
@@ -522,7 +550,7 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 								///setGrupo(atual?.grupo);
 								//setPosicao(atual?.posicao);
 								//setIdGrupo(atual?.id)
-								setIdFormaPagamentoOrdemServico(atual?.id)
+								setIdCobrancaEscolhidaOrdemServico(atual?.id)
 							}, label:'Editar', propsOption:{'className':'btn btn-sm'}, propsLabel:{}})
 					}
 
@@ -540,6 +568,11 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
                                 },
 								{
 
+                                    label:atual?.forma_pgto?.name,
+                                    propsRow:{}
+                                },
+								{
+
                                     label:FORMAT_MONEY(atual?.vr_final),
                                     propsRow:{},
 									toSum:1,
@@ -547,11 +580,16 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
                                 },
                                 {
 
-                                    label:atual?.planoPagamento?.name,
+                                    label:atual?.nr_doc,
+                                    propsRow:{}
+                                },
+                                {
+
+                                    label:atual?.plano_pgto?.name,
                                     propsRow:{}
                                 },
 
-                            ]
+                            ]//
                         }
 
                     )
@@ -567,11 +605,19 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
     const gerarTitleCobTable = ()=>{
         let tableTitle = [
             {
-                label:'Código',
+                label:'CÓDIGO',
+                props:{}
+            },
+			{
+                label:'FORMA PGTO',
                 props:{}
             },
             {
                 label:'VALOR',
+                props:{}
+            },
+            {
+                label:'DOC',
                 props:{}
             },
             {
@@ -588,6 +634,7 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 	const dataFormSev 		= calcularCobranca({})
 	console.log('Cobrança adicionada')
 	console.table(dataFormSev)
+	const readonlyFields = idCobrancaEcolhidaOrdemServico > 0 ? {readonly:'readonly', disabled:'disabled'} : {}
 	return(
 
 		<>
@@ -718,9 +765,10 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 																			onBlur:(ev)=>{ setVrCobrancaForm(ev.target.value);handleBlur(ev)},
 																			//onChange:handleChange,
 																			//onBlur:handleBlur,
-																			value:values.vr_cobranca,
+																			value:FORMAT_MONEY(values.vr_cobranca),
 																			className:estilos.input,
-																			size:"sm"
+																			size:"sm",
+																			...readonlyFields
 																		},
 																		options:[],
 																		atributsContainer:{
@@ -760,7 +808,8 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 																			onBlur:(ev)=>{ setIdFormaPagamentoForm(ev.target.value);handleBlur(ev)},
 																			value:values.forma_pagamento_id,
 																			className:estilos.input,
-																			size:"sm"
+																			size:"sm",
+																			...readonlyFields
 																		},
 																		options:preparaFormaPagamentoToForm(),
 																		atributsContainer:{
@@ -794,7 +843,8 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 																			onBlur:(ev)=>{ setIdPlanoPagamentoForm(ev.target.value);handleBlur(ev)},
 																			value:values.plano_pagamento_id,
 																			className:estilos.input,
-																			size:"sm"
+																			size:"sm",
+																			...readonlyFields
 																		},
 																		options:preparaPlanoPagamentoToForm(),
 																		atributsContainer:{
@@ -831,7 +881,8 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 																			onBlur:(ev)=>{ setIdOperadorFinanceiroForm(ev.target.value);handleBlur(ev)},
 																			value:values.operador_financeiro_id,
 																			className:estilos.input,
-																			size:"sm"
+																			size:"sm",
+																			...readonlyFields
 																		},
 																		options:preparaOperadorFinanceiroToForm(),
 																		atributsContainer:{
@@ -863,7 +914,8 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 																			onBlur:handleBlur,
 																			value:values.bandeira_cartao_id,
 																			className:estilos.input,
-																			size:"sm"
+																			size:"sm",
+																			...readonlyFields
 																		},
 																		options:preparaFormaPagamentoToForm(),
 																		atributsContainer:{
@@ -891,12 +943,12 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 																		},
 																		atributsFormControl:{
 																			type:'text',
-																			name:'doc',
+																			name:'nr_doc',
 																			placeholder:'CV / DOC / NSU',
-																			id:'doc',
+																			id:'nr_doc',
 																			onChange:handleChange,
 																			onBlur:handleBlur,
-																			value:values.doc,
+																			value:values.nr_doc,
 																			className:estilos.input,
 																			size:"sm",
 																		},
@@ -909,7 +961,7 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 															
 																component={FormControlInput}
 															></Field>
-															<ErrorMessage className="alerta_error_form_label" name="doc" component="div" />
+															<ErrorMessage className="alerta_error_form_label" name="nr_doc" component="div" />
 															
 														</Col>
 
