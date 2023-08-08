@@ -242,15 +242,35 @@ const OrdemServico = (props)=>{
                                 },
                                 {
 
-                                    label:atual.created_at,
-                                    propsRow:{}
-                                },
-                                {
-
                                     label:FORMAT_MONEY(atual?.vr_final),
                                     propsRow:{},
 									toSum:1,
 									isCoin:1,
+                                },
+                                {
+
+                                    label:atual.is_faturado == 'yes' ? 'Sim' : 'Não',
+                                    propsRow:{}
+                                },
+                                {
+
+                                    label:FORMAT_DATA_PT_BR(atual.td_faturamento),
+                                    propsRow:{}
+                                },
+                                {
+
+                                    label:FORMAT_DATA_PT_BR(atual.td_cancelamento),
+                                    propsRow:{}
+                                },
+                                {
+
+                                    label:FORMAT_DATA_PT_BR(atual.td_conclusao),
+                                    propsRow:{}
+                                },
+                                {
+
+                                    label:FORMAT_DATA_PT_BR(atual.created_at),
+                                    propsRow:{}
                                 },
                             ]
                         }
@@ -296,11 +316,27 @@ const OrdemServico = (props)=>{
                 props:{}
             },
             {
-                label:'Iniciado em',
+                label:'Valor',
                 props:{}
             },
             {
-                label:'Valor',
+                label:'Faturado',
+                props:{}
+            },
+            {
+                label:'Faturado em',
+                props:{}
+            },
+            {
+                label:'Cancelado em',
+                props:{}
+            },
+            {
+                label:'Concluído em',
+                props:{}
+            },
+            {
+                label:'Iniciado em',
                 props:{}
             }
         ]
