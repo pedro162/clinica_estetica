@@ -2,17 +2,17 @@ import React from 'react';
 import useFetch from '../../../Hooks/useFetch.js';
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, ORDEM_SERVICO_ONE_GET, GRUPOS_ALL_POST} from '../../../api/endpoints/geral.js'
 import {UserContex} from '../../../Context/UserContex.js'
-import AtualizarForm from '../FormOrdemServico/index.js'
+import FormOrdemServico from '../FormOrdemServico/index.js'
 import Pesquisar from '../Pesquisar/index.js'
 import Modal from '../../Utils/Modal/index.js'
 import Load from '../../Utils/Load/index.js'
 import {Col, Row} from 'react-bootstrap';
-import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible'
+import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible.js'
 
-const Atualizar = ({idOrdemServico, setIdOrdemServico, callback, atualizarOrdemServico, setAtualizarOrdemServico})=>{
+const Digitacao = ({idOrdemServico, setIdOrdemServico, callback, atualizarOrdemServico, setDigitacaoOrdemServico})=>{
 
     
-    const [showModalAtualizarOrdemServico, setShowModalAtualizarOrdemServico] = React.useState(false)
+    const [showModalDigitacaoOrdemServico, setShowModalDigitacaoOrdemServico] = React.useState(false)
     const [carregando, setCarregando] = React.useState(false)
     const [dataOrdemServico, setDataOrdemServico] = React.useState(null)
     const [dataGrupo, setDataGrupo] = React.useState(null)
@@ -28,7 +28,7 @@ const Atualizar = ({idOrdemServico, setIdOrdemServico, callback, atualizarOrdemS
 				if(json){
 					
 					setDataOrdemServico(json)
-					setShowModalAtualizarOrdemServico(true)
+					setShowModalDigitacaoOrdemServico(true)
 					 
 		        }else{
 		        	setDataOrdemServico([])
@@ -42,22 +42,22 @@ const Atualizar = ({idOrdemServico, setIdOrdemServico, callback, atualizarOrdemS
 
 	/*
 		atualizarOrdemServico && 
-                <Atualizar setCarregandoDadosOrdemServico={null} atualizarOrdemServico={setAtualizarOrdemServico} idOrdemServico={clientChoice} setDataOrdemServico={null} setShowModalCriarOrdemServico={setShowModalAtualizarOrdemServico} />
+                <Digitacao setCarregandoDadosOrdemServico={null} atualizarOrdemServico={setDigitacaoOrdemServico} idOrdemServico={clientChoice} setDataOrdemServico={null} setShowModalCriarOrdemServico={setShowModalDigitacaoOrdemServico} />
 	*/
 	//<Pesquisar idOrdemServico={idOrdemServico} setDataOrdemServico={setDataOrdemServico} setCarregandoDadosOrdemServico={setCarregando} />
 	return(
 		<>
 			{! dataOrdemServico &&
-				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={()=>null}  title={'Atualizar OrdemServico'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="" show={setShowModalAtualizarOrdemServico} showHide={()=>{setShowModalAtualizarOrdemServico();}}>
+				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={()=>null}  title={'Digitacao OrdemServico'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="" show={setShowModalDigitacaoOrdemServico} showHide={()=>{setShowModalDigitacaoOrdemServico();}}>
 					<Load/>
 				</Modal>
 			}
 
 			{dataOrdemServico && 
-				<AtualizarForm setDataOrdemServico={setDataOrdemServico} setIdOrdemServico={setIdOrdemServico} idOrdemServico={idOrdemServico} carregando={false} dataOrdemServicoChoice={dataOrdemServico} setAtualizarOrdemServico={setAtualizarOrdemServico} atualizarOrdemServico={atualizarOrdemServico} showModalCriarOrdemServico={showModalAtualizarOrdemServico} setShowModalCriarOrdemServico={setShowModalAtualizarOrdemServico} callback={callback} />
+				<FormOrdemServico setDataOrdemServico={setDataOrdemServico} setIdOrdemServico={setIdOrdemServico} idOrdemServico={idOrdemServico} carregando={false} dataOrdemServicoChoice={dataOrdemServico} setDigitacaoOrdemServico={setDigitacaoOrdemServico} atualizarOrdemServico={atualizarOrdemServico} showModalCriarOrdemServico={showModalDigitacaoOrdemServico} setShowModalCriarOrdemServico={setShowModalDigitacaoOrdemServico} callback={callback} />
 			}
 		</>
 	)
 }
 
-export default Atualizar;
+export default Digitacao;

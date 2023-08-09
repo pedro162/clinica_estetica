@@ -7,7 +7,7 @@ import Pesquisar from '../Pesquisar/index.js'
 import Modal from '../../Utils/Modal/index.js'
 import Load from '../../Utils/Load/index.js'
 import {Col, Row} from 'react-bootstrap';
-import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible'
+import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible.js'
 
 const Atualizar = ({idOrdemServico, setIdOrdemServico, callback, atualizarOrdemServico, setAtualizarOrdemServico})=>{
 

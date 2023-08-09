@@ -16,6 +16,7 @@ import FormOrdemServico from './FormOrdemServico/index.js'
 import Cadastrar from './Cadastrar/index.js'
 import Atualizar from './Atualizar/index.js'
 import Iniciar from './Iniciar/index.js'
+import Include from './include';
 import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../functions/index.js'
 
 
@@ -28,7 +29,8 @@ const OrdemServico = (props)=>{
     const [showModalCriarOrdemServico, setShowModalCriarConstula] = React.useState(false)
     const [consultaChoice, setOrdemServicoChoice] = React.useState(null);
     const [atualizarOrdemServico, setAtualizarOrdemServico] = React.useState(false)   
-    const [cancelarOrdemServico, setCancelarOrdemServico] = React.useState(false)    
+    const [cancelarOrdemServico, setCancelarOrdemServico] = React.useState(false)   
+    const [digitarOrdemServico, setDigitarOrdemServico] = React.useState(false)    
     const [cadastrarOrdemServico, setCadastrarOrdemServico] = React.useState(false)  
     const [incicarOrdemServico, setIniciarOrdemServico] = React.useState(false) 
     const [acao, setAcao] = React.useState(null)
@@ -123,30 +125,6 @@ const OrdemServico = (props)=>{
 
 
     React.useEffect(()=>{
-        switch(acao){
-            case 'editar':
-                if(consultaChoice > 0){
-                    setAtualizarOrdemServico(true);
-                }else{
-                    setAtualizarOrdemServico(false);
-                }
-                break;
-            case 'cancelar':
-                if(consultaChoice > 0){
-                    setCancelarOrdemServico(true);
-                }else{
-                    setCancelarOrdemServico(false);
-                }
-                break;
-            default://
-                
-                break;
-
-        }
-        
-    }, [consultaChoice, acao])
-
-    React.useEffect(()=>{
 
         if(cadastrarOrdemServico == true){
             setShowModalCriarConstula(true);
@@ -162,6 +140,13 @@ const OrdemServico = (props)=>{
         setAcao('editar')
         setAtualizarOrdemServico(true);
     }
+
+    const digitarOrdemServicoAction = (idOrdemServico)=>{
+        setOrdemServicoChoice(idOrdemServico)
+        setAcao('digitar')
+        setAtualizarOrdemServico(true);
+    }
+
     const cancelarOrdemServicoAction = (idOrdemServico)=>{
         setOrdemServicoChoice(idOrdemServico)
         setAcao('cancelar')
@@ -179,172 +164,6 @@ const OrdemServico = (props)=>{
         setAcao('iniciar')
         setIniciarOrdemServico(true);
     }
-
-    const gerarTableOrdemServico = ()=>{
-       
-        let data = [];
-        let dataOrdemServico = estado.mensagem
-        if(dataOrdemServico && Array.isArray(dataOrdemServico) && dataOrdemServico.length > 0){
-            for(let i=0; !(i == dataOrdemServico.length); i++){
-                let atual = dataOrdemServico[i];
-                if(atual){
-                    let acoesArr = [];
-                    let btnEditar           = true;
-
-                    if(btnEditar){
-                        acoesArr.push({acao:()=>atualizarOrdemServicoAction(atual.id), label:'Editar', propsOption:{}, propsLabel:{}})
-                    }
-
-                    
-                    //'remarcado','finalizado','cancelado','pendente'
-                    data.push(
-
-                        {
-                            propsRow:{id:(atual.id)},
-                            acoes:[
-                                ...acoesArr
-                            ],
-                            celBodyTableArr:[
-                                {
-
-                                    label:atual.id,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual.name_filial,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual.name,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual.status,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual.name_profissional,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual.name_rca,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual.observacao,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:FORMAT_MONEY(atual?.vr_final),
-                                    propsRow:{},
-									toSum:1,
-									isCoin:1,
-                                },
-                                {
-
-                                    label:atual.is_faturado == 'yes' ? 'Sim' : 'Não',
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:FORMAT_DATA_PT_BR(atual.td_faturamento),
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:FORMAT_DATA_PT_BR(atual.td_cancelamento),
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:FORMAT_DATA_PT_BR(atual.td_conclusao),
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:FORMAT_DATA_PT_BR(atual.created_at),
-                                    propsRow:{}
-                                },
-                            ]
-                        }
-
-                    )
-
-                }
-
-            }
-        }
-
-        return data;
-    }
-
-    const gerarTitleTable = ()=>{
-        let tableTitle = [
-            {
-                label:'Código',
-                props:{}
-            },
-            {
-                label:'Filial',
-                props:{}
-            },
-            {
-                label:'Cliente',
-                props:{}
-            },
-            {
-                label:'Status',
-                props:{}
-            },
-            {
-                label:'Profissional',
-                props:{}
-            },
-            {
-                label:'Vendedor',
-                props:{}
-            },
-            {
-                label:'Observação',
-                props:{}
-            },
-            {
-                label:'Valor',
-                props:{}
-            },
-            {
-                label:'Faturado',
-                props:{}
-            },
-            {
-                label:'Faturado em',
-                props:{}
-            },
-            {
-                label:'Cancelado em',
-                props:{}
-            },
-            {
-                label:'Concluído em',
-                props:{}
-            },
-            {
-                label:'Iniciado em',
-                props:{}
-            }
-        ]
-
-        return tableTitle;
-    }
-   //name_profissional
-
     //------------
 
     const requestAllOrdemServicos = async() =>{
@@ -377,9 +196,6 @@ const OrdemServico = (props)=>{
         
     }, [])
     
-
-    const rowsTableArr = gerarTableOrdemServico();    
-    const titulosTableArr = gerarTitleTable();
     return(
         <>
             <Breadcrumbs
@@ -402,24 +218,13 @@ const OrdemServico = (props)=>{
                     />
                 </Col>
                 <Col  xs="12" sm="12" md="9">
-                    <Table
-                        titulosTableArr={titulosTableArr}
-                        rowsTableArr={rowsTableArr}
-                        loading={loading}
-
+                    <Include
+                        dataEstado={estado}
+                        loadingData={loading}
+                        callBack={requestAllOrdemServicos}
                     />
                 </Col>
             </Row>
-
-            {
-                cadastrarOrdemServico && <Cadastrar cadastrarOrdemServico={cadastrarOrdemServico} setCadastrarOrdemServico={setCadastrarOrdemServico} atualizarOrdemServico={atualizarOrdemServico} setAtualizarOrdemServico={setAtualizarOrdemServico}  idOrdemServico={consultaChoice} setIdOrdemServico={setOrdemServicoChoice} callback={requestAllOrdemServicos} />
-            }
-            
-            {
-                atualizarOrdemServico &&
-                <Atualizar atualizarOrdemServico={atualizarOrdemServico} setAtualizarOrdemServico={setAtualizarOrdemServico}  idOrdemServico={consultaChoice} setIdOrdemServico={setOrdemServicoChoice} callback={requestAllOrdemServicos} />
-            }
-
             {
                 incicarOrdemServico &&
                 <Iniciar incicarOrdemServico={incicarOrdemServico} setIniciarOrdemServico={setIniciarOrdemServico} atualizarOrdemServico={atualizarOrdemServico} setAtualizarOrdemServico={setAtualizarOrdemServico}  idOrdemServico={consultaChoice} setIdOrdemServico={setOrdemServicoChoice} callback={requestAllOrdemServicos} />

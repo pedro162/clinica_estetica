@@ -2,17 +2,17 @@ import React from 'react';
 import useFetch from '../../../Hooks/useFetch.js';
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, ORDEM_SERVICO_ONE_GET, GRUPOS_ALL_POST} from '../../../api/endpoints/geral.js'
 import {UserContex} from '../../../Context/UserContex.js'
-import AtualizarForm from '../FormOrdemServico/index.js'
+import CancelarForm from '../FormOrdemServico/CancelarForm.js'
 import Pesquisar from '../Pesquisar/index.js'
 import Modal from '../../Utils/Modal/index.js'
 import Load from '../../Utils/Load/index.js'
 import {Col, Row} from 'react-bootstrap';
-import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible'
+import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible.js'
 
-const Atualizar = ({idOrdemServico, setIdOrdemServico, callback, atualizarOrdemServico, setAtualizarOrdemServico})=>{
+const Cancelar = ({idOrdemServico, setIdOrdemServico, callback, atualizarOrdemServico, setCancelarOrdemServico})=>{
 
     
-    const [showModalAtualizarOrdemServico, setShowModalAtualizarOrdemServico] = React.useState(false)
+    const [showModalCancelarOrdemServico, setShowModalCancelarOrdemServico] = React.useState(false)
     const [carregando, setCarregando] = React.useState(false)
     const [dataOrdemServico, setDataOrdemServico] = React.useState(null)
     const [dataGrupo, setDataGrupo] = React.useState(null)
@@ -28,7 +28,7 @@ const Atualizar = ({idOrdemServico, setIdOrdemServico, callback, atualizarOrdemS
 				if(json){
 					
 					setDataOrdemServico(json)
-					setShowModalAtualizarOrdemServico(true)
+					setShowModalCancelarOrdemServico(true)
 					 
 		        }else{
 		        	setDataOrdemServico([])
@@ -42,22 +42,22 @@ const Atualizar = ({idOrdemServico, setIdOrdemServico, callback, atualizarOrdemS
 
 	/*
 		atualizarOrdemServico && 
-                <Atualizar setCarregandoDadosOrdemServico={null} atualizarOrdemServico={setAtualizarOrdemServico} idOrdemServico={clientChoice} setDataOrdemServico={null} setShowModalCriarOrdemServico={setShowModalAtualizarOrdemServico} />
+                <Cancelar setCarregandoDadosOrdemServico={null} atualizarOrdemServico={setCancelarOrdemServico} idOrdemServico={clientChoice} setDataOrdemServico={null} setShowModalCriarOrdemServico={setShowModalCancelarOrdemServico} />
 	*/
 	//<Pesquisar idOrdemServico={idOrdemServico} setDataOrdemServico={setDataOrdemServico} setCarregandoDadosOrdemServico={setCarregando} />
 	return(
 		<>
 			{! dataOrdemServico &&
-				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={()=>null}  title={'Atualizar OrdemServico'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="" show={setShowModalAtualizarOrdemServico} showHide={()=>{setShowModalAtualizarOrdemServico();}}>
+				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={()=>null}  title={'Cancelar OrdemServico'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="" show={setShowModalCancelarOrdemServico} showHide={()=>{setShowModalCancelarOrdemServico();}}>
 					<Load/>
 				</Modal>
 			}
 
 			{dataOrdemServico && 
-				<AtualizarForm setDataOrdemServico={setDataOrdemServico} setIdOrdemServico={setIdOrdemServico} idOrdemServico={idOrdemServico} carregando={false} dataOrdemServicoChoice={dataOrdemServico} setAtualizarOrdemServico={setAtualizarOrdemServico} atualizarOrdemServico={atualizarOrdemServico} showModalCriarOrdemServico={showModalAtualizarOrdemServico} setShowModalCriarOrdemServico={setShowModalAtualizarOrdemServico} callback={callback} />
+				<CancelarForm setDataOrdemServico={setDataOrdemServico} setIdOrdemServico={setIdOrdemServico} idOrdemServico={idOrdemServico} carregando={false} dataOrdemServicoChoice={dataOrdemServico} setCancelarOrdemServico={setCancelarOrdemServico} atualizarOrdemServico={atualizarOrdemServico} showModalCriarOrdemServico={showModalCancelarOrdemServico} setShowModalCriarOrdemServico={setShowModalCancelarOrdemServico} callback={callback} />
 			}
 		</>
 	)
 }
 
-export default Atualizar;
+export default Cancelar;
