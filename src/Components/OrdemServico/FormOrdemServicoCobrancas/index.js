@@ -369,13 +369,15 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 			console.log('aqui bonitinho========================================')
 			setDataFormaPagamentoEscolhido({...dataFormaPagamentoEscolhido, vrItem:vrCobrancaForm, pct_desconto:0})
 		} */
-
+		console.log('================= vr_cobranca ======================')
+		console.log(vrCobrancaForm)
+		console.log('================= vr_cobranca end ======================')
 		setDataFormaPagamentoEscolhido({...dataFormaPagamentoEscolhido, ...calcularCobranca({vrCobrancaForm}) })
 
 	}, [vrCobrancaForm])
 
 	const calcularCobranca = ({idFormaPagamentoForm, vrCobrancaForm, idPlanoPagamentoForm, idOperadorFinanceiroForm, dtVencimentoManualForm, nrDocForm})=>{
-		let obj = {name:'', forma_pagamento_id:'', operador_financeiro_id:'', plano_pagamento_id:'', vr_cobranca:'', nr_doc:'', ...dataFormaPagamentoEscolhido}
+		let obj = {vr_saldo:'', name:'', forma_pagamento_id:'', operador_financeiro_id:'', plano_pagamento_id:'', vr_cobranca:'', nr_doc:'', ...dataFormaPagamentoEscolhido}
 		let data = dataFormaPagamentoEscolhido;
 		console.log('vrCobrancaForm cobrança ===========================')
 		console.table(vrCobrancaForm)//
@@ -449,6 +451,8 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 		}else{
 			obj.nr_doc 	= idFormaPagamentoForm
 		}
+		
+		obj.vr_saldo 	= Number(FORMAT_CALC_COD(dataOrdemServico?.mensagem?.vr_final)) - Number(FORMAT_CALC_COD(obj?.vr_cobranca));
 
 		console.log('Calcular cobrança ===========================')
 		console.table(obj)//
@@ -761,11 +765,11 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 																			name:'vr_cobranca',
 																			placeholder:'0,00',
 																			id:'vr_cobranca',
-																			onChange:(ev)=>{ /* setVrCobrancaForm(ev.target.value); */handleChange(ev)},
+																			onChange:(ev)=>{ setVrCobrancaForm(ev.target.value); /* handleChange(ev) */},
 																			onBlur:(ev)=>{ setVrCobrancaForm(ev.target.value);handleBlur(ev)},
 																			//onChange:handleChange,
 																			//onBlur:handleBlur,
-																			value:FORMAT_MONEY(values.vr_cobranca),
+																			value:values.vr_cobranca,
 																			className:estilos.input,
 																			size:"sm",
 																			...readonlyFields
