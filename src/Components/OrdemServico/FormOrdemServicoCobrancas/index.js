@@ -100,8 +100,9 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 			setIdCobrancaEscolhidaOrdemServico(null)
 			setIdServicoEscolhido(null) */
 			limparFormulario()
-			setDataOrdemServico()
+			//setDataOrdemServico()
 			getFormaPagamentoAll();
+			//calcularSaldoCobranca
 			//callback();
 		}
 
@@ -115,18 +116,69 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 
 		setIdPlanoPagamentoForm(null)
 		setIdOperadorFinanceiroForm(null)
-		setVrCobrancaForm(null)
+		setVrCobrancaForm(0)
 		setIdFormaPagamentoForm(0)
 		setDataFormaPagamento(null)
 		setDataPlanoPagamento(null)
 		setDataOperadorFinanceiro(null)
+		setNrDocForm(null)
 	}
+
+	const getTotalCobrancas = ()=>{
+		let totalCobrancas 	= 0;
+		let dataRegistro 	= dataCobrancas
+        if(dataRegistro && Array.isArray(dataRegistro) && dataRegistro.length > 0){
+            for(let i=0; !(i == dataRegistro.length); i++){
+                let atual = dataRegistro[i];
+                if(atual){
+					totalCobrancas += Number(atual?.vr_final)
+					
+                }
+
+            }
+        }
+
+		return totalCobrancas;
+	}
+
+	const calcularSaldoCobranca = ()=>{
+		//console.log('Data venda --------------------')
+		//console.log(dataOrdemServicoChoice)
+		//console.log('Data venda ------------------------')
+		let saldo 	= 0;
+		let totCob 	= getTotalCobrancas()
+		totCob 		= Number(totCob)
+
+		let vrOs 	= dataOrdemServico?.mensagem?.vr_final;
+		vrOs 		= Number(vrOs)
+
+		saldo 			= vrOs - totCob;
+		let saldoAbs 	= Math.abs(saldo);
+
+		//console.log('VAlor vrOs: '+vrOs)
+		//console.log('Total cobranças: '+totCob)
+		//---Não tem mais saldo
+		if(! (saldoAbs > 0.02)){
+			saldo = 0;
+			
+		}else if(totCob > vrOs){
+			
+			saldo = 0;
+		}
+		//console.log('Saldo calculado: '+saldo)
+		return saldo;
+	}
+
+	
 
 	const getOrdemServico = async (idOrdemServico)=>{
 		if(idOrdemServico > 0){
 			const {url, options} = ORDEM_SERVICO_ONE_GET(idOrdemServico, getToken());
 			const {response, json} = await request(url, options);
 			
+			console.log('Data venda99999999 --------------------')
+		console.log(json)
+		console.log('Data venda99999999 ------------------------')
 			if(json){
 				
 				setDataOrdemServico(json)
@@ -275,9 +327,9 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 					data.name = servico?.name;
 					data.vrServico = servico?.vrServico; */
 					
-					console.log('Dados para formulário =======================================')
-					console.log(data)
-					console.log('Dados para formulário =======================================')
+					//console.log('Dados para formulário =======================================')
+					//console.log(data)
+					//console.log('Dados para formulário =======================================')
 					setDataFormaPagamentoEscolhido(data)
 					setIdFormaPagamentoForm(data?.forma_pagamento_id)
 					setIdPlanoPagamentoForm(data?.plano_pagamento_id)//
@@ -420,7 +472,7 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 		}else if(data.hasOwnProperty('vr_cobranca')){
 			obj.vr_cobranca = data.vr_cobranca;
 		}else{
-			obj.vr_cobranca 		= vrCobrancaForm
+			obj.vr_cobranca 		= calcularSaldoCobranca()
 		}
 
 		if(idFormaPagamentoForm){
@@ -449,10 +501,23 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 		}else if(data.hasOwnProperty('nr_doc')){
 			obj.nr_doc = data.nr_doc;
 		}else{
-			obj.nr_doc 	= idFormaPagamentoForm
+			obj.nr_doc 	= ''
 		}
 		
-		obj.vr_saldo 	= Number(FORMAT_CALC_COD(dataOrdemServico?.mensagem?.vr_final)) - Number(FORMAT_CALC_COD(obj?.vr_cobranca));
+		let saldoCobrancas 	= calcularSaldoCobranca();
+		saldoCobrancas 		= Number(saldoCobrancas)
+		
+		let vrCobAtual 		= FORMAT_CALC_COD(obj?.vr_cobranca > 0 ? obj?.vr_cobranca : 0 );
+		vrCobAtual 			= Number(vrCobAtual)
+
+		let novoSaldo 		= saldoCobrancas - vrCobAtual;
+		
+		let novoSaldoAbs 	= Math.abs(novoSaldo)
+		if(! (novoSaldoAbs >= 0)){
+			novoSaldo = 0;
+		} 
+
+		obj.vr_saldo 	= calcularSaldoCobranca();
 
 		console.log('Calcular cobrança ===========================')
 		console.table(obj)//
@@ -765,7 +830,7 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 																			name:'vr_cobranca',
 																			placeholder:'0,00',
 																			id:'vr_cobranca',
-																			onChange:(ev)=>{ setVrCobrancaForm(ev.target.value); /* handleChange(ev) */},
+																			onChange:(ev)=>{ setVrCobrancaForm(ev.target.value); handleChange(ev)},
 																			onBlur:(ev)=>{ setVrCobrancaForm(ev.target.value);handleBlur(ev)},
 																			//onChange:handleChange,
 																			//onBlur:handleBlur,
@@ -839,7 +904,7 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 																		atributsFormControl:{
 																			type:'text',
 																			name:'plano_pagamento_id',
-																			placeholder:'Vendedor',
+																			placeholder:'Plano de pagamento',
 																			id:'plano_pagamento_id',
 																			//onChange:handleChange,
 																			//onBlur:handleBlur,
@@ -877,7 +942,7 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 																		atributsFormControl:{
 																			type:'text',
 																			name:'operador_financeiro_id',
-																			placeholder:'Vendedor',
+																			placeholder:'Operador financeiro',
 																			id:'operador_financeiro_id',
 																			//onChange:handleChange,
 																			//onBlur:handleBlur,
@@ -912,7 +977,7 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 																		atributsFormControl:{
 																			type:'text',
 																			name:'bandeira_cartao_id',
-																			placeholder:'Vendedor',
+																			placeholder:'Bandeira do cartão',
 																			id:'bandeira_cartao_id',
 																			onChange:handleChange,
 																			onBlur:handleBlur,
