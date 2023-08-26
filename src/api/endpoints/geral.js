@@ -1619,6 +1619,30 @@ export const ORDEM_SERVICO_UPDATE_POST = (id,data, token)=>{
     }
 
 }
+
+
+
+export const ORDEM_SERVICO_CANCEL_POST = (id,data, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'PUT',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        body:JSON.stringify(data)
+   };
+
+   return{
+        url:BASE_URL+'/api/ordem/servico/cancelar/'+id,
+        options:myInit
+    }
+}
+
 export const ORDEM_SERVICO_FINALIZAR_POST = (id,data, token)=>{
 
     var myHeaders = new Headers();
@@ -2475,6 +2499,114 @@ export const COBRANCA_ORDEM_DELETE_POST = (id, token)=>{
 }
 
 
+//--- Cobrança ordem serviço motivos cancelamentos----------------------------------
+export const MOTIVOS_CANCEL_OS_ALL_POST = (data, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'POST',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        body:JSON.stringify(data)
+   };
+
+   return{
+        url:BASE_URL+'/api/motivo/cancelamento/ordem/servico/json',
+        options:myInit
+    }
+
+}
+export const MOTIVOS_CANCEL_OS_ONE_GET = (id, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'GET',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        //body:JSON.stringify(data)
+   };
+
+   return{
+        url:BASE_URL+'/api/motivo/cancelamento/ordem/servico/info/'+id,
+        options:myInit
+    }
+
+}
+
+export const MOTIVOS_CANCEL_OS_SAVE_POST = (data, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'POST',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        body:JSON.stringify(data)
+   };
+   
+   return{
+        url:BASE_URL+'/api/motivo/cancelamento/ordem/servico/store',
+        options:myInit
+    }
+
+}
+
+export const MOTIVOS_CANCEL_OS_UPDATE_POST = (id,data, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'PUT',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        body:JSON.stringify(data)
+   };
+
+   return{
+        url:BASE_URL+'/api/motivo/cancelamento/ordem/servico/update/'+id,
+        options:myInit
+    }
+
+}
+
+export const MOTIVOS_CANCEL_OS_DELETE_POST = (id, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'GET',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+   };
+
+   return{
+        url:BASE_URL+'/api/motivo/cancelamento/ordem/servico/destroy/'+id,
+        options:myInit
+    }
+
+}
 
 
 
