@@ -1,188 +1,204 @@
-import React from 'react'
+import React from 'react';
+import estilos from './ContasReceber.module.css'
 import useFetch from '../../Hooks/useFetch.js';
-import useModal from '../../Hooks/useModal.js';
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET} from '../../api/endpoints/geral.js'
-import {Col, Row, Button } from 'react-bootstrap';
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CONTAS_RECEBER_ALL_POST} from '../../api/endpoints/geral.js'
+import {FORMAT_DATA_PT_BR} from '../../functions/index.js'
+import {Col, Row } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
-import Head from '../Header/Head.js'
-import Modal from '../Utils/Modal/index.js'
 import Breadcrumbs from '../Helper/Breadcrumbs.js'
-import Create from './Create.js'
-import { faHome, faSearch,faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faSearch, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Modal from '../Utils/Modal/index.js'
+import Load from '../Utils/Load/index.js'
+import {UserContex} from '../../Context/UserContex.js'
+import FormContasReceber from './FormContasReceber/index.js'
+import Cadastrar from './Cadastrar/index.js'
+import Atualizar from './Atualizar/index.js'
+import Include from './include';
+import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../functions/index.js'
 
-const ContasReceber = () => {
+
+const ContasReceber = (props)=>{
 
     const {data, error, request, loading} = useFetch();
+    const [estado, setContasReceber] = React.useState([])
     const [exemplos, setExemplos] = React.useState([])
     const [exemplosTitleTable, setExemplosTitleTable] = React.useState([])
-    const [showModalCriarReceber, setShowModalCriarReceber] = React.useState(false)
+    const [showModalCriarContasReceber, setShowModalCriarConstula] = React.useState(false)
+    const [consultaChoice, setContasReceberChoice] = React.useState(null);
+    const [atualizarContasReceber, setAtualizarContasReceber] = React.useState(false)   
+    const [cancelarContasReceber, setCancelarContasReceber] = React.useState(false)   
+    const [digitarContasReceber, setDigitarContasReceber] = React.useState(false)    
+    const [cadastrarContasReceber, setCadastrarContasReceber] = React.useState(false)  
+    const [acao, setAcao] = React.useState(null)
+    const [pessoa, setPessoa] = React.useState('')
 
+
+    const {getToken} = React.useContext(UserContex);
 
     const alerta = (target)=>{
         console.log(target)
     }
-    const gerarExemplos = ()=>{
-        let exemplos = [];
-        for(let i=0; !(i == 10); i++){
-            exemplos.push(
 
-                    {
-                        propsRow:{id:(i+1)},
-                        celBodyTableArr:[
-                            {
-
-                                label:'1',
-                                propsRow:{}
-                            },
-                            {
-
-                                label:'Peddro',
-                                propsRow:{}
-                            },
-                            {
-
-                                label:'(98) 98425-7623',
-                                propsRow:{}
-                            },
-                            {
-
-                                label:'phedroclooney@gmail.com',
-                                propsRow:{}
-                            }
-                        ]
-                    }
-
-                )
-
-        }
-
-        return exemplos;
+    const setNamePessoa = ({target})=>{
+        
+        setPessoa(target.value)
     }
 
-    const gerarTitleTable = ()=>{
-        let exemplos = [
-            {
-                label:'Coluna exemplo 1',
-                props:{}
-            },
-            {
-                label:'Coluna exemplo 2',
-                props:{}
-            },
-            {
-                label:'Coluna exemplo 3',
-                props:{}
-            },
-            {
-                label:'Coluna exemplo 4',
-                props:{}
-            },
-        ]
-
-        return exemplos;
-    }
-    
-     const filtersArr = [
+    const filtersArr = [
         {
             type:'text',
             options:[], 
             hasLabel: true,
-            contentLabel:'Teste afafaf',
+            contentLabel:'Pessoa',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"12",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name':'nome',onChange:alerta,    onBlur:alerta},
+            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'name':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
 
         },
         {
-            type:'radio',
-            options:[
-                {
-                    hasLabel: true,
-                    contentLabel:'Teste Radio 01',
-                    atributsFormLabel:{},
-                    atributsFormControl:{'type':'radio', value:'12', size:"sm",'checked':true,'name':'nome',onChange:alerta,    onBlur:alerta},
-                },
-                {
-                    hasLabel: true,
-                    contentLabel:'Teste Radio',
-                    atributsFormLabel:{},
-                    atributsFormControl:{'type':'radio', value:'12', size:"sm",'checked':true,'name':'nome',onChange:alerta,    onBlur:alerta},
-                }
-            ],  
-            hasLabel: true,
-            contentLabel:'Teste',
-            atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"12",className:'mb-2',},
-            atributsFormControl:{},
-
-        }
-        ,{
-            type:'checkbox',
+            type:'text',
             options:[], 
             hasLabel: true,
-            contentLabel:'Teste',
+            contentLabel:'Contato',
             atributsFormLabel:{},
-            atributsContainer:{ xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'checkbox', value:'12',size:"sm",'checked':false,'name':'nome',onChange:alerta, onBlur:alerta},
+            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'name_atendido':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
 
-        }
-    ];
+        },
+        {
+            type:'text',
+            options:[], 
+            hasLabel: true,
+            contentLabel:'Status',
+            atributsFormLabel:{},
+            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'status':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
+
+        },
+        {
+            type:'text',
+            options:[], 
+            hasLabel: true,
+            contentLabel:'Tipo',
+            atributsFormLabel:{},
+            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'tipo':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
+
+        },
+        {
+            type:'text',
+            options:[], 
+            hasLabel: true,
+            contentLabel:'Dt. inicio',
+            atributsFormLabel:{},
+            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsFormControl:{'type':'date', size:"sm",'dt_inico':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
+
+        },
+        {
+            type:'text',
+            options:[], 
+            hasLabel: true,
+            contentLabel:'Dt. fim',
+            atributsFormLabel:{},
+            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsFormControl:{'type':'date', size:"sm",'dt_fim':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
+
+        },
+    ]
 
     const acoesBottomCard=[{
-        	label:'Pesquisar',
-        	icon:<FontAwesomeIcon icon={faSearch} />,
-        	props:{onClick:()=>alert('cliclou'), className:'btn btn-sm botao_success'}
-    	},
-    	{
-
-    		label:'Lançar',
-	        icon:<FontAwesomeIcon icon={faPlus} />,
-	        props:{onClick:()=>setShowModalCriarReceber(true), className:'mx-2 btn btn-sm btn-secondary'}
-    	},
+        label:'Pesquisar',
+        icon:<FontAwesomeIcon icon={faSearch} />,
+        props:{onClick:()=>requestAllContasRecebers(), className:'btn btn-sm botao_success'}
+    },
+    {
+        label:'Cadastrar',
+        icon:<FontAwesomeIcon icon={faPlus} />,
+        props:{onClick:()=>setCadastrarContasReceber(true), className:'btn btn-sm mx-2 btn-secondary'}
+    }
     ];
 
-
-    React.useEffect( ()=>{
-        const response = async() =>{
-            const body = TOKEN_POST({
-                'grant_type':'password',
-                'client_id': CLIENT_ID,
-                'client_secret':CLIENT_SECRET,
-                'username':'admin@gmail.com',
-                'password':'123654',
-                'scope':'',
-            })
-            console.log(body)
-            await request(body);
-        }
-
-        response()
-        
-    }, []);
 
     React.useEffect(()=>{
 
-        setExemplos(gerarExemplos());
-        setExemplosTitleTable(gerarTitleTable());
+        if(cadastrarContasReceber == true){
+            setShowModalCriarConstula(true);
+        }else{
+            setShowModalCriarConstula(false);
+        }
 
+        
+    }, [cadastrarContasReceber])
+
+    const atualizarContasReceberAction = (idContasReceber)=>{
+        setContasReceberChoice(idContasReceber)
+        setAcao('editar')
+        setAtualizarContasReceber(true);
+    }
+
+    const digitarContasReceberAction = (idContasReceber)=>{
+        setContasReceberChoice(idContasReceber)
+        setAcao('digitar')
+        setAtualizarContasReceber(true);
+    }
+
+    const cancelarContasReceberAction = (idContasReceber)=>{
+        setContasReceberChoice(idContasReceber)
+        setAcao('cancelar')
+        setCancelarContasReceber(true);
+    }
+    //cancelarContasReceber, setCancelarContasReceber
+    const novaContasReceber = (idContasReceber)=>{
+        setContasReceberChoice(idContasReceber)
+        setAcao('consultar')
+        setAtualizarContasReceber(true);
+    }
+
+    const iniciarContasReceber = (idContasReceber)=>{
+        setCadastrarContasReceber(idContasReceber)
+        setAcao('iniciar')
+        setCadastrarContasReceber(true);
+    }
+    //------------
+
+    const requestAllContasRecebers = async() =>{
+       
+        const {url, options} = CONTAS_RECEBER_ALL_POST({'name_pessoa':pessoa}, getToken());
+
+
+        const {response, json} = await request(url, options);
+        console.log('All contas receber here')
+        console.log({'name_pessoa':pessoa})
+        console.log(json)
+        if(json){
+            setContasReceber(json)
+        }
+
+            
+    }
+
+    React.useEffect(()=>{
+
+        const requestAllContasRecebersEffect = async() =>{
+       
+           await requestAllContasRecebers();
+
+            
+        }
+
+        requestAllContasRecebersEffect();
+
+        
     }, [])
-
-
-    const rowsTableArr = exemplos;    
-    const titulosTableArr = exemplosTitleTable;
-
-    return (
+    
+    return(
         <>
-        	<Head
-        		title="Contas a receber"
-        		content="Estúdio beleza, contas a receber "
-        	/>
             <Breadcrumbs
                 items={[
                         {
-                            to:'/',
                             props:{},
                             label:'Início'
                         },
@@ -195,22 +211,25 @@ const ContasReceber = () => {
             <Row>
                 <Col  xs="12" sm="12" md="3">
                     <Filter
-                        
                         filtersArr={filtersArr}
                         actionsArr={acoesBottomCard}
                     />
                 </Col>
                 <Col  xs="12" sm="12" md="9">
-
-                    <Table
-                        titulosTableArr={titulosTableArr}
-                        rowsTableArr={rowsTableArr}
-
+                    <Include
+                        dataEstado={estado}
+                        loadingData={loading}
+                        callBack={requestAllContasRecebers}
                     />
                 </Col>
             </Row>
-            <Modal children={<Create/>} title={'Lançar conta a receber'} labelConcluir="Finalizar" dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarReceber} showHide={setShowModalCriarReceber}/>
-        </>
+            {
+                cadastrarContasReceber &&
+                <Cadastrar cadastrarContasReceber={cadastrarContasReceber} setCadastrarContasReceber={setCadastrarContasReceber} atualizarContasReceber={atualizarContasReceber} setAtualizarContasReceber={setAtualizarContasReceber}  idContasReceber={consultaChoice} setIdContasReceber={setContasReceberChoice} callback={requestAllContasRecebers} />
+            }
+           
+         </>
+
     )
 }
 
