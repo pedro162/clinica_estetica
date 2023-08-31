@@ -17,10 +17,12 @@ import Cadastrar from './Cadastrar/index.js'
 import Atualizar from './Atualizar/index.js'
 import Iniciar from './Iniciar/index.js'
 import Cancelar from './Cancelar/index.js'
+import ContasReceber from '../ContasReceber/index.js'
 import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../functions/index.js'
+import { Button } from 'bootstrap';
 
 
-const Include = ({dataEstado, loadingData, callBack, ...props})=>{
+const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, ...props})=>{
     const {data, error, request, loading} = useFetch();
     const [estado, setOrdemServico] = React.useState([])
     const [exemplos, setExemplos] = React.useState([])
@@ -30,7 +32,8 @@ const Include = ({dataEstado, loadingData, callBack, ...props})=>{
     const [atualizarOrdemServico, setAtualizarOrdemServico] = React.useState(false)   
     const [cancelarOrdemServico, setCancelarOrdemServico] = React.useState(false)   
     const [digitarOrdemServico, setDigitarOrdemServico] = React.useState(false)    
-    const [cadastrarOrdemServico, setCadastrarOrdemServico] = React.useState(false)  
+    const [cadastrarOrdemServico, setCadastrarOrdemServico] = React.useState(false)
+    const [visualizarContasReceber, setVisualizarContasReceber] = React.useState(false)  
     const [incicarOrdemServico, setIniciarOrdemServico] = React.useState(false) 
     const [acao, setAcao] = React.useState(null)
     const [pessoa, setPessoa] = React.useState('')
@@ -170,9 +173,9 @@ const Include = ({dataEstado, loadingData, callBack, ...props})=>{
                 break;        
             case 'contas_receber':
                 if(consultaChoice > 0){
-                    setDigitarOrdemServico(true);
+                    setVisualizarContasReceber(true);
                 }else{
-                    setDigitarOrdemServico(false);
+                    setVisualizarContasReceber(false);
                 }
                 break;
             default://
@@ -198,6 +201,12 @@ const Include = ({dataEstado, loadingData, callBack, ...props})=>{
         setOrdemServicoChoice(idOrdemServico)
         setAcao('editar')
         setAtualizarOrdemServico(true);
+    }
+
+    const visualizarContasReceberAction = (idOrdemServico)=>{
+        setOrdemServicoChoice(idOrdemServico)
+        setAcao('contas_receber')
+        setVisualizarContasReceber(true);
     }
 
     const digitarOrdemServicoAction = (idOrdemServico)=>{
@@ -272,7 +281,7 @@ const Include = ({dataEstado, loadingData, callBack, ...props})=>{
                     }
 
                     if(btnVisualizarFinanceiro){
-                        acoesArr.push({acao:()=>atualizarOrdemServicoAction(atual.id), label:'Conta a receber', propsOption:{}, propsLabel:{}})
+                        acoesArr.push({acao:()=>visualizarContasReceberAction(atual.id), label:'Conta a receber', propsOption:{}, propsLabel:{}})
                     }
 
                     if(btnVisualizar){
@@ -483,6 +492,7 @@ const Include = ({dataEstado, loadingData, callBack, ...props})=>{
                         titulosTableArr={titulosTableArr}
                         rowsTableArr={rowsTableArr}
                         loading={loadingData}
+                        botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
 
                     />
                 </Col>
@@ -512,7 +522,15 @@ const Include = ({dataEstado, loadingData, callBack, ...props})=>{
                 <Cancelar cancelarOrdemServico={cancelarOrdemServico} setCancelarOrdemServico={setCancelarOrdemServico} atualizarOrdemServico={atualizarOrdemServico} setAtualizarOrdemServico={setAtualizarOrdemServico}  idOrdemServico={consultaChoice} setIdOrdemServico={setOrdemServicoChoice} callback={callBack} />
             }
 
-
+            {
+                visualizarContasReceber &&
+                <Modal noBtnCancelar={false} noBtnConcluir={true} handleConcluir={()=>null}  title={'Contas a receber'} size="lg" propsConcluir={{}} labelConcluir={''} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={consultaChoice} showHide={()=>{setVisualizarContasReceber(false);}}>
+					
+                    <ContasReceber visualizarContasReceber={visualizarContasReceber} setVisualizarContasReceber={setVisualizarContasReceber} atualizarOrdemServico={atualizarOrdemServico} setAtualizarOrdemServico={setAtualizarOrdemServico} idReferencia={consultaChoice} referencia={'ordem_servico'}  idOrdemServico={consultaChoice} setIdOrdemServico={setOrdemServicoChoice} callback={callBack} />
+                
+				</Modal>
+            }
+        
         </>
     )
 }

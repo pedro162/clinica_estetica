@@ -33,6 +33,7 @@ const OrdemServico = (props)=>{
     const [digitarOrdemServico, setDigitarOrdemServico] = React.useState(false)    
     const [cadastrarOrdemServico, setCadastrarOrdemServico] = React.useState(false)  
     const [incicarOrdemServico, setIniciarOrdemServico] = React.useState(false) 
+    const [mostarFiltros, setMostarFiltros] = React.useState(false) 
     const [acao, setAcao] = React.useState(null)
     const [pessoa, setPessoa] = React.useState('')
 
@@ -211,17 +212,23 @@ const OrdemServico = (props)=>{
                     ]}
             />
             <Row>
-                <Col  xs="12" sm="12" md="3">
-                    <Filter
-                        filtersArr={filtersArr}
-                        actionsArr={acoesBottomCard}
-                    />
-                </Col>
-                <Col  xs="12" sm="12" md="9">
+                {mostarFiltros && 
+                    (
+                        <Col  xs="12" sm="12" md="3">
+                            <Filter
+                                filtersArr={filtersArr}
+                                actionsArr={acoesBottomCard}
+                            />
+                        </Col>
+                    )
+                }
+                
+                <Col  xs="12" sm="12" md={mostarFiltros ? "9":"12"}>
                     <Include
                         dataEstado={estado}
                         loadingData={loading}
                         callBack={requestAllOrdemServicos}
+                        setMostarFiltros={setMostarFiltros}
                     />
                 </Col>
             </Row>

@@ -6,7 +6,7 @@ import Load from '../../Utils/Load/index.js'
 import MenuOpcoes from '../MenuOpcoes/index.js'
 import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../../functions/index.js'
 
-const Table = ({children, titulosTableArr, rowsTableArr,loading,... props})=>{
+const Table = ({children, titulosTableArr, rowsTableArr,loading, botoesHeader, ... props})=>{
 	const titulosTable = titulosTableArr ? titulosTableArr : []
 	const bodyTable =  rowsTableArr ? rowsTableArr : []
 	const [selecionados, setSelecionados] = React.useState([])
@@ -83,6 +83,7 @@ const Table = ({children, titulosTableArr, rowsTableArr,loading,... props})=>{
 			<Card
 				title="Relatório"
 				propsCard={{className:'cardFilter'}}
+				botoesHeader={botoesHeader}
 			>
 				{
 
