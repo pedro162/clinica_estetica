@@ -31,6 +31,7 @@ const ContasReceber = (props)=>{
     const [cancelarContasReceber, setCancelarContasReceber] = React.useState(false)   
     const [digitarContasReceber, setDigitarContasReceber] = React.useState(false)    
     const [cadastrarContasReceber, setCadastrarContasReceber] = React.useState(false)  
+    const [mostarFiltros, setMostarFiltros] = React.useState(false) 
     const [acao, setAcao] = React.useState(null)
     const [pessoa, setPessoa] = React.useState('')
 
@@ -193,6 +194,28 @@ const ContasReceber = (props)=>{
 
         
     }, [])
+
+    /*
+        {mostarFiltros && 
+                    (
+                        <Col  xs="12" sm="12" md="3">
+                            <Filter
+                                filtersArr={filtersArr}
+                                actionsArr={acoesBottomCard}
+                            />
+                        </Col>
+                    )
+                }
+                
+                <Col  xs="12" sm="12" md={mostarFiltros ? "9":"12"}>
+                    <Include
+                        dataEstado={estado}
+                        loadingData={loading}
+                        callBack={requestAllOrdemServicos}
+                        setMostarFiltros={setMostarFiltros}
+                    />
+                </Col>
+    */
     
     return(
         <>
@@ -209,17 +232,23 @@ const ContasReceber = (props)=>{
                     ]}
             />
             <Row>
-                <Col  xs="12" sm="12" md="3">
-                    <Filter
-                        filtersArr={filtersArr}
-                        actionsArr={acoesBottomCard}
-                    />
-                </Col>
-                <Col  xs="12" sm="12" md="9">
+                {mostarFiltros && 
+                    (
+                        <Col  xs="12" sm="12" md="3">
+                            <Filter
+                                filtersArr={filtersArr}
+                                actionsArr={acoesBottomCard}
+                            />
+                        </Col>
+                    )
+                }
+                
+                <Col  xs="12" sm="12" md={mostarFiltros ? "9":"12"}>
                     <Include
                         dataEstado={estado}
                         loadingData={loading}
                         callBack={requestAllContasRecebers}
+                        setMostarFiltros={setMostarFiltros}
                     />
                 </Col>
             </Row>

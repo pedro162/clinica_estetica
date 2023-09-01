@@ -18,7 +18,7 @@ import Atualizar from './Atualizar/index.js'
 import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../functions/index.js'
 
 
-const Include = ({dataEstado, loadingData, callBack, ...props})=>{
+const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, ...props})=>{
     const {data, error, request, loading} = useFetch();
     const [estado, setContasReceber] = React.useState([])
     const [exemplos, setExemplos] = React.useState([])
@@ -281,8 +281,6 @@ const Include = ({dataEstado, loadingData, callBack, ...props})=>{
                         acoesArr.push({acao:()=>cancelarContasReceberAction(atual.id), label:'Cancelar', propsOption:{}, propsLabel:{}})
                     }
 
-                    
-                    
                     //'remarcado','finalizado','cancelado','pendente'
                     data.push(
 
@@ -314,49 +312,57 @@ const Include = ({dataEstado, loadingData, callBack, ...props})=>{
                                 },
                                 {
 
-                                    label:atual.name_profissional,
+                                    label:atual.cdCobrancaTipo,
                                     propsRow:{}
                                 },
                                 {
 
-                                    label:atual.name_rca,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual.observacao,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:FORMAT_MONEY(atual?.vr_final),
+                                    label:FORMAT_MONEY(atual?.vrBruto),
                                     propsRow:{},
 									toSum:1,
 									isCoin:1,
                                 },
                                 {
 
-                                    label:atual.is_faturado == 'yes' ? 'Sim' : 'Não',
+                                    label:FORMAT_MONEY(atual?.vrLiquido),
+                                    propsRow:{},
+									toSum:1,
+									isCoin:1,
+                                },
+                                {
+
+                                    label:FORMAT_MONEY(atual?.vrDevolvido),
+                                    propsRow:{},
+									toSum:1,
+									isCoin:1,
+                                },
+                                {
+
+                                    label:FORMAT_MONEY(atual?.vrPago),
+                                    propsRow:{},
+									toSum:1,
+									isCoin:1,
+                                },
+                                {
+
+                                    label:FORMAT_MONEY(atual?.vrAberto),
+                                    propsRow:{},
+									toSum:1,
+									isCoin:1,
+                                },
+                                {
+
+                                    label:FORMAT_DATA_PT_BR(atual.dtVencimento),
                                     propsRow:{}
                                 },
                                 {
 
-                                    label:FORMAT_DATA_PT_BR(atual.td_faturamento),
+                                    label:atual?.descricao,
                                     propsRow:{}
                                 },
                                 {
 
-                                    label:FORMAT_DATA_PT_BR(atual.td_cancelamento),
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:FORMAT_DATA_PT_BR(atual.td_conclusao),
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:FORMAT_DATA_PT_BR(atual.created_at),
+                                    label:atual?.dsReferencia,
                                     propsRow:{}
                                 },
                             ]
@@ -380,51 +386,75 @@ const Include = ({dataEstado, loadingData, callBack, ...props})=>{
             },
             {
                 label:'Filial',
-                props:{}
+                props:{
+                    style:{minWidth:'50px'}
+                }
             },
             {
                 label:'Cliente',
-                props:{}
+                props:{
+                    style:{minWidth:'255px'}
+                }
             },
             {
                 label:'Status',
-                props:{}
+                props:{
+                    style:{minWidth:'255px'}
+                }
             },
             {
-                label:'Profissional',
-                props:{}
+                label:'Cobrança',
+                props:{
+                    style:{minWidth:'100px'}
+                }
             },
             {
-                label:'Vendedor',
-                props:{}
+                label:'Valor bruto',
+                props:{
+                    style:{minWidth:'150px'}
+                }
             },
             {
-                label:'Observação',
-                props:{}
+                label:'Valor líquido',
+                props:{
+                    style:{minWidth:'150px'}
+                }
             },
             {
-                label:'Valor',
-                props:{}
+                label:'Valor devolvido',
+                props:{
+                    style:{minWidth:'150px'}
+                }
             },
             {
-                label:'Faturado',
-                props:{}
+                label:'Valor pago',
+                props:{
+                    style:{minWidth:'150px'}
+                }
             },
             {
-                label:'Faturado em',
-                props:{}
+                label:'Valor aberto',
+                props:{
+                    style:{minWidth:'150px'}
+                }
             },
             {
-                label:'Cancelado em',
-                props:{}
+                label:'Vencimento',
+                props:{
+                    style:{minWidth:'150px'}
+                }
             },
             {
-                label:'Concluído em',
-                props:{}
+                label:'Histórico',
+                props:{
+                    style:{minWidth:'525px'}
+                }
             },
             {
-                label:'Iniciado em',
-                props:{}
+                label:'Referência',
+                props:{
+                    style:{minWidth:'350px'}
+                }
             }
         ]
 
@@ -481,7 +511,7 @@ const Include = ({dataEstado, loadingData, callBack, ...props})=>{
                         titulosTableArr={titulosTableArr}
                         rowsTableArr={rowsTableArr}
                         loading={loadingData}
-
+                        botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
                     />
                 </Col>
             </Row>
