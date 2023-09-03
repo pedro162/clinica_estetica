@@ -18,7 +18,7 @@ import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../../functions/index.js'
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, COBRANCA_ORDEM_ONE_GET ,  ORDEM_SERVICO_ONE_GET, COBRANCA_ORDEM_DELETE_POST, FORMA_PAGAMENTOALL_POST, FORMA_PAGAMENTO_ONE_GET, PLANO_PAGAMENTOALL_POST, PLANO_PAGAMENTO_ONE_GET, OPERADOR_FINANCEIROALL_POST, COBRANCA_ORDEM_SAVE_POST, COBRANCA_ORDEM_UPDATE_POST} from '../../../api/endpoints/geral.js'
 
 
-const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoGlobal, idOrdemServico, itensOrdem ,callback,carregando})=>{
+const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoGlobal, idOrdemServico, itensOrdem ,callback,carregando, qtdAtualizaCobrancas})=>{
 	
 	const {data, error, request, loading} = useFetch();
 	const dataRequest = useFetch();
@@ -198,9 +198,10 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 	React.useEffect(()=>{
 		
 		getOrdemServico(idOrdemServico);
+		console.log('================ qtdAtualizaCobrancas '+qtdAtualizaCobrancas+' ========================================')
 		
-	}, [idOrdemServico])
-
+	}, [idOrdemServico, qtdAtualizaCobrancas])
+	
 	const getFormaPagamentoOrdem = async (idFormaPagamento)=>{
 		if(idFormaPagamento > 0){
 

@@ -19,7 +19,7 @@ import Include from './include';
 import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../functions/index.js'
 
 
-const ContasReceber = (props)=>{
+const ContasReceber = ({defaultFilters ,...props})=>{
 
     const {data, error, request, loading} = useFetch();
     const [estado, setContasReceber] = React.useState([])
@@ -30,11 +30,24 @@ const ContasReceber = (props)=>{
     const [atualizarContasReceber, setAtualizarContasReceber] = React.useState(false)   
     const [cancelarContasReceber, setCancelarContasReceber] = React.useState(false)   
     const [digitarContasReceber, setDigitarContasReceber] = React.useState(false)    
-    const [cadastrarContasReceber, setCadastrarContasReceber] = React.useState(false)  
+    const [cadastrarContasReceber, setCadastrarContasReceber] = React.useState(false)
     const [mostarFiltros, setMostarFiltros] = React.useState(false) 
     const [acao, setAcao] = React.useState(null)
-    const [pessoa, setPessoa] = React.useState('')
-
+    const [referenciaContasReceber, setReferenciaContasReceber] = React.useState(()=>{
+        return defaultFilters?.referencia
+    })
+    const [idReferenciaContasReceber, setIdReferenciaContasReceber] = React.useState(()=>{
+        return defaultFilters?.referencia_id
+    })  
+    const [pessoa, setPessoa] = React.useState(()=>{
+        return defaultFilters?.name_pessoa
+    })
+    /**
+     * 
+     * let idRef   = defaultFilters?.referencia_id;
+        let ref     = defaultFilters?.referencia;
+        let name_pessoa     = defaultFilters?.name_pessoa;
+     */
 
     const {getToken} = React.useContext(UserContex);
 
@@ -47,6 +60,20 @@ const ContasReceber = (props)=>{
         setPessoa(target.value)
     }
 
+    const setDsReferencia = ({target})=>{
+        
+        setReferenciaContasReceber(target.value)
+    }
+
+    const setIdReferencia = ({target})=>{
+        
+        /* console.log("=============== Id fef change ======================")//
+        console.log(target)
+        console.log("=============== Id fef change ============================= ") */
+        
+        setIdReferenciaContasReceber(target.value)
+    }
+
     const filtersArr = [
         {
             type:'text',
@@ -55,7 +82,7 @@ const ContasReceber = (props)=>{
             contentLabel:'Pessoa',
             atributsFormLabel:{},
             atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
+            atributsFormControl:{'type':'text', size:"sm",'name':pessoa, value:pessoa, onChange:setNamePessoa,    onBlur:setNamePessoa},
 
         },
         {
@@ -65,7 +92,7 @@ const ContasReceber = (props)=>{
             contentLabel:'Contato',
             atributsFormLabel:{},
             atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name_atendido':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
+            atributsFormControl:{'type':'text', size:"sm",'name_atendido':pessoa, value:pessoa, onChange:setNamePessoa,    onBlur:setNamePessoa},
 
         },
         {
@@ -75,7 +102,7 @@ const ContasReceber = (props)=>{
             contentLabel:'Status',
             atributsFormLabel:{},
             atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'status':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
+            atributsFormControl:{'type':'text', size:"sm",'status':pessoa, value:pessoa, onChange:setNamePessoa,    onBlur:setNamePessoa},
 
         },
         {
@@ -85,7 +112,30 @@ const ContasReceber = (props)=>{
             contentLabel:'Tipo',
             atributsFormLabel:{},
             atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'tipo':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
+            atributsFormControl:{'type':'text', size:"sm",'tipo':pessoa, value:pessoa, onChange:setNamePessoa,    onBlur:setNamePessoa},
+
+        },
+        {
+            type:'text',
+            options:[], 
+            hasLabel: true,
+            contentLabel:'Cód. ref',
+            atributsFormLabel:{},
+            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'referencia_id':idReferenciaContasReceber,value:idReferenciaContasReceber ,onChange:setIdReferencia, onBlur:setIdReferencia},
+
+        },/*
+            
+
+         */
+        {
+            type:'text',
+            options:[], 
+            hasLabel: true,
+            contentLabel:'Referência',
+            atributsFormLabel:{},
+            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'referencia':referenciaContasReceber, value:referenciaContasReceber, onChange:setDsReferencia,    onBlur:setDsReferencia},
 
         },
         {
@@ -111,17 +161,17 @@ const ContasReceber = (props)=>{
     ]
 
     const acoesBottomCard=[{
-        label:'Pesquisar',
-        icon:<FontAwesomeIcon icon={faSearch} />,
-        props:{onClick:()=>requestAllContasRecebers(), className:'btn btn-sm botao_success'}
-    },
-    {
-        label:'Cadastrar',
-        icon:<FontAwesomeIcon icon={faPlus} />,
-        props:{onClick:()=>setCadastrarContasReceber(true), className:'btn btn-sm mx-2 btn-secondary'}
-    }
+            label:'Pesquisar',
+            icon:<FontAwesomeIcon icon={faSearch} />,
+            props:{onClick:()=>requestAllContasRecebers(), className:'btn btn-sm botao_success'}
+        },
+        {
+            label:'Cadastrar',
+            icon:<FontAwesomeIcon icon={faPlus} />,
+            props:{onClick:()=>setCadastrarContasReceber(true), className:'btn btn-sm mx-2 btn-secondary'}
+        }
     ];
-
+    
 
     React.useEffect(()=>{
 
@@ -164,10 +214,43 @@ const ContasReceber = (props)=>{
         setCadastrarContasReceber(true);
     }
     //------------
+    const montarFiltro = ()=>{
+        let filtros = {}
+        let detalhesFiltros = {}
+        if(referenciaContasReceber){
+            filtros['referencia'] = referenciaContasReceber;
+            detalhesFiltros['referencia'] = {
+                label:'Referência',
+                value:referenciaContasReceber,
+                resetFilter:()=>setReferenciaContasReceber(''),
+            };
+        }
+        
+        
+        if(idReferenciaContasReceber){
+            filtros['referencia_id'] = idReferenciaContasReceber;   
+            detalhesFiltros['referencia_id'] = {
+                label:'Cód. referência',
+                value:idReferenciaContasReceber,
+                resetFilter:()=>setIdReferenciaContasReceber(''),
+            };
+        }
 
+        if(pessoa){
+            filtros['name_pessoa'] = pessoa;
+            detalhesFiltros['name_pessoa'] = {
+                label:'Pessoa',
+                value:pessoa,
+                resetFilter:()=>setPessoa(''),
+            };
+        }
+        
+
+        return {filtros, detalhesFiltros};
+    }
     const requestAllContasRecebers = async() =>{
-       
-        const {url, options} = CONTAS_RECEBER_ALL_POST({'name_pessoa':pessoa}, getToken());
+        let {filtros, detalhesFiltros} = montarFiltro();
+        const {url, options} = CONTAS_RECEBER_ALL_POST({...filtros}, getToken());
 
 
         const {response, json} = await request(url, options);

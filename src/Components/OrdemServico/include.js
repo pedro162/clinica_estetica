@@ -17,12 +17,14 @@ import Cadastrar from './Cadastrar/index.js'
 import Atualizar from './Atualizar/index.js'
 import Iniciar from './Iniciar/index.js'
 import Cancelar from './Cancelar/index.js'
+import AtualizarCabecalho from './AtualizarCabecalho/index.js'
 import ContasReceber from '../ContasReceber/index.js'
 import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../functions/index.js'
 import { Button } from 'bootstrap';
+import reactDom from 'react-dom';
 
 
-const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, ...props})=>{
+const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idOrdemCriada, ...props})=>{
     const {data, error, request, loading} = useFetch();
     const [estado, setOrdemServico] = React.useState([])
     const [exemplos, setExemplos] = React.useState([])
@@ -34,9 +36,11 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, ...props}
     const [digitarOrdemServico, setDigitarOrdemServico] = React.useState(false)    
     const [cadastrarOrdemServico, setCadastrarOrdemServico] = React.useState(false)
     const [visualizarContasReceber, setVisualizarContasReceber] = React.useState(false)  
+    const [atualizarCabecalhoOrdemServico, setAtualizarCabecalhoOrdemServico] = React.useState(false)  
     const [incicarOrdemServico, setIniciarOrdemServico] = React.useState(false) 
     const [acao, setAcao] = React.useState(null)
     const [pessoa, setPessoa] = React.useState('')
+    const [defaultFiltersCobReceber, setDefaultFiltersCobReceber] = React.useState({})
 
 
     const {getToken} = React.useContext(UserContex);
@@ -177,6 +181,13 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, ...props}
                 }else{
                     setVisualizarContasReceber(false);
                 }
+                break;     
+            case 'editar_cabecalho':
+                if(consultaChoice > 0){
+                    setAtualizarCabecalhoOrdemServico(true);
+                }else{
+                    setAtualizarCabecalhoOrdemServico(false);
+                }
                 break;
             default://
                 
@@ -202,6 +213,15 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, ...props}
         setAcao('editar')
         setAtualizarOrdemServico(true);
     }
+
+    const atualizarCabecalhoOrdemServicoAction = (idOrdemServico)=>{
+        setOrdemServicoChoice(idOrdemServico)
+        setAcao('editar_cabecalho')
+        setAtualizarCabecalhoOrdemServico(true);
+        //AtualizarCabecalhoForm
+    }
+
+    
 
     const visualizarContasReceberAction = (idOrdemServico)=>{
         setOrdemServicoChoice(idOrdemServico)
@@ -232,6 +252,19 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, ...props}
         setAcao('iniciar')
         setIniciarOrdemServico(true);
     }
+
+    React.useEffect(()=>{
+        /**
+         * consultaChoice, setOrdemServicoChoice] = React.useState(()=>{
+        return idOrdemCriada;
+    }
+         */
+        console.log('Ordem criada..............')
+        console.log(idOrdemCriada)
+        console.log('Ordem criada..............')
+        idOrdemCriada && idOrdemCriada > 0 && atualizarOrdemServicoAction(idOrdemCriada)
+
+    }, [idOrdemCriada])
 
     const gerarTableOrdemServico = ()=>{
        
@@ -269,7 +302,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, ...props}
                     }
 
                     if(btnEditar){
-                        acoesArr.push({acao:()=>atualizarOrdemServicoAction(atual.id), label:'Editar', propsOption:{}, propsLabel:{}})
+                        acoesArr.push({acao:()=>atualizarCabecalhoOrdemServicoAction(atual.id), label:'Editar', propsOption:{}, propsLabel:{}})
                     }
 
                     if(btnIniciarProcedimento){
@@ -281,7 +314,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, ...props}
                     }
 
                     if(btnVisualizarFinanceiro){
-                        acoesArr.push({acao:()=>visualizarContasReceberAction(atual.id), label:'Conta a receber', propsOption:{}, propsLabel:{}})
+                        acoesArr.push({acao:()=>{visualizarContasReceberAction(atual.id); setDefaultFiltersCobReceber({...atual, pessoa_name:atual?.name, referencia_id:atual?.id, referencia:'ordem_servicos'})}, label:'Conta a receber', propsOption:{}, propsLabel:{}})
                     }
 
                     if(btnVisualizar){
@@ -523,10 +556,15 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, ...props}
             }
 
             {
+                atualizarCabecalhoOrdemServico &&
+                <AtualizarCabecalho atualizarCabecalhoOrdemServico={atualizarCabecalhoOrdemServico} setAtualizarCabecalhoOrdemServico={setAtualizarCabecalhoOrdemServico} atualizarOrdemServico={atualizarOrdemServico} setAtualizarOrdemServico={setAtualizarOrdemServico}  idOrdemServico={consultaChoice} setIdOrdemServico={setOrdemServicoChoice} callback={callBack} />
+            }
+
+            {
                 visualizarContasReceber &&
                 <Modal noBtnCancelar={false} noBtnConcluir={true} handleConcluir={()=>null}  title={'Contas a receber'} size="lg" propsConcluir={{}} labelConcluir={''} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={consultaChoice} showHide={()=>{setVisualizarContasReceber(false);}}>
 					
-                    <ContasReceber visualizarContasReceber={visualizarContasReceber} setVisualizarContasReceber={setVisualizarContasReceber} atualizarOrdemServico={atualizarOrdemServico} setAtualizarOrdemServico={setAtualizarOrdemServico} idReferencia={consultaChoice} referencia={'ordem_servico'}  idOrdemServico={consultaChoice} setIdOrdemServico={setOrdemServicoChoice} callback={callBack} />
+                    <ContasReceber defaultFilters={defaultFiltersCobReceber} visualizarContasReceber={visualizarContasReceber} setVisualizarContasReceber={setVisualizarContasReceber} atualizarOrdemServico={atualizarOrdemServico} setAtualizarOrdemServico={setAtualizarOrdemServico} idReferencia={consultaChoice} referencia={'ordem_servico'}  idOrdemServico={consultaChoice} setIdOrdemServico={setOrdemServicoChoice} callback={callBack} />
                 
 				</Modal>
             }

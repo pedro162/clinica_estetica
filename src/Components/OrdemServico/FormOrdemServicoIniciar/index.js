@@ -56,6 +56,7 @@ const FormOrdemServicoIniciar = ({dataOrdemServicoChoice, setIdOrdemServico, idO
 			callback();
 			setShowModalCriarOrdemServico();
 			setAtualizarOrdemServico(false);
+			setIdOrdemServico(json?.mensagem?.id)
 		}
     }
 

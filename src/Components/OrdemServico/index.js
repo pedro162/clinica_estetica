@@ -229,6 +229,7 @@ const OrdemServico = (props)=>{
                         loadingData={loading}
                         callBack={requestAllOrdemServicos}
                         setMostarFiltros={setMostarFiltros}
+                        idOrdemCriada={consultaChoice}
                     />
                 </Col>
             </Row>

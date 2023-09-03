@@ -18,7 +18,7 @@ import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../../functions/index.js'
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, SERVICO_SAVE_POST, ORDEM_SERVICO_ITENS_ONE_GET , SERVICO_ALL_POST, SERVICO_UPDATE_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST, SERVICO_ONE_GET, ORDEM_SERVICO_ONE_GET, ORDEM_SERVICO_ADD_ITEM_POST, ORDEM_SERVICO_DELETE_ITEM_POST} from '../../../api/endpoints/geral.js'
 
 
-const FormOrdemServicoItens = ({dataOrdemServicoChoice, setDataOrdemServicoGlobal, idOrdemServico, itensOrdem ,callback,carregando})=>{
+const FormOrdemServicoItens = ({dataOrdemServicoChoice, setDataOrdemServicoGlobal, idOrdemServico, itensOrdem ,callback,carregando, setQtdAtualizaCobrancas})=>{
 	
 	const {data, error, request, loading} = useFetch();
 	const dataRequest = useFetch();
@@ -77,6 +77,7 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, setDataOrdemServicoGloba
 			setIdServicoEscolhido(null)
 			
 			setDataOrdemServico()
+			setQtdAtualizaCobrancas((qtdAtual)=>qtdAtual+1)
 			//callback();
 		}
     }

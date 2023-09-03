@@ -24,9 +24,10 @@ const AtualizarForm = ({dataOrdemServicoChoice, setDataOrdemServico, setIdOrdemS
 	const dataRequest = useFetch();
 
 	const {getToken, dataUser} = React.useContext(UserContex);
-	const [dataFiliais, setDataFiliais] 	= React.useState([])
-	const [dataItens, setDataitens]		 	= React.useState([])
-
+	const [dataFiliais, setDataFiliais] 							= React.useState([])
+	const [dataItens, setDataitens]		 							= React.useState([])
+	const [qtdAtualizaCobrancas, setQtdAtualizaCobrancas]		 	= React.useState(0)
+	
 	const userLogar =  ()=>{
         console.log('Aqui............')
     }
@@ -512,6 +513,7 @@ const AtualizarForm = ({dataOrdemServicoChoice, setDataOrdemServico, setIdOrdemS
 																itensOrdem={dataItens}
 																setDataitens={setDataitens}
 																setDataOrdemServicoGlobal={setDataOrdemServico}
+																setQtdAtualizaCobrancas={setQtdAtualizaCobrancas}
 															/>
 														</Tab>
 														<Tab eventKey="cobrancas" title="Cobranças">
@@ -521,6 +523,7 @@ const AtualizarForm = ({dataOrdemServicoChoice, setDataOrdemServico, setIdOrdemS
 																itensOrdem={dataItens}
 																setDataitens={setDataitens}
 																setDataOrdemServicoGlobal={setDataOrdemServico}
+																qtdAtualizaCobrancas={qtdAtualizaCobrancas}
 															/>
 														</Tab>
 													</Tabs>
