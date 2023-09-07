@@ -23,9 +23,9 @@ const AtualizarCabecalhoForm  = ({dataOrdemServicoChoice, setDataOrdemServico, s
 	const {data, error, request, loading} = useFetch();
 	const dataRequest = useFetch();
 
-	const {getToken, dataUser} = React.useContext(UserContex);
+	const {getToken, dataUser} 			= React.useContext(UserContex);
 	const [observacao, setObservacao] 	= React.useState([])
-	const [dataItens, setDataitens]		 	= React.useState([])
+	const [dataItens, setDataitens]		= React.useState([])
 
 	const userLogar =  ()=>{
         console.log('Aqui............')

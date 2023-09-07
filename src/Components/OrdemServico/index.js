@@ -196,6 +196,19 @@ const OrdemServico = (props)=>{
 
         
     }, [])
+
+    /**
+     * Deve ter a opção de cadastrar salas de consulta
+     * Definir parâmetros do sistema
+     * Ter a opção de criar perfies de usuáiros para acessos
+     * Ter a opão de cadastrar os caixa e bancos para controle financeiro
+     * Ter a opção de gerenciar os planos de contas que serão utilizados no sistema
+     * Ter a opção de definir os tipos de agenda[Consulta, Retorno, Encaixe, Pessoal]
+     * Ter a opção de criar documentos padrões como [Prontuários, Atestados, Etc]
+     * 
+     * No controle de estoque, deve ter opção de cadastrar unidades de medida
+     * Vincular o produto ao fornecedor, Vincular o produto ao fabricante 
+     */
     
     return(
         <>

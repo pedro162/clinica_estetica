@@ -19,10 +19,11 @@ import Iniciar from './Iniciar/index.js'
 import Cancelar from './Cancelar/index.js'
 import AtualizarCabecalho from './AtualizarCabecalho/index.js'
 import ContasReceber from '../ContasReceber/index.js'
+import Finalizar from './Finalizar/index.js'
 import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../functions/index.js'
 import { Button } from 'bootstrap';
 import reactDom from 'react-dom';
-
+//
 
 const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idOrdemCriada, ...props})=>{
     const {data, error, request, loading} = useFetch();
@@ -37,6 +38,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idOrdemCr
     const [cadastrarOrdemServico, setCadastrarOrdemServico] = React.useState(false)
     const [visualizarContasReceber, setVisualizarContasReceber] = React.useState(false)  
     const [atualizarCabecalhoOrdemServico, setAtualizarCabecalhoOrdemServico] = React.useState(false)  
+    const [finalizarOrdemServico, setFinalizarOrdemServico] = React.useState(false)  
     const [incicarOrdemServico, setIniciarOrdemServico] = React.useState(false) 
     const [acao, setAcao] = React.useState(null)
     const [pessoa, setPessoa] = React.useState('')
@@ -183,13 +185,24 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idOrdemCr
                 }
                 break;     
             case 'editar_cabecalho':
+
                 if(consultaChoice > 0){
                     setAtualizarCabecalhoOrdemServico(true);
                 }else{
                     setAtualizarCabecalhoOrdemServico(false);
                 }
+
+                break;                 
+            case 'finalizar':
+
+                if(consultaChoice > 0){
+                    setFinalizarOrdemServico(true);
+                }else{
+                    setFinalizarOrdemServico(false);
+                }
+
                 break;
-            default://
+            default:
                 
                 break;
 
@@ -253,6 +266,16 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idOrdemCr
         setIniciarOrdemServico(true);
     }
 
+    const finalizarOrdemServicoAction = (idOrdemServico)=>{
+        setOrdemServicoChoice(idOrdemServico)
+        setAcao('finalizar')
+        setFinalizarOrdemServico(true);
+    }
+
+
+    //finalizarOrdemServico, setFinalizarOrdemServico
+    
+
     React.useEffect(()=>{
         /**
          * consultaChoice, setOrdemServicoChoice] = React.useState(()=>{
@@ -306,11 +329,11 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idOrdemCr
                     }
 
                     if(btnIniciarProcedimento){
-                        acoesArr.push({acao:()=>atualizarOrdemServicoAction(atual.id), label:'Iniciar procedimento', propsOption:{}, propsLabel:{}})
+                        //acoesArr.push({acao:()=>atualizarOrdemServicoAction(atual.id), label:'Iniciar procedimento', propsOption:{}, propsLabel:{}})
                     }
 
                     if(btnFinalizar){
-                        acoesArr.push({acao:()=>atualizarOrdemServicoAction(atual.id), label:'Finalizar procedimento', propsOption:{}, propsLabel:{}})
+                        acoesArr.push({acao:()=>finalizarOrdemServicoAction(atual.id), label:'Finalizar procedimento', propsOption:{}, propsLabel:{}})
                     }
 
                     if(btnVisualizarFinanceiro){
@@ -553,6 +576,11 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idOrdemCr
             {
                 cancelarOrdemServico &&
                 <Cancelar cancelarOrdemServico={cancelarOrdemServico} setCancelarOrdemServico={setCancelarOrdemServico} atualizarOrdemServico={atualizarOrdemServico} setAtualizarOrdemServico={setAtualizarOrdemServico}  idOrdemServico={consultaChoice} setIdOrdemServico={setOrdemServicoChoice} callback={callBack} />
+            }
+
+            {
+                finalizarOrdemServico &&
+                <Finalizar finalizarOrdemServico={finalizarOrdemServico} setFinalizarOrdemServico={setFinalizarOrdemServico} atualizarOrdemServico={atualizarOrdemServico} setAtualizarOrdemServico={setAtualizarOrdemServico}  idOrdemServico={consultaChoice} setIdOrdemServico={setOrdemServicoChoice} callback={callBack} />
             }
 
             {
