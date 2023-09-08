@@ -26,7 +26,7 @@ const FormControlSelect  =({data})=>{
                 		?
 	                		options.map((item, index, arr)=>{
 		                		let label 			= item.hasOwnProperty('label') ? item.label : '';
-		                		let valor 			=  item.hasOwnProperty('valor') ? item.valor : '';
+		                		let valor 			=  item.hasOwnProperty('valor') ? item.valor : item.hasOwnProperty('value') ? item.value : '';
 		                		let atributosItem 	=  item.hasOwnProperty('props') ? item.props : {};
 		                		return(
 		                			<option {...atributosItem} key={index} value={valor} >{label}</option>

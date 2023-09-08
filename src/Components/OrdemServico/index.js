@@ -36,6 +36,7 @@ const OrdemServico = (props)=>{
     const [mostarFiltros, setMostarFiltros] = React.useState(false) 
     const [acao, setAcao] = React.useState(null)
     const [pessoa, setPessoa] = React.useState('')
+    const [ordenacao, setOrdenacao] = React.useState('')
 
 
     const {getToken} = React.useContext(UserContex);
@@ -47,6 +48,11 @@ const OrdemServico = (props)=>{
     const setNamePessoa = ({target})=>{
         
         setPessoa(target.value)
+    }
+
+    const setOrdenacaoFiltro = ({target})=>{
+        
+        setOrdenacao(target.value)
     }
 
     const filtersArr = [
@@ -110,6 +116,17 @@ const OrdemServico = (props)=>{
             atributsFormControl:{'type':'date', size:"sm",'dt_fim':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
 
         },
+        {
+            type:'select',
+            options:[{'label':'Selecione...', 'value':''},{'label':'Código A-Z', 'value':'id-asc'},{'label':'Código Z-A', 'value':'id-desc'},
+            {'label':'Pessoa A-Z', 'value':'id-asc'},{'label':'Pessoa Z-A', 'value':'id-desc'},], 
+            hasLabel: true,
+            contentLabel:'Classificar',
+            atributsFormLabel:{},
+            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsFormControl:{'type':'select', size:"sm",'ordem':ordenacao, value:ordenacao, onChange:setOrdenacaoFiltro,    onBlur:setOrdenacaoFiltro},
+
+        },
     ]
 
     const acoesBottomCard=[{
@@ -166,10 +183,35 @@ const OrdemServico = (props)=>{
         setIniciarOrdemServico(true);
     }
     //------------
+    const montarFiltro = ()=>{
+        let filtros = {}
+        let detalhesFiltros = {}
+        
+        if(pessoa){
+            filtros['name_pessoa'] = pessoa;
+            detalhesFiltros['name_pessoa'] = {
+                label:'Pessoa',
+                value:pessoa,
+                resetFilter:()=>setPessoa(''),
+            };
+        }
+
+        if(ordenacao){
+            filtros['ordem'] = ordenacao;
+            detalhesFiltros['ordem'] = {
+                label:'Ordenação',
+                value:ordenacao,
+                resetFilter:()=>setOrdenacao(''),
+            };
+        }
+        
+
+        return {filtros, detalhesFiltros};
+    }
 
     const requestAllOrdemServicos = async() =>{
-       
-        const {url, options} = ORDEM_SERVICO_ALL_POST({'name_servico':pessoa}, getToken());
+        let {filtros, detalhesFiltros} = montarFiltro();
+        const {url, options} = ORDEM_SERVICO_ALL_POST({...filtros}, getToken());
 
 
         const {response, json} = await request(url, options);

@@ -1,5 +1,7 @@
 import React from 'react';
 import {Formik, ErrorMessage, Field} from 'formik';
+import { faHome, faSearch, faPlus, faCheck } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import FormControlInput from '../../FormControl/index.js'
 import FormControlSelect from '../../FormControl/Select.js'
 import {Col, Row, Tabs, Tab } from 'react-bootstrap';
@@ -26,6 +28,9 @@ const FormOrdemServico = ({dataOrdemServicoChoice, setDataOrdemServico, setIdOrd
 	const {getToken, dataUser} = React.useContext(UserContex);
 	const [dataFiliais, setDataFiliais] 	= React.useState([])
 	const [dataItens, setDataitens]		 	= React.useState([])
+	const [isOrcamento, setIsOramento]		 	= React.useState(false)
+	const [qtdAtualizaCobrancas, setQtdAtualizaCobrancas]		 	= React.useState(0)
+	
 
 	const userLogar =  ()=>{
         console.log('Aqui............')
@@ -41,15 +46,17 @@ const FormOrdemServico = ({dataOrdemServicoChoice, setDataOrdemServico, setIdOrd
 		})=>{
 			
 		rca_id= pessoa_rca_id > 0 && !rca_id ?  pessoa_rca_id : rca_id;
+		let is_orcamento = isOrcamento ? true : false;
+
 		const data = {
 			rca_id,
 			pessoa_rca_id,
 			filial_id,
 			pessoa_id,
 			profissional_id,
-			name_pessoa_contato
+			name_pessoa_contato,
+			is_orcamento
 		}
-		
 
 		const {url, options} = ORDEM_SERVICO_FINALIZAR_POST(idOrdemServico, data, getToken());
 
@@ -182,6 +189,8 @@ const FormOrdemServico = ({dataOrdemServicoChoice, setDataOrdemServico, setIdOrd
 
     console.log('----------------------------- data pais ----------------------------------')
     console.log(dataToFormOrdemServico())
+
+
 	return(
 
 		<>
@@ -238,8 +247,20 @@ const FormOrdemServico = ({dataOrdemServicoChoice, setDataOrdemServico, setIdOrd
                             isSubmitting
                         }
                     )=>(
-
-						<Modal  handleConcluir={()=>{handleSubmit(); }}  title={ (atualizarOrdemServico == true ? 'Atualizar' : 'Cadastrar')+' Ordem de Servico'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarOrdemServico} showHide={()=>{setShowModalCriarOrdemServico();setAtualizarOrdemServico(false);setIdOrdemServico(null);}}>
+						
+						<Modal
+							bottomButtons={[{acao:()=>{setIsOramento(true); handleSubmit();}, label:'Orçamento', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faCheck} /> }]}
+							handleConcluir={()=>{handleSubmit(); }}
+							title={ (atualizarOrdemServico == true ? 'Atualizar' : 'Cadastrar')+' Ordem de Servico'}
+							size="lg"
+							propsConcluir={{'disabled':loading}}
+							labelConcluir={loading ? <><FontAwesomeIcon icon={faCheck} /> Salvando...</> : <><FontAwesomeIcon icon={faCheck} /> Concluir </>}
+							dialogClassName={'modal-90w'}
+							aria-labelledby={'aria-labelledby'}
+							labelCanelar="Fechar"
+							show={showModalCriarOrdemServico}
+							showHide={()=>{setShowModalCriarOrdemServico();setAtualizarOrdemServico(false);setIdOrdemServico(null);}}
+						>
 							{
 									
                                 carregando && carregando==true
@@ -512,6 +533,7 @@ const FormOrdemServico = ({dataOrdemServicoChoice, setDataOrdemServico, setIdOrd
 																itensOrdem={dataItens}
 																setDataitens={setDataitens}
 																setDataOrdemServicoGlobal={setDataOrdemServico}
+																setQtdAtualizaCobrancas={setQtdAtualizaCobrancas}
 															/>
 														</Tab>
 														<Tab eventKey="cobrancas" title="Cobranças">
@@ -521,6 +543,7 @@ const FormOrdemServico = ({dataOrdemServicoChoice, setDataOrdemServico, setIdOrd
 																itensOrdem={dataItens}
 																setDataitens={setDataitens}
 																setDataOrdemServicoGlobal={setDataOrdemServico}
+																qtdAtualizaCobrancas={qtdAtualizaCobrancas}
 															/>
 														</Tab>
 													</Tabs>

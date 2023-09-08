@@ -1,7 +1,7 @@
 import React from 'react';
 import { Col, Row, Modal as ModalBootstrap, Button } from 'react-bootstrap';
 
-const Modal = ({children, title, labelConcluir, labelCanelar, dialogClassName, show, showHide, handleConcluir,propsConcluir, noBtnCancelar, noBtnConcluir, ...props})=>{
+const Modal = ({children, title, labelConcluir, labelCanelar, dialogClassName, show, showHide, handleConcluir,propsConcluir, noBtnCancelar, noBtnConcluir, bottomButtons, ...props})=>{
 	
   	const handleClose = () =>showHide(false);
   	const handleAcaoConcluir = ()=>{
@@ -34,6 +34,16 @@ const Modal = ({children, title, labelConcluir, labelCanelar, dialogClassName, s
 			            {labelCanelar ? labelCanelar : 'Cancelar'}
 			          </Button>
 	          }
+
+				{Array.isArray(bottomButtons) && bottomButtons.length > 0 && bottomButtons.map((item, index, arr)=>{
+					let {acao, label, propsAcoes, icon} = item;
+					if(label || icon){
+						return (
+							<Button key={index+'-'+arr.length} onClick={acao} {...propsAcoes} >{icon?icon:''} {label?label:''}</Button>
+						)
+					}
+
+				}) }
 
 	          {
 	          	(noBtnConcluir == true )

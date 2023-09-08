@@ -5,6 +5,8 @@ import {Formik, ErrorMessage, Field} from 'formik';
 import FormControlInput from '../../FormControl/index'
 import Checkbox from '../../FormControl/Checkbox.js'
 import Radio from '../../FormControl/Radio.js'
+import FormControlSelect from '../../FormControl/Select.js'
+
 import estilos from './Filter.module.css';
 import { faHome, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -42,15 +44,20 @@ const Filter = ({filtersArr, actionsArr,... props})=>{
 							 			contentLabel:contentLabel,
 							 			atributsFormLabel:atributsFormLabel,
 							 			atributsContainer:atributsContainer,
-							 			atributsFormControl:atributsFormControl
+							 			atributsFormControl:atributsFormControl,
+										options
 
 							 		}
+									//
 									
 									switch(type.trim()){
 										case 'text':
 										case 'email':
 										case 'number':
 											return (<Col {...atributsContainer} ><FormControlInput key={index} data={dados} /></Col>)
+										break;
+										case 'select':
+											return (<Col {...atributsContainer} ><FormControlSelect key={index} data={dados} /></Col>)
 										break;
 										case 'radio':
 

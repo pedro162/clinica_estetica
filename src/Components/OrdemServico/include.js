@@ -307,8 +307,22 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idOrdemCr
                     let btnCancelar                 = true;
 
                     if(atual?.status != 'cancelado'){
+                        
                         if(atual?.is_faturado == 'yes'){
-                            btnCotinuarDigitacao  = false;
+                            btnCotinuarDigitacao        = false;
+                            btnVisualizarFinanceiro     = true;
+                            btnIniciarProcedimento      = false;
+                        }else{
+                            btnFinalizar                = false;
+                            btnIniciarProcedimento      = false;
+                            btnVisualizarFinanceiro     = false;
+                        }
+
+                        if(atual?.status == 'concluido'){
+                            btnCotinuarDigitacao    = false;
+                            btnFinalizar            = false;
+                            btnEditar               = false;
+                            btnIniciarProcedimento  = false;
                         }
 
                     }else{
@@ -348,13 +362,18 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idOrdemCr
                         acoesArr.push({acao:()=>cancelarOrdemServicoAction(atual.id), label:'Cancelar', propsOption:{}, propsLabel:{}})
                     }
 
-                    
+                    let line_style = {}
+                    if(atual.status == 'cancelado'){
+                        line_style.color = 'red';
+                    }else if(atual.status == 'concluido'){
+                        line_style.color = 'green';
+                    } 
                     
                     //'remarcado','finalizado','cancelado','pendente'
                     data.push(
 
                         {
-                            propsRow:{id:(atual.id)},
+                            propsRow:{id:(atual.id), style:{...line_style}},
                             acoes:[
                                 ...acoesArr
                             ],
@@ -377,6 +396,11 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idOrdemCr
                                 {
 
                                     label:atual.status,
+                                    propsRow:{}
+                                },
+                                {
+
+                                    label:atual.type,
                                     propsRow:{}
                                 },
                                 {
@@ -455,6 +479,10 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idOrdemCr
             },
             {
                 label:'Status',
+                props:{}
+            },
+            {
+                label:'Tipo',
                 props:{}
             },
             {
