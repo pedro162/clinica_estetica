@@ -15,6 +15,7 @@ import Atualizar from './Atualizar/index.js'
 import Ficha from './Ficha/index.js'
 import {UserContex} from '../../Context/UserContex.js'
 import FormCliente from './FormCliente/index.js'
+import Include from './include.js'
 
 
 const Clientes = (props)=>{
@@ -32,6 +33,7 @@ const Clientes = (props)=>{
     const [ficha, setFicha] = React.useState(false)    
     const [dataGrupo, setDataGrupo] = React.useState(null)
     const [acao, setAcao] = React.useState(null)
+    const [mostarFiltros, setMostarFiltros] = React.useState(false) 
 
 
     const {getToken} = React.useContext(UserContex);
@@ -96,132 +98,9 @@ const Clientes = (props)=>{
             props:{onClick:()=>setCadastrarCliente(true), className:'btn btn-sm mx-2 btn-secondary'}
         }
     ];
-    const gerarExemplos = ()=>{
-         let exemplos = [];
-        for(let i=0; !(i == 10); i++){
-            exemplos.push(
+    
 
-                    {
-                        propsRow:{id:(i+1)},
-                        celBodyTableArr:[
-                            {
-
-                                label:'1',
-                                propsRow:{}
-                            },
-                            {
-
-                                label:'Peddro',
-                                propsRow:{}
-                            },
-                            {
-
-                                label:'(98) 98425-7623',
-                                propsRow:{}
-                            },
-                            {
-
-                                label:'phedroclooney@gmail.com',
-                                propsRow:{}
-                            }
-                        ]
-                    }
-
-                )
-
-        }
-
-        return exemplos;
-    }
-
-    const gerarTableClientes = ()=>{
-       
-        let data = [];
-        let dataClientes = clientes.mensagem
-        if(dataClientes && Array.isArray(dataClientes) && dataClientes.length > 0){
-            for(let i=0; !(i == dataClientes.length); i++){
-                let atual = dataClientes[i];
-                if(atual){
-
-
-                    data.push(
-
-                        {
-                            propsRow:{id:(atual.id)},
-                            acoes:[
-                                {acao:()=>atualizarCliente(atual.id), label:'Editar', propsOption:{}, propsLabel:{}},
-                                {acao:()=>novoAtendimento(atual.id), label:'Atendimento', propsOption:{}, propsLabel:{}},
-                                {acao:()=>fichaAtendimento(atual.id), label:'Ficha', propsOption:{}, propsLabel:{}},
-                                {acao:()=>alert('Agenda qui: '+(atual.id)), label:'Agenda', propsOption:{}, propsLabel:{}},
-                                {acao:()=>alert('Histórico de atentimentos: '+(atual.id)), label:'Histórico de atendimentos', propsOption:{}, propsLabel:{}},
-                                {acao:()=>alert('Central do cliente: '+(atual.id)), label:'Central do cliente', propsOption:{}, propsLabel:{}},
-                            ],
-                            celBodyTableArr:[
-                                {
-
-                                    label:atual.id,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual.name,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual.name_opcional,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual.email,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual.sexo,
-                                    propsRow:{}
-                                }
-                            ]
-                        }
-
-                    )
-
-                }
-
-            }
-        }
-
-        return data;
-    }
-
-    const gerarTitleTable = ()=>{
-        let tableTitle = [
-            {
-                label:'Código',
-                props:{}
-            },
-            {
-                label:'Nome',
-                props:{}
-            },
-            {
-                label:'Sobremone',
-                props:{}
-            },
-            {
-                label:'Email',
-                props:{}
-            },
-            {
-                label:'Sexo',
-                props:{}
-            },
-        ]
-
-        return tableTitle;
-    }
-    //------------
+    
 
     const requestAllClients = async() =>{
        
@@ -252,39 +131,6 @@ const Clientes = (props)=>{
         
     }, [])
 
-    React.useEffect(()=>{
-        switch(acao){
-            case 'editar':
-                if(clientChoice > 0){
-                    setAtualizarCadastro(true);
-                }else{
-                    setAtualizarCadastro(false);
-                }
-                break;
-            case 'consultar':
-                if(clientChoice > 0){
-                    setMarcarConsulta(true);
-                }else{
-                    setMarcarConsulta(false);
-                }
-            break;
-            case 'ficha':
-                if(clientChoice > 0){
-                    setFicha(true);
-                }else{
-                    setFicha(false);
-                }
-            break;
-            default:
-                setAtualizarCadastro(false);
-                setMarcarConsulta(false);
-                setFicha(false);
-                break;
-
-        }
-        
-    }, [clientChoice, acao])
-    
     
     React.useEffect(()=>{
 
@@ -296,28 +142,8 @@ const Clientes = (props)=>{
 
         
     }, [cadastrarCliente])
-
-    const atualizarCliente = (idCliente)=>{
-        setClienteChoice(idCliente)
-        setAcao('editar')
-        setAtualizarCadastro(true);
-    }
-
-    const novoAtendimento = (idCliente)=>{
-        setClienteChoice(idCliente)
-        setAcao('consultar')
-        setAtualizarCadastro(true);
-    }
-
-    const fichaAtendimento = (idCliente)=>{
-        setClienteChoice(idCliente)
-        setAcao('ficha')
-        setFicha(true);
-    }
     
     
-    const rowsTableArr = gerarTableClientes();    
-    const titulosTableArr = gerarTitleTable();
 	return(
 		<>
             <Breadcrumbs
@@ -332,41 +158,35 @@ const Clientes = (props)=>{
                         }
                     ]}
             />
-            <Row>
-                <Col  xs="12" sm="12" md="3">
-                    <Filter
-                        filtersArr={filtersArr}
-                        actionsArr={acoesBottomCard}
-                    />
-                </Col>
-                <Col  xs="12" sm="12" md="9">
-                    <Table
-                        titulosTableArr={titulosTableArr}
-                        rowsTableArr={rowsTableArr}
-                        loading={loading}
 
+            <Row>
+                {mostarFiltros && 
+                    (
+                        <Col  xs="12" sm="12" md="3">
+                            <Filter
+                                filtersArr={filtersArr}
+                                actionsArr={acoesBottomCard}
+                            />
+                        </Col>
+                    )
+                }
+                
+                <Col  xs="12" sm="12" md={mostarFiltros ? "9":"12"}>
+                    <Include
+                        dataEstado={clientes}
+                        loadingData={loading}
+                        callBack={requestAllClients}
+                        setMostarFiltros={setMostarFiltros}
+                        idClienteCriado={clientChoice}
                     />
                 </Col>
             </Row>
+
+            
             {
                 cadastrarCliente && <Cadastrar cadastrarCliente={cadastrarCliente} setCadastrarCliente={setCadastrarCliente} atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro}  idCliente={clientChoice} setIdcliente={setClienteChoice} callback={requestAllClients} />
             }
             
-            {
-                atualizarCadastro &&
-                <Atualizar atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro}  idCliente={clientChoice} setIdcliente={setClienteChoice} callback={requestAllClients} />
-            }
-
-            {
-                marcarConsulta &&
-                <Atualizar marcarConsulta={marcarConsulta} setMarcarConsulta={setMarcarConsulta}  idCliente={clientChoice} setIdcliente={setClienteChoice} callback={requestAllClients} />
-            }
-
-            {
-                ficha &&
-                <Ficha ficha={ficha} setFicha={setFicha}  idCliente={clientChoice} setIdcliente={setClienteChoice} callback={requestAllClients} />
-            }
-
          </>
 
 	)

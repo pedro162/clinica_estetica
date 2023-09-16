@@ -309,7 +309,7 @@ const ConstrutorFicha = (props)=>{
                 listarGrupo &&
                 <Modal  noBtnConcluir={true} handleConcluir={()=>null}  title={'Grupos'} size="xl" propsConcluir={{'disabled':loading}} labelConcluir={null} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={listarGrupo} showHide={()=>{setShowModalGrupo();setListarGrupo(false);setRegistroChoice(null);}}>
                                 
-                    <ConstrutorFichaGrupo listarGrupo={listarGrupo} setListarGrupo={setListarGrupo}  idRegistro={registroChoice} setIdRegistro={setRegistroChoice} callback={requestAllRegistros} />
+                    <ConstrutorFichaGrupo listarGrupo={listarGrupo} setListarGrupo={setListarGrupo}  idRegistro={registroChoice} idFormulario={registroChoice} setIdRegistro={setRegistroChoice} callback={requestAllRegistros} />
                 
                 </Modal>
             }

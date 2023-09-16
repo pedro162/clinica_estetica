@@ -17,7 +17,7 @@ import FormGrupo from './FormGrupo/index.js'
 import ConstrutorFichaItem from '../ConstrutorFichaItem/index.js'
 
 
-const ConstrutorFichaGrupo = (props)=>{
+const ConstrutorFichaGrupo = ({idFormulario, ...props})=>{
 
 	const {data, error, request, loading} = useFetch();
     const [registro, setRegistro] = React.useState([])
@@ -275,7 +275,7 @@ const ConstrutorFichaGrupo = (props)=>{
                 </Col>
             </Row>
             {
-                cadastrarRegistro && <Cadastrar cadastrarRegistro={cadastrarRegistro} setCadastrarRegistro={setCadastrarRegistro} atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro}  idRegistro={registroChoice} setIdRegistro={setRegistroChoice} callback={requestAllRegistros} />
+                cadastrarRegistro && <Cadastrar idFormulario={idFormulario} cadastrarRegistro={cadastrarRegistro} setCadastrarRegistro={setCadastrarRegistro} atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro}  idRegistro={registroChoice} setIdRegistro={setRegistroChoice} callback={requestAllRegistros} />
             }
             
             {

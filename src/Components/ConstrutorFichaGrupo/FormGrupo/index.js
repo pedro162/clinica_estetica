@@ -17,7 +17,7 @@ import { DragDropContext } from 'react-beautiful-dnd';
 import TableForm from '../../Relatorio/TableForm/index.js';
 
 
-const FormGrupo = ({dataRegistroChoice, dataGrupo, setIdRegistro, idRegistro, showModalCriarRegistro, setShowModalCriarRegistro, callback, atualizarCadastro, setAtualizarCadastro, carregando})=>{
+const FormGrupo = ({idFormulario, dataRegistroChoice, dataGrupo, setIdRegistro, idRegistro, showModalCriarRegistro, setShowModalCriarRegistro, callback, atualizarCadastro, setAtualizarCadastro, carregando})=>{
     
     const [carregandoDadosChoice, setCarregandoDadosChoice] = React.useState(false)
 

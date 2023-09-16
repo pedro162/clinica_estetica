@@ -7,7 +7,7 @@ import Pesquisar from '../Pesquisar/index.js'
 import Modal from '../../Utils/Modal/index.js'
 import Load from '../../Utils/Load/index.js'
 
-const Cadastrar = ({idRegistro, setIdRegistro, callback, atualizarCadastro, setAtualizarCadastro, cadastrarRegistro, setCadastrarRegistro})=>{
+const Cadastrar = ({idFormulario, idRegistro, setIdRegistro, callback, atualizarCadastro, setAtualizarCadastro, cadastrarRegistro, setCadastrarRegistro})=>{
 
     
     const [showModalAtualizarRegistro, setShowModalAtualizarRegistro] = React.useState(false)
@@ -52,7 +52,7 @@ const Cadastrar = ({idRegistro, setIdRegistro, callback, atualizarCadastro, setA
 				</Modal>
 			}
 			{dataGrupo &&
-				<FormGrupo dataGrupo={dataGrupo} setIdRegistro={setIdRegistro} idRegistro={idRegistro} carregando={false} dataRegistroChoice={dataRegistro} setAtualizarCadastro={setAtualizarCadastro} atualizarCadastro={atualizarCadastro} showModalCriarRegistro={showModalAtualizarRegistro} setShowModalCriarRegistro={()=>{setShowModalAtualizarRegistro();setCadastrarRegistro()}} callback={callback} />
+				<FormGrupo idFormulario={idFormulario} dataGrupo={dataGrupo} setIdRegistro={setIdRegistro} idRegistro={idRegistro} carregando={false} dataRegistroChoice={dataRegistro} setAtualizarCadastro={setAtualizarCadastro} atualizarCadastro={atualizarCadastro} showModalCriarRegistro={showModalAtualizarRegistro} setShowModalCriarRegistro={()=>{setShowModalAtualizarRegistro();setCadastrarRegistro()}} callback={callback} />
 			}
 		</>
 	)
