@@ -17,13 +17,14 @@ import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible.js'
 import TableForm from '../../Relatorio/TableForm/index.js';
 import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../../functions/index.js'
 
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, SERVICO_SAVE_POST, ORDEM_SERVICO_ITENS_ONE_GET , SERVICO_ALL_POST, SERVICO_UPDATE_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST, FORMULARIO_GRUPO_ONE_GET, SERVICO_ONE_GET, ORDEM_SERVICO_ONE_GET, ORDEM_SERVICO_ADD_ITEM_POST, ORDEM_SERVICO_DELETE_ITEM_POST} from '../../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, SERVICO_SAVE_POST, ORDEM_SERVICO_ITENS_ONE_GET , SERVICO_ALL_POST, SERVICO_UPDATE_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST, FORMULARIO_GRUPO_ONE_GET, SERVICO_ONE_GET, ORDEM_SERVICO_ONE_GET, ORDEM_SERVICO_ADD_ITEM_POST, FORMULARIO_ITEM_ALL_POST} from '../../../api/endpoints/geral.js'
 
 
-const FormClientesFichasItens = ({values, handleChange, handleBlur, idGrupoFormulario, dataClientesFichasChoice, setDataClientesFichasGlobal, idClientesFichas, itensOrdem ,callback,carregando, setQtdAtualizaCobrancas})=>{
+const FormClientesFichasItens = ({setAddionarResposta, dataRespostaFormulario,values, handleChange, handleBlur, idGrupoFormulario, dataGrupo, dataClientesFichasChoice, setDataClientesFichasGlobal, idClientesFichas, itensOrdem ,callback,carregando, setQtdAtualizaCobrancas})=>{
 	
 	const {data, error, request, loading} = useFetch();
 	const dataRequest = useFetch();
+	const dataRequestGrupo = useFetch();
 
 	const {getToken, dataUser} = React.useContext(UserContex);
 	const [dataItens, setDataItens] = React.useState([]);//itensOrdem
@@ -195,8 +196,24 @@ const FormClientesFichasItens = ({values, handleChange, handleBlur, idGrupoFormu
 
 	const getItensGrupoFormulario = async (idFormulario)=>{
 		if(idFormulario > 0){
+			//dataRequestGrupo 
+			/* const configFormG = FORMULARIO_GRUPO_ONE_GET(idFormulario, getToken());
+			const responseFormG = await dataRequest.request(v?.url, configFormG?.options);
+			
+			if(responseFormG.json){
+				if(responseFormG.json && responseFormG.json.hasOwnProperty('mensagem')){
+					let dataGrupo = responseFormG.json.mensagem;
+					console.log("Grupo escolhido: ",dataGrupo)
+					setDataItensGrupoFormulario(dataGrupo)
+				}else{
+					setDataItensGrupoFormulario([])
+				}
+			} */
+			console.log('Dados do grupo agui=-======================')
+			console.table(dataGrupo)
+			console.log('Dados do grupo agui=-======================')
 
-			const {url, options} = FORMULARIO_GRUPO_ONE_GET(idFormulario, getToken());
+			const {url, options} = FORMULARIO_ITEM_ALL_POST({'formulario_grupo_id':idFormulario, 'ordem':'nr_linha-asc,nr_coluna-asc, id-asc'}, getToken());//FORMULARIO_GRUPO_ONE_GET(idFormulario, getToken());
 			const {response, json} = await dataRequest.request(url, options);
 			
 			if(json){
@@ -276,7 +293,7 @@ const FormClientesFichasItens = ({values, handleChange, handleBlur, idGrupoFormu
 							<Col xs="12" sm="12" md="12">
 								<Row className="my-3">
 									<Col xs="12" sm="12" md="12">
-										<span className="label_title_grup_forms">{dataItensGrupoFormulario?.name}</span>
+										<span className="label_title_grup_forms">{dataGrupo?.name}</span>
 										<hr/>
 									</Col>
 								</Row>
@@ -289,15 +306,23 @@ const FormClientesFichasItens = ({values, handleChange, handleBlur, idGrupoFormu
 									</Row>
 								}
 								<Row className='mb-3'>
-								{Array.isArray(dataItensGrupoFormulario?.item) && dataItensGrupoFormulario?.item.length > 0 && (
-									dataItensGrupoFormulario?.item.map((item, index, arr)=>{
+								{Array.isArray(dataItensGrupoFormulario) && dataItensGrupoFormulario.length > 0 && (
+									dataItensGrupoFormulario.map((item, index, arr)=>{
 										let type 					= item.hasOwnProperty('type') 					? item.type: 'text' ;
 										let name 					= item.hasOwnProperty('name') 					? item.name: '' ;
 										let hasLabel 				= item.hasOwnProperty('label') && String(item.label).length > 0 					? true: false 
 										let contentLabel 			= item.hasOwnProperty('label') 					? item.label: '' 
 										let atributsFormLabel 		= item.hasOwnProperty('atributsFormLabel') 		? item.atributsFormLabel: {}
 										let atributsContainer 		= {className:'mb-3', xs:"12", sm:"12", md:"6"}
-										let atributsFormControl 	= {handleChange, value:values[name], type}
+										let valorAtual 				= null; 
+										let hasValueArmazenado		= dataRespostaFormulario && dataRespostaFormulario.hasOwnProperty(`${name}`)
+										
+										if(hasValueArmazenado){
+											let {value} = dataRespostaFormulario[name];
+											valorAtual = value;
+										}
+
+										let atributsFormControl 	= {"handleChange":setAddionarResposta, value:valorAtual/* values[name] */, type, name}
 										let options 				= []
 										//handleChange, handleBlur
 										let dados = {
@@ -316,9 +341,13 @@ const FormClientesFichasItens = ({values, handleChange, handleBlur, idGrupoFormu
 											case 'text':
 											case 'email':
 											case 'number':
+												
+												dados['atributsContainer'] = {...dados['atributsContainer'], onChange:({target})=>setAddionarResposta(target)}
 												return (<Col xs="12" sm="12" md="6" {...atributsContainer} ><FormControlInput key={index} data={dados} /></Col>)
 											break;
 											case 'select':
+
+												dados['atributsContainer'] = {...dados['atributsContainer'], onChange:({target})=>setAddionarResposta(target)}
 												return (<Col xs="12" sm="12" md="6" {...atributsContainer} ><FormControlSelect key={index} data={dados} /></Col>)
 											break;
 											case 'radio':
@@ -372,6 +401,8 @@ const FormClientesFichasItens = ({values, handleChange, handleBlur, idGrupoFormu
 												return(<Col xs="12" sm="12" md="6" {...atributsContainer}><Checkbox setValue={setValue} propsLabel={propsLabel} hasLabel={hasLabel} label={label} {...atributsFormControl} /></Col>)
 											break;
 											default:
+
+												dados['atributsContainer'] = {...dados['atributsContainer'], onChange:({target})=>setAddionarResposta(target)}
 												return (<Col xs="12" sm="12" md="6" {...atributsContainer}><FormControlInput key={index} data={dados} /></Col>)
 											break;
 

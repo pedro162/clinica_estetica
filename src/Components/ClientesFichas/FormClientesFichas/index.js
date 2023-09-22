@@ -16,7 +16,7 @@ import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible.js'
 import FormClientesFichasItens from '../FormClientesFichasItens/index.js'
 
 
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, SERVICO_SAVE_POST, FORMULARIO_ALL_POST, FORMULARIO_GRUPO_ALL_POST, FORMULARIO_ONE_GET, SERVICO_ALL_POST, ORDEM_SERVICO_FINALIZAR_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST} from '../../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, SERVICO_SAVE_POST, FORMULARIO_ALL_POST, FORMULARIO_GRUPO_ALL_POST, FORMULARIO_ONE_GET, SERVICO_ALL_POST, ORDEM_SERVICO_FINALIZAR_POST,CLIENTES_ALL_POST, FORMULARIO_ITEM_ALL_POST} from '../../../api/endpoints/geral.js'
 
 
 const FormClientesFichas = ({dataClientesFichasChoice, setDataClientesFichas, setIdClientesFichas, idClientesFichas, showModalCriarClientesFichas, setShowModalCriarClientesFichas, callback, atualizarClientesFichas, setAtualizarClientesFichas, carregando})=>{
@@ -26,16 +26,51 @@ const FormClientesFichas = ({dataClientesFichasChoice, setDataClientesFichas, se
 	const dataRequestGrupoForm = useFetch();
 
 	const {getToken, dataUser} = React.useContext(UserContex);
-	const [dataFiliais, setDataFiliais] 	= React.useState([])
-	const [dataItens, setDataitens]		 	= React.useState([])
-	const [dataGrupo, setDataGrupo]		 	= React.useState([])
-	const [dataFormulario, setDataFormulario] = React.useState([])
-	const [dataFormularios, setDataFormularios] = React.useState([])
-	const [dataFormulariosGrupos, setDataFormulariosGrupos] = React.useState([])
-	const [isOrcamento, setIsOramento]		 	= React.useState(false)
+	const [dataFiliais, setDataFiliais] 							= React.useState([])
+	const [dataItens, setDataitens]		 							= React.useState([])
+	const [dataGrupo, setDataGrupo]		 							= React.useState([])
+	const [dataFormulario, setDataFormulario] 						= React.useState([])
+	const [dataFormularios, setDataFormularios] 					= React.useState([])
+	const [dataFormulariosGrupos, setDataFormulariosGrupos] 		= React.useState([])
+	const [isOrcamento, setIsOramento]		 						= React.useState(false)
 	const [qtdAtualizaCobrancas, setQtdAtualizaCobrancas]		 	= React.useState(0)
+	const [idFormularioForm, setIdFormularioForm]		 			= React.useState(0)	
+	const [dataRespostaFormulario, setDataRespostaFormulario]		= React.useState({})
 
-	const [idFormularioForm, setIdFormularioForm]		 	= React.useState(0)	
+
+	const setAddionarResposta = (target)=>{
+		let tpFild 	= target.getAttribute('type')
+		let keyRef 	= target.getAttribute('keyRef')
+		let name 	= target.getAttribute('name')
+		let value   = target.value;
+		let clone = dataRespostaFormulario;
+
+		if(String(tpFild).trim() == 'checkbox'){
+			if(target.checked){
+				clone[name]={'key':keyRef, 'value':1, name}
+			}else{
+				if(clone){
+					let newClone = {}
+					for(let pro in clone){
+						let response = clone[pro][name] != name;
+						if(response){
+							newClone[pro] = clone[pro];
+						}
+					}
+					clone = newClone;
+				}
+			}
+		}else{
+			clone[name]={'key':keyRef, value, name}
+		}
+		
+
+		setDataRespostaFormulario({...clone})
+		console.info('Restposta do formulário')
+		console.log(dataRespostaFormulario)
+		console.info('Restposta do formulário')
+		
+	}
 
 	const userLogar =  ()=>{
         console.log('Aqui............')
@@ -565,7 +600,9 @@ const FormClientesFichas = ({dataClientesFichasChoice, setDataClientesFichas, se
 
 																		<FormClientesFichasItens
 																			key={index+item?.id}
-																			dataGrupo={dataGrupo}
+																			setAddionarResposta={setAddionarResposta}
+																			dataRespostaFormulario={dataRespostaFormulario}
+																			dataGrupo={item}
 																			idGrupoFormulario={item?.id}
 																			setDataGrupo={setDataGrupo}
 																			setDataClientesFichasGlobal={setDataClientesFichas}
