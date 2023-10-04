@@ -16,7 +16,7 @@ import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible.js'
 import FormClientesFichasItens from '../FormClientesFichasItens/index.js'
 
 
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, SERVICO_SAVE_POST, FORMULARIO_ALL_POST, FORMULARIO_GRUPO_ALL_POST, FORMULARIO_ONE_GET, SERVICO_ALL_POST, ORDEM_SERVICO_FINALIZAR_POST,CLIENTES_ALL_POST, FORMULARIO_ITEM_ALL_POST} from '../../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, SERVICO_SAVE_POST, FORMULARIO_ALL_POST, FORMULARIO_GRUPO_ALL_POST, FORMULARIO_ONE_GET, SERVICO_ALL_POST, FORMULARIO_PESSOA_SAVE_POST,CLIENTES_ALL_POST, FORMULARIO_ITEM_ALL_POST, PROFISSIONAIS_ALL_POST} from '../../../api/endpoints/geral.js'
 
 
 const FormClientesFichas = ({dataClientesFichasChoice, setDataClientesFichas, setIdClientesFichas, idClientesFichas, showModalCriarClientesFichas, setShowModalCriarClientesFichas, callback, atualizarClientesFichas, setAtualizarClientesFichas, carregando})=>{
@@ -77,28 +77,31 @@ const FormClientesFichas = ({dataClientesFichasChoice, setDataClientesFichas, se
     }
 
     const sendData = async ({
-			rca_id,
-			pessoa_rca_id,
+			sigiloso,
 			filial_id,
 			pessoa_id,
 			profissional_id,
+			formulario_id,
 			name_pessoa_contato
 		})=>{
 			
-		rca_id= pessoa_rca_id > 0 && !rca_id ?  pessoa_rca_id : rca_id;
 		let is_orcamento = isOrcamento ? true : false;
 
 		const data = {
-			rca_id,
-			pessoa_rca_id,
+			sigiloso,
 			filial_id,
 			pessoa_id,
 			profissional_id,
+			formulario_id,
 			name_pessoa_contato,
-			is_orcamento
+			is_orcamento,
+			questionario:{...dataRespostaFormulario}
 		}
+		console.log("=========================== data ===========================")
+		console.log(data)
+		console.log("=========================== data ===========================")
 
-		const {url, options} = ORDEM_SERVICO_FINALIZAR_POST(idClientesFichas, data, getToken());
+		const {url, options} = FORMULARIO_PESSOA_SAVE_POST(data, getToken());
 
 
 		const {response, json} = await request(url, options);
@@ -171,9 +174,7 @@ const FormClientesFichas = ({dataClientesFichasChoice, setDataClientesFichas, se
     }
 //setDataGruposFormularios
 	const dataToFormClientesFichas = ()=>{
-    	let obj = {filial_id:'', vrTotal:'',
-			status:'', observacao:'', dsArquivo:'', pessoa_id:'', pessoa_rca_id:'', filial_id:'', user_id:'', user_update_id:'', active:'', deleted_at:'', created_at:'', updated_at:'', vr_final:'', vr_desconto:'', pct_acrescimo:'', vr_acrescimo:'', profissional_id:'', pct_desconto:''
-		}
+    	let obj = {filial_id:'', pessoa_id:'',	formulario_id:'', observacao:'', profissional_id:''	}
     	if(dataClientesFichasChoice && dataClientesFichasChoice.hasOwnProperty('mensagem')){
     		let data = dataClientesFichasChoice.mensagem;
 			
@@ -181,54 +182,23 @@ const FormClientesFichas = ({dataClientesFichasChoice, setDataClientesFichas, se
                 obj.filial_id = data.filial_id;
     		}
 
-    		if(data.hasOwnProperty('vrTotal')){
-    			obj.vrTotal = data.vrTotal;
+    		if(data.hasOwnProperty('pessoa_id')){
+    			obj.pessoa_id = data.pessoa_id;
     		}
 			
-			if(data.hasOwnProperty('status')){
-    			obj.status = data.status;
+			if(data.hasOwnProperty('formulario_id')){
+    			obj.formulario_id = data.formulario_id;
     		}
 
 			if(data.hasOwnProperty('observacao')){
     			obj.observacao = data.observacao;
     		}
 
-			if(data.hasOwnProperty('dsArquivo')){
-    			obj.dsArquivo = data.dsArquivo;
-    		}
-
-			if(data.hasOwnProperty('pessoa_id')){
-    			obj.pessoa_id = data.pessoa_id;
-    		}
-
-			if(data.hasOwnProperty('pessoa_rca_id')){
-    			obj.pessoa_rca_id = data.pessoa_rca_id;
-    		}
-
-			if(data.hasOwnProperty('vr_final')){
-    			obj.vr_final = data.vr_final;
-    		}
-
-			if(data.hasOwnProperty('vr_desconto')){
-    			obj.vr_desconto = data.vr_desconto;
-    		}
-
-			if(data.hasOwnProperty('pct_acrescimo')){
-    			obj.pct_acrescimo = data.pct_acrescimo;
-    		}
-
-			if(data.hasOwnProperty('vr_acrescimo')){
-    			obj.vr_acrescimo = data.vr_acrescimo;
-    		}
-
 			if(data.hasOwnProperty('profissional_id')){
     			obj.profissional_id = data.profissional_id;
     		}
 
-			if(data.hasOwnProperty('pct_desconto')){
-    			obj.pct_desconto = data.pct_desconto;
-    		}
-    		
+			
     	}
 
     	return obj;
@@ -244,6 +214,14 @@ const FormClientesFichas = ({dataClientesFichasChoice, setDataClientesFichas, se
     		return filiais;
     	}
     	return []
+    }
+
+	const preparaIsSigilosoToForm = ()=>{
+    	return [
+				{label:'Selecione...',valor:'',props:{selected:'selected', disabled:'disabled'}},
+				{label:'Sim',valor:'yes',props:{}},
+				{label:'Não',valor:'no',props:{}},
+		]
     }
 
 	const preparaFormularioToForm = ()=>{
@@ -340,8 +318,13 @@ const FormClientesFichas = ({dataClientesFichasChoice, setDataClientesFichas, se
 						}
 
 
-						if(!values.pessoa_rca_id){
-						    errors.pessoa_rca_id="Obrigatório"
+						if(!values.formulario_id){
+						    errors.formulario_id="Obrigatório"
+						}
+
+
+						if(!values.profissional_id){
+						    errors.profissional_id="Obrigatório"
 						}
 
 						if(!values.pessoa_id){
@@ -516,6 +499,43 @@ const FormClientesFichas = ({dataClientesFichasChoice, setDataClientesFichas, se
 												</Col>
 
 												<Col xs="12" sm="12" md="6">
+												<Field
+													data={
+														{
+															hasLabel:true,
+															contentLabel:'Profissional *',
+															atributsFormLabel:{
+
+															},
+															atributsFormControl:{
+																type:'text',
+																name:'profissional_id',
+																placeholder:'Ex: fulano de tal',
+																id:'profissional_id',
+																name_cod:'profissional_id',
+																name_desacription:'profissional_name',
+																onChange:handleChange,
+																onBlur:handleBlur,
+																value:values.profissional_id,
+																className:`${estilos.input}`,
+																size:"sm"
+															},
+															atributsContainer:{
+																className:''
+															},
+															hookToLoadFromDescription:PROFISSIONAIS_ALL_POST,
+														}
+													}
+													component={Required}
+												>   </Field>    
+												<ErrorMessage className="alerta_error_form_label" name="profissional_id" component="div" />
+												</Col>
+
+												
+											</Row>
+
+											<Row className="mb-3">
+											<Col xs="12" sm="12" md="6">
 													<Field
 														data={
 															{
@@ -526,16 +546,16 @@ const FormClientesFichas = ({dataClientesFichasChoice, setDataClientesFichas, se
 																},
 																atributsFormControl:{
 																	type:'text',
-																	name:'pessoa_rca_id',
-																	placeholder:'Vendedor',
-																	id:'pessoa_rca_id',
+																	name:'sigiloso',
+																	placeholder:'Sigiloso?',
+																	id:'sigiloso',
 																	onChange:handleChange,
 																	onBlur:handleBlur,
-																	value:values.pessoa_rca_id,
+																	value:values.sigiloso,
 																	className:estilos.input,
 																	size:"sm"
 																},
-																options:preparaFilialToForm(),
+																options:preparaIsSigilosoToForm(),
 																atributsContainer:{
 																	className:''
 																}
@@ -544,16 +564,12 @@ const FormClientesFichas = ({dataClientesFichasChoice, setDataClientesFichas, se
 													
 														component={FormControlSelect}
 													></Field>
-													<ErrorMessage className="alerta_error_form_label" name="pessoa_rca_id" component="div" />
+													<ErrorMessage className="alerta_error_form_label" name="sigiloso" component="div" />
 													
 													
 												</Col>
-											</Row>
-
-											<Row className="mb-3">
-
 												
-												<Col xs="12" sm="12" md="12">
+												<Col xs="12" sm="12" md="6">
 													<Field
 															data={
 																{
