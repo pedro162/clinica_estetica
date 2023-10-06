@@ -188,6 +188,30 @@ export const CLIENTES_UPDATE_POST = (id,data, token)=>{
 
 }
 
+
+
+export const CLIENTES_FICHA_MAIS_RECENTE_ONE_GET = (idPessoa, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'GET',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        //body:JSON.stringify(data)
+   };
+  
+   return{
+        url:BASE_URL+'/api/pessoa/ultima/ficha/info/'+idPessoa,
+        options:myInit
+    }
+
+}
+
 //---- HOME ----------------
 export const HOME_ALL_POST = (data, token)=>{
 

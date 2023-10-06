@@ -1,4 +1,6 @@
 import React from 'react';
+import { faHome, faSearch, faPlus, faCheck } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {Formik, ErrorMessage, Field} from 'formik';
 import FormControlInput from '../../../FormControl/index.js'
 import FormControlSelect from '../../../FormControl/Select.js'
@@ -8,15 +10,17 @@ import Modal from '../../../Utils/Modal/index.js'
 import useFetch from '../../../../Hooks/useFetch.js';
 import {UserContex} from '../../../../Context/UserContex.js'
 import Load from '../../../Utils/Load/index.js'
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CLIENTES_SAVE_POST, CLIENTES_UPDATE_POST, CLIENTES_ONE_GET} from '../../../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CLIENTES_SAVE_POST, CLIENTES_UPDATE_POST, CLIENTES_ONE_GET, CLIENTES_FICHA_MAIS_RECENTE_ONE_GET} from '../../../../api/endpoints/geral.js'
 
 
 const FormCliente = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, showModalCriarCliente, setShowModalCriarCliente, callback, atualizarCadastro, setAtualizarCadastro, carregando})=>{
     
     const [carregandoDadosChoice, setCarregandoDadosChoice] = React.useState(false)
+	const [dataUltimaFichaCliente, setDataUltimaFichaCliente] = React.useState([])
 
 	const {data, error, request, loading} = useFetch();
 	const fetchToClient = useFetch();
+	const fetchToFichaCliente = useFetch();
 
 	const {getToken, dataUser} = React.useContext(UserContex);
 	const userLogar =  ()=>{
@@ -108,6 +112,30 @@ const FormCliente = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, sho
 
         }
     }
+
+	React.useEffect(()=>{
+		const getLastFichaCliente = async ()=>{
+			
+			const {url, options} = CLIENTES_FICHA_MAIS_RECENTE_ONE_GET(idCliente, getToken());
+
+
+            const {response, json} = await fetchToFichaCliente.request(url, options);
+
+			if(json){
+				let {mensagem} = json;
+				if(mensagem){
+					setDataUltimaFichaCliente(mensagem)
+				}else{
+					setDataUltimaFichaCliente([])
+				}
+			}else{
+				setDataUltimaFichaCliente([])
+			}
+		}
+
+		getLastFichaCliente()
+
+	}, [idCliente])
 
 
     const dataToFormCliente = ()=>{
@@ -250,7 +278,8 @@ const FormCliente = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, sho
 
         return grupoFormat;
     }
-    
+    const dataFormAnswerHeader = dataUltimaFichaCliente?.formulario
+	const dataFormAnswerFields = dataUltimaFichaCliente?.formulario?.resposta
     const dataFicha = dataToFormCliente();
 
 	return(
@@ -309,7 +338,7 @@ const FormCliente = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, sho
                                     <hr style={{height:20, background:'#000', color:'#000', border:'#000'}}/>
                                 </Row>
                                 <Row className="mb-3 ">
-                                        <Col xs="12" sm="12" md="12">
+                                       {/* <Col xs="12" sm="12" md="12">
                                             <Table  hover size="sm">
                                                 <thead>
                                                     <tr>
@@ -325,43 +354,55 @@ const FormCliente = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, sho
                                                     
                                                 </tbody>
                                             </Table>
-                                        </Col>
-                                    </Row>
-                                <Row>
-                                    <hr style={{height:20, background:'#000', color:'#000', border:'#000'}}/>
-                                </Row>
-                            <Row className="mb-3 ">
-									<Col xs="12" sm="12" md="12">
-										<Table  hover size="sm">
-											<tbody>
-												<tr>
-													<th>Código</th>
-													<td colSpan={2}>{dataFicha?.id}</td>
-												</tr>
-                                                <tr>
-													<th>Sexo</th>
-													<td>{dataFicha?.hr_inicio}</td>
-													<th>DT. nascimento</th>
-													<td>{dataFicha?.dt_inicio}</td>
-												</tr>
-												<tr>
-													<th>Telefone</th>
-													<td>{dataFicha?.tipo}</td>
-													<th>Email</th>
-													<td>{dataFicha?.name_profissional}</td>
-												</tr>
+                                        </Col>*/}
+										{dataFormAnswerFields && Array.isArray(dataFormAnswerFields) && dataFormAnswerFields.length > 0 && dataFormAnswerFields.map((item, index, arr)=>{
+											let {id, formitem, observacao, resposta } = item
+											let {label, type, options} = formitem
+											let optionsArr = []
+											if(type == 'checkbox'){
+												optionsArr = options.split(',')
+												return(
+													<Col className={'mb-2'}  key={id+label+dataFormAnswerFields.length} xs="12" sm="12" md="6">
+														<div style={{display:'flex', flexDirection:'row', justifyContent:'space-between'}} >
+															<spam style={{fontWeight:'bolder'}} >{label}</spam>
+															<div style={{display:'flex', flexDirection:'row', justifyContent:'space-between'}}>
+																{optionsArr && Array.isArray(optionsArr) && optionsArr.length > 0 && optionsArr.map((itemOption, indexOption, arrOption)=>{
+																	return(
+																		<div key={id+formitem?.id+itemOption+indexOption} style={{display:'flex', flexDirection:'row', justifyContent:'space-between'}}>
+																			<spam>{itemOption}</spam>
+																			<spam style={{width:'20px', height:'20px', marginLeft:'4px', marginRight:'4px', border:'1px solid #000'}}> {resposta && itemOption[0] == 'S' && <FontAwesomeIcon icon={faCheck} />} </spam>
+																		</div>
+																	)
+																})}
+															</div>
+															
+														</div>
+														<div style={{display:'flex', flexDirection:'row', justifyContent:'space-between', alignItems:'end'}} >
+															<span style={{fontSize:'12px'}}>Específico</span>____________________________________
+														</div>
+														
+													</Col>
+												)
+											}else{
+												return(
+													<Col className={'mb-2'}  key={id+label+dataFormAnswerFields.length} xs="12" sm="12" md="6">
+														<div style={{display:'flex', flexDirection:'row', justifyContent:'space-between'}} >
+															<spam style={{fontWeight:'bolder'}} >{label}</spam>
+															<spam>{resposta}</spam>
+														</div>
+														
+													</Col>
+												)
+											}
 
-                                                <tr>
-                                                    <th>Endereço</th>
-                                                    <td>{dataFicha?.tipo}</td>
-													<th>Cep</th>
-													<td>{dataFicha?.name_profissional}</td>
-                                                </tr>
-												
-											</tbody>
-										</Table>
-									</Col>
-								</Row>
+											
+											
+										})}
+										
+										
+                                    </Row>
+                               
+                            
                         </>
                                                 
                     )
