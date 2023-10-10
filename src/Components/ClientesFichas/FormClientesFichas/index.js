@@ -16,7 +16,7 @@ import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible.js'
 import FormClientesFichasItens from '../FormClientesFichasItens/index.js'
 
 
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, SERVICO_SAVE_POST, FORMULARIO_ALL_POST, FORMULARIO_GRUPO_ALL_POST, FORMULARIO_ONE_GET, SERVICO_ALL_POST, FORMULARIO_PESSOA_SAVE_POST,CLIENTES_ALL_POST, FORMULARIO_ITEM_ALL_POST, PROFISSIONAIS_ALL_POST} from '../../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, SERVICO_SAVE_POST, FORMULARIO_ALL_POST, FORMULARIO_GRUPO_ALL_POST, FORMULARIO_ONE_GET, SERVICO_ALL_POST, FORMULARIO_PESSOA_SAVE_POST,CLIENTES_ALL_POST, FILIAIS_ALL_POST, PROFISSIONAIS_ALL_POST} from '../../../api/endpoints/geral.js'
 
 
 const FormClientesFichas = ({dataClientesFichasChoice, setDataClientesFichas, setIdClientesFichas, idClientesFichas, showModalCriarClientesFichas, setShowModalCriarClientesFichas, callback, atualizarClientesFichas, setAtualizarClientesFichas, carregando})=>{
@@ -120,7 +120,7 @@ const FormClientesFichas = ({dataClientesFichasChoice, setDataClientesFichas, se
 
     const requestAllFiliais = async() =>{
        
-        const {url, options} = SERVICO_ALL_POST({}, getToken());
+        const {url, options} = FILIAIS_ALL_POST({}, getToken());
 
 
         const {response, json} = await dataRequest.request(url, options);
@@ -208,7 +208,7 @@ const FormClientesFichas = ({dataClientesFichasChoice, setDataClientesFichas, se
 
     const preparaFilialToForm = ()=>{
     	if(dataFiliais.hasOwnProperty('mensagem') && Array.isArray(dataFiliais.mensagem) && dataFiliais.mensagem.length > 0){
-    		let filiais = dataFiliais.mensagem.map(({id, name}, index, arr)=>({label:name,valor:id,props:{}}))
+    		let filiais = dataFiliais.mensagem.map(({id, name, name_filial}, index, arr)=>({label:name_filial,valor:id,props:{}}))
     		filiais.unshift({label:'Selecione...',valor:'',props:{selected:'selected', disabled:'disabled'}})
     		
     		return filiais;

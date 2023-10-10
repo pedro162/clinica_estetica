@@ -1,7 +1,7 @@
 import React from 'react'
-import estilos from './OrdemServico.module.css'
+import estilos from './ClientesFichas.module.css'
 import useFetch from '../../Hooks/useFetch.js';
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, ORDEM_SERVICO_ALL_POST} from '../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, FORMULARIO_PESSOA_ALL_POST} from '../../api/endpoints/geral.js'
 import {FORMAT_DATA_PT_BR} from '../../functions/index.js'
 import {Col, Row } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
@@ -12,10 +12,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from '../Utils/Modal/index.js'
 import Load from '../Utils/Load/index.js'
 import {UserContex} from '../../Context/UserContex.js'
-import FormOrdemServico from './FormClientesFichas/index.js'
+import FormClientesFichas from './FormClientesFichas/index.js'
 import Cadastrar from './Cadastrar/index.js'
 import Atualizar from './Atualizar/index.js'
-import Iniciar from './Iniciar/index.js'
 import Cancelar from './Cancelar/index.js'
 import AtualizarCabecalho from './AtualizarCabecalho/index.js'
 import ContasReceber from '../ContasReceber/index.js'
@@ -25,21 +24,21 @@ import { Button } from 'bootstrap';
 import reactDom from 'react-dom';
 //
 
-const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idOrdemCriada, ...props})=>{
+const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idClienteFichaCriada, ...props})=>{
     const {data, error, request, loading} = useFetch();
-    const [estado, setOrdemServico] = React.useState([])
+    const [estado, setClientesFichas] = React.useState([])
     const [exemplos, setExemplos] = React.useState([])
     const [exemplosTitleTable, setExemplosTitleTable] = React.useState([])
-    const [showModalCriarOrdemServico, setShowModalCriarConstula] = React.useState(false)
-    const [consultaChoice, setOrdemServicoChoice] = React.useState(null);
-    const [atualizarOrdemServico, setAtualizarOrdemServico] = React.useState(false)   
-    const [cancelarOrdemServico, setCancelarOrdemServico] = React.useState(false)   
-    const [digitarOrdemServico, setDigitarOrdemServico] = React.useState(false)    
-    const [cadastrarOrdemServico, setCadastrarOrdemServico] = React.useState(false)
+    const [showModalCriarClientesFichas, setShowModalCriarConstula] = React.useState(false)
+    const [consultaChoice, setClientesFichasChoice] = React.useState(null);
+    const [atualizarClientesFichas, setAtualizarClientesFichas] = React.useState(false)   
+    const [cancelarClientesFichas, setCancelarClientesFichas] = React.useState(false)   
+    const [digitarClientesFichas, setDigitarClientesFichas] = React.useState(false)    
+    const [cadastrarClientesFichas, setCadastrarClientesFichas] = React.useState(false)
     const [visualizarContasReceber, setVisualizarContasReceber] = React.useState(false)  
-    const [atualizarCabecalhoOrdemServico, setAtualizarCabecalhoOrdemServico] = React.useState(false)  
-    const [finalizarOrdemServico, setFinalizarOrdemServico] = React.useState(false)  
-    const [incicarOrdemServico, setIniciarOrdemServico] = React.useState(false) 
+    const [atualizarCabecalhoClientesFichas, setAtualizarCabecalhoClientesFichas] = React.useState(false)  
+    const [finalizarClientesFichas, setFinalizarClientesFichas] = React.useState(false)  
+    const [incicarClientesFichas, setIniciarClientesFichas] = React.useState(false) 
     const [acao, setAcao] = React.useState(null)
     const [pessoa, setPessoa] = React.useState('')
     const [defaultFiltersCobReceber, setDefaultFiltersCobReceber] = React.useState({})
@@ -127,7 +126,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idOrdemCr
     {
         label:'Cadastrar',
         icon:<FontAwesomeIcon icon={faPlus} />,
-        props:{onClick:()=>setIniciarOrdemServico(true), className:'btn btn-sm mx-2 btn-secondary'}
+        props:{onClick:()=>setIniciarClientesFichas(true), className:'btn btn-sm mx-2 btn-secondary'}
     }
     ];
 
@@ -136,69 +135,38 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idOrdemCr
         switch(acao){
             case 'editar':
                 if(consultaChoice > 0){
-                    setAtualizarOrdemServico(true);
+                    setAtualizarClientesFichas(true);
                 }else{
-                    setAtualizarOrdemServico(false);
+                    setAtualizarClientesFichas(false);
                 }
                 break;
             case 'cancelar':
                 if(consultaChoice > 0){
-                    setCancelarOrdemServico(true);
+                    setCancelarClientesFichas(true);
                 }else{
-                    setCancelarOrdemServico(false);
+                    setCancelarClientesFichas(false);
                 }
                 break;
             case 'digitar':
                 if(consultaChoice > 0){
-                    setDigitarOrdemServico(true);
+                    setDigitarClientesFichas(true);
                 }else{
-                    setDigitarOrdemServico(false);
+                    setDigitarClientesFichas(false);
                 }
                 break;
             case 'visualizar':
                 if(consultaChoice > 0){
-                    setDigitarOrdemServico(true);
+                    setDigitarClientesFichas(true);
                 }else{
-                    setDigitarOrdemServico(false);
+                    setDigitarClientesFichas(false);
                 }
-                break;
-            case 'iniciar_procedimento':
-                if(consultaChoice > 0){
-                    setDigitarOrdemServico(true);
-                }else{
-                    setDigitarOrdemServico(false);
-                }
-                break;
-            
-            case 'finalizar_procedimento':
-                if(consultaChoice > 0){
-                    setDigitarOrdemServico(true);
-                }else{
-                    setDigitarOrdemServico(false);
-                }
-                break;        
-            case 'contas_receber':
-                if(consultaChoice > 0){
-                    setVisualizarContasReceber(true);
-                }else{
-                    setVisualizarContasReceber(false);
-                }
-                break;     
-            case 'editar_cabecalho':
-
-                if(consultaChoice > 0){
-                    setAtualizarCabecalhoOrdemServico(true);
-                }else{
-                    setAtualizarCabecalhoOrdemServico(false);
-                }
-
                 break;                 
             case 'finalizar':
 
                 if(consultaChoice > 0){
-                    setFinalizarOrdemServico(true);
+                    setFinalizarClientesFichas(true);
                 }else{
-                    setFinalizarOrdemServico(false);
+                    setFinalizarClientesFichas(false);
                 }
 
                 break;
@@ -212,90 +180,90 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idOrdemCr
 
     React.useEffect(()=>{
 
-        if(cadastrarOrdemServico == true){
+        if(cadastrarClientesFichas == true){
             setShowModalCriarConstula(true);
         }else{
             setShowModalCriarConstula(false);
         }
 
         
-    }, [cadastrarOrdemServico])
+    }, [cadastrarClientesFichas])
 
-    const atualizarOrdemServicoAction = (idOrdemServico)=>{
-        setOrdemServicoChoice(idOrdemServico)
+    const atualizarClientesFichasAction = (idClientesFichas)=>{
+        setClientesFichasChoice(idClientesFichas)
         setAcao('editar')
-        setAtualizarOrdemServico(true);
+        setAtualizarClientesFichas(true);
     }
 
-    const atualizarCabecalhoOrdemServicoAction = (idOrdemServico)=>{
-        setOrdemServicoChoice(idOrdemServico)
+    const atualizarCabecalhoClientesFichasAction = (idClientesFichas)=>{
+        setClientesFichasChoice(idClientesFichas)
         setAcao('editar_cabecalho')
-        setAtualizarCabecalhoOrdemServico(true);
+        setAtualizarCabecalhoClientesFichas(true);
         //AtualizarCabecalhoForm
     }
 
     
 
-    const visualizarContasReceberAction = (idOrdemServico)=>{
-        setOrdemServicoChoice(idOrdemServico)
+    const visualizarContasReceberAction = (idClientesFichas)=>{
+        setClientesFichasChoice(idClientesFichas)
         setAcao('contas_receber')
         setVisualizarContasReceber(true);
     }
 
-    const digitarOrdemServicoAction = (idOrdemServico)=>{
-        setOrdemServicoChoice(idOrdemServico)
+    const digitarClientesFichasAction = (idClientesFichas)=>{
+        setClientesFichasChoice(idClientesFichas)
         setAcao('digitar')
-        setAtualizarOrdemServico(true);
+        setAtualizarClientesFichas(true);
     }
 
-    const cancelarOrdemServicoAction = (idOrdemServico)=>{
-        setOrdemServicoChoice(idOrdemServico)
+    const cancelarClientesFichasAction = (idClientesFichas)=>{
+        setClientesFichasChoice(idClientesFichas)
         setAcao('cancelar')
-        setCancelarOrdemServico(true);
+        setCancelarClientesFichas(true);
     }
-    //cancelarOrdemServico, setCancelarOrdemServico
-    const novaOrdemServico = (idOrdemServico)=>{
-        setOrdemServicoChoice(idOrdemServico)
+    //cancelarClientesFichas, setCancelarClientesFichas
+    const novaClientesFichas = (idClientesFichas)=>{
+        setClientesFichasChoice(idClientesFichas)
         setAcao('consultar')
-        setAtualizarOrdemServico(true);
+        setAtualizarClientesFichas(true);
     }
 
-    const iniciarOrdemServico = (idOrdemServico)=>{
-        setIniciarOrdemServico(idOrdemServico)
+    const iniciarClientesFichas = (idClientesFichas)=>{
+        setIniciarClientesFichas(idClientesFichas)
         setAcao('iniciar')
-        setIniciarOrdemServico(true);
+        setIniciarClientesFichas(true);
     }
 
-    const finalizarOrdemServicoAction = (idOrdemServico)=>{
-        setOrdemServicoChoice(idOrdemServico)
+    const finalizarClientesFichasAction = (idClientesFichas)=>{
+        setClientesFichasChoice(idClientesFichas)
         setAcao('finalizar')
-        setFinalizarOrdemServico(true);
+        setFinalizarClientesFichas(true);
     }
 
 
-    //finalizarOrdemServico, setFinalizarOrdemServico
+    //finalizarClientesFichas, setFinalizarClientesFichas
     
 
     React.useEffect(()=>{
         /**
-         * consultaChoice, setOrdemServicoChoice] = React.useState(()=>{
-        return idOrdemCriada;
+         * consultaChoice, setClientesFichasChoice] = React.useState(()=>{
+        return idClienteFichaCriada;
     }
          */
         console.log('Ordem criada..............')
-        console.log(idOrdemCriada)
+        console.log(idClienteFichaCriada)
         console.log('Ordem criada..............')
-        idOrdemCriada && idOrdemCriada > 0 && atualizarOrdemServicoAction(idOrdemCriada)
+        idClienteFichaCriada && idClienteFichaCriada > 0 && atualizarClientesFichasAction(idClienteFichaCriada)
 
-    }, [idOrdemCriada])
+    }, [idClienteFichaCriada])
 
-    const gerarTableOrdemServico = ()=>{
+    const gerarTableClientesFichas = ()=>{
        
         let data = [];
-        let dataOrdemServico = estado.mensagem
-        if(dataOrdemServico && Array.isArray(dataOrdemServico) && dataOrdemServico.length > 0){
-            for(let i=0; !(i == dataOrdemServico.length); i++){
-                let atual = dataOrdemServico[i];
+        let dataClientesFichas = estado.mensagem
+        if(dataClientesFichas && Array.isArray(dataClientesFichas) && dataClientesFichas.length > 0){
+            for(let i=0; !(i == dataClientesFichas.length); i++){
+                let atual = dataClientesFichas[i];
                 if(atual){
                     let acoesArr = [];
                     let btnEditar                   = true;
@@ -334,32 +302,16 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idOrdemCr
                         btnEditar               = false;
                     }
 
-                    if(btnCotinuarDigitacao){
-                        acoesArr.push({acao:()=>atualizarOrdemServicoAction(atual.id), label:'Continuar digitação', propsOption:{}, propsLabel:{}})
-                    }
-
                     if(btnEditar){
-                        acoesArr.push({acao:()=>atualizarCabecalhoOrdemServicoAction(atual.id), label:'Editar', propsOption:{}, propsLabel:{}})
-                    }
-
-                    if(btnIniciarProcedimento){
-                        //acoesArr.push({acao:()=>atualizarOrdemServicoAction(atual.id), label:'Iniciar procedimento', propsOption:{}, propsLabel:{}})
-                    }
-
-                    if(btnFinalizar){
-                        acoesArr.push({acao:()=>finalizarOrdemServicoAction(atual.id), label:'Finalizar procedimento', propsOption:{}, propsLabel:{}})
-                    }
-
-                    if(btnVisualizarFinanceiro){
-                        acoesArr.push({acao:()=>{visualizarContasReceberAction(atual.id); setDefaultFiltersCobReceber({...atual, pessoa_name:atual?.name, referencia_id:atual?.id, referencia:'ordem_servicos'})}, label:'Conta a receber', propsOption:{}, propsLabel:{}})
+                        acoesArr.push({acao:()=>atualizarCabecalhoClientesFichasAction(atual.id), label:'Editar', propsOption:{}, propsLabel:{}})
                     }
 
                     if(btnVisualizar){
-                        acoesArr.push({acao:()=>atualizarOrdemServicoAction(atual.id), label:'Visualizar', propsOption:{}, propsLabel:{}})
+                        acoesArr.push({acao:()=>atualizarClientesFichasAction(atual.id), label:'Visualizar', propsOption:{}, propsLabel:{}})
                     }
 
                     if(btnCancelar){
-                        acoesArr.push({acao:()=>cancelarOrdemServicoAction(atual.id), label:'Cancelar', propsOption:{}, propsLabel:{}})
+                        acoesArr.push({acao:()=>cancelarClientesFichasAction(atual.id), label:'Cancelar', propsOption:{}, propsLabel:{}})
                     }
 
                     let line_style = {}
@@ -531,15 +483,15 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idOrdemCr
 
     const requestAllClientesFichas = async() =>{
        
-        const {url, options} = ORDEM_SERVICO_ALL_POST({'name_servico':pessoa}, getToken());
+        const {url, options} = FORMULARIO_PESSOA_ALL_POST({'name_pessoa':pessoa}, getToken());
 
 
         const {response, json} = await request(url, options);
-        console.log('All serviços here')
-        console.log({'name_servico':pessoa})
+        console.log('All serviços here=================================================')
+        console.log({'name_pessoa':pessoa})
         console.log(json)
         if(json){
-            setOrdemServico(json)
+            setClientesFichas(json)
         }
 
             
@@ -560,11 +512,11 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idOrdemCr
     }, [])
 
     React.useEffect(()=>{
-        setOrdemServico(dataEstado)
+        setClientesFichas(dataEstado)
     }, [dataEstado])
     
 
-    const rowsTableArr = gerarTableOrdemServico();    
+    const rowsTableArr = gerarTableClientesFichas();    
     const titulosTableArr = gerarTitleTable();
 
     return(
@@ -583,44 +535,22 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idOrdemCr
             </Row>
 
             {
-                cadastrarOrdemServico && <Cadastrar cadastrarOrdemServico={cadastrarOrdemServico} setCadastrarOrdemServico={setCadastrarOrdemServico} atualizarOrdemServico={atualizarOrdemServico} setAtualizarOrdemServico={setAtualizarOrdemServico}  idOrdemServico={consultaChoice} setIdOrdemServico={setOrdemServicoChoice} callback={callBack} />
+                cadastrarClientesFichas && <Cadastrar cadastrarClientesFichas={cadastrarClientesFichas} setCadastrarClientesFichas={setCadastrarClientesFichas} atualizarClientesFichas={atualizarClientesFichas} setAtualizarClientesFichas={setAtualizarClientesFichas}  idClientesFichas={consultaChoice} setIdClientesFichas={setClientesFichasChoice} callback={callBack} />
             }
             
             {
-                atualizarOrdemServico &&
-                <Atualizar atualizarOrdemServico={atualizarOrdemServico} setAtualizarOrdemServico={setAtualizarOrdemServico}  idOrdemServico={consultaChoice} setIdOrdemServico={setOrdemServicoChoice} callback={callBack} />
+                atualizarClientesFichas &&
+                <Atualizar atualizarClientesFichas={atualizarClientesFichas} setAtualizarClientesFichas={setAtualizarClientesFichas}  idClientesFichas={consultaChoice} setIdClientesFichas={setClientesFichasChoice} callback={callBack} />
             }
 
-            {
-                incicarOrdemServico &&
-                <Iniciar incicarOrdemServico={incicarOrdemServico} setIniciarOrdemServico={setIniciarOrdemServico} atualizarOrdemServico={atualizarOrdemServico} setAtualizarOrdemServico={setAtualizarOrdemServico}  idOrdemServico={consultaChoice} setIdOrdemServico={setOrdemServicoChoice} callback={callBack} />
-            }
 
-            {
-                digitarOrdemServico &&
-                <Atualizar digitarOrdemServico={digitarOrdemServico} setIniciarOrdemServico={setIniciarOrdemServico} atualizarOrdemServico={atualizarOrdemServico} setAtualizarOrdemServico={setAtualizarOrdemServico}  idOrdemServico={consultaChoice} setIdOrdemServico={setOrdemServicoChoice} callback={callBack} />
-            }
-
-            {
-                cancelarOrdemServico &&
-                <Cancelar cancelarOrdemServico={cancelarOrdemServico} setCancelarOrdemServico={setCancelarOrdemServico} atualizarOrdemServico={atualizarOrdemServico} setAtualizarOrdemServico={setAtualizarOrdemServico}  idOrdemServico={consultaChoice} setIdOrdemServico={setOrdemServicoChoice} callback={callBack} />
-            }
-
-            {
-                finalizarOrdemServico &&
-                <Finalizar finalizarOrdemServico={finalizarOrdemServico} setFinalizarOrdemServico={setFinalizarOrdemServico} atualizarOrdemServico={atualizarOrdemServico} setAtualizarOrdemServico={setAtualizarOrdemServico}  idOrdemServico={consultaChoice} setIdOrdemServico={setOrdemServicoChoice} callback={callBack} />
-            }
-
-            {
-                atualizarCabecalhoOrdemServico &&
-                <AtualizarCabecalho atualizarCabecalhoOrdemServico={atualizarCabecalhoOrdemServico} setAtualizarCabecalhoOrdemServico={setAtualizarCabecalhoOrdemServico} atualizarOrdemServico={atualizarOrdemServico} setAtualizarOrdemServico={setAtualizarOrdemServico}  idOrdemServico={consultaChoice} setIdOrdemServico={setOrdemServicoChoice} callback={callBack} />
-            }
+            
 
             {
                 visualizarContasReceber &&
                 <Modal noBtnCancelar={false} noBtnConcluir={true} handleConcluir={()=>null}  title={'Contas a receber'} size="lg" propsConcluir={{}} labelConcluir={''} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={consultaChoice} showHide={()=>{setVisualizarContasReceber(false);}}>
 					
-                    <ContasReceber defaultFilters={defaultFiltersCobReceber} visualizarContasReceber={visualizarContasReceber} setVisualizarContasReceber={setVisualizarContasReceber} atualizarOrdemServico={atualizarOrdemServico} setAtualizarOrdemServico={setAtualizarOrdemServico} idReferencia={consultaChoice} referencia={'ordem_servico'}  idOrdemServico={consultaChoice} setIdOrdemServico={setOrdemServicoChoice} callback={callBack} />
+                    <ContasReceber defaultFilters={defaultFiltersCobReceber} visualizarContasReceber={visualizarContasReceber} setVisualizarContasReceber={setVisualizarContasReceber} atualizarClientesFichas={atualizarClientesFichas} setAtualizarClientesFichas={setAtualizarClientesFichas} idReferencia={consultaChoice} referencia={'ordem_servico'}  idClientesFichas={consultaChoice} setIdClientesFichas={setClientesFichasChoice} callback={callBack} />
                 
 				</Modal>
             }

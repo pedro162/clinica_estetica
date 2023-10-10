@@ -1,7 +1,7 @@
 import React from 'react';
 import estilos from './ClientesFichas.module.css'
 import useFetch from '../../Hooks/useFetch.js';
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, ORDEM_SERVICO_ALL_POST} from '../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, FORMULARIO_PESSOA_ALL_POST} from '../../api/endpoints/geral.js'
 import {FORMAT_DATA_PT_BR} from '../../functions/index.js'
 import {Col, Row } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
@@ -209,11 +209,11 @@ const ClientesFichas = (props)=>{
 
     const requestAllClientesFichass = async() =>{
         let {filtros, detalhesFiltros} = montarFiltro();
-        const {url, options} = ORDEM_SERVICO_ALL_POST({...filtros}, getToken());
+        const {url, options} = FORMULARIO_PESSOA_ALL_POST({...filtros}, getToken());
 
 
         const {response, json} = await request(url, options);
-        console.log('All serviços here')
+        console.log('All serviços here==================================')
         console.log({'name_servico':pessoa})
         console.log(json)
         if(json){
@@ -282,7 +282,7 @@ const ClientesFichas = (props)=>{
                         loadingData={loading}
                         callBack={requestAllClientesFichass}
                         setMostarFiltros={setMostarFiltros}
-                        idOrdemCriada={consultaChoice}
+                        idClienteFichaCriada={consultaChoice}
                     />
                 </Col>
             </Row>

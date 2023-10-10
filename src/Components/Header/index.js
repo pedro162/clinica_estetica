@@ -63,8 +63,8 @@ const Header = (props)=>{
                         <NavDropdown title="Clientes" id="collasible-nav-dropdown">
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link style={{width:'100%', height:'100%'}} to="/clientes/painel" >Clientes</Link></NavDropdown.Item>
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link style={{width:'100%', height:'100%'}} to="/grupos/painel" >Grupos</Link></NavDropdown.Item>
-                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Another action</NavDropdown.Item>
-                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Something</NavDropdown.Item>
+                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} to="/consulta/index" >Consultas</Link></NavDropdown.Item>
+                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} to="/fichas/index" >Fichas</Link></NavDropdown.Item>
                             <NavDropdown.Divider />
                                 <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Separated link</NavDropdown.Item>
                         </NavDropdown>
@@ -97,11 +97,7 @@ const Header = (props)=>{
                             <NavDropdown.Divider />
                                 <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Separated link</NavDropdown.Item>
                         </NavDropdown>
-                        <NavDropdown title="Consulta" id="collasible-nav-dropdown">
-                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} to="/consulta/index" >Consultas</Link></NavDropdown.Item>
-                            <NavDropdown.Divider />
-                                <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Separated link</NavDropdown.Item>
-                        </NavDropdown>
+                       
                     </Nav>
                     <Nav>
                         <NavDropdown title="Usuário" id="collasible-nav-dropdown" drop="start">

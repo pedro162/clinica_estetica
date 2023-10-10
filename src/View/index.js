@@ -24,9 +24,10 @@ import ConstrutorFichaGrupo from '../Components/ConstrutorFichaGrupo/index.js'
 import ConstrutorFichaItem from '../Components/ConstrutorFichaItem/index.js'
 import Servico from '../Components/Servico/index.js'
 import OrdemServico from '../Components/OrdemServico/index.js'
+import ClientesFichas from '../Components/ClientesFichas/index.js'
 
 
 export {Home, NotFound, Login, ProtectedRoute, PainelInicial,Clientes,Grupos, ContasReceber, Caixa, Filial, Parametro, User, Pais,
      Estado, Cidade, Agenda, AgendaEvento, CategoriaEvento, Especialidade, Profissionais, Consulta, ConstrutorFicha, ConstrutorFichaGrupo,
-     ConstrutorFichaItem,Servico,OrdemServico
+     ConstrutorFichaItem,Servico,OrdemServico, ClientesFichas
 }
