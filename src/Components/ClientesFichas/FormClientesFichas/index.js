@@ -16,7 +16,7 @@ import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible.js'
 import FormClientesFichasItens from '../FormClientesFichasItens/index.js'
 
 
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, SERVICO_SAVE_POST, FORMULARIO_ALL_POST, FORMULARIO_GRUPO_ALL_POST, FORMULARIO_ONE_GET, SERVICO_ALL_POST, FORMULARIO_PESSOA_SAVE_POST,CLIENTES_ALL_POST, FILIAIS_ALL_POST, PROFISSIONAIS_ALL_POST} from '../../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, SERVICO_SAVE_POST, FORMULARIO_ALL_POST, FORMULARIO_GRUPO_ALL_POST, FORMULARIO_ONE_GET, FORMULARIO_PESSOA_UPDATE_POST, FORMULARIO_PESSOA_SAVE_POST,CLIENTES_ALL_POST, FILIAIS_ALL_POST, PROFISSIONAIS_ALL_POST} from '../../../api/endpoints/geral.js'
 
 
 const FormClientesFichas = ({dataClientesFichasChoice, setDataClientesFichas, setIdClientesFichas, idClientesFichas, showModalCriarClientesFichas, setShowModalCriarClientesFichas, callback, atualizarClientesFichas, setAtualizarClientesFichas, carregando})=>{
@@ -44,12 +44,16 @@ const FormClientesFichas = ({dataClientesFichasChoice, setDataClientesFichas, se
 		let name 	= target.getAttribute('name')
 		let value   = target.value;
 		let clone = dataRespostaFormulario;
-
+		console.log("======================target ================================")
+			console.log(target)
+			console.log(value)
+			console.log("======================target ================================")
 		if(String(tpFild).trim() == 'checkbox'){
 			if(target.checked){
-				clone[name]={'key':keyRef, 'value':1, name}
+				clone[name]={'key':keyRef, 'value':'Sim', name}
 			}else{
-				if(clone){
+				clone[name]={'key':keyRef, 'value':'Não', name}
+				/* if(clone){
 					let newClone = {}
 					for(let pro in clone){
 						let response = clone[pro][name] != name;
@@ -58,8 +62,13 @@ const FormClientesFichas = ({dataClientesFichasChoice, setDataClientesFichas, se
 						}
 					}
 					clone = newClone;
-				}
+				} */
 			}
+		}else if(String(tpFild).trim() == 'radio'){
+			console.log("======================value ================================")
+			console.log(value)
+			console.log("======================value ================================")
+			clone[name]={'key':keyRef, value, name}
 		}else{
 			clone[name]={'key':keyRef, value, name}
 		}
@@ -101,12 +110,22 @@ const FormClientesFichas = ({dataClientesFichasChoice, setDataClientesFichas, se
 		console.log(data)
 		console.log("=========================== data ===========================")
 
-		const {url, options} = FORMULARIO_PESSOA_SAVE_POST(data, getToken());
+		let dataEndPoint = {}
+		if(idClientesFichas && idClientesFichas > 0){
 
+			dataEndPoint = FORMULARIO_PESSOA_UPDATE_POST(idClientesFichas, data, getToken());
 
+		}else{
+
+			dataEndPoint = FORMULARIO_PESSOA_SAVE_POST(data, getToken());
+
+		}
+
+		const {url, options} = dataEndPoint;
 		const {response, json} = await request(url, options);
 		console.log('Save consulta here')
 		console.log(json)
+
 		if(json){
 			console.log('Response Save consulta here')
 			console.log(json)
@@ -204,6 +223,28 @@ const FormClientesFichas = ({dataClientesFichasChoice, setDataClientesFichas, se
     	return obj;
     }
 
+	const dataResostaFormClienteFichas = (data)=>{
+		let questionario = {}
+		if(data){
+			data.forEach((item, index, arr)=>{
+				//console.log('=============== item =-=============================')
+				//console.log(item)
+				let atual = item;
+				let keyRef = null
+				let {resposta, formitem} =atual
+				//resposta = Number(resposta)
+				if(formitem){
+					let {name} = formitem;
+					questionario[name]={'key':keyRef,value:resposta, name}
+				}
+			})
+			
+		}
+		
+		
+		return questionario;
+	}
+
 
 
     const preparaFilialToForm = ()=>{
@@ -238,7 +279,12 @@ const FormClientesFichas = ({dataClientesFichasChoice, setDataClientesFichas, se
 
 		if(dataClientesFichasChoice && dataClientesFichasChoice.hasOwnProperty('mensagem')){
 			let data = dataClientesFichasChoice.mensagem;
-			setDataitens(data?.item)
+			if(data?.item){
+				setDataitens(data?.item)
+			}else if(data?.resposta){
+				setDataitens(data?.resposta)
+			}
+			
 		}
 		
 	}, [])
@@ -286,12 +332,31 @@ const FormClientesFichas = ({dataClientesFichasChoice, setDataClientesFichas, se
 
 	React.useEffect(()=>{
 		if(idFormularioForm > 0){//''
-			requestAllFormulariosGrupos({grupo_id:idFormularioForm})
+			requestAllFormulariosGrupos({formulario_id:idFormularioForm})
 		}else{
 			setDataFormulariosGrupos([])
 		}
 
 	}, [idFormularioForm])
+
+	React.useEffect(()=>{
+		if(idClientesFichas > 0){
+			let data = dataClientesFichasChoice?.mensagem;
+			
+			requestAllFormulariosGrupos({formulario_id:data?.formulario?.id})
+			
+			let respostas = dataResostaFormClienteFichas(data?.resposta)
+
+			console.log("========================================== respostas ===========================")
+			console.log(respostas)
+			console.log("========================================== respostas ===========================")
+
+			setDataRespostaFormulario({...respostas})
+			
+		}else{
+			setDataFormulariosGrupos([])
+		}
+	}, [idClientesFichas])
 
     console.log('----------------------------- data pais ----------------------------------')
     console.log(dataToFormClientesFichas())
@@ -360,7 +425,7 @@ const FormClientesFichas = ({dataClientesFichasChoice, setDataClientesFichas, se
                     )=>(
 						
 						<Modal
-							bottomButtons={[{acao:()=>{setIsOramento(true); handleSubmit();}, label:'Orçamento', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faCheck} /> }]}
+							bottomButtons={[]}
 							handleConcluir={()=>{handleSubmit(); }}
 							title={ (atualizarClientesFichas == true ? 'Atualizar' : 'Cadastrar')+' Ficha'}
 							size="lg"

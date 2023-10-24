@@ -313,17 +313,49 @@ const FormClientesFichasItens = ({setAddionarResposta, dataRespostaFormulario,va
 										let hasLabel 				= item.hasOwnProperty('label') && String(item.label).length > 0 					? true: false 
 										let contentLabel 			= item.hasOwnProperty('label') 					? item.label: '' 
 										let atributsFormLabel 		= item.hasOwnProperty('atributsFormLabel') 		? item.atributsFormLabel: {}
+										let optionsFields			= item.hasOwnProperty('options') 				? item.options: ''; 
 										let atributsContainer 		= {className:'mb-3', xs:"12", sm:"12", md:"6"}
 										let valorAtual 				= null; 
 										let hasValueArmazenado		= dataRespostaFormulario && dataRespostaFormulario.hasOwnProperty(`${name}`)
+										let optionsFieldsArr 		= []
 										
+										//----Tento encontrar as opções de valores para esse campo
+										if(String(optionsFields).indexOf(';') > -1){
+											optionsFieldsArr = String(optionsFields).split(";")
+
+										}else if(String(optionsFields).indexOf(',') > -1){
+											optionsFieldsArr = String(optionsFields).split(",")
+										}
+
 										if(hasValueArmazenado){
 											let {value} = dataRespostaFormulario[name];
 											valorAtual = value;
 										}
-
+										//alert(valorAtual)
 										let atributsFormControl 	= {"handleChange":setAddionarResposta, value:valorAtual/* values[name] */, type, name}
 										let options 				= []
+
+										if(Array.isArray(optionsFieldsArr) && optionsFieldsArr.length > 0){
+											for(let iop = 0; iop < optionsFieldsArr.length; iop++){
+												let valOptAtual = optionsFieldsArr[iop]
+												options.push(
+													{
+														hasLabel: true,
+														contentLabel:valOptAtual,
+														atributsFormLabel:{},
+														atributsFormControl:{'type':'radio', value:valOptAtual, size:"sm",'checked':(valOptAtual == valorAtual),'name':name,handleChange:setAddionarResposta},
+													},
+												)
+												if(type.trim() == 'checkbox'){
+													if(['Sim', 1, true, 'S', 's'].indexOf(valorAtual) > -1 && valOptAtual == valorAtual){
+														atributsFormControl.checked = (valOptAtual == valorAtual)
+													}
+												}
+												
+											}
+											
+										}
+
 										//handleChange, handleBlur
 										let dados = {
 											key:index,
@@ -351,7 +383,7 @@ const FormClientesFichasItens = ({setAddionarResposta, dataRespostaFormulario,va
 												return (<Col xs="12" sm="12" md="6" {...atributsContainer} ><FormControlSelect key={index} data={dados} /></Col>)
 											break;
 											case 'radio':
-												options = [
+												/* options = [
 													{
 														hasLabel: true,
 														contentLabel:'Teste Radio 01',
@@ -364,13 +396,14 @@ const FormClientesFichasItens = ({setAddionarResposta, dataRespostaFormulario,va
 														atributsFormLabel:{},
 														atributsFormControl:{'type':'radio', value:'12', size:"sm",'checked':true,'name':'nome',onChange:()=>alert('teste'),    onBlur:()=>alert('teste')},
 													}
-												]
+												] */
 												
 												if(
 													Array.isArray(options) && options.length > 0
 												){
 													return(<Col {...atributsContainer}>
 														<Row>
+															<Col  xs="12" sm="12" md="8">{contentLabel}</Col>
 															{
 																options.map((itemOption, indexOption, arrOption)=>{
 																	let hasLabelOption				= itemOption.hasOwnProperty('hasLabel') 				? itemOption.hasLabel: false 
@@ -380,7 +413,11 @@ const FormClientesFichasItens = ({setAddionarResposta, dataRespostaFormulario,va
 																	let atributsFormControlOption 	= itemOption.hasOwnProperty('atributsFormControl') 		? itemOption.atributsFormControl: {}
 
 																	let setValueRadio 				= atributsFormControlOption.hasOwnProperty('handleChange') 	? atributsFormControlOption.handleChange : null; 
-																	return (<Col xs="12" sm="12" md="6"><Radio setValue={setValueRadio} key={indexOption} hasLabel={hasLabelOption}  propsLabel={atributsFormLabelOption} label={contentLabelOption} {...atributsFormControlOption} /></Col>)
+																	
+																	console.log("=============================== setValueRadio ==================================")
+																	console.log(atributsFormControlOption)
+																	console.log("=============================== setValueRadio ==================================")
+																	return (<Col xs="12" sm="12" md="2"><Radio setValue={setValueRadio} key={indexOption} hasLabel={hasLabelOption}  propsLabel={atributsFormLabelOption} label={contentLabelOption}  {...atributsFormControlOption} /></Col>)
 
 																})
 															}

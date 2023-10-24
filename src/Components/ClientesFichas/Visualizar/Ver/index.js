@@ -13,7 +13,7 @@ import Load from '../../../Utils/Load/index.js'
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CLIENTES_SAVE_POST, CLIENTES_UPDATE_POST, CLIENTES_ONE_GET, CLIENTES_FICHA_MAIS_RECENTE_ONE_GET} from '../../../../api/endpoints/geral.js'
 
 
-const FormCliente = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, showModalCriarCliente, setShowModalCriarCliente, callback, atualizarCadastro, setAtualizarCadastro, carregando})=>{
+const FormCliente = ({dataFicha, setIdFicha, idClientesFichas, dataCliente, setVisualizarFicha, showModalCriarFicha, setShowModalCriarFicha, callback, atualizarCadastro, setAtualizarCadastro, carregando})=>{
     
     const [carregandoDadosChoice, setCarregandoDadosChoice] = React.useState(false)
 	const [dataUltimaFichaCliente, setDataUltimaFichaCliente] = React.useState([])
@@ -26,7 +26,7 @@ const FormCliente = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, sho
 	const userLogar =  ()=>{
         console.log('Aqui............')
     }
-
+	//alert('Poxa')
     const sendData = async ({
     		nome,
 			sobrenome,
@@ -76,7 +76,7 @@ const FormCliente = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, sho
     	}
 
         if(atualizarCadastro == true){
-            const {url, options} = CLIENTES_UPDATE_POST(idCliente, data, getToken());
+            const {url, options} = CLIENTES_UPDATE_POST(idClientesFichas, data, getToken());
 
 
             const {response, json} = await request(url, options);
@@ -87,9 +87,9 @@ const FormCliente = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, sho
                 console.log(json)
                 
                 callback();
-                setShowModalCriarCliente();
+                setShowModalCriarFicha();
                 setAtualizarCadastro(false);
-                setIdcliente(null);
+                setIdFicha(null);
             }
 
         }else{
@@ -106,7 +106,7 @@ const FormCliente = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, sho
             	console.log(json)
             	
             	callback();
-            	setShowModalCriarCliente();
+            	setShowModalCriarFicha();
                 setAtualizarCadastro(false);
             }
 
@@ -116,7 +116,7 @@ const FormCliente = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, sho
 	React.useEffect(()=>{
 		const getLastFichaCliente = async ()=>{
 			
-			const {url, options} = CLIENTES_FICHA_MAIS_RECENTE_ONE_GET(idCliente, getToken());
+			const {url, options} = CLIENTES_FICHA_MAIS_RECENTE_ONE_GET(idClientesFichas, getToken());
 
 
             const {response, json} = await fetchToFichaCliente.request(url, options);
@@ -133,15 +133,15 @@ const FormCliente = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, sho
 			}
 		}
 
-		getLastFichaCliente()
+		//getLastFichaCliente()
 
-	}, [idCliente])
+	}, [idClientesFichas])
 
 
     const dataToFormCliente = ()=>{
     	let obj = {nome:'', sobrenome:'', documento:'', doc_complementar:'', cep:'', pais:'', uf:'',logradouro:'',complemento:'', numero:'', telefone:'', celular:'', tp_telefone:'', tp_celular:'', tp_email:'', nascimento_fundacao:'', groupo_id:'', bairro:''}
-    	if(dataClienteChoice && dataClienteChoice.hasOwnProperty('mensagem')){
-    		let data = dataClienteChoice.mensagem;
+    	if(dataCliente){
+    		let data = dataCliente;
            
     		if(data.hasOwnProperty('name')){
                 obj.nome = data.name;
@@ -238,50 +238,12 @@ const FormCliente = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, sho
     	//console.log(obj)
     	return obj;
     }
-    
-   /* if(atualizarCadastro){
-        return(
-            <Modal  handleConcluir={()=>null}  title={'Cadastrar Cliente ..'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarCliente} showHide={()=>{setShowModalCriarCliente();}}>
-                {carregandoDadosChoice && <Load/>}
-                <Atualizar
-                    idCliente={idCliente} 
-                    setDataCliente={setDataClienteChoice}
-                    setCarregandoDadosCliente={setCarregandoDadosChoice}
-                />
-             </Modal>
-        )
-    }
-   */
-    const preparaGrupoToForm = ()=>{
-        let grupoFormat = [{label:'Selecione...',valor:'',props:{selected:'selected', disabled:'disabled'}}]
-        if(dataGrupo && dataGrupo.hasOwnProperty('registro') ){
-            
-            if(Array.isArray(dataGrupo.registro) && dataGrupo.registro.length > 0){
-
-
-                for(let i=0; !(i==dataGrupo.registro.length); i++){
-                    let atual = dataGrupo.registro[i];
-                    let name    = atual.hasOwnProperty('name')      ? atual.name : '';
-                    let id      = atual.hasOwnProperty('id')        ? atual.id : '';
-                    grupoFormat.push(
-                        {label:name,valor:id,props:{}}
-                    )
-                }
-
-            }
-            
-        }
-
-        console.log('-------------grupo agui----------------------')
-        console.log(dataGrupo)
-        console.log('-------------grupo agui----------------------')
-
-        return grupoFormat;
-    }
-    const dataFormAnswerHeader = dataUltimaFichaCliente?.formulario
-	const dataFormAnswerFields = dataUltimaFichaCliente?.formulario?.resposta
-    const dataFicha = dataToFormCliente();
-
+	console.log('Ficha aqui')
+	console.log(dataFicha)
+    const dataFormAnswerHeader = dataFicha?.formulario
+	const dataFormAnswerFields = dataFicha?.resposta
+    //const dataFicha = dataToFormCliente();
+	//alert('aqui')
 	return(
 
 		<>
@@ -358,6 +320,9 @@ const FormCliente = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, sho
 										{dataFormAnswerFields && Array.isArray(dataFormAnswerFields) && dataFormAnswerFields.length > 0 && dataFormAnswerFields.map((item, index, arr)=>{
 											let {id, formitem, observacao, resposta } = item
 											let {label, type, options} = formitem
+											console.log('aqui------------------------------')
+											console.log(formitem)
+											console.log('aqui------------------------------')
 											let optionsArr = []
 											if(type == 'checkbox'){
 												optionsArr = options.split(',')

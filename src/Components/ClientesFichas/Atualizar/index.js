@@ -1,6 +1,6 @@
 import React from 'react';
 import useFetch from '../../../Hooks/useFetch.js';
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, ORDEM_SERVICO_ONE_GET, GRUPOS_ALL_POST} from '../../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, FORMULARIO_PESSOA_ONE_GET, GRUPOS_ALL_POST} from '../../../api/endpoints/geral.js'
 import {UserContex} from '../../../Context/UserContex.js'
 import AtualizarForm from '../FormClientesFichas/index.js'
 import Pesquisar from '../Pesquisar/index.js'
@@ -9,7 +9,7 @@ import Load from '../../Utils/Load/index.js'
 import {Col, Row} from 'react-bootstrap';
 import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible'
 
-const Atualizar = ({idClientesFichas, setIdClientesFichas, callback, atualizarClientesFichas, setAtualizarClientesFichas})=>{
+const Atualizar = ({idClientesFichas, setIdClientesFichas, callback, setVisualizarFicha, atualizarClientesFichas, setAtualizarClientesFichas})=>{
 
     
     const [showModalAtualizarClientesFichas, setShowModalAtualizarClientesFichas] = React.useState(false)
@@ -23,7 +23,7 @@ const Atualizar = ({idClientesFichas, setIdClientesFichas, callback, atualizarCl
 		
 		const getClientesFichas = async ()=>{
 			if(idClientesFichas > 0){
-				const {url, options} = ORDEM_SERVICO_ONE_GET(idClientesFichas, getToken());
+				const {url, options} = FORMULARIO_PESSOA_ONE_GET(idClientesFichas, getToken());
 				const {response, json} = await request(url, options);
 				if(json){
 					
@@ -54,7 +54,7 @@ const Atualizar = ({idClientesFichas, setIdClientesFichas, callback, atualizarCl
 			}
 
 			{dataClientesFichas && 
-				<AtualizarForm setDataClientesFichas={setDataClientesFichas} setIdClientesFichas={setIdClientesFichas} idClientesFichas={idClientesFichas} carregando={false} dataClientesFichasChoice={dataClientesFichas} setAtualizarClientesFichas={setAtualizarClientesFichas} atualizarClientesFichas={atualizarClientesFichas} showModalCriarClientesFichas={showModalAtualizarClientesFichas} setShowModalCriarClientesFichas={setShowModalAtualizarClientesFichas} callback={callback} />
+				<AtualizarForm setDataClientesFichas={setDataClientesFichas} setIdClientesFichas={setIdClientesFichas} idClientesFichas={idClientesFichas} carregando={false} dataClientesFichasChoice={dataClientesFichas} setAtualizarClientesFichas={setAtualizarClientesFichas} atualizarClientesFichas={atualizarClientesFichas} showModalCriarClientesFichas={showModalAtualizarClientesFichas} setShowModalCriarClientesFichas={setShowModalAtualizarClientesFichas} setVisualizarFicha={setVisualizarFicha} callback={callback} />
 			}
 		</>
 	)

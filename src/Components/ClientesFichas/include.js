@@ -19,6 +19,7 @@ import Cancelar from './Cancelar/index.js'
 import AtualizarCabecalho from './AtualizarCabecalho/index.js'
 import ContasReceber from '../ContasReceber/index.js'
 import Finalizar from './Finalizar/index.js'
+import Visualizar from './Visualizar/index.js'
 import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../functions/index.js'
 import { Button } from 'bootstrap';
 import reactDom from 'react-dom';
@@ -35,7 +36,8 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idCliente
     const [cancelarClientesFichas, setCancelarClientesFichas] = React.useState(false)   
     const [digitarClientesFichas, setDigitarClientesFichas] = React.useState(false)    
     const [cadastrarClientesFichas, setCadastrarClientesFichas] = React.useState(false)
-    const [visualizarContasReceber, setVisualizarContasReceber] = React.useState(false)  
+    const [visualizarContasReceber, setVisualizarContasReceber] = React.useState(false) 
+    const [visualizarFicha, setVisualizarFicha] = React.useState(false)  
     const [atualizarCabecalhoClientesFichas, setAtualizarCabecalhoClientesFichas] = React.useState(false)  
     const [finalizarClientesFichas, setFinalizarClientesFichas] = React.useState(false)  
     const [incicarClientesFichas, setIniciarClientesFichas] = React.useState(false) 
@@ -189,6 +191,13 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idCliente
         
     }, [cadastrarClientesFichas])
 
+    const visuatualizarClientesFichasAction = (idClientesFichas)=>{
+        setClientesFichasChoice(idClientesFichas)
+        setAcao('visualizar')
+        setVisualizarFicha(true);
+        
+    }
+
     const atualizarClientesFichasAction = (idClientesFichas)=>{
         setClientesFichasChoice(idClientesFichas)
         setAcao('editar')
@@ -303,11 +312,11 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idCliente
                     }
 
                     if(btnEditar){
-                        acoesArr.push({acao:()=>atualizarCabecalhoClientesFichasAction(atual.id), label:'Editar', propsOption:{}, propsLabel:{}})
+                        acoesArr.push({acao:()=>atualizarClientesFichasAction(atual.id), label:'Editar', propsOption:{}, propsLabel:{}})
                     }
 
                     if(btnVisualizar){
-                        acoesArr.push({acao:()=>atualizarClientesFichasAction(atual.id), label:'Visualizar', propsOption:{}, propsLabel:{}})
+                        acoesArr.push({acao:()=>visuatualizarClientesFichasAction(atual.id), label:'Visualizar', propsOption:{}, propsLabel:{}})
                     }
 
                     if(btnCancelar){
@@ -352,7 +361,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idCliente
                                 },
                                 {
 
-                                    label:atual.type,
+                                    label:atual.name_form,
                                     propsRow:{}
                                 },
                                 {
@@ -362,39 +371,12 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idCliente
                                 },
                                 {
 
-                                    label:atual.name_rca,
+                                    label:atual.sigiloso == 'yes' ? 'Sim':'Não',
                                     propsRow:{}
                                 },
                                 {
 
                                     label:atual.observacao,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:FORMAT_MONEY(atual?.vr_final),
-                                    propsRow:{},
-									toSum:1,
-									isCoin:1,
-                                },
-                                {
-
-                                    label:atual.is_faturado == 'yes' ? 'Sim' : 'Não',
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:FORMAT_DATA_PT_BR(atual.td_faturamento),
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:FORMAT_DATA_PT_BR(atual.td_cancelamento),
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:FORMAT_DATA_PT_BR(atual.td_conclusao),
                                     propsRow:{}
                                 },
                                 {
@@ -442,7 +424,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idCliente
                 props:{}
             },
             {
-                label:'Vendedor',
+                label:'Sigiloso',
                 props:{}
             },
             {
@@ -450,27 +432,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idCliente
                 props:{}
             },
             {
-                label:'Valor',
-                props:{}
-            },
-            {
-                label:'Faturado',
-                props:{}
-            },
-            {
-                label:'Faturado em',
-                props:{}
-            },
-            {
-                label:'Cancelado em',
-                props:{}
-            },
-            {
-                label:'Concluído em',
-                props:{}
-            },
-            {
-                label:'Iniciado em',
+                label:'Criado em',
                 props:{}
             }
         ]
@@ -541,6 +503,11 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idCliente
             {
                 atualizarClientesFichas &&
                 <Atualizar atualizarClientesFichas={atualizarClientesFichas} setAtualizarClientesFichas={setAtualizarClientesFichas}  idClientesFichas={consultaChoice} setIdClientesFichas={setClientesFichasChoice} callback={callBack} />
+            }
+            
+            {
+                visualizarFicha &&
+                <Visualizar visualizarFicha={visualizarFicha} setVisualizarFicha={setVisualizarFicha}  idClientesFichas={consultaChoice} setIdClientesFichas={setClientesFichasChoice} callback={callBack} />
             }
 
 

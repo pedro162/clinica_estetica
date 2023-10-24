@@ -35,8 +35,11 @@ const ClientesFichas = (props)=>{
     const [acao, setAcao] = React.useState(null)
     const [pessoa, setPessoa] = React.useState('')
     const [ordenacao, setOrdenacao] = React.useState('')
+    const [tipo, setTipo] = React.useState('')
+    const [sigiloso, setSigiloso] = React.useState('')
+    const [status, setStatus] = React.useState('')
 
-
+    
     const {getToken} = React.useContext(UserContex);
 
     const alerta = (target)=>{
@@ -53,6 +56,24 @@ const ClientesFichas = (props)=>{
         setOrdenacao(target.value)
     }
 
+    const setTipoFiltro = ({target})=>{
+        
+        setTipo(target.value)
+    }
+
+    const setSigilosoFiltro = ({target})=>{
+        
+        setSigiloso(target.value)
+    }
+
+
+    const setStatusFiltro = ({target})=>{
+        
+        setStatus(target.value)
+    }
+
+    
+    
     const filtersArr = [
         {
             type:'text',
@@ -65,23 +86,23 @@ const ClientesFichas = (props)=>{
 
         },
         {
-            type:'text',
-            options:[], 
+            type:'select',
+            options:[{'label':'Selecione...', 'value':''},{'label':'Sim', 'value':'yes'},{'label':'Não', 'value':'no'}], 
             hasLabel: true,
-            contentLabel:'Contato',
+            contentLabel:'Sigiloso',
             atributsFormLabel:{},
             atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name_atendido':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
+            atributsFormControl:{'type':'text', size:"sm",'sigiloso':sigiloso,onChange:setSigilosoFiltro,    onBlur:setSigilosoFiltro},
 
         },
         {
-            type:'text',
-            options:[], 
+            type:'select',
+            options:[{'label':'Selecione...', 'value':''},{'label':'Aberta', 'value':'aberto'},{'label':'Cancelada', 'value':'cancelado'},{'label':'Finalizado', 'value':'finalizado'}],
             hasLabel: true,
             contentLabel:'Status',
             atributsFormLabel:{},
             atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'status':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
+            atributsFormControl:{'type':'text', size:"sm",'status':status,onChange:setStatusFiltro,    onBlur:setStatusFiltro},
 
         },
         {
@@ -91,7 +112,7 @@ const ClientesFichas = (props)=>{
             contentLabel:'Tipo',
             atributsFormLabel:{},
             atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'tipo':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
+            atributsFormControl:{'type':'text', size:"sm",'status':tipo,onChange:setTipoFiltro,    onBlur:setTipoFiltro},
 
         },
         {
@@ -200,6 +221,33 @@ const ClientesFichas = (props)=>{
                 label:'Ordenação',
                 value:ordenacao,
                 resetFilter:()=>setOrdenacao(''),
+            };
+        }
+
+        if(tipo){
+            filtros['name_form'] = tipo;
+            detalhesFiltros['name_form'] = {
+                label:'Tipo',
+                value:tipo,
+                resetFilter:()=>setTipo(''),
+            };
+        }
+
+        if(sigiloso){
+            filtros['sigiloso'] = sigiloso;
+            detalhesFiltros['sigiloso'] = {
+                label:'Sigiloso',
+                value:sigiloso,
+                resetFilter:()=>setSigiloso(''),
+            };
+        }
+
+        if(status){
+            filtros['status'] = status;
+            detalhesFiltros['status'] = {
+                label:'Status',
+                value:status,
+                resetFilter:()=>setSigiloso(''),
             };
         }
         
