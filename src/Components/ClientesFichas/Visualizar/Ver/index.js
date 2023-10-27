@@ -10,6 +10,7 @@ import Modal from '../../../Utils/Modal/index.js'
 import useFetch from '../../../../Hooks/useFetch.js';
 import {UserContex} from '../../../../Context/UserContex.js'
 import Load from '../../../Utils/Load/index.js'
+import {FORMAT_DATA_PT_BR} from '../../../../functions/index.js'
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CLIENTES_SAVE_POST, CLIENTES_UPDATE_POST, CLIENTES_ONE_GET, CLIENTES_FICHA_MAIS_RECENTE_ONE_GET} from '../../../../api/endpoints/geral.js'
 
 
@@ -139,7 +140,7 @@ const FormCliente = ({dataFicha, setIdFicha, idClientesFichas, dataCliente, setV
 
 
     const dataToFormCliente = ()=>{
-    	let obj = {nome:'', sobrenome:'', documento:'', doc_complementar:'', cep:'', pais:'', uf:'',logradouro:'',complemento:'', numero:'', telefone:'', celular:'', tp_telefone:'', tp_celular:'', tp_email:'', nascimento_fundacao:'', groupo_id:'', bairro:''}
+    	let obj = {nome:'', sobrenome:'', documento:'', doc_complementar:'', cep:'', pais:'', uf:'',logradouro:'',complemento:'', numero:'', telefone:'', celular:'', tp_telefone:'', tp_celular:'', tp_email:'', nascimento_fundacao:'', groupo_id:'', bairro:'', sexo:''}
     	if(dataCliente){
     		let data = dataCliente;
            
@@ -171,6 +172,9 @@ const FormCliente = ({dataFicha, setIdFicha, idClientesFichas, dataCliente, setV
 
             if(! data.hasOwnProperty('tp_email')){
                 obj.tp_email = 'principal';
+            }
+			if(! data.hasOwnProperty('sexo')){
+                obj.sexo = 'sexo';
             }
 
     		if(data.hasOwnProperty('logradouro')){
@@ -243,6 +247,7 @@ const FormCliente = ({dataFicha, setIdFicha, idClientesFichas, dataCliente, setV
     const dataFormAnswerHeader = dataFicha?.formulario
 	const dataFormAnswerFields = dataFicha?.resposta
     //const dataFicha = dataToFormCliente();
+	//const dataPessoa = dataToFormCliente();
 	//alert('aqui')
 	return(
 
@@ -269,28 +274,43 @@ const FormCliente = ({dataFicha, setIdFicha, idClientesFichas, dataCliente, setV
 										<Table  hover size="sm">
 											<tbody>
 												<tr>
-													<th>Código</th>
-													<td colSpan={2}>{dataFicha?.id}</td>
-												</tr>
-                                                <tr>
-													<th>Sexo</th>
-													<td>{dataFicha?.hr_inicio}</td>
-													<th>DT. nascimento</th>
-													<td>{dataFicha?.dt_inicio}</td>
+													<th>Código:</th>
+													<td >{dataFicha?.id}</td>
+													<th>Status:</th>
+													<td >{dataFicha?.status}</td>
 												</tr>
 												<tr>
-													<th>Telefone</th>
-													<td>{dataFicha?.tipo}</td>
-													<th>Email</th>
-													<td>{dataFicha?.name_profissional}</td>
+													<th>Código cliente:</th>
+													<td >{dataCliente?.id}</td>
+													<th>Cliente:</th>
+													<td >{dataCliente?.name}</td>
+												</tr>
+                                                <tr>
+													<th>Sexo:</th>
+													<td>{dataCliente?.sexo}</td>
+													<th>DT. nascimento:</th>
+													<td>{FORMAT_DATA_PT_BR(dataCliente?.nascimento_fundacao)}</td>
+												</tr>
+												<tr>
+													<th>Telefone:</th>
+													<td>{dataCliente?.telefone}</td>
+													<th>Email:</th>
+													<td>{dataCliente?.email}</td>
+												</tr>
+                                                <tr>
+                                                    <th>Endereço:</th>
+                                                    <td>{dataCliente?.logradouro[0]?.logradouro}</td>
+													<th>Cep:</th>
+													<td>{dataCliente?.logradouro[0]?.cep}</td>
+                                                </tr>
+
+												<tr>
+													<th>Cidade:</th>
+													<td>{dataCliente?.logradouro[0]?.cidade}</td>
+													<th>UF:</th>
+													<td>{dataCliente?.logradouro[0]?.estado_logradouro?.sigla}</td>
 												</tr>
 
-                                                <tr>
-                                                    <th>Endereço</th>
-                                                    <td>{dataFicha?.tipo}</td>
-													<th>Cep</th>
-													<td>{dataFicha?.name_profissional}</td>
-                                                </tr>
 												
 											</tbody>
 										</Table>
