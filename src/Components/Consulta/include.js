@@ -16,10 +16,9 @@ import FormConsulta from './FormConsulta/index.js'
 import Cadastrar from './Cadastrar/index.js'
 import Atualizar from './Atualizar/index.js'
 import Cancelar from './Cancelar/index.js'
-import Include from './include';
 
 
-const Consulta = (props)=>{
+const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idConsultaCriada, ...props})=>{
 
     const {data, error, request, loading} = useFetch();
     const [estado, setConsulta] = React.useState([])
@@ -30,7 +29,6 @@ const Consulta = (props)=>{
     const [atualizarConsulta, setAtualizarConsulta] = React.useState(false)   
     const [cancelarConsulta, setCancelarConsulta] = React.useState(false)    
     const [cadastrarConsulta, setCadastrarConsulta] = React.useState(false) 
-    const [mostarFiltros, setMostarFiltros] = React.useState(false) 
     const [acao, setAcao] = React.useState(null)
     const [pessoa, setPessoa] = React.useState('')
 
@@ -45,81 +43,6 @@ const Consulta = (props)=>{
         
         setPessoa(target.value)
     }
-
-    const filtersArr = [
-        {
-            type:'text',
-            options:[], 
-            hasLabel: true,
-            contentLabel:'Pessoa',
-            atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
-
-        },
-        {
-            type:'text',
-            options:[], 
-            hasLabel: true,
-            contentLabel:'Contato',
-            atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name_atendido':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
-
-        },
-        {
-            type:'text',
-            options:[], 
-            hasLabel: true,
-            contentLabel:'Status',
-            atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'status':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
-
-        },
-        {
-            type:'text',
-            options:[], 
-            hasLabel: true,
-            contentLabel:'Tipo',
-            atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'tipo':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
-
-        },
-        {
-            type:'text',
-            options:[], 
-            hasLabel: true,
-            contentLabel:'Dt. inicio',
-            atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'date', size:"sm",'dt_inico':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
-
-        },
-        {
-            type:'text',
-            options:[], 
-            hasLabel: true,
-            contentLabel:'Dt. fim',
-            atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'date', size:"sm",'dt_fim':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
-
-        },
-    ]
-
-    const acoesBottomCard=[{
-        label:'Pesquisar',
-        icon:<FontAwesomeIcon icon={faSearch} />,
-        props:{onClick:()=>requestAllConsultas(), className:'btn btn-sm botao_success'}
-    },
-    {
-        label:'Cadastrar',
-        icon:<FontAwesomeIcon icon={faPlus} />,
-        props:{onClick:()=>setCadastrarConsulta(true), className:'btn btn-sm mx-2 btn-secondary'}
-    }
-    ];
 
 
     React.useEffect(()=>{
@@ -404,95 +327,23 @@ const Consulta = (props)=>{
     }
 
     React.useEffect(()=>{
-
-        const requestAllConsultasEffect = async() =>{
-       
-           await requestAllConsultas();
-
-            
-        }
-
-        requestAllConsultasEffect();
-
-        
-    }, [])
+        setConsulta(dataEstado)
+    }, [dataEstado])
+    
 
     const rowsTableArr = gerarTableConsulta();    
     const titulosTableArr = gerarTitleTable();
-
-    /*
-    
-        <Breadcrumbs
-                items={[
-                        {
-                            props:{},
-                            label:'Início'
-                        },
-                        {
-                            props:{},
-                            label:'Ordem de servico'
-                        }
-                    ]}
-            />
-            <Row>
-                {mostarFiltros && 
-                    (
-                        <Col  xs="12" sm="12" md="3">
-                            <Filter
-                                filtersArr={filtersArr}
-                                actionsArr={acoesBottomCard}
-                            />
-                        </Col>
-                    )
-                }
-                
-                <Col  xs="12" sm="12" md={mostarFiltros ? "9":"12"}>
-                    <Include
-                        dataEstado={estado}
-                        loadingData={loading}
-                        callBack={requestAllClientesFichass}
-                        setMostarFiltros={setMostarFiltros}
-                        idConsultaCriada={consultaChoice}
-                    />
-                </Col>
-            </Row>
-            {
-                cadastrarClientesFichas &&
-                <Cadastrar cadastrarClientesFichas={cadastrarClientesFichas} setCadastrarClientesFichas={setCadastrarClientesFichas} atualizarClientesFichas={atualizarClientesFichas} setAtualizarClientesFichas={setAtualizarClientesFichas}  idClientesFichas={consultaChoice} setIdClientesFichas={setClientesFichasChoice} callback={requestAllClientesFichass} />
-            }
-    */
     return(
         <>
-            <Breadcrumbs
-                items={[
-                        {
-                            props:{},
-                            label:'Início'
-                        },
-                        {
-                            props:{},
-                            label:'Consulta'
-                        }
-                    ]}
-            />
             <Row>
-                {mostarFiltros && 
-                    (
-                        <Col  xs="12" sm="12" md="3">
-                            <Filter
-                                filtersArr={filtersArr}
-                                actionsArr={acoesBottomCard}
-                            />
-                        </Col>
-                    )
-                }
-                 <Col  xs="12" sm="12" md={mostarFiltros ? "9":"12"}>
-                    <Include
-                        dataEstado={estado}
-                        loadingData={loading}
-                        callBack={requestAllConsultas}
-                        setMostarFiltros={setMostarFiltros}
-                        idConsultaCriada={consultaChoice}
+                
+                <Col  xs="12" sm="12" md="12">
+                    <Table
+                        titulosTableArr={titulosTableArr}
+                        rowsTableArr={rowsTableArr}
+                        loading={loadingData}
+                        botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
+
                     />
                 </Col>
             </Row>
@@ -501,10 +352,19 @@ const Consulta = (props)=>{
                 cadastrarConsulta && <Cadastrar cadastrarConsulta={cadastrarConsulta} setCadastrarConsulta={setCadastrarConsulta} atualizarConsulta={atualizarConsulta} setAtualizarConsulta={setAtualizarConsulta}  idConsulta={consultaChoice} setIdConsulta={setConsultaChoice} callback={requestAllConsultas} />
             }
             
+            {
+                atualizarConsulta &&
+                <Atualizar atualizarConsulta={atualizarConsulta} setAtualizarConsulta={setAtualizarConsulta}  idConsulta={consultaChoice} setIdConsulta={setConsultaChoice} callback={requestAllConsultas} />
+            }
+
+            {
+                cancelarConsulta &&
+                <Cancelar cancelarConsulta={cancelarConsulta} setCancelarConsulta={setCancelarConsulta}  idConsulta={consultaChoice} setIdConsulta={setConsultaChoice} callback={requestAllConsultas} />
+            }
            
          </>
 
     )
 }
 
-export default Consulta;
+export default Include;

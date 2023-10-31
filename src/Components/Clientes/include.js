@@ -12,6 +12,8 @@ import Modal from '../Utils/Modal/index.js'
 import Load from '../Utils/Load/index.js'
 import Cadastrar from './Cadastrar/index.js'
 import Atualizar from './Atualizar/index.js'
+import Consulta from '../Consulta/index.js'
+import CadastrarConsulta from '../Consulta/Cadastrar/index.js'
 import Ficha from './Ficha/index.js'
 import CadastrarFicha from '../ClientesFichas/Cadastrar/index.js'
 import {UserContex} from '../../Context/UserContex.js'
@@ -30,10 +32,12 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idOrdemCr
     const [atualizarCadastro, setAtualizarCadastro] = React.useState(false)    
     const [cadastrarCliente, setCadastrarCliente] = React.useState(false)     
     const [marcarConsulta, setMarcarConsulta] = React.useState(false)     
+    const [visualizarConsultas, setVisualizarConsultas] = React.useState(false)  
     const [ficha, setFicha] = React.useState(false)      
     const [cadastrarFicha, setCadastrarFicha] = React.useState(false)    
     const [dataGrupo, setDataGrupo] = React.useState(null)
     const [acao, setAcao] = React.useState(null)
+    const [defaultFiltersConsulta, setDefaultFiltersConsulta] = React.useState({})
 
 
     const {getToken} = React.useContext(UserContex);
@@ -57,12 +61,13 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idOrdemCr
                             propsRow:{id:(atual.id)},
                             acoes:[
                                 {acao:()=>atualizarCliente(atual.id), label:'Editar', propsOption:{}, propsLabel:{}},
-                                {acao:()=>novoAtendimento(atual.id), label:'Atendimento', propsOption:{}, propsLabel:{}},
-                                {acao:()=>cadastrarFichaAtendimento(atual.id), label:'Gerar ficha', propsOption:{}, propsLabel:{}},
-                                {acao:()=>fichaAtendimento(atual.id), label:'Ficha', propsOption:{}, propsLabel:{}},
+                                {acao:()=>novoAtendimento(atual.id), label:'Novo atendimento', propsOption:{}, propsLabel:{}},
+                                {acao:()=>consultaTodosAtendimentos(atual.id), label:'Histórico de atendimentos', propsOption:{}, propsLabel:{}},
+                                {acao:()=>cadastrarFichaAtendimento(atual.id), label:'Nova ficha', propsOption:{}, propsLabel:{}},
+                                {acao:()=>fichaAtendimento(atual.id), label:'Visualizar ficha', propsOption:{}, propsLabel:{}},
                                 {acao:()=>alert('Agenda qui: '+(atual.id)), label:'Agenda', propsOption:{}, propsLabel:{}},
-                                {acao:()=>alert('Histórico de atentimentos: '+(atual.id)), label:'Histórico de atendimentos', propsOption:{}, propsLabel:{}},
-                                {acao:()=>alert('Central do cliente: '+(atual.id)), label:'Central do cliente', propsOption:{}, propsLabel:{}},
+                                //{acao:()=>alert('Histórico de atentimentos: '+(atual.id)), label:'Histórico de atendimentos', propsOption:{}, propsLabel:{}},
+                                //{acao:()=>alert('Central do cliente: '+(atual.id)), label:'Central do cliente', propsOption:{}, propsLabel:{}},
                             ],
                             celBodyTableArr:[
                                 {
@@ -162,6 +167,13 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idOrdemCr
                     setMarcarConsulta(false);
                 }
             break;
+            case 'consultas':
+                if(clientChoice > 0){
+                    setVisualizarConsultas(true);
+                }else{
+                    setVisualizarConsultas(false);
+                }
+            break;
             case 'ficha':
                 if(clientChoice > 0){
                     setFicha(true);
@@ -196,7 +208,13 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idOrdemCr
     const novoAtendimento = (idCliente)=>{
         setClienteChoice(idCliente)
         setAcao('consultar')
-        setAtualizarCadastro(true);
+        setMarcarConsulta(true);
+    }
+
+    const consultaTodosAtendimentos = (idCliente)=>{
+        setClienteChoice(idCliente)
+        setAcao('consultas')
+        setVisualizarConsultas(true);
     }
 
     const fichaAtendimento = (idCliente)=>{
@@ -240,8 +258,17 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idOrdemCr
             }
 
             {
-                marcarConsulta &&
-                <Atualizar marcarConsulta={marcarConsulta} setMarcarConsulta={setMarcarConsulta}  idCliente={clientChoice} setIdcliente={setClienteChoice} callback={requestAllClients} />
+                marcarConsulta && 
+                <CadastrarConsulta  cadastrarConsulta={marcarConsulta} setCadastrarConsulta={setMarcarConsulta} atualizarConsulta={null} setAtualizarConsulta={()=>null}  idConsulta={clientChoice} setIdConsulta={setClienteChoice} callback={()=>{setAcao(null);requestAllClients();setMarcarConsulta(false)}}  />
+            }
+            
+            {
+                visualizarConsultas &&
+                <Modal noBtnCancelar={false} noBtnConcluir={true} handleConcluir={()=>null}  title={'Atendimentos'} size="lg" propsConcluir={{}} labelConcluir={''} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={visualizarConsultas} showHide={()=>{setVisualizarConsultas(false);setAcao(null)}}>
+					
+                    <Consulta defaultFilters={defaultFiltersConsulta} visualizarConsultas={visualizarConsultas} setVisualizarConsultas={setVisualizarConsultas}  idReferencia={null} referencia={''}  idCliente={null} setIdcliente={null} callback={()=>{setAcao(null);callBack();setVisualizarConsultas(false)}} />
+                
+				</Modal>
             }
 
             {

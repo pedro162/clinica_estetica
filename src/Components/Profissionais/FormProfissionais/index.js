@@ -273,19 +273,19 @@ const FormProfissionais = ({dataProfissionaisChoice, setIdProfissionais, idProfi
                         }
 
                         if(!values.dt_emiss_doc){
-                            errors.dt_emiss_doc="Obrigatório"
+                            //errors.dt_emiss_doc="Obrigatório"
                         }
 
                         if(!values.dt_vencimento_doc){
-                            errors.dt_vencimento_doc="Obrigatório"
+                            //errors.dt_vencimento_doc="Obrigatório"
                         }
 
                         if(!values.nr_doc){
-                            errors.nr_doc="Obrigatório"
+                            //errors.nr_doc="Obrigatório"
                         } 
 
                         if(!values.org_expedidor){
-                            errors.org_expedidor="Obrigatório"
+                            //errors.org_expedidor="Obrigatório"
                         }
 
                         if( !values.vr_salario){
@@ -293,11 +293,11 @@ const FormProfissionais = ({dataProfissionaisChoice, setIdProfissionais, idProfi
                         }
                         
                         if( !values.titulo_eleitor){
-                            errors.titulo_eleitor="Obrigatório";
+                            //errors.titulo_eleitor="Obrigatório";
                         }
                         
                         if( !values.zona_eleitor){
-                            errors.zona_eleitor="Obrigatório";
+                           // errors.zona_eleitor="Obrigatório";
                         }
                         
                         if( !values.naturalidade){
@@ -305,11 +305,11 @@ const FormProfissionais = ({dataProfissionaisChoice, setIdProfissionais, idProfi
                         }
                         
                         if( !values.name_mae){
-                            errors.name_mae="Obrigatório";
+                            //errors.name_mae="Obrigatório";
                         }
                         
                         if( !values.name_conjuge){
-                            errors.name_conjuge="Obrigatório";
+                            //errors.name_conjuge="Obrigatório";
                         }
                         
                         if( !values.nr_serie_cnh){
@@ -317,19 +317,19 @@ const FormProfissionais = ({dataProfissionaisChoice, setIdProfissionais, idProfi
                         }
                         
                         if( !values.name_banco_salario){
-                            errors.name_banco_salario="Obrigatório";
+                           //errors.name_banco_salario="Obrigatório";
                         }
                         
                         if( !values.nr_agencia_banco_salario){
-                            errors.nr_agencia_banco_salario="Obrigatório";
+                            //errors.nr_agencia_banco_salario="Obrigatório";
                         }
                         
                         if( !values.nr_conta_banco_salario){
-                            errors.nr_conta_banco_salario="Obrigatório";
+                            //errors.nr_conta_banco_salario="Obrigatório";
                         }
                         
                         if( !values.ponto_obrigatorio){
-                            errors.ponto_obrigatorio="Obrigatório";
+                            //errors.ponto_obrigatorio="Obrigatório";
                         }
                         
                         if( !values.estado_civil){
@@ -361,7 +361,7 @@ const FormProfissionais = ({dataProfissionaisChoice, setIdProfissionais, idProfi
                         }
 
                         if( !values.dt_admissao){
-                            errors.dt_admissao="Obrigatório";
+                            //errors.dt_admissao="Obrigatório";
                         }
                         console.log(errors)
 
@@ -433,6 +433,8 @@ const FormProfissionais = ({dataProfissionaisChoice, setIdProfissionais, idProfi
                                                 }
                                             }
                                          />  
+
+                                        <ErrorMessage className="alerta_error_form_label" name="filial_id" component="div" />
                                     </Col>
 
                                     <Col xs="12" sm="12" md="6">
@@ -532,7 +534,7 @@ const FormProfissionais = ({dataProfissionaisChoice, setIdProfissionais, idProfi
                                                 }
                                             }
                                          />  
-                                         
+                                         <ErrorMessage className="alerta_error_form_label" name="uf_cnh_id" component="div" />
                                     </Col>
 
                                         
@@ -611,7 +613,7 @@ const FormProfissionais = ({dataProfissionaisChoice, setIdProfissionais, idProfi
                                                 data={
                                                     {
                                                         hasLabel:true,
-                                                        contentLabel:'Data de emissão *',
+                                                        contentLabel:'Data de emissão',
                                                         atributsFormLabel:{
 
                                                         },
@@ -642,7 +644,7 @@ const FormProfissionais = ({dataProfissionaisChoice, setIdProfissionais, idProfi
                                                 data={
                                                     {
                                                         hasLabel:true,
-                                                        contentLabel:'Data de vencimento *',
+                                                        contentLabel:'Data de vencimento',
                                                         atributsFormLabel:{
 
                                                         },
@@ -820,7 +822,7 @@ const FormProfissionais = ({dataProfissionaisChoice, setIdProfissionais, idProfi
                                                 data={
                                                     {
                                                         hasLabel:true,
-                                                        contentLabel:'Tipo de contrato ',
+                                                        contentLabel:'Tipo de contrato *',
                                                         atributsFormLabel:{
 
                                                         },

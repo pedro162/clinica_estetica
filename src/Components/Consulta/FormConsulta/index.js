@@ -291,7 +291,7 @@ const FormConsulta = ({dataConsultaChoice, setIdConsulta, idConsulta, showModalC
                         }
                     )=>(
 
-						<Modal  handleConcluir={()=>{handleSubmit(); }}  title={ (atualizarConsulta == true ? 'Atualizar' : 'Cadastrar')+' Consulta'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarConsulta} showHide={()=>{setShowModalCriarConsulta();setAtualizarConsulta(false);setIdConsulta(null);}}>
+						<Modal  handleConcluir={()=>{handleSubmit(); }}  title={ (atualizarConsulta == true ? 'Atualizar' : 'Cadastrar')+' Atendimento'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarConsulta} showHide={()=>{setShowModalCriarConsulta();setAtualizarConsulta(false);setIdConsulta(null);}}>
 							{
 									
                                 carregando && carregando==true

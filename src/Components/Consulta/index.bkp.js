@@ -16,7 +16,6 @@ import FormConsulta from './FormConsulta/index.js'
 import Cadastrar from './Cadastrar/index.js'
 import Atualizar from './Atualizar/index.js'
 import Cancelar from './Cancelar/index.js'
-import Include from './include';
 
 
 const Consulta = (props)=>{
@@ -30,7 +29,6 @@ const Consulta = (props)=>{
     const [atualizarConsulta, setAtualizarConsulta] = React.useState(false)   
     const [cancelarConsulta, setCancelarConsulta] = React.useState(false)    
     const [cadastrarConsulta, setCadastrarConsulta] = React.useState(false) 
-    const [mostarFiltros, setMostarFiltros] = React.useState(false) 
     const [acao, setAcao] = React.useState(null)
     const [pessoa, setPessoa] = React.useState('')
 
@@ -419,48 +417,6 @@ const Consulta = (props)=>{
 
     const rowsTableArr = gerarTableConsulta();    
     const titulosTableArr = gerarTitleTable();
-
-    /*
-    
-        <Breadcrumbs
-                items={[
-                        {
-                            props:{},
-                            label:'Início'
-                        },
-                        {
-                            props:{},
-                            label:'Ordem de servico'
-                        }
-                    ]}
-            />
-            <Row>
-                {mostarFiltros && 
-                    (
-                        <Col  xs="12" sm="12" md="3">
-                            <Filter
-                                filtersArr={filtersArr}
-                                actionsArr={acoesBottomCard}
-                            />
-                        </Col>
-                    )
-                }
-                
-                <Col  xs="12" sm="12" md={mostarFiltros ? "9":"12"}>
-                    <Include
-                        dataEstado={estado}
-                        loadingData={loading}
-                        callBack={requestAllClientesFichass}
-                        setMostarFiltros={setMostarFiltros}
-                        idConsultaCriada={consultaChoice}
-                    />
-                </Col>
-            </Row>
-            {
-                cadastrarClientesFichas &&
-                <Cadastrar cadastrarClientesFichas={cadastrarClientesFichas} setCadastrarClientesFichas={setCadastrarClientesFichas} atualizarClientesFichas={atualizarClientesFichas} setAtualizarClientesFichas={setAtualizarClientesFichas}  idClientesFichas={consultaChoice} setIdClientesFichas={setClientesFichasChoice} callback={requestAllClientesFichass} />
-            }
-    */
     return(
         <>
             <Breadcrumbs
@@ -476,23 +432,18 @@ const Consulta = (props)=>{
                     ]}
             />
             <Row>
-                {mostarFiltros && 
-                    (
-                        <Col  xs="12" sm="12" md="3">
-                            <Filter
-                                filtersArr={filtersArr}
-                                actionsArr={acoesBottomCard}
-                            />
-                        </Col>
-                    )
-                }
-                 <Col  xs="12" sm="12" md={mostarFiltros ? "9":"12"}>
-                    <Include
-                        dataEstado={estado}
-                        loadingData={loading}
-                        callBack={requestAllConsultas}
-                        setMostarFiltros={setMostarFiltros}
-                        idConsultaCriada={consultaChoice}
+                <Col  xs="12" sm="12" md="3">
+                    <Filter
+                        filtersArr={filtersArr}
+                        actionsArr={acoesBottomCard}
+                    />
+                </Col>
+                <Col  xs="12" sm="12" md="9">
+                    <Table
+                        titulosTableArr={titulosTableArr}
+                        rowsTableArr={rowsTableArr}
+                        loading={loading}
+
                     />
                 </Col>
             </Row>
@@ -501,6 +452,15 @@ const Consulta = (props)=>{
                 cadastrarConsulta && <Cadastrar cadastrarConsulta={cadastrarConsulta} setCadastrarConsulta={setCadastrarConsulta} atualizarConsulta={atualizarConsulta} setAtualizarConsulta={setAtualizarConsulta}  idConsulta={consultaChoice} setIdConsulta={setConsultaChoice} callback={requestAllConsultas} />
             }
             
+            {
+                atualizarConsulta &&
+                <Atualizar atualizarConsulta={atualizarConsulta} setAtualizarConsulta={setAtualizarConsulta}  idConsulta={consultaChoice} setIdConsulta={setConsultaChoice} callback={requestAllConsultas} />
+            }
+
+            {
+                cancelarConsulta &&
+                <Cancelar cancelarConsulta={cancelarConsulta} setCancelarConsulta={setCancelarConsulta}  idConsulta={consultaChoice} setIdConsulta={setConsultaChoice} callback={requestAllConsultas} />
+            }
            
          </>
 

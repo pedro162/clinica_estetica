@@ -167,7 +167,23 @@ const FormCliente = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, sho
     						break;
     					}
     				}
-    			}
+    			}else if(data.logradouro){
+					let atual = data.logradouro;
+					if(atual.hasOwnProperty('importancia') && atual.importancia.trim() == 'principal'){
+						obj.cep = atual.cep;
+						obj.uf = atual.estado;
+						obj.logradouro = atual.logradouro;
+						obj.complemento = atual.complemento;
+						obj.numero = atual.numero;
+						obj.bairro = atual.bairro;
+
+						if(atual.hasOwnProperty('estado_logradouro') && atual.estado_logradouro.hasOwnProperty('pais_id')){
+							obj.pais = atual.estado_logradouro.pais_id;
+
+						}
+
+					}
+				}
     			
     		}
 
