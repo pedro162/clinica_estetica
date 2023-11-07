@@ -27,38 +27,28 @@ const Header = (props)=>{
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} to="/configuracoes/cidade" >Cidade</Link></NavDropdown.Item>
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} to="/configuracoes/sistema" >Sistema</Link></NavDropdown.Item>
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} to="/configuracoes/construtor/ficha" >Contrutro de ficha</Link></NavDropdown.Item>
-                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Something</NavDropdown.Item>
-                            <NavDropdown.Divider />
-                                <NavDropdown.Item className={[estilos.itemMenu]} as='div'>Separated link</NavDropdown.Item>
+                           
+                            {/* <NavDropdown.Divider />
+                                <NavDropdown.Item className={[estilos.itemMenu]} as='div'>Separated link</NavDropdown.Item> */}
                         </NavDropdown>
                         <NavDropdown title="Financeiro" id="collasible-nav-dropdown">
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} to="/financeiro/contas_receber" >Contas a receber</Link></NavDropdown.Item>
-                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} to="/financeiro/caixa" >Caixa</Link></NavDropdown.Item>
-                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Something</NavDropdown.Item>
-                            <NavDropdown.Divider />
-                                <NavDropdown.Item className={[estilos.itemMenu]} as='div'>Separated link</NavDropdown.Item>
+                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} to="/financeiro/caixa" >Caixas</Link></NavDropdown.Item>
+                           
                         </NavDropdown>
                         <NavDropdown title="Produtos" id="collasible-nav-dropdown">
-                            <NavDropdown.Item className={[estilos.itemMenu]} as='div'>Action</NavDropdown.Item>
-                            <NavDropdown.Item className={[estilos.itemMenu]} as='div'>Another action</NavDropdown.Item>
-                            <NavDropdown.Item className={[estilos.itemMenu]} as='div'>Something</NavDropdown.Item>
-                            <NavDropdown.Divider />
-                                <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Separated link</NavDropdown.Item>
+                            <NavDropdown.Item className={[estilos.itemMenu]} as='div'>Produtos</NavDropdown.Item>
+                            <NavDropdown.Item className={[estilos.itemMenu]} as='div'>Categorias</NavDropdown.Item>
+                            <NavDropdown.Item className={[estilos.itemMenu]} as='div'>Embalagens</NavDropdown.Item>
+                            <NavDropdown.Item className={[estilos.itemMenu]} as='div'>Unidades</NavDropdown.Item>
                         </NavDropdown>
                         <NavDropdown title="Estoque" id="collasible-nav-dropdown">
-                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Action</NavDropdown.Item>
-                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Another action</NavDropdown.Item>
-                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Something</NavDropdown.Item>
-                            <NavDropdown.Divider />
-                                <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Separated link</NavDropdown.Item>
+                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Estoque</NavDropdown.Item>
                         </NavDropdown>
                         <NavDropdown title="Serviço" id="collasible-nav-dropdown">
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} to="/ordem/servico/painel" >Ordem de serviço</Link></NavDropdown.Item>
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} to="/servico/painel" >Serviço</Link></NavDropdown.Item>
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Categoria de serviço</NavDropdown.Item>
-                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Something</NavDropdown.Item>
-                            <NavDropdown.Divider />
-                                <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Separated link</NavDropdown.Item>
                         </NavDropdown>
                         <NavDropdown title="Clientes" id="collasible-nav-dropdown">
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link style={{width:'100%', height:'100%'}} to="/clientes/painel" >Clientes</Link></NavDropdown.Item>
@@ -68,36 +58,28 @@ const Header = (props)=>{
                             <NavDropdown.Divider />
                                 <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Separated link</NavDropdown.Item>
                         </NavDropdown>
-                        <NavDropdown title="Fornecedores" id="collasible-nav-dropdown">
-                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Action</NavDropdown.Item>
-                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Another action</NavDropdown.Item>
-                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Something</NavDropdown.Item>
-                            <NavDropdown.Divider />
-                                <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Separated link</NavDropdown.Item>
-                        </NavDropdown>                        
+                        {/* <NavDropdown title="Fornecedores" id="collasible-nav-dropdown">
+                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Fornecedores</NavDropdown.Item>
+                        </NavDropdown> */}                        
                         <NavDropdown title="Profissonais" id="collasible-nav-dropdown">
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} to="/especialidades/painel" >Especialidades</Link></NavDropdown.Item>
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} to="/profissionais/painel" >Profissionais</Link></NavDropdown.Item>
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} to="/categoria/eventos/painel" >Horários profissionais</Link></NavDropdown.Item>
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} to="/categoria/eventos/painel" >Dias profissionais</Link></NavDropdown.Item>
-                            <NavDropdown.Divider />
-                                <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Separated link</NavDropdown.Item>
+                            
                         </NavDropdown>
                         <NavDropdown title="Agenda" id="collasible-nav-dropdown">
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} to="/agenda/painel" >Agenda</Link></NavDropdown.Item>
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} to="/home/painel" >Calendario de agenda</Link></NavDropdown.Item>
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} to="/agenda/eventos/painel" >Evento de agenda</Link></NavDropdown.Item>
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} to="/categoria/eventos/painel" >Categoria de eventos</Link></NavDropdown.Item>
-                            <NavDropdown.Divider />
-                                <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Separated link</NavDropdown.Item>
+                            
                         </NavDropdown>
-                        <NavDropdown title="Fiscal" id="collasible-nav-dropdown">
+                        {/* <NavDropdown title="Fiscal" id="collasible-nav-dropdown">
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Action</NavDropdown.Item>
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Another action</NavDropdown.Item>
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Something</NavDropdown.Item>
-                            <NavDropdown.Divider />
-                                <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Separated link</NavDropdown.Item>
-                        </NavDropdown>
+                        </NavDropdown> */}
                        
                     </Nav>
                     <Nav>

@@ -18,6 +18,7 @@ import Ficha from './Ficha/index.js'
 import CadastrarFicha from '../ClientesFichas/Cadastrar/index.js'
 import {UserContex} from '../../Context/UserContex.js'
 import FormCliente from './FormCliente/index.js'
+import Home from '../Home/index.js'
 
 
 const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idOrdemCriada, ...props})=>{
@@ -38,6 +39,8 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idOrdemCr
     const [dataGrupo, setDataGrupo] = React.useState(null)
     const [acao, setAcao] = React.useState(null)
     const [defaultFiltersConsulta, setDefaultFiltersConsulta] = React.useState({})
+    const [defaultFiltersAgendaCalendario, setDefaultFiltersAgendaCalendario] = React.useState({})
+    const [visualizarCalendarioAgenda, setVisualizarCalendarioAgenda] = React.useState(false)  
 
 
     const {getToken} = React.useContext(UserContex);
@@ -65,7 +68,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idOrdemCr
                                 {acao:()=>consultaTodosAtendimentos(atual.id), label:'Histórico de atendimentos', propsOption:{}, propsLabel:{}},
                                 {acao:()=>cadastrarFichaAtendimento(atual.id), label:'Nova ficha', propsOption:{}, propsLabel:{}},
                                 {acao:()=>fichaAtendimento(atual.id), label:'Visualizar ficha', propsOption:{}, propsLabel:{}},
-                                {acao:()=>alert('Agenda qui: '+(atual.id)), label:'Agenda', propsOption:{}, propsLabel:{}},
+                                {acao:()=>consultaAgendaCalendario(atual.id), label:'Calendário da agenda', propsOption:{}, propsLabel:{}},
                                 //{acao:()=>alert('Histórico de atentimentos: '+(atual.id)), label:'Histórico de atendimentos', propsOption:{}, propsLabel:{}},
                                 //{acao:()=>alert('Central do cliente: '+(atual.id)), label:'Central do cliente', propsOption:{}, propsLabel:{}},
                             ],
@@ -187,6 +190,13 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idOrdemCr
                 }else{
                     setCadastrarFicha(false);
                 }
+            break;            
+            case 'agenda_calendario':
+                if(clientChoice > 0){
+                    setVisualizarCalendarioAgenda(true);
+                }else{
+                    setVisualizarCalendarioAgenda(false);
+                }
             break;
             default:
                 setAtualizarCadastro(false);
@@ -228,8 +238,14 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idOrdemCr
         setAcao('cadastrar_ficha')
         setCadastrarFicha(true);
     }
-    
 
+    const consultaAgendaCalendario = (idCliente)=>{
+        setClienteChoice(idCliente)
+        setAcao('agenda_calendario')
+        setVisualizarCalendarioAgenda(true);
+    }
+    
+    
     React.useEffect(()=>{
         setClientes(dataEstado)
     }, [dataEstado])
@@ -267,6 +283,16 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idOrdemCr
                 <Modal noBtnCancelar={false} noBtnConcluir={true} handleConcluir={()=>null}  title={'Atendimentos'} size="lg" propsConcluir={{}} labelConcluir={''} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={visualizarConsultas} showHide={()=>{setVisualizarConsultas(false);setAcao(null)}}>
 					
                     <Consulta defaultFilters={defaultFiltersConsulta} visualizarConsultas={visualizarConsultas} setVisualizarConsultas={setVisualizarConsultas}  idReferencia={null} referencia={''}  idCliente={null} setIdcliente={null} callback={()=>{setAcao(null);callBack();setVisualizarConsultas(false)}} />
+                
+				</Modal>
+            }
+
+
+            {
+                visualizarCalendarioAgenda &&
+                <Modal noBtnCancelar={false} noBtnConcluir={true} handleConcluir={()=>null}  title={'Calendário da agenda'} size="lg" propsConcluir={{}} labelConcluir={''} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={visualizarCalendarioAgenda} showHide={()=>{setVisualizarCalendarioAgenda(false);setAcao(null);setClienteChoice(null)}}>
+					
+                    <Home defaultFilters={defaultFiltersAgendaCalendario} visualizarCalendarioAgenda={visualizarCalendarioAgenda} setVisualizarCalendarioAgenda={setVisualizarCalendarioAgenda}  setAtualizarCadastro={setAtualizarCadastro} idReferencia={null} referencia={null}  clientChoice={clientChoice} setClienteChoice={setClienteChoice} callback={callBack} />
                 
 				</Modal>
             }

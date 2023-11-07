@@ -37,7 +37,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idCliente
     const [digitarClientesFichas, setDigitarClientesFichas] = React.useState(false)    
     const [cadastrarClientesFichas, setCadastrarClientesFichas] = React.useState(false)
     const [visualizarContasReceber, setVisualizarContasReceber] = React.useState(false) 
-    const [visualizarFicha, setVisualizarFicha] = React.useState(false)  
+    const [visualizarFicha, setVisualizarFicha] = React.useState(false)
     const [atualizarCabecalhoClientesFichas, setAtualizarCabecalhoClientesFichas] = React.useState(false)  
     const [finalizarClientesFichas, setFinalizarClientesFichas] = React.useState(false)  
     const [incicarClientesFichas, setIniciarClientesFichas] = React.useState(false) 
@@ -436,9 +436,6 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idCliente
                 <Visualizar visualizarFicha={visualizarFicha} setVisualizarFicha={setVisualizarFicha}  idClientesFichas={consultaChoice} setIdClientesFichas={setClientesFichasChoice} callback={callBack} />
             }
 
-
-            
-
             {
                 visualizarContasReceber &&
                 <Modal noBtnCancelar={false} noBtnConcluir={true} handleConcluir={()=>null}  title={'Contas a receber'} size="lg" propsConcluir={{}} labelConcluir={''} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={consultaChoice} showHide={()=>{setVisualizarContasReceber(false);}}>
@@ -447,6 +444,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idCliente
                 
 				</Modal>
             }
+
         
         </>
     )

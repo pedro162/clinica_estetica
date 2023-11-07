@@ -253,24 +253,25 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, ...props}
                         btnEditar               = false;
                     }
 
-                    if(btnCotinuarDigitacao){
-                        acoesArr.push({acao:()=>atualizarContasReceberAction(atual.id), label:'Continuar digitação', propsOption:{}, propsLabel:{}})
-                    }
 
                     if(btnEditar){
                         acoesArr.push({acao:()=>atualizarContasReceberAction(atual.id), label:'Editar', propsOption:{}, propsLabel:{}})
                     }
 
                     if(btnIniciarProcedimento){
-                        acoesArr.push({acao:()=>atualizarContasReceberAction(atual.id), label:'Iniciar procedimento', propsOption:{}, propsLabel:{}})
+                        acoesArr.push({acao:()=>atualizarContasReceberAction(atual.id), label:'Baixar', propsOption:{}, propsLabel:{}})
                     }
 
-                    if(btnFinalizar){
-                        acoesArr.push({acao:()=>atualizarContasReceberAction(atual.id), label:'Finalizar procedimento', propsOption:{}, propsLabel:{}})
+                    if(btnIniciarProcedimento){
+                        acoesArr.push({acao:()=>atualizarContasReceberAction(atual.id), label:'Extornar', propsOption:{}, propsLabel:{}})
+                    }
+
+                    if(btnIniciarProcedimento){
+                        acoesArr.push({acao:()=>atualizarContasReceberAction(atual.id), label:'Devolver', propsOption:{}, propsLabel:{}})
                     }
 
                     if(btnVisualizarFinanceiro){
-                        acoesArr.push({acao:()=>atualizarContasReceberAction(atual.id), label:'Conta a receber', propsOption:{}, propsLabel:{}})
+                        acoesArr.push({acao:()=>atualizarContasReceberAction(atual.id), label:'Movimentações', propsOption:{}, propsLabel:{}})
                     }
 
                     if(btnVisualizar){
@@ -278,7 +279,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, ...props}
                     }
 
                     if(btnCancelar){
-                        acoesArr.push({acao:()=>cancelarContasReceberAction(atual.id), label:'Cancelar', propsOption:{}, propsLabel:{}})
+                        
                     }
 
                     //'remarcado','finalizado','cancelado','pendente'
