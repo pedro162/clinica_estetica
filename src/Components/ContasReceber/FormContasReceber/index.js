@@ -15,7 +15,7 @@ import Load from '../../Utils/Load/index.js'
 import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible.js'
 
 
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, SERVICO_SAVE_POST, SERVICO_ALL_POST, ORDEM_SERVICO_FINALIZAR_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST} from '../../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, SERVICO_SAVE_POST, SERVICO_ALL_POST, ORDEM_SERVICO_FINALIZAR_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST, CONTAS_RECEBER_UPDATE_POST, CONTAS_RECEBER_SAVE_POST} from '../../../api/endpoints/geral.js'
 
 
 const FormContasReceber = ({dataContasReceberChoice, setDataContasReceber, setIdContasReceber, idContasReceber, showModalCriarContasReceber, setShowModalCriarContasReceber, callback, atualizarContasReceber, setAtualizarContasReceber, carregando})=>{
@@ -35,28 +35,56 @@ const FormContasReceber = ({dataContasReceberChoice, setDataContasReceber, setId
     }
 
     const sendData = async ({
-			rca_id,
-			pessoa_rca_id,
-			filial_id,
-			pessoa_id,
-			profissional_id,
-			name_pessoa_contato
+			...params
 		})=>{
 			
-		rca_id= pessoa_rca_id > 0 && !rca_id ?  pessoa_rca_id : rca_id;
-		let is_orcamento = isOrcamento ? true : false;
+		
+		/*const data = {
+			referencia_id,
+			referencia,
+			pessoa_id,
+			descricao,
+			documento,
+			dtVencimentoOriginal,
+			dtVencimento,
+			vrBruto,
+			vrLiquido,
+			vrDevolvido,
+			vrPago,
+			vrTaxa,
+			vrDesconto,
+			vrJuros,
+			user_id,
+			user_update_id,
+			active,
+			deleted_at,
+			created_at,
+			updated_at,
+			responsavel_id,
+			importacao_dados,
+			forma_pgto_orig_id,
+			conta_orig_id,
+			prazo_orig_id,
+			qtd_parcelas,
+			vrAberto,
+			vrSaldoAberto,
+			pessoa_autor_id 
+		}*/
+		
 
 		const data = {
-			rca_id,
-			pessoa_rca_id,
-			filial_id,
-			pessoa_id,
-			profissional_id,
-			name_pessoa_contato,
-			is_orcamento
+			...params
 		}
 
-		const {url, options} = ORDEM_SERVICO_FINALIZAR_POST(idContasReceber, data, getToken());
+		let data_config = {}
+		if(idContasReceber && idContasReceber > 0){
+			data_config = CONTAS_RECEBER_UPDATE_POST(idContasReceber, data, getToken());
+		}else{
+			data_config = CONTAS_RECEBER_SAVE_POST(data, getToken());
+		}
+
+		
+		const {url, options} = data_config;
 
 
 		const {response, json} = await request(url, options);
@@ -203,18 +231,10 @@ const FormContasReceber = ({dataContasReceberChoice, setDataContasReceber, setId
                             errors.name="Obrigatório"
                         } */
 									
-						if(!values.filial_id){
-							errors.filial_id="Obrigatório"    			
+						if(!values.descricao){
+							errors.descricao="Obrigatório"    			
 						}
 
-
-						if(!values.pessoa_rca_id){
-						    errors.pessoa_rca_id="Obrigatório"
-						}
-
-						if(!values.pessoa_id){
-						    errors.pessoa_id="Obrigatório"
-						}
 						
 
                         return errors;
@@ -277,144 +297,152 @@ const FormContasReceber = ({dataContasReceberChoice, setDataContasReceber, setId
 													</Col>
 												</Row>
 											}
-											<Row className="mb-3">
-												<Col xs="12" sm="12" md="6">
-													<Field
-														data={
-															{
-																hasLabel:true,
-																contentLabel:'Filial *',
-																atributsFormLabel:{
+											{ !(idContasReceber && idContasReceber > 0) && 
+											(
+												<>
+													<Row className="mb-3">
+														<Col xs="12" sm="12" md="6">
+															<Field
+																data={
+																	{
+																		hasLabel:true,
+																		contentLabel:'Filial *',
+																		atributsFormLabel:{
 
-																},
-																atributsFormControl:{
-																	type:'text',
-																	name:'filial_id',
-																	placeholder:'Filial',
-																	id:'filial_id',
-																	onChange:handleChange,
-																	onBlur:handleBlur,
-																	value:values.filial_id,
-																	className:estilos.input,
-																	size:"sm"
-																},
-																options:preparaFilialToForm(),
-																atributsContainer:{
-																	className:''
+																		},
+																		atributsFormControl:{
+																			type:'text',
+																			name:'filial_id',
+																			placeholder:'Filial',
+																			id:'filial_id',
+																			onChange:handleChange,
+																			onBlur:handleBlur,
+																			value:values.filial_id,
+																			className:estilos.input,
+																			size:"sm"
+																		},
+																		options:preparaFilialToForm(),
+																		atributsContainer:{
+																			className:''
+																		}
+																	}
 																}
-															}
-														}
-													
-														component={FormControlSelect}
-													></Field>
-													<ErrorMessage className="alerta_error_form_label" name="filial_id" component="div" />
-													
-													
-												</Col>
+															
+																component={FormControlSelect}
+															></Field>
+															<ErrorMessage className="alerta_error_form_label" name="filial_id" component="div" />
+															
+															
+														</Col>
 
-												<Col xs="12" sm="12" md="6">
-													<Field
-															data={
-																{
-																	hasLabel:true,
-																	contentLabel:'Pessoa *',
-																	atributsFormLabel:{
+														<Col xs="12" sm="12" md="6">
+															<Field
+																	data={
+																		{
+																			hasLabel:true,
+																			contentLabel:'Pessoa *',
+																			atributsFormLabel:{
 
-																	},
-																	atributsFormControl:{
-																		type:'text',
-																		name:'pessoa_id',
-																		placeholder:'Ex: fulano de tal',
-																		id:'pessoa_id',
-																		name_cod:'pessoa_id',
-																		name_desacription:'pessoa_name',
-																		onChange:handleChange,
-																		onBlur:handleBlur,
-																		value:values.pessoa_id,
-																		className:`${estilos.input}`,
-																		size:"sm"
-																	},
-																	atributsContainer:{
-																		className:''
-																	},
-																	hookToLoadFromDescription:CLIENTES_ALL_POST,
-																}
-															}
-															component={Required}
-													>   </Field>    
-													<ErrorMessage className="alerta_error_form_label" name="pessoa_id" component="div" />
-												</Col>
-												
-												
-											</Row>
-											<Row className="mb-3">
-												<Col xs="12" sm="12" md="6">
-													<Field
-															data={
-																{
-																	hasLabel:true,
-																	contentLabel:'Caixa para baixa *',
-																	atributsFormLabel:{
+																			},
+																			atributsFormControl:{
+																				type:'text',
+																				name:'pessoa_id',
+																				placeholder:'Ex: fulano de tal',
+																				id:'pessoa_id',
+																				name_cod:'pessoa_id',
+																				name_desacription:'pessoa_name',
+																				onChange:handleChange,
+																				onBlur:handleBlur,
+																				value:values.pessoa_id,
+																				className:`${estilos.input}`,
+																				size:"sm"
+																			},
+																			atributsContainer:{
+																				className:''
+																			},
+																			hookToLoadFromDescription:CLIENTES_ALL_POST,
+																		}
+																	}
+																	component={Required}
+															>   </Field>    
+															<ErrorMessage className="alerta_error_form_label" name="pessoa_id" component="div" />
+														</Col>
+														
+														
+													</Row>
+													<Row className="mb-3">
+														<Col xs="12" sm="12" md="6">
+															<Field
+																	data={
+																		{
+																			hasLabel:true,
+																			contentLabel:'Caixa para baixa *',
+																			atributsFormLabel:{
 
-																	},
-																	atributsFormControl:{
-																		type:'text',
-																		name:'caixa_id',
-																		placeholder:'Caixa para baixa',
-																		id:'caixa_id',
-																		name_cod:'caixa_id',
-																		name_desacription:'caixa_name',
-																		onChange:handleChange,
-																		onBlur:handleBlur,
-																		value:values.caixa_id,
-																		className:`${estilos.input}`,
-																		size:"sm"
-																	},
-																	atributsContainer:{
-																		className:''
-																	},
-																	hookToLoadFromDescription:CLIENTES_ALL_POST,
-																}
-															}
-															component={Required}
-													>   </Field>    
-													<ErrorMessage className="alerta_error_form_label" name="caixa_id" component="div" />
-												</Col>
+																			},
+																			atributsFormControl:{
+																				type:'text',
+																				name:'caixa_id',
+																				placeholder:'Caixa para baixa',
+																				id:'caixa_id',
+																				name_cod:'caixa_id',
+																				name_desacription:'caixa_name',
+																				onChange:handleChange,
+																				onBlur:handleBlur,
+																				value:values.caixa_id,
+																				className:`${estilos.input}`,
+																				size:"sm"
+																			},
+																			atributsContainer:{
+																				className:''
+																			},
+																			hookToLoadFromDescription:CLIENTES_ALL_POST,
+																		}
+																	}
+																	component={Required}
+															>   </Field>    
+															<ErrorMessage className="alerta_error_form_label" name="caixa_id" component="div" />
+														</Col>
 
-												<Col xs="12" sm="12" md="6">
-													<Field
-															data={
-																{
-																	hasLabel:true,
-																	contentLabel:'Valor *',
-																	atributsFormLabel:{
+														<Col xs="12" sm="12" md="6">
+															<Field
+																	data={
+																		{
+																			hasLabel:true,
+																			contentLabel:'Valor *',
+																			atributsFormLabel:{
 
-																	},
-																	atributsFormControl:{
-																		type:'text',
-																		name:'vrLiquido',
-																		placeholder:'0,00',
-																		id:'vrLiquido',
-																		name_cod:'vrLiquido',
-																		name_desacription:'vrLiquido',
-																		onChange:handleChange,
-																		onBlur:handleBlur,
-																		value:values.vrLiquido,
-																		className:`${estilos.input}`,
-																		size:"sm",
-																		readonly:'readonly',
-																	},
-																	atributsContainer:{
-																		className:''
-																	},
-																}
-															}
-															component={FormControlInput}
-													>   </Field>    
-													<ErrorMessage className="alerta_error_form_label" name="vrLiquido" component="div" />
-												</Col>
+																			},
+																			atributsFormControl:{
+																				type:'text',
+																				name:'vrLiquido',
+																				placeholder:'0,00',
+																				id:'vrLiquido',
+																				name_cod:'vrLiquido',
+																				name_desacription:'vrLiquido',
+																				onChange:handleChange,
+																				onBlur:handleBlur,
+																				value:values.vrLiquido,
+																				className:`${estilos.input}`,
+																				size:"sm",
+																				readonly:'readonly',
+																			},
+																			atributsContainer:{
+																				className:''
+																			},
+																		}
+																	}
+																	component={FormControlInput}
+															>   </Field>    
+															<ErrorMessage className="alerta_error_form_label" name="vrLiquido" component="div" />
+														</Col>
 
-											</Row>
+													</Row>
+												</>
+											)
+
+										}
+											
 											<Row className="mb-3">
 												
 
