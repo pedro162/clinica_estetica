@@ -6,7 +6,7 @@ import FormContasReceber from '../FormContasReceber/index.js'
 import Modal from '../../Utils/Modal/index.js'
 import Load from '../../Utils/Load/index.js'
 
-const Cadastrar = ({idContasReceber, setIdContasReceber, callback, atualizarContasReceber, setAtualizarContasReceber, cadastrarContasReceber, setCadastrarContasReceber})=>{
+const Cadastrar = ({idContasReceber, setIdContasReceber, callback, atualizarContasReceber, setAtualizarContasReceber, cadastrarContasReceber, setEstornarContasReceber})=>{
 
     
     const [showModalAtualizarContasReceber, setShowModalAtualizarContasReceber] = React.useState(false)
@@ -51,7 +51,7 @@ const Cadastrar = ({idContasReceber, setIdContasReceber, callback, atualizarCont
 				</Modal>
 			}
 			{dataGrupo &&
-				<FormContasReceber dataGrupo={dataGrupo} setIdContasReceber={setIdContasReceber} idContasReceber={idContasReceber} carregando={false} dataContasReceberChoice={dataContasReceber} setAtualizarContasReceber={setAtualizarContasReceber} atualizarContasReceber={atualizarContasReceber} showModalCriarContasReceber={showModalAtualizarContasReceber} setShowModalCriarContasReceber={()=>{setShowModalAtualizarContasReceber();setCadastrarContasReceber()}} callback={callback} />
+				<FormContasReceber dataGrupo={dataGrupo} setIdContasReceber={setIdContasReceber} idContasReceber={idContasReceber} carregando={false} dataContasReceberChoice={dataContasReceber} setAtualizarContasReceber={setAtualizarContasReceber} atualizarContasReceber={atualizarContasReceber} showModalCriarContasReceber={showModalAtualizarContasReceber} setShowModalCriarContasReceber={()=>{setShowModalAtualizarContasReceber();setEstornarContasReceber()}} callback={callback} />
 			}
 		</>
 	)

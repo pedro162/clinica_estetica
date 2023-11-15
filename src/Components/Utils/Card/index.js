@@ -13,18 +13,28 @@ const Card =({children, title, acoesBottomCard, propsCard, botoesHeader,...props
 						<Col>
 							<CartBootstrap.Title>{title}</CartBootstrap.Title>
 						</Col>
-						<Col style={{display:'flex',flexCirection:'collumn',justifyContent: 'flex-end'}}>
-							
-							{Array.isArray(botoesHeader) && botoesHeader.length > 0 && botoesHeader.map((item, index, arr)=>{
-								let {acao, label, propsAcoes, icon} = item;
-								if(label || icon){
-									return (
-										<Button key={index+'-'+arr.length} onClick={acao} {...propsAcoes} >{icon?icon:''} {label?label:''}</Button>
-									)
-								}
+						{
+							Array.isArray(botoesHeader) && botoesHeader.length > 0 
+							? (
 
-							}) }
-						</Col>
+
+									<Col style={{display:'flex',flexCirection:'collumn',justifyContent: 'flex-end'}}>
+										
+										{Array.isArray(botoesHeader) && botoesHeader.length > 0 && botoesHeader.map((item, index, arr)=>{
+											let {acao, label, propsAcoes, icon} = item;
+											if(label || icon){
+												return (
+													<Button key={index+'-'+arr.length} onClick={acao} {...propsAcoes} >{icon?icon:''} {label?label:''}</Button>
+												)
+											}
+
+										}) }
+									</Col>
+
+							)
+							:
+							(null)
+						}
 					
 
 					</Row>

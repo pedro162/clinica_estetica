@@ -7,7 +7,7 @@ import {Col, Row } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
 import Breadcrumbs from '../Helper/Breadcrumbs.js'
-import { faHome, faSearch, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faSearch, faPlus, faPen, faHandHoldingUsd, faList, faFile, faTrash, faHandHolding, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from '../Utils/Modal/index.js'
 import Load from '../Utils/Load/index.js'
@@ -15,6 +15,9 @@ import {UserContex} from '../../Context/UserContex.js'
 import FormContasReceber from './FormContasReceber/index.js'
 import Cadastrar from './Cadastrar/index.js'
 import Atualizar from './Atualizar/index.js'
+import Baixar from './Baixar/index.js'
+import Estornar from './Estornar/index.js'
+import Card from '../Utils/Card/index.js'
 import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../functions/index.js'
 
 
@@ -25,7 +28,9 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, ...props}
     const [exemplosTitleTable, setExemplosTitleTable] = React.useState([])
     const [showModalCriarContasReceber, setShowModalCriarConstula] = React.useState(false)
     const [consultaChoice, setContasReceberChoice] = React.useState(null);
-    const [atualizarContasReceber, setAtualizarContasReceber] = React.useState(false)   
+    const [atualizarContasReceber, setAtualizarContasReceber] = React.useState(false)  
+    const [baixarContasReceber, setBaixarContasReceber] = React.useState(false)   
+    const [estornarContasReceber, setEstornarContasReceber] = React.useState(false)   
     const [cancelarContasReceber, setCancelarContasReceber] = React.useState(false)   
     const [digitarContasReceber, setDigitarContasReceber] = React.useState(false)    
     const [cadastrarContasReceber, setCadastrarContasReceber] = React.useState(false)  
@@ -130,42 +135,34 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, ...props}
                     setAtualizarContasReceber(false);
                 }
                 break;
-            case 'cancelar':
+            case 'baixar':
                 if(consultaChoice > 0){
-                    setCancelarContasReceber(true);
+                    setBaixarContasReceber(true);
                 }else{
-                    setCancelarContasReceber(false);
+                    setBaixarContasReceber(false);
                 }
                 break;
-            case 'digitar':
+            case 'estornar':
+                if(consultaChoice > 0){
+                    setEstornarContasReceber(true);
+                }else{
+                    setEstornarContasReceber(false);
+                }
+                break;
+            case 'devolver':
                 if(consultaChoice > 0){
                     setDigitarContasReceber(true);
                 }else{
                     setDigitarContasReceber(false);
                 }
                 break;
-            case 'visualizar':
+            case 'vusializar':
                 if(consultaChoice > 0){
                     setDigitarContasReceber(true);
                 }else{
                     setDigitarContasReceber(false);
                 }
-                break;
-            case 'iniciar_procedimento':
-                if(consultaChoice > 0){
-                    setDigitarContasReceber(true);
-                }else{
-                    setDigitarContasReceber(false);
-                }
-                break;
-            
-            case 'finalizar_procedimento':
-                if(consultaChoice > 0){
-                    setDigitarContasReceber(true);
-                }else{
-                    setDigitarContasReceber(false);
-                }
-                break;        
+                break;  
             case 'contas_receber':
                 if(consultaChoice > 0){
                     setDigitarContasReceber(true);
@@ -198,29 +195,19 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, ...props}
         setAtualizarContasReceber(true);
     }
 
-    const digitarContasReceberAction = (idContasReceber)=>{
+    const baixarContasReceberAction = (idContasReceber)=>{
         setContasReceberChoice(idContasReceber)
-        setAcao('digitar')
-        setAtualizarContasReceber(true);
+        setAcao('baixar')
+        setBaixarContasReceber(true);
     }
 
-    const cancelarContasReceberAction = (idContasReceber)=>{
+    const estornarContasReceberAction = (idContasReceber)=>{
         setContasReceberChoice(idContasReceber)
-        setAcao('cancelar')
-        setCancelarContasReceber(true);
-    }
-    //cancelarContasReceber, setCancelarContasReceber
-    const novaContasReceber = (idContasReceber)=>{
-        setContasReceberChoice(idContasReceber)
-        setAcao('consultar')
-        setAtualizarContasReceber(true);
+        setAcao('estornar')
+        setEstornarContasReceber(true);
     }
 
-    const iniciarContasReceber = (idContasReceber)=>{
-        setIniciarContasReceber(idContasReceber)
-        setAcao('iniciar')
-        setIniciarContasReceber(true);
-    }
+
 
     const gerarTableContasReceber = ()=>{
        
@@ -232,23 +219,24 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, ...props}
                 if(atual){
                     let acoesArr = [];
                     let btnEditar                   = true;
-                    let btnIniciarProcedimento      = true;
+                    let baixar                      = true;
                     let btnFinalizar                = true;
-                    let btnVisualizarFinanceiro     = true;
+                    let estornar                    = true;
+                    let btnVisualizarMovimentacoes  = true;
                     let btnVisualizar               = true;
                     let btnCotinuarDigitacao        = true;
                     let btnCancelar                 = true;
 
-                    if(atual?.status != 'cancelado'){
-                        if(atual?.is_faturado == 'yes'){
-                            btnCotinuarDigitacao  = false;
-                        }
-
+                    if(atual?.status != 'pago'){
+                        estornar= false;
+                    }else if(atual?.status != 'aberto'){
+                        estornar    = false;
+                        btnEditar   = false;
                     }else{
 
                         btnCotinuarDigitacao    = false;
                         btnFinalizar            = false;
-                        btnIniciarProcedimento  = false;
+                        baixar  = false;
                         acoesArr                = [];
                         btnEditar               = false;
                     }
@@ -258,19 +246,19 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, ...props}
                         acoesArr.push({acao:()=>atualizarContasReceberAction(atual.id), label:'Editar', propsOption:{}, propsLabel:{}})
                     }
 
-                    if(btnIniciarProcedimento){
-                        acoesArr.push({acao:()=>atualizarContasReceberAction(atual.id), label:'Baixar', propsOption:{}, propsLabel:{}})
+                    if(baixar){
+                        acoesArr.push({acao:()=>baixarContasReceberAction(atual.id), label:'Baixar', propsOption:{}, propsLabel:{}})
                     }
 
-                    if(btnIniciarProcedimento){
-                        acoesArr.push({acao:()=>atualizarContasReceberAction(atual.id), label:'Extornar', propsOption:{}, propsLabel:{}})
+                    if(estornar){
+                        acoesArr.push({acao:()=>estornarContasReceberAction(atual.id), label:'Estornar', propsOption:{}, propsLabel:{}})
                     }
 
-                    if(btnIniciarProcedimento){
-                        acoesArr.push({acao:()=>atualizarContasReceberAction(atual.id), label:'Devolver', propsOption:{}, propsLabel:{}})
+                    if(baixar){
+                        //acoesArr.push({acao:()=>atualizarContasReceberAction(atual.id), label:'Devolver', propsOption:{}, propsLabel:{}})
                     }
 
-                    if(btnVisualizarFinanceiro){
+                    if(btnVisualizarMovimentacoes){
                         acoesArr.push({acao:()=>atualizarContasReceberAction(atual.id), label:'Movimentações', propsOption:{}, propsLabel:{}})
                     }
 
@@ -502,12 +490,61 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, ...props}
 
     const rowsTableArr = gerarTableContasReceber();    
     const titulosTableArr = gerarTitleTable();
+    const dataContasReceberRelatorio = estado.mensagem;
 
     return(
         <>
             <Row>
-                
-                <Col  xs="12" sm="12" md="12">
+                <Col  xs="12" sm="12" md="12" className={'mobile_card_report'}>
+                    {
+                        dataContasReceberRelatorio && Array.isArray(dataContasReceberRelatorio) && dataContasReceberRelatorio.length > 0 ? (
+                            dataContasReceberRelatorio.map((item, index, arr)=>{
+                                let {status, name, vrPago, vrAberto, vrDevolvido, id, dtVencimento, cdCobrancaTipo} = item;
+                                return(
+                                     <div className={'mb-2'}>
+                                        <Card className={'mb-5'} title={<> <FontAwesomeIcon icon={faUser}/> {name}</>}
+                                                acoesBottomCard={[
+                                                        {label:'', props:{onClick:()=>atualizarContasReceberAction(id), className:'btn  btn-sm mx-2 btn-primary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faPen} />},
+                                                        {label:'', props:{onClick:()=>baixarContasReceberAction(id), className:'btn  btn-sm mx-2 botao_success btn-success', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faHandHoldingUsd} />},
+                                                        {label:'', props:{onClick:()=>estornarContasReceberAction(id), className:'btn  btn-sm mx-2 btn-dark', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faHandHolding} /> },
+                                                        {label:'', props:{onClick:()=>atualizarContasReceberAction(id), className:'btn  btn-sm mx-2 btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faList} /> },
+                                                        {label:'', props:{onClick:()=>atualizarContasReceberAction(id), className:'btn  btn-sm mx-2 btn-info', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faFile} /> },
+                                                        {props:{onClick:()=>atualizarContasReceberAction(id), className:'btn  btn-sm mx-2 btn-danger', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faTrash} /> },
+                                                    ]}
+                                             >
+                                            <Row className={'mb-3'} style={{fontSize:'14pt'}}>
+                                                <Col style={{textAlign:'center'}}>
+                                                    <span style={{fontWeight:'bolder'}}>Aberto R$</span> {FORMAT_MONEY(vrAberto)}
+                                                </Col>
+                                                <Col style={{textAlign:'center'}}>
+                                                    <span style={{fontWeight:'bolder'}}>Pago R$</span> {FORMAT_MONEY(vrPago)}
+                                                </Col>
+                                            </Row>
+
+                                            <Row className={'mb-3'} style={{fontSize:'14pt'}}>
+                                                <Col style={{textAlign:'center'}}>
+                                                    <span style={{fontWeight:'bolder'}}>Cobrança</span>: {cdCobrancaTipo}
+                                                </Col>
+                                                <Col style={{textAlign:'center'}}>
+                                                    <span style={{fontWeight:'bolder'}}>Vencimento:</span> {FORMAT_DATA_PT_BR(dtVencimento)}
+                                                </Col>
+                                            </Row>
+
+                                            <Row style={{fontSize:'14pt'}}>
+                                                <Col style={{textAlign:'center'}}>
+                                                    <span style={{textAlign:'center'}} ><span style={{fontWeight:'bolder'}}>Status:</span> {status}</span>
+                                                </Col>
+                                            </Row>
+                                        </Card>
+                                     </div>
+                                )
+                            })
+                        ) : (null)
+                    
+                    }
+                </Col>
+
+                <Col  xs="12" sm="12" md="12" className={'default_card_report'}>
                     <Table
                         titulosTableArr={titulosTableArr}
                         rowsTableArr={rowsTableArr}
@@ -525,7 +562,16 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, ...props}
                 atualizarContasReceber &&
                 <Atualizar atualizarContasReceber={atualizarContasReceber} setAtualizarContasReceber={setAtualizarContasReceber}  idContasReceber={consultaChoice} setIdContasReceber={setContasReceberChoice} callback={callBack} />
             }
-
+            
+            {
+                baixarContasReceber &&
+                <Baixar baixarContasReceber={baixarContasReceber} setBaixarContasReceber={setBaixarContasReceber}  idContasReceber={consultaChoice} setIdContasReceber={setContasReceberChoice} callback={callBack} />
+            }
+            
+            {
+                estornarContasReceber &&
+                <Estornar estornarContasReceber={estornarContasReceber} setEstornarContasReceber={setEstornarContasReceber}  idContasReceber={consultaChoice} setIdContasReceber={setContasReceberChoice} callback={callBack} />
+            }
 
 
         </>

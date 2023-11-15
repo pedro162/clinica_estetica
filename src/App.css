@@ -102,3 +102,65 @@ a{
 .modal-90w{
     min-width: 90%;
 }
+
+.mobile_card_report{
+    
+    /* Small devices (portrait tablets and large phones, 600px and up) */
+    @media only screen and (min-width: 600px) {
+        display: block;
+    }
+
+    /* Medium devices (landscape tablets, 768px and up) */
+    @media only screen and (min-width: 768px) {
+        display: block;
+    }
+
+    /* Extra large devices (large laptops and desktops, 1200px and up) */
+    @media only screen and (min-width: 1200px) {
+        display: none;
+    }
+}
+
+.default_card_report{
+
+
+    @media only screen and (min-width: 50px) {
+        display: none;
+    }
+
+
+    @media only screen and (min-width: 100px) {
+        display: none;
+    }
+
+    @media only screen and (min-width: 200px) {
+        display: none;
+    }
+
+    @media only screen and (min-width: 300px) {
+        display: none;
+    }
+
+    @media only screen and (min-width: 400px) {
+        display: none;
+    }
+
+    @media only screen and (min-width: 500px) {
+        display: none;
+    }
+
+    /* Small devices (portrait tablets and large phones, 600px and up) */
+    @media only screen and (min-width: 600px) {
+        display: none;
+    }
+
+    /* Medium devices (landscape tablets, 768px and up) */
+    @media only screen and (min-width: 768px) {
+        display: none;
+    }
+
+    /* Extra large devices (large laptops and desktops, 1200px and up) */
+    @media only screen and (min-width: 1200px) {
+        display: block;
+    }
+}
