@@ -5,9 +5,10 @@ import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, ORDEM_SERVICO_ALL_POST} from '../..
 import {FORMAT_DATA_PT_BR} from '../../functions/index.js'
 import {Col, Row } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
+import CardMobile from '../Relatorio/CardMobile/index.js'
 import Filter from '../Relatorio/Filter/index.js'
 import Breadcrumbs from '../Helper/Breadcrumbs.js'
-import { faHome, faSearch, faPlus, faPen, faHandHoldingUsd, faList, faFile, faTrash, faHandHolding, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faSearch, faPlus, faPen, faHandHoldingUsd, faList, faFile, faTrash, faHandHolding, faUser, faUserCircle, faEllipsisH } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from '../Utils/Modal/index.js'
 import Load from '../Utils/Load/index.js'
@@ -449,6 +450,139 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, ...props}
 
         return tableTitle;
     }
+
+
+    const gerarCardContasReceber = ()=>{
+       
+        let data = [];
+        let dataContasReceber = estado.mensagem
+        if(dataContasReceber && Array.isArray(dataContasReceber) && dataContasReceber.length > 0){
+            for(let i=0; !(i == dataContasReceber.length); i++){
+                let atual = dataContasReceber[i];
+                if(atual){
+                    let acoesArr = [];
+                    let btnEditar                   = true;
+                    let baixar                      = true;
+                    let btnFinalizar                = true;
+                    let estornar                    = true;
+                    let btnVisualizarMovimentacoes  = true;
+                    let btnVisualizar               = true;
+                    let btnCotinuarDigitacao        = true;
+                    let btnCancelar                 = true;
+
+                    if(atual?.status != 'pago'){
+                        estornar= false;
+                    }else if(atual?.status != 'aberto'){
+                        estornar    = false;
+                        btnEditar   = false;
+                    }else{
+
+                        btnCotinuarDigitacao    = false;
+                        btnFinalizar            = false;
+                        baixar  = false;
+                        acoesArr                = [];
+                        btnEditar               = false;
+                    }
+
+
+                    if(btnEditar){
+                        acoesArr.push({acao:()=>atualizarContasReceberAction(atual.id), label:'Editar', propsOption:{}, propsLabel:{}})
+                    }
+
+                    if(baixar){
+                        acoesArr.push({acao:()=>baixarContasReceberAction(atual.id), label:'Baixar', propsOption:{}, propsLabel:{}})
+                    }
+
+                    if(estornar){
+                        acoesArr.push({acao:()=>estornarContasReceberAction(atual.id), label:'Estornar', propsOption:{}, propsLabel:{}})
+                    }
+
+                    if(baixar){
+                        //acoesArr.push({acao:()=>atualizarContasReceberAction(atual.id), label:'Devolver', propsOption:{}, propsLabel:{}})
+                    }
+
+                    if(btnVisualizarMovimentacoes){
+                        acoesArr.push({acao:()=>atualizarContasReceberAction(atual.id), label:'Movimentações', propsOption:{}, propsLabel:{}})
+                    }
+
+                    if(btnVisualizar){
+                        acoesArr.push({acao:()=>atualizarContasReceberAction(atual.id), label:'Visualizar', propsOption:{}, propsLabel:{}})
+                    }
+
+                    if(btnCancelar){
+                        
+                    }
+
+                    //propsContainerTitulo, propsContainerButtons
+                    data.push(
+
+                        {
+                            propsRow:{id:(atual.id)},
+                            acoes:[
+                                ...acoesArr
+                            ],
+                            title:<> <div style={{display:'flex', justifyContent:'space-between',fontSize:'18pt', fontWeight:'bolder'}} ><span><FontAwesomeIcon size={'lg'} icon={faUserCircle}/> {atual?.name} </span> </div> </>,
+                            propsContainerTitulo:{md:'11', sm:'9', xs:'9'},
+                            propsContainerButtons:{md:'1', sm:'3', xs:'3'},
+                            acoesBottomCard:[
+                               {label:'', props:{onClick:()=>atualizarContasReceberAction(atual?.id), className:'btn  btn-sm mx-2 btn-primary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faPen} />},
+                               {label:'', props:{onClick:()=>baixarContasReceberAction(atual?.id), className:'btn  btn-sm mx-2 botao_success btn-success', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faHandHoldingUsd} />},
+                               {label:'', props:{onClick:()=>estornarContasReceberAction(atual?.id), className:'btn  btn-sm mx-2 btn-dark', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faHandHolding} /> },
+                               {label:'', props:{onClick:()=>atualizarContasReceberAction(atual?.id), className:'btn  btn-sm mx-2 btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faList} /> },
+                               {label:'', props:{onClick:()=>atualizarContasReceberAction(atual?.id), className:'btn  btn-sm mx-2 btn-info', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faFile} /> },
+                               {props:{onClick:()=>atualizarContasReceberAction(atual?.id), className:'btn  btn-sm mx-2 btn-danger', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faTrash} /> },
+                            ],
+                            celBodyTableArr:[
+                                [
+                                    {
+                                        title:<span style={{fontWeight:'bolder'}}>Aberto R$: </span>,
+                                        label:FORMAT_MONEY(atual?.vrAberto),
+                                        props:{style:{textAlign:'left'}},
+                                        toSum:1,
+                                        isCoin:1,
+                                    },
+                                    {
+                                        title:<span style={{fontWeight:'bolder'}}>Pago R$: </span>,
+                                        label:FORMAT_MONEY(atual?.vrPago),
+                                        props:{style:{textAlign:'left'}},
+                                        toSum:1,
+                                        isCoin:1,
+                                    },
+
+                                ],
+                                [
+                                    {
+                                        title:<span style={{fontWeight:'bolder'}}>Cobrança: </span>,
+                                        label:atual.cdCobrancaTipo,
+                                        props:{style:{textAlign:'left'}},
+                                     },
+                                     {
+                                        title:<span style={{fontWeight:'bolder'}}>Vencimento: </span>,
+                                        label:FORMAT_DATA_PT_BR(atual.dtVencimento),
+                                        props:{style:{textAlign:'left'}},
+                                    },
+                                ],                                
+                                [
+                                     {
+                                        title:<span style={{fontWeight:'bolder'}}>Status: </span>,
+                                        label:atual.status,
+                                        props:{style:{textAlign:'center'}},
+                                    },
+                                ]
+                               
+                               
+                            ]
+                        }
+
+                    )
+
+                }
+
+            }
+        }
+
+        return data;
+    }
    //name_profissional
 
     //------------
@@ -497,12 +631,13 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, ...props}
             <Row>
                 <Col  xs="12" sm="12" md="12" className={'mobile_card_report'}>
                     {
+                     /*       
                         dataContasReceberRelatorio && Array.isArray(dataContasReceberRelatorio) && dataContasReceberRelatorio.length > 0 ? (
                             dataContasReceberRelatorio.map((item, index, arr)=>{
-                                let {status, name, vrPago, vrAberto, vrDevolvido, id, dtVencimento, cdCobrancaTipo} = item;
+                                let {status, name, vrPago, vrAberto, vrDevolvido, id, dtVencimento, cdCobrancaTipo, filial_id} = item;
                                 return(
                                      <div className={'mb-2'}>
-                                        <Card className={'mb-5'} title={<> <FontAwesomeIcon icon={faUser}/> {name}</>}
+                                        <Card className={'mb-5'} title={<> <div style={{display:'flex', justifyContent:'space-between',fontSize:'20pt', fontWeight:'bolder'}} ><span><FontAwesomeIcon size={'lg'} icon={faUserCircle}/> {name} </span> <span><FontAwesomeIcon size={'lg'} icon={faEllipsisH}/></span></div> </>}
                                                 acoesBottomCard={[
                                                         {label:'', props:{onClick:()=>atualizarContasReceberAction(id), className:'btn  btn-sm mx-2 btn-primary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faPen} />},
                                                         {label:'', props:{onClick:()=>baixarContasReceberAction(id), className:'btn  btn-sm mx-2 botao_success btn-success', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faHandHoldingUsd} />},
@@ -512,20 +647,21 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, ...props}
                                                         {props:{onClick:()=>atualizarContasReceberAction(id), className:'btn  btn-sm mx-2 btn-danger', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faTrash} /> },
                                                     ]}
                                              >
+                                            
                                             <Row className={'mb-3'} style={{fontSize:'14pt'}}>
-                                                <Col style={{textAlign:'center'}}>
-                                                    <span style={{fontWeight:'bolder'}}>Aberto R$</span> {FORMAT_MONEY(vrAberto)}
+                                                <Col style={{textAlign:'left'}}>
+                                                    <span style={{fontWeight:'bolder'}}>Aberto R$: </span> {FORMAT_MONEY(vrAberto)}
                                                 </Col>
-                                                <Col style={{textAlign:'center'}}>
-                                                    <span style={{fontWeight:'bolder'}}>Pago R$</span> {FORMAT_MONEY(vrPago)}
+                                                <Col style={{textAlign:'left'}}>
+                                                    <span style={{fontWeight:'bolder'}}>Pago R$: </span> {FORMAT_MONEY(vrPago)}
                                                 </Col>
                                             </Row>
 
                                             <Row className={'mb-3'} style={{fontSize:'14pt'}}>
-                                                <Col style={{textAlign:'center'}}>
+                                                <Col style={{textAlign:'left'}}>
                                                     <span style={{fontWeight:'bolder'}}>Cobrança</span>: {cdCobrancaTipo}
                                                 </Col>
-                                                <Col style={{textAlign:'center'}}>
+                                                <Col style={{textAlign:'left'}}>
                                                     <span style={{fontWeight:'bolder'}}>Vencimento:</span> {FORMAT_DATA_PT_BR(dtVencimento)}
                                                 </Col>
                                             </Row>
@@ -540,8 +676,18 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, ...props}
                                 )
                             })
                         ) : (null)
+
+                        */
+
+                        
                     
                     }
+                    <CardMobile
+                        titulosTableArr={null}
+                        rowsTableArr={gerarCardContasReceber()}
+                        loading={loadingData}
+                        botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
+                    />
                 </Col>
 
                 <Col  xs="12" sm="12" md="12" className={'default_card_report'}>

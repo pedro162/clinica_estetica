@@ -2,7 +2,7 @@ import React from 'react';
 import { Container, Col, Row, Card as CartBootstrap, Button } from 'react-bootstrap';
 import estilos from './Card.module.css'
 
-const Card =({children, title, acoesBottomCard, propsCard, botoesHeader,...props})=>{
+const Card =({children, title, acoesBottomCard, propsContainerTitulo, propsContainerButtons, propsCard, botoesHeader,...props})=>{
 	//console.log('Acoes de relatorio')
 	//console.log(botoesHeader)
 	return(
@@ -10,7 +10,7 @@ const Card =({children, title, acoesBottomCard, propsCard, botoesHeader,...props
 			<CartBootstrap {...propsCard} >
 				<CartBootstrap.Header className={[estilos.headerCard]}>
 					<Row style={{}}>
-						<Col>
+						<Col  {...propsContainerTitulo} >
 							<CartBootstrap.Title>{title}</CartBootstrap.Title>
 						</Col>
 						{
@@ -18,7 +18,7 @@ const Card =({children, title, acoesBottomCard, propsCard, botoesHeader,...props
 							? (
 
 
-									<Col style={{display:'flex',flexCirection:'collumn',justifyContent: 'flex-end'}}>
+									<Col style={{display:'flex',flexCirection:'collumn',justifyContent: 'flex-end'}} {...propsContainerButtons} >
 										
 										{Array.isArray(botoesHeader) && botoesHeader.length > 0 && botoesHeader.map((item, index, arr)=>{
 											let {acao, label, propsAcoes, icon} = item;

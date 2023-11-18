@@ -267,7 +267,7 @@ const FormContasReceber = ({dataContasReceberChoice, setDataContasReceber, setId
 						<Modal
 							bottomButtons={null}
 							handleConcluir={()=>{handleSubmit(); }}
-							title={ (atualizarContasReceber == true ? 'Atualizar' : 'Cadastrar')+' Ordem de Servico'}
+							title={ (atualizarContasReceber == true ? 'Atualizar' : 'Cadastrar')+' Contas a Receber'}
 							size="lg"
 							propsConcluir={{'disabled':loading}}
 							labelConcluir={loading ? <><FontAwesomeIcon icon={faCheck} /> Salvando...</> : <><FontAwesomeIcon icon={faCheck} /> Concluir </>}
