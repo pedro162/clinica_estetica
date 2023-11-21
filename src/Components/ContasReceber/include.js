@@ -4,6 +4,7 @@ import useFetch from '../../Hooks/useFetch.js';
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, ORDEM_SERVICO_ALL_POST} from '../../api/endpoints/geral.js'
 import {FORMAT_DATA_PT_BR} from '../../functions/index.js'
 import {Col, Row } from 'react-bootstrap';
+import FormControlInput from '../FormControl/index.js'
 import Table from '../Relatorio/Table/index.js'
 import CardMobile from '../Relatorio/CardMobile/index.js'
 import Filter from '../Relatorio/Filter/index.js'
@@ -629,65 +630,97 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, ...props}
     return(
         <>
             <Row>
-                <Col  xs="12" sm="12" md="12" className={'mobile_card_report'}>
+                <Col  xs="12" sm="12" md="12" className={'mobile_card_report, py-4'}  style={{backgroundColor:'#FFF'}}>
+                    <Row className={'mb-3 '} >
+                        <Col className={'mx-2'}  >
+                           <Row style={{borderRadius:'24px 24px 24px 24px', border:'1px solid #000'}}>
+                                <Col xs="11" sm="11" md="11" >
+                                    <FormControlInput
+                                        data={
+                                            {
+                                                atributsFormControl:{
+                                                    type:'input',
+                                                    placeholder:'Search...',
+                                                    style:{
+                                                        border:'none',
+                                                        outline:'0',
+                                                        'box-shadow':'0 0 0 0',
+                                                        height:'50px',
+                                                        borderRadius:'24px 24px 24px 24px'
+                                                        
+                                                    }
+
+                                                }
+                                            }
+                                        }
+                                     />
+                                </Col>
+
+                                <Col xs="1" sm="1" md="1" style={{textAlign:'left', alignItems:'center', justifyContent:'center', margin:'auto',padding:'0'}} >
+                                    <FontAwesomeIcon size={'lg'} icon={faSearch}/>
+                                </Col>
+                            
+                                
+                             </Row>
+
+                        </Col>
+                        
+                        
+                    </Row>
+                    <div>
+                         <hr style={{margin:'0',padding:'0'}}/>  
+                    </div>
                     {
-                     /*       
                         dataContasReceberRelatorio && Array.isArray(dataContasReceberRelatorio) && dataContasReceberRelatorio.length > 0 ? (
                             dataContasReceberRelatorio.map((item, index, arr)=>{
                                 let {status, name, vrPago, vrAberto, vrDevolvido, id, dtVencimento, cdCobrancaTipo, filial_id} = item;
                                 return(
-                                     <div className={'mb-2'}>
-                                        <Card className={'mb-5'} title={<> <div style={{display:'flex', justifyContent:'space-between',fontSize:'20pt', fontWeight:'bolder'}} ><span><FontAwesomeIcon size={'lg'} icon={faUserCircle}/> {name} </span> <span><FontAwesomeIcon size={'lg'} icon={faEllipsisH}/></span></div> </>}
-                                                acoesBottomCard={[
-                                                        {label:'', props:{onClick:()=>atualizarContasReceberAction(id), className:'btn  btn-sm mx-2 btn-primary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faPen} />},
-                                                        {label:'', props:{onClick:()=>baixarContasReceberAction(id), className:'btn  btn-sm mx-2 botao_success btn-success', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faHandHoldingUsd} />},
-                                                        {label:'', props:{onClick:()=>estornarContasReceberAction(id), className:'btn  btn-sm mx-2 btn-dark', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faHandHolding} /> },
-                                                        {label:'', props:{onClick:()=>atualizarContasReceberAction(id), className:'btn  btn-sm mx-2 btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faList} /> },
-                                                        {label:'', props:{onClick:()=>atualizarContasReceberAction(id), className:'btn  btn-sm mx-2 btn-info', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faFile} /> },
-                                                        {props:{onClick:()=>atualizarContasReceberAction(id), className:'btn  btn-sm mx-2 btn-danger', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faTrash} /> },
-                                                    ]}
-                                             >
-                                            
-                                            <Row className={'mb-3'} style={{fontSize:'14pt'}}>
-                                                <Col style={{textAlign:'left'}}>
-                                                    <span style={{fontWeight:'bolder'}}>Aberto R$: </span> {FORMAT_MONEY(vrAberto)}
-                                                </Col>
-                                                <Col style={{textAlign:'left'}}>
-                                                    <span style={{fontWeight:'bolder'}}>Pago R$: </span> {FORMAT_MONEY(vrPago)}
-                                                </Col>
-                                            </Row>
+                                        <div  key={id+index+arr.length}>
+                                            <Row className={'py-2 px-1'}>
 
-                                            <Row className={'mb-3'} style={{fontSize:'14pt'}}>
-                                                <Col style={{textAlign:'left'}}>
-                                                    <span style={{fontWeight:'bolder'}}>Cobrança</span>: {cdCobrancaTipo}
-                                                </Col>
-                                                <Col style={{textAlign:'left'}}>
-                                                    <span style={{fontWeight:'bolder'}}>Vencimento:</span> {FORMAT_DATA_PT_BR(dtVencimento)}
-                                                </Col>
-                                            </Row>
+                                                    <Col xs="2" sm="2" md="2"  style={{textAlign:'left', alignItems:'center', justifyContent:'center', margin:'auto',fontSize:'25pt'}}>
+                                                        <FontAwesomeIcon size={'lg'} icon={faUserCircle}/>
+                                                    </Col>
 
-                                            <Row style={{fontSize:'14pt'}}>
-                                                <Col style={{textAlign:'center'}}>
-                                                    <span style={{textAlign:'center'}} ><span style={{fontWeight:'bolder'}}>Status:</span> {status}</span>
-                                                </Col>
+                                                    <Col xs="10" sm="10" md="10"  style={{textAlign:'left', fontSize:'10pt'}}>
+                                                        <Row className={'mb-1'}>
+                                                            <span style={{fontSize:'14pt', fontWeight:'bolder'}} >{name}</span>
+                                                        </Row>
+                                                        <Row>
+                                                            <Col>
+                                                                <span>Aberto R$: {FORMAT_MONEY(vrAberto)}</span>
+                                                            </Col>
+                                                            <Col>
+                                                                <span>Status: {status}</span>
+                                                            </Col>
+                                                            <Col>
+                                                                <span>Vencimento: {FORMAT_DATA_PT_BR(dtVencimento)}</span>
+                                                            </Col>
+                                                            
+                                                        </Row>
+                                                        
+                                                    </Col>
                                             </Row>
-                                        </Card>
-                                     </div>
+                                            <hr style={{margin:'0',padding:'0'}}/>
+                                        </div>
+                                        
                                 )
                             })
                         ) : (null)
-
-                        */
-
                         
                     
                     }
+
+                    {
+                    /*
                     <CardMobile
                         titulosTableArr={null}
                         rowsTableArr={gerarCardContasReceber()}
                         loading={loadingData}
                         botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
                     />
+                    */
+                    }
                 </Col>
 
                 <Col  xs="12" sm="12" md="12" className={'default_card_report'}>
