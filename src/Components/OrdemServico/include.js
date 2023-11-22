@@ -5,9 +5,10 @@ import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, ORDEM_SERVICO_ALL_POST} from '../..
 import {FORMAT_DATA_PT_BR} from '../../functions/index.js'
 import {Col, Row } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
+import ListMobile from '../Relatorio/ListMobile/index.js'
 import Filter from '../Relatorio/Filter/index.js'
 import Breadcrumbs from '../Helper/Breadcrumbs.js'
-import { faHome, faSearch, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faSearch, faPlus, faUserCircle, faHandHoldingUsd,faHandHolding } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from '../Utils/Modal/index.js'
 import Load from '../Utils/Load/index.js'
@@ -463,6 +464,148 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idOrdemCr
         return data;
     }
 
+    const gerarListMobileRelatorio = ()=>{
+       
+        let data = [];
+        let dataOrdemServico = estado.mensagem
+        if(dataOrdemServico && Array.isArray(dataOrdemServico) && dataOrdemServico.length > 0){
+            for(let i=0; !(i == dataOrdemServico.length); i++){
+                let atual = dataOrdemServico[i];
+                if(atual){
+                    let acoesArr = [];
+                    let btnEditar                   = true;
+                    let btnIniciarProcedimento      = true;
+                    let btnFinalizar                = true;
+                    let btnVisualizarFinanceiro     = true;
+                    let btnVisualizar               = true;
+                    let btnCotinuarDigitacao        = true;
+                    let btnCancelar                 = true;
+
+                    if(atual?.status != 'cancelado'){
+                        
+                        if(atual?.is_faturado == 'yes'){
+                            btnCotinuarDigitacao        = false;
+                            btnVisualizarFinanceiro     = true;
+                            btnIniciarProcedimento      = false;
+                        }else{
+                            btnFinalizar                = false;
+                            btnIniciarProcedimento      = false;
+                            btnVisualizarFinanceiro     = false;
+                        }
+
+                        if(atual?.status == 'concluido'){
+                            btnCotinuarDigitacao    = false;
+                            btnFinalizar            = false;
+                            btnEditar               = false;
+                            btnIniciarProcedimento  = false;
+                        }
+
+                    }else{
+
+                        btnCotinuarDigitacao    = false;
+                        btnFinalizar            = false;
+                        btnIniciarProcedimento  = false;
+                        acoesArr                = [];
+                        btnEditar               = false;
+                    }
+
+                    if(btnCotinuarDigitacao){
+                        acoesArr.push({acao:()=>atualizarOrdemServicoAction(atual.id), label:'Continuar digitação', propsOption:{}, propsLabel:{}})
+                    }
+
+                    if(btnEditar){
+                        acoesArr.push({acao:()=>atualizarCabecalhoOrdemServicoAction(atual.id), label:'Editar', propsOption:{}, propsLabel:{}})
+                    }
+
+                    if(btnIniciarProcedimento){
+                        //acoesArr.push({acao:()=>atualizarOrdemServicoAction(atual.id), label:'Iniciar procedimento', propsOption:{}, propsLabel:{}})
+                    }
+
+                    if(btnFinalizar){
+                        acoesArr.push({acao:()=>finalizarOrdemServicoAction(atual.id), label:'Finalizar procedimento', propsOption:{}, propsLabel:{}})
+                    }
+
+                    if(btnVisualizarFinanceiro){
+                        acoesArr.push({acao:()=>{visualizarContasReceberAction(atual.id); setDefaultFiltersCobReceber({...atual, pessoa_name:atual?.name, referencia_id:atual?.id, referencia:'ordem_servicos'})}, label:'Conta a receber', propsOption:{}, propsLabel:{}})
+                    }
+
+                    if(btnVisualizar){
+                        acoesArr.push({acao:()=>atualizarOrdemServicoAction(atual.id), label:'Visualizar', propsOption:{}, propsLabel:{}})
+                    }
+
+                    if(btnCancelar){
+                        acoesArr.push({acao:()=>cancelarOrdemServicoAction(atual.id), label:'Cancelar', propsOption:{}, propsLabel:{}})
+                    }
+
+                    let line_style = {}
+                    if(atual.status == 'cancelado'){
+                        line_style.color = 'red';
+                    }else if(atual.status == 'concluido'){
+                        line_style.color = 'green';
+                    } 
+
+                    //propsContainerTitulo, propsContainerButtons
+                    data.push(
+
+                        {
+                            propsRow:{id:(atual.id), titleRow:atual?.name},
+                            acoes:[
+                                ...acoesArr
+                            ],
+                            title:<> <div style={{display:'flex', justifyContent:'space-between',fontSize:'18pt', fontWeight:'bolder'}} ><span><FontAwesomeIcon size={'lg'} icon={faUserCircle}/> {atual?.name} </span> </div> </>,
+                            propsContainerTitulo:{md:'11', sm:'9', xs:'9'},
+                            propsContainerButtons:{md:'1', sm:'3', xs:'3'},
+                            acoesBottomCard:[
+                              
+                            ],
+                            celBodyTableArr:[
+                                [
+                                    {
+                                        title:<span style={{fontWeight:'480'}}>Total R$: </span>,
+                                        label:FORMAT_MONEY(atual?.vr_final),
+                                        props:{style:{textAlign:'left'}},
+                                        toSum:1,
+                                        isCoin:1,
+                                    },
+                                    {
+                                        title:<span style={{fontWeight:'480'}}>Status: </span>,
+                                        label:atual?.status,
+                                        props:{style:{textAlign:'left'}},
+                                        toSum:1,
+                                        isCoin:1,
+                                    },
+                                    /*{
+                                        title:<span style={{fontWeight:'480'}}>Faturado: </span>,
+                                        label:(atual.is_faturado == 'yes' ? 'Sim' : 'Não'),
+                                        props:{style:{textAlign:'left'}},
+                                        toSum:1,
+                                        isCoin:1,
+                                    },*/
+                                    {
+                                        title:<span style={{fontWeight:'480'}}>Criado em: </span>,
+                                        label:FORMAT_DATA_PT_BR(atual.created_at),
+                                        props:{style:{textAlign:'left'}},
+                                        toSum:1,
+                                        isCoin:1,
+                                    },
+
+                                ],
+                                
+                               
+                               
+                            ]
+                        }
+
+                    )
+
+                }
+
+            }
+        }
+
+        return data;
+    }
+
     const gerarTitleTable = ()=>{
         let tableTitle = [
             {
@@ -570,8 +713,30 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idOrdemCr
     return(
         <>
             <Row>
-                
-                <Col  xs="12" sm="12" md="12">
+                <Col  xs="12" sm="12" md="12" className={'mobile_card_report py-4'}  style={{backgroundColor:'#FFF',}}>
+
+                   
+                    
+                    <ListMobile
+                        titulosTableArr={null}
+                        rowsTableArr={gerarListMobileRelatorio()}
+                        loading={loadingData}
+                        botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
+                    />
+
+                    {
+                    /*
+                    <CardMobile
+                        titulosTableArr={null}
+                        rowsTableArr={gerarCardContasReceber()}
+                        loading={loadingData}
+                        botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
+                    />
+                    */
+                    }
+                </Col>
+
+                <Col  xs="12" sm="12" md="12"  className={'default_card_report'}>
                     <Table
                         titulosTableArr={titulosTableArr}
                         rowsTableArr={rowsTableArr}

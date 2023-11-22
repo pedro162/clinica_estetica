@@ -16,6 +16,7 @@ import FormContasReceber from './FormContasReceber/index.js'
 import Cadastrar from './Cadastrar/index.js'
 import Atualizar from './Atualizar/index.js'
 import Include from './include';
+import FormControlInput from '../FormControl/index.js'
 import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../functions/index.js'
 
 
@@ -33,6 +34,7 @@ const ContasReceber = ({defaultFilters ,...props})=>{
     const [cadastrarContasReceber, setCadastrarContasReceber] = React.useState(false)
     const [mostarFiltros, setMostarFiltros] = React.useState(false) 
     const [acao, setAcao] = React.useState(null)
+    const [filtroMobile, setFiltroMobile] = React.useState(null)
     const [referenciaContasReceber, setReferenciaContasReceber] = React.useState(()=>{
         return defaultFilters?.referencia
     })
@@ -55,8 +57,11 @@ const ContasReceber = ({defaultFilters ,...props})=>{
         console.log(target)
     }
 
-    const setNamePessoa = ({target})=>{
-        
+    const handleFiltroMobile = ({target})=>{
+        setFiltroMobile(target.value)
+    }
+
+    const setNamePessoa = ({target})=>{        
         setPessoa(target.value)
     }
 
@@ -244,6 +249,17 @@ const ContasReceber = ({defaultFilters ,...props})=>{
                 resetFilter:()=>setPessoa(''),
             };
         }
+
+        if(filtroMobile){
+            filtros['pessoa_name'] = filtroMobile;
+            detalhesFiltros['pessoa_name'] = {
+                label:'Filtro',
+                value:filtroMobile,
+                resetFilter:()=>setFiltroMobile(''),
+            };
+        }
+
+        //, 
         
 
         return {filtros, detalhesFiltros};
@@ -325,8 +341,57 @@ const ContasReceber = ({defaultFilters ,...props})=>{
                         </Col>
                     )
                 }
-                
-                <Col  xs="12" sm="12" md={mostarFiltros ? "9":"12"}>
+                <Col  xs="12" sm="12" md="12" className={'mobile_card_report pt-4'}  style={{backgroundColor:'#FFF'}}>
+                    <Row className={'mb-3 '} >
+                        <Col className={'mx-2'}  >
+                           <Row style={{borderRadius:'24px 24px 24px 24px', border:'1px solid #000'}}>
+                                <Col xs="11" sm="11" md="11" >
+                                    <FormControlInput
+                                        data={
+                                            {
+                                                atributsFormControl:{
+                                                    type:'input',
+                                                    placeholder:'Search...',
+                                                    style:{
+                                                        border:'none',
+                                                        outline:'0',
+                                                        'box-shadow':'0 0 0 0',
+                                                        height:'50px',
+                                                        borderRadius:'24px 24px 24px 24px'
+                                                        
+                                                    },
+                                                    onChange:(ev)=>{handleFiltroMobile(ev);},
+                                                    onBlur:(ev)=>{handleFiltroMobile(ev);},
+                                                    onKeyUp:(ev)=>{
+
+                                                        if (ev.key === "Enter") {
+                                                            requestAllContasRecebers();
+                                                        }
+                                                    }
+
+                                                }
+                                            }
+                                        }
+                                     />
+                                </Col>
+
+                                <Col xs="1" sm="1" md="1" style={{textAlign:'left', alignItems:'center', justifyContent:'center', margin:'auto',padding:'0'}} >
+                                    <FontAwesomeIcon onClick={()=>{requestAllContasRecebers();}} size={'lg'} icon={faSearch}/>
+                                </Col>
+                            
+                                
+                             </Row>
+
+                        </Col>
+                        
+                        
+                    </Row>
+                    <div>
+                         <hr style={{margin:'0',padding:'0'}}/>  
+                    </div>
+                </Col>
+
+                <Col  xs="12" sm="12" md={mostarFiltros ? "9":"12"} >
                     <Include
                         dataEstado={estado}
                         loadingData={loading}

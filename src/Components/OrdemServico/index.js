@@ -17,6 +17,7 @@ import Cadastrar from './Cadastrar/index.js'
 import Atualizar from './Atualizar/index.js'
 import Iniciar from './Iniciar/index.js'
 import Include from './include';
+import FormControlInput from '../FormControl/index.js'
 import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../functions/index.js'
 
 
@@ -34,6 +35,7 @@ const OrdemServico = (props)=>{
     const [cadastrarOrdemServico, setCadastrarOrdemServico] = React.useState(false)  
     const [incicarOrdemServico, setIniciarOrdemServico] = React.useState(false) 
     const [mostarFiltros, setMostarFiltros] = React.useState(false) 
+    const [filtroMobile, setFiltroMobile] = React.useState(null)
     const [acao, setAcao] = React.useState(null)
     const [pessoa, setPessoa] = React.useState('')
     const [ordenacao, setOrdenacao] = React.useState('')
@@ -43,6 +45,10 @@ const OrdemServico = (props)=>{
 
     const alerta = (target)=>{
         console.log(target)
+    }
+
+    const handleFiltroMobile = ({target})=>{
+        setFiltroMobile(target.value)
     }
 
     const setNamePessoa = ({target})=>{
@@ -204,6 +210,16 @@ const OrdemServico = (props)=>{
                 resetFilter:()=>setOrdenacao(''),
             };
         }
+
+        if(filtroMobile){
+            filtros['name_pessoa'] = filtroMobile;
+            detalhesFiltros['name_pessoa'] = {
+                label:'Filtro',
+                value:filtroMobile,
+                resetFilter:()=>setFiltroMobile(''),
+            };
+        }
+
         
 
         return {filtros, detalhesFiltros};
@@ -277,6 +293,56 @@ const OrdemServico = (props)=>{
                         </Col>
                     )
                 }
+
+                <Col  xs="12" sm="12" md="12" className={'mobile_card_report pt-4'}  style={{backgroundColor:'#FFF'}}>
+                    <Row className={'mb-3 '} >
+                        <Col className={'mx-2'}  >
+                           <Row style={{borderRadius:'24px 24px 24px 24px', border:'1px solid #000'}}>
+                                <Col xs="11" sm="11" md="11" >
+                                    <FormControlInput
+                                        data={
+                                            {
+                                                atributsFormControl:{
+                                                    type:'input',
+                                                    placeholder:'Search...',
+                                                    style:{
+                                                        border:'none',
+                                                        outline:'0',
+                                                        'box-shadow':'0 0 0 0',
+                                                        height:'50px',
+                                                        borderRadius:'24px 24px 24px 24px'
+                                                        
+                                                    },
+                                                    onChange:(ev)=>{handleFiltroMobile(ev);},
+                                                    onBlur:(ev)=>{handleFiltroMobile(ev);},
+                                                    onKeyUp:(ev)=>{
+
+                                                        if (ev.key === "Enter") {
+                                                            requestAllOrdemServicos();
+                                                        }
+                                                    }
+
+                                                }
+                                            }
+                                        }
+                                     />
+                                </Col>
+
+                                <Col xs="1" sm="1" md="1" style={{textAlign:'left', alignItems:'center', justifyContent:'center', margin:'auto',padding:'0'}} >
+                                    <FontAwesomeIcon onClick={()=>{requestAllOrdemServicos();}} size={'lg'} icon={faSearch}/>
+                                </Col>
+                            
+                                
+                             </Row>
+
+                        </Col>
+                        
+                        
+                    </Row>
+                    <div>
+                         <hr style={{margin:'0',padding:'0'}}/>  
+                    </div>
+                </Col>
                 
                 <Col  xs="12" sm="12" md={mostarFiltros ? "9":"12"}>
                     <Include

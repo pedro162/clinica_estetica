@@ -7,6 +7,8 @@ import {Col, Row } from 'react-bootstrap';
 import FormControlInput from '../FormControl/index.js'
 import Table from '../Relatorio/Table/index.js'
 import CardMobile from '../Relatorio/CardMobile/index.js'
+import ListMobile from '../Relatorio/ListMobile/index.js'
+
 import Filter from '../Relatorio/Filter/index.js'
 import Breadcrumbs from '../Helper/Breadcrumbs.js'
 import { faHome, faSearch, faPlus, faPen, faHandHoldingUsd, faList, faFile, faTrash, faHandHolding, faUser, faUserCircle, faEllipsisH } from "@fortawesome/free-solid-svg-icons";
@@ -584,7 +586,128 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, ...props}
 
         return data;
     }
-   //name_profissional
+
+    const gerarListMobileContasReceber = ()=>{
+       
+        let data = [];
+        let dataContasReceber = estado.mensagem
+        if(dataContasReceber && Array.isArray(dataContasReceber) && dataContasReceber.length > 0){
+            for(let i=0; !(i == dataContasReceber.length); i++){
+                let atual = dataContasReceber[i];
+                if(atual){
+                    let acoesArr = [];
+                    let btnEditar                   = true;
+                    let baixar                      = true;
+                    let btnFinalizar                = true;
+                    let estornar                    = true;
+                    let btnVisualizarMovimentacoes  = true;
+                    let btnVisualizar               = true;
+                    let btnCotinuarDigitacao        = true;
+                    let btnCancelar                 = true;
+
+                    if(atual?.status != 'pago'){
+                        estornar= false;
+                    }else if(atual?.status != 'aberto'){
+                        estornar    = false;
+                        btnEditar   = false;
+                    }else{
+
+                        btnCotinuarDigitacao    = false;
+                        btnFinalizar            = false;
+                        baixar  = false;
+                        acoesArr                = [];
+                        btnEditar               = false;
+                    }
+
+
+                    if(btnEditar){
+                        acoesArr.push({acao:()=>atualizarContasReceberAction(atual.id), label:'Editar', propsOption:{}, propsLabel:{}})
+                    }
+
+                    if(baixar){
+                        acoesArr.push({acao:()=>baixarContasReceberAction(atual.id), label:'Baixar', propsOption:{}, propsLabel:{}})
+                    }
+
+                    if(estornar){
+                        acoesArr.push({acao:()=>estornarContasReceberAction(atual.id), label:'Estornar', propsOption:{}, propsLabel:{}})
+                    }
+
+                    if(baixar){
+                        //acoesArr.push({acao:()=>atualizarContasReceberAction(atual.id), label:'Devolver', propsOption:{}, propsLabel:{}})
+                    }
+
+                    if(btnVisualizarMovimentacoes){
+                        acoesArr.push({acao:()=>atualizarContasReceberAction(atual.id), label:'Movimentações', propsOption:{}, propsLabel:{}})
+                    }
+
+                    if(btnVisualizar){
+                        acoesArr.push({acao:()=>atualizarContasReceberAction(atual.id), label:'Visualizar', propsOption:{}, propsLabel:{}})
+                    }
+
+                    if(btnCancelar){
+                        
+                    }
+
+                    //propsContainerTitulo, propsContainerButtons
+                    data.push(
+
+                        {
+                            propsRow:{id:(atual.id), titleRow:atual?.name},
+                            acoes:[
+                                ...acoesArr
+                            ],
+                            title:<> <div style={{display:'flex', justifyContent:'space-between',fontSize:'18pt', fontWeight:'bolder'}} ><span><FontAwesomeIcon size={'lg'} icon={faUserCircle}/> {atual?.name} </span> </div> </>,
+                            propsContainerTitulo:{md:'11', sm:'9', xs:'9'},
+                            propsContainerButtons:{md:'1', sm:'3', xs:'3'},
+                            acoesBottomCard:[
+                               {label:'', props:{onClick:()=>atualizarContasReceberAction(atual?.id), className:'btn  btn-sm mx-2 btn-primary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faPen} />},
+                               {label:'', props:{onClick:()=>baixarContasReceberAction(atual?.id), className:'btn  btn-sm mx-2 botao_success btn-success', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faHandHoldingUsd} />},
+                               {label:'', props:{onClick:()=>estornarContasReceberAction(atual?.id), className:'btn  btn-sm mx-2 btn-dark', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faHandHolding} /> },
+                               {label:'', props:{onClick:()=>atualizarContasReceberAction(atual?.id), className:'btn  btn-sm mx-2 btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faList} /> },
+                               {label:'', props:{onClick:()=>atualizarContasReceberAction(atual?.id), className:'btn  btn-sm mx-2 btn-info', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faFile} /> },
+                               {props:{onClick:()=>atualizarContasReceberAction(atual?.id), className:'btn  btn-sm mx-2 btn-danger', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faTrash} /> },
+                            ],
+                            celBodyTableArr:[
+                                [
+                                    {
+                                        title:<span style={{fontWeight:'480'}}>Aberto R$: </span>,
+                                        label:FORMAT_MONEY(atual?.vrAberto),
+                                        props:{style:{textAlign:'left'}},
+                                        toSum:1,
+                                        isCoin:1,
+                                    },
+                                    {
+                                        title:<span style={{fontWeight:'480'}}>Status </span>,
+                                        label:atual?.status,
+                                        props:{style:{textAlign:'left'}},
+                                        toSum:1,
+                                        isCoin:1,
+                                    },
+                                    {
+                                        title:<span style={{fontWeight:'480'}}>Vencimento </span>,
+                                        label:FORMAT_DATA_PT_BR(atual.dtVencimento),
+                                        props:{style:{textAlign:'left'}},
+                                        toSum:1,
+                                        isCoin:1,
+                                    },
+
+                                ],
+                                
+                               
+                               
+                            ]
+                        }
+
+                    )
+
+                }
+
+            }
+        }
+
+        return data;
+    }
+   
 
     //------------
 
@@ -629,87 +752,17 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, ...props}
 
     return(
         <>
-            <Row>
-                <Col  xs="12" sm="12" md="12" className={'mobile_card_report, py-4'}  style={{backgroundColor:'#FFF'}}>
-                    <Row className={'mb-3 '} >
-                        <Col className={'mx-2'}  >
-                           <Row style={{borderRadius:'24px 24px 24px 24px', border:'1px solid #000'}}>
-                                <Col xs="11" sm="11" md="11" >
-                                    <FormControlInput
-                                        data={
-                                            {
-                                                atributsFormControl:{
-                                                    type:'input',
-                                                    placeholder:'Search...',
-                                                    style:{
-                                                        border:'none',
-                                                        outline:'0',
-                                                        'box-shadow':'0 0 0 0',
-                                                        height:'50px',
-                                                        borderRadius:'24px 24px 24px 24px'
-                                                        
-                                                    }
+            <Row >
+                <Col  xs="12" sm="12" md="12" className={'mobile_card_report py-4'}  style={{backgroundColor:'#FFF',}}>
 
-                                                }
-                                            }
-                                        }
-                                     />
-                                </Col>
-
-                                <Col xs="1" sm="1" md="1" style={{textAlign:'left', alignItems:'center', justifyContent:'center', margin:'auto',padding:'0'}} >
-                                    <FontAwesomeIcon size={'lg'} icon={faSearch}/>
-                                </Col>
-                            
-                                
-                             </Row>
-
-                        </Col>
-                        
-                        
-                    </Row>
-                    <div>
-                         <hr style={{margin:'0',padding:'0'}}/>  
-                    </div>
-                    {
-                        dataContasReceberRelatorio && Array.isArray(dataContasReceberRelatorio) && dataContasReceberRelatorio.length > 0 ? (
-                            dataContasReceberRelatorio.map((item, index, arr)=>{
-                                let {status, name, vrPago, vrAberto, vrDevolvido, id, dtVencimento, cdCobrancaTipo, filial_id} = item;
-                                return(
-                                        <div  key={id+index+arr.length}>
-                                            <Row className={'py-2 px-1'}>
-
-                                                    <Col xs="2" sm="2" md="2"  style={{textAlign:'left', alignItems:'center', justifyContent:'center', margin:'auto',fontSize:'25pt'}}>
-                                                        <FontAwesomeIcon size={'lg'} icon={faUserCircle}/>
-                                                    </Col>
-
-                                                    <Col xs="10" sm="10" md="10"  style={{textAlign:'left', fontSize:'10pt'}}>
-                                                        <Row className={'mb-1'}>
-                                                            <span style={{fontSize:'14pt', fontWeight:'bolder'}} >{name}</span>
-                                                        </Row>
-                                                        <Row>
-                                                            <Col>
-                                                                <span>Aberto R$: {FORMAT_MONEY(vrAberto)}</span>
-                                                            </Col>
-                                                            <Col>
-                                                                <span>Status: {status}</span>
-                                                            </Col>
-                                                            <Col>
-                                                                <span>Vencimento: {FORMAT_DATA_PT_BR(dtVencimento)}</span>
-                                                            </Col>
-                                                            
-                                                        </Row>
-                                                        
-                                                    </Col>
-                                            </Row>
-                                            <hr style={{margin:'0',padding:'0'}}/>
-                                        </div>
-                                        
-                                )
-                            })
-                        ) : (null)
-                        
+                   
                     
-                    }
+                    <ListMobile
+                        titulosTableArr={null}
+                        rowsTableArr={gerarListMobileContasReceber()}
+                        loading={loadingData}
+                        botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
+                    />
 
                     {
                     /*
