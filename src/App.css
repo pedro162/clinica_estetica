@@ -103,6 +103,18 @@ a{
     min-width: 90%;
 }
 
+.main_class{
+    /*width: 100% !important;
+    padding: 0px !important;
+    margin: 0px !important;*/
+
+}
+
+.container_mobile{
+   /* padding: 0px !important;
+    margin:0px !important;*/
+}
+
 .mobile_card_report{
     
     /* Small devices (portrait tablets and large phones, 600px and up) */
@@ -164,3 +176,62 @@ a{
         display: block;
     }
 }
+
+
+@media only screen and (max-width: 50px) {
+  .container_mobile{
+        /*padding: 0px !important;
+        margin:0px !important;*/
+
+    }
+}
+
+
+@media only screen and (max-width: 100px) {
+    .container_mobile{
+        padding: 0px !important;
+
+    }
+}
+
+@media only screen and (max-width: 200px) {
+    .container_mobile{
+        /*padding: 0px !important;
+        margin:0px !important;*/
+
+    }
+}
+
+@media only screen and (max-width: 300px) {
+    .container_mobile{
+        /*padding: 0px !important;
+        margin:0px !important;*/
+
+    }
+}
+
+@media only screen and (max-width: 400px) {
+    .container_mobile{
+        /*padding: 0px !important;
+        margin:0px !important;*/
+
+    }
+}
+
+@media only screen and (max-width: 500px) {
+    .container_mobile{
+        /*padding: 0px !important;
+        margin:0px !important;*/
+
+    }
+}
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (max-width: 600px) {
+    .container_mobile{
+        /*padding: 0px !important;
+        margin:0px !important;*/
+
+    }
+}
+

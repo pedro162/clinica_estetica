@@ -2,6 +2,7 @@ import React from 'react';
 import FormLogin from '../FormLogin/index.js'
 import { Container, Col, Row } from 'react-bootstrap';
 import estilos from './Login.module.css'
+import './Login.css';
 import {UserContex} from '../../Context/UserContex.js'
 
 const Login = (props)=>{
@@ -17,7 +18,7 @@ const Login = (props)=>{
     
 
     return(
-        <Container className={[estilos.container_login]} fluid >
+        <Container fluid className={[estilos.container_login]}  >
             <Row>
                 <Col className={[estilos.container_form]}>
                     <Row className={[estilos.container_title_form]}>

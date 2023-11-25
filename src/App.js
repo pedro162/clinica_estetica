@@ -15,12 +15,12 @@ import ConstrutorFichaGrupo from './Components/ConstrutorFichaItem';
 function App() {
  
   return (
-    <div className="">
+    <div className="" style={{with:'100%', padding:'0', margin:0,}}   >
        <Router history={history}>
           <UserStorange>
               <Header/>
-                <Container fluid>
-                  <main className="">
+                <Container fluid className={'container_mobile'}>
+                  <main className={"main_class"}>
                     <Switch>
                       <ProtectedRoute
                         exact path="/home/painel" 

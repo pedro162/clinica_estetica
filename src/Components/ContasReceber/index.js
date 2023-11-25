@@ -3,7 +3,7 @@ import estilos from './ContasReceber.module.css'
 import useFetch from '../../Hooks/useFetch.js';
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CONTAS_RECEBER_ALL_POST} from '../../api/endpoints/geral.js'
 import {FORMAT_DATA_PT_BR} from '../../functions/index.js'
-import {Col, Row } from 'react-bootstrap';
+import {Col, Row, Button } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
 import Breadcrumbs from '../Helper/Breadcrumbs.js'
@@ -265,6 +265,8 @@ const ContasReceber = ({defaultFilters ,...props})=>{
         return {filtros, detalhesFiltros};
     }
     const requestAllContasRecebers = async() =>{
+        setContasReceber([])
+
         let {filtros, detalhesFiltros} = montarFiltro();
         const {url, options} = CONTAS_RECEBER_ALL_POST({...filtros}, getToken());
 
@@ -276,6 +278,7 @@ const ContasReceber = ({defaultFilters ,...props})=>{
         if(json){
             setContasReceber(json)
         }
+        setMostarFiltros(false)
 
             
     }
@@ -329,62 +332,92 @@ const ContasReceber = ({defaultFilters ,...props})=>{
                             label:'Contas a receber'
                         }
                     ]}
+
+                buttonFiltroMobile={true}
+                setMostarFiltros={setMostarFiltros}
+                mostarFiltros={mostarFiltros}
+
             />
             <Row>
                 {mostarFiltros && 
                     (
-                        <Col  xs="12" sm="12" md="3">
-                            <Filter
-                                filtersArr={filtersArr}
-                                actionsArr={acoesBottomCard}
-                            />
-                        </Col>
-                    )
-                }
-                <Col  xs="12" sm="12" md="12" className={'mobile_card_report pt-4'}  style={{backgroundColor:'#FFF'}}>
-                    <Row className={'mb-3 '} >
-                        <Col className={'mx-2'}  >
-                           <Row style={{borderRadius:'24px 24px 24px 24px', border:'1px solid #000'}}>
-                                <Col xs="11" sm="11" md="11" >
-                                    <FormControlInput
-                                        data={
-                                            {
-                                                atributsFormControl:{
-                                                    type:'input',
-                                                    placeholder:'Search...',
-                                                    style:{
-                                                        border:'none',
-                                                        outline:'0',
-                                                        'box-shadow':'0 0 0 0',
-                                                        height:'50px',
-                                                        borderRadius:'24px 24px 24px 24px'
-                                                        
-                                                    },
-                                                    onChange:(ev)=>{handleFiltroMobile(ev);},
-                                                    onBlur:(ev)=>{handleFiltroMobile(ev);},
-                                                    onKeyUp:(ev)=>{
+                        <>
+                            <Col  xs="12" sm="12" md="3" className={'default_card_report'}>
+                                <Filter
+                                    filtersArr={filtersArr}
+                                    actionsArr={acoesBottomCard}
+                                />
+                            </Col>
 
-                                                        if (ev.key === "Enter") {
-                                                            requestAllContasRecebers();
+                            <Col  xs="12" sm="12" md="12" className={'mobile_card_report pt-4'}  style={{backgroundColor:'#FFF'}}>
+                                <Row className={'mb-3'} >
+                                    <Col className={'mx-2'}  >
+                                       <Row style={{borderRadius:'24px 24px 24px 24px', border:'1px solid #000'}}>
+                                            <Col xs="11" sm="11" md="11" >
+                                                <FormControlInput
+                                                    data={
+                                                        {
+                                                            atributsFormControl:{
+                                                                type:'input',
+                                                                placeholder:'Search...',
+                                                                style:{
+                                                                    border:'none',
+                                                                    outline:'0',
+                                                                    'box-shadow':'0 0 0 0',
+                                                                    height:'50px',
+                                                                    borderRadius:'24px 24px 24px 24px'
+                                                                    
+                                                                },
+                                                                onChange:(ev)=>{handleFiltroMobile(ev);},
+                                                                onBlur:(ev)=>{handleFiltroMobile(ev);},
+                                                                onKeyUp:(ev)=>{
+
+                                                                    if (ev.key === "Enter") {
+                                                                        requestAllContasRecebers();
+                                                                    }
+                                                                }
+
+                                                            }
                                                         }
                                                     }
+                                                 />
+                                            </Col>
 
-                                                }
-                                            }
-                                        }
-                                     />
-                                </Col>
+                                            <Col xs="1" sm="1" md="1" style={{textAlign:'left', alignItems:'center', justifyContent:'center', margin:'auto',padding:'0'}} >
+                                                <FontAwesomeIcon onClick={()=>{requestAllContasRecebers();}} size={'lg'} icon={faSearch}/>
+                                            </Col>
+                                        
+                                            
+                                         </Row>
 
-                                <Col xs="1" sm="1" md="1" style={{textAlign:'left', alignItems:'center', justifyContent:'center', margin:'auto',padding:'0'}} >
-                                    <FontAwesomeIcon onClick={()=>{requestAllContasRecebers();}} size={'lg'} icon={faSearch}/>
-                                </Col>
-                            
-                                
-                             </Row>
+                                    </Col>
+                                    
+                                    
+                                </Row>
+                                <Row className={'my-2'}>
+                                    <Col>
+                                        <Row>
+                                            <Col><span style={{fontWeight:'bolder', fontSize:'14pt'}} >Ações</span></Col>
+                                        </Row>
 
-                        </Col>
-                        
-                        
+                                        <div>
+                                             <hr style={{margin:'0',padding:'0'}}/>  
+                                        </div>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col>
+                                        <Button className={'btn btn-sm btn-secondary'} onClick={()=>{setCadastrarContasReceber(true);}} ><FontAwesomeIcon icon={faPlus} /></Button>
+                                    </Col>
+                                </Row>
+                            </Col>
+                        </>
+                    )
+                }
+                
+                <Col style={{backgroundColor:'#FFF'}} className={'pt-3'}>
+                    <Row>
+                        <Col><span style={{fontWeight:'bolder', fontSize:'14pt'}} >Resultado</span></Col>
                     </Row>
                     <div>
                          <hr style={{margin:'0',padding:'0'}}/>  

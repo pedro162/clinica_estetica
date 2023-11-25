@@ -3,7 +3,7 @@ import estilos from './OrdemServico.module.css'
 import useFetch from '../../Hooks/useFetch.js';
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, ORDEM_SERVICO_ALL_POST} from '../../api/endpoints/geral.js'
 import {FORMAT_DATA_PT_BR} from '../../functions/index.js'
-import {Col, Row } from 'react-bootstrap';
+import {Col, Row, Button } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
 import Breadcrumbs from '../Helper/Breadcrumbs.js'
@@ -226,6 +226,9 @@ const OrdemServico = (props)=>{
     }
 
     const requestAllOrdemServicos = async() =>{
+        //setMostarFiltros(false)
+        setOrdemServico([])
+
         let {filtros, detalhesFiltros} = montarFiltro();
         const {url, options} = ORDEM_SERVICO_ALL_POST({...filtros}, getToken());
 
@@ -237,7 +240,8 @@ const OrdemServico = (props)=>{
         if(json){
             setOrdemServico(json)
         }
-
+        setMostarFiltros(false)
+        //setFiltroMobile(null)
             
     }
 
@@ -281,63 +285,92 @@ const OrdemServico = (props)=>{
                             label:'Ordem de servico'
                         }
                     ]}
+
+                buttonFiltroMobile={true}
+                setMostarFiltros={setMostarFiltros}
+                mostarFiltros={mostarFiltros}
             />
             <Row>
                 {mostarFiltros && 
                     (
-                        <Col  xs="12" sm="12" md="3">
-                            <Filter
-                                filtersArr={filtersArr}
-                                actionsArr={acoesBottomCard}
-                            />
-                        </Col>
+                        <>
+                            <Col  xs="12" sm="12" md="3" className={'default_card_report'}>
+                                <Filter
+                                    filtersArr={filtersArr}
+                                    actionsArr={acoesBottomCard}
+                                />
+                            </Col>
+
+                            <Col  xs="12" sm="12" md="12" className={'mobile_card_report pt-4'}  style={{backgroundColor:'#FFF'}}>
+                                <Row className={''} >
+                                    <Col className={'mx-2'}  >
+                                       <Row style={{borderRadius:'24px 24px 24px 24px', border:'1px solid #000'}}>
+                                            <Col xs="11" sm="11" md="11" >
+                                                <FormControlInput
+                                                    data={
+                                                        {
+                                                            atributsFormControl:{
+                                                                type:'input',
+                                                                placeholder:'Search...',
+                                                                style:{
+                                                                    border:'none',
+                                                                    outline:'0',
+                                                                    'box-shadow':'0 0 0 0',
+                                                                    height:'50px',
+                                                                    borderRadius:'24px 24px 24px 24px'
+                                                                    
+                                                                },
+                                                                onChange:(ev)=>{handleFiltroMobile(ev);},
+                                                                onBlur:(ev)=>{handleFiltroMobile(ev);},
+                                                                onKeyUp:(ev)=>{
+
+                                                                    if (ev.key === "Enter") {
+                                                                        requestAllOrdemServicos();
+                                                                    }
+                                                                },
+                                                                value:filtroMobile
+
+                                                            }
+                                                        }
+                                                    }
+                                                 />
+                                            </Col>
+
+                                            <Col xs="1" sm="1" md="1" style={{textAlign:'left', alignItems:'center', justifyContent:'center', margin:'auto',padding:'0'}} >
+                                                <FontAwesomeIcon onClick={()=>{requestAllOrdemServicos();}} size={'lg'} icon={faSearch}/>
+                                            </Col>
+                                        
+                                            
+                                         </Row>
+
+                                    </Col>
+                                    
+                                    
+                                </Row>
+                                <Row className={'my-2'}>
+                                    <Col>
+                                        <Row>
+                                            <Col><span style={{fontWeight:'bolder', fontSize:'14pt'}} >Ações</span></Col>
+                                        </Row>
+
+                                        <div>
+                                             <hr style={{margin:'0',padding:'0'}}/>  
+                                        </div>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col>
+                                        <Button className={'btn btn-sm btn-secondary'} onClick={()=>{setIniciarOrdemServico(true);}} ><FontAwesomeIcon icon={faPlus} /></Button>
+                                    </Col>
+                                </Row>
+                            </Col>
+                        </>
                     )
                 }
 
-                <Col  xs="12" sm="12" md="12" className={'mobile_card_report pt-4'}  style={{backgroundColor:'#FFF'}}>
-                    <Row className={'mb-3 '} >
-                        <Col className={'mx-2'}  >
-                           <Row style={{borderRadius:'24px 24px 24px 24px', border:'1px solid #000'}}>
-                                <Col xs="11" sm="11" md="11" >
-                                    <FormControlInput
-                                        data={
-                                            {
-                                                atributsFormControl:{
-                                                    type:'input',
-                                                    placeholder:'Search...',
-                                                    style:{
-                                                        border:'none',
-                                                        outline:'0',
-                                                        'box-shadow':'0 0 0 0',
-                                                        height:'50px',
-                                                        borderRadius:'24px 24px 24px 24px'
-                                                        
-                                                    },
-                                                    onChange:(ev)=>{handleFiltroMobile(ev);},
-                                                    onBlur:(ev)=>{handleFiltroMobile(ev);},
-                                                    onKeyUp:(ev)=>{
-
-                                                        if (ev.key === "Enter") {
-                                                            requestAllOrdemServicos();
-                                                        }
-                                                    }
-
-                                                }
-                                            }
-                                        }
-                                     />
-                                </Col>
-
-                                <Col xs="1" sm="1" md="1" style={{textAlign:'left', alignItems:'center', justifyContent:'center', margin:'auto',padding:'0'}} >
-                                    <FontAwesomeIcon onClick={()=>{requestAllOrdemServicos();}} size={'lg'} icon={faSearch}/>
-                                </Col>
-                            
-                                
-                             </Row>
-
-                        </Col>
-                        
-                        
+                <Col style={{backgroundColor:'#FFF'}} className={'pt-3'}>
+                    <Row>
+                        <Col><span style={{fontWeight:'bolder'}} >Resultado</span></Col>
                     </Row>
                     <div>
                          <hr style={{margin:'0',padding:'0'}}/>  

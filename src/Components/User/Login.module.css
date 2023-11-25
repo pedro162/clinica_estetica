@@ -1,3 +1,4 @@
+
 .container_login{
     display: block;
     min-height: 100vh;
@@ -6,6 +7,7 @@
     background: url('../../Assets/login/bg_login.png');
     background-size: cover;
 }
+
 
 .container_form{
     /*margin-right: 175px;*/
@@ -23,4 +25,169 @@
     font-family: var(--type-thirt);
     text-align: center !important;
     font-size: 80px !important;
+}
+
+
+
+/* Medium devices (landscape tablets, 768px and up) */
+
+@media only screen and (max-width: 100px) {
+
+    .container_form{
+        /*margin-right: 175px;*/
+        max-width: 90rem !important;
+        align-items: center !important;
+        margin: auto !important;
+        margin-left: 0% !important;
+    }
+
+
+    .container_title_form{
+        margin-top: 0.5rem !important;
+        margin-bottom: 40px !important;
+    }
+
+    .title_form_login{
+        font-family: var(--type-thirt);
+        text-align: center !important;
+        font-size: 50px !important;
+    }
+
+
+
+}
+
+@media only screen and (max-width: 50px) {
+     .container_form{
+        /*margin-right: 175px;*/
+        max-width: 90rem !important;
+        align-items: center !important;
+        margin: auto !important;
+        margin-left: 0% !important;
+    }
+
+
+    .container_title_form{
+        margin-top: 0.5rem !important;
+        margin-bottom: 40px !important;
+    }
+
+    .title_form_login{
+        font-family: var(--type-thirt);
+        text-align: center !important;
+        font-size: 50px !important;
+    }
+}
+
+
+
+@media only screen and (max-width: 200px) {
+    .container_form{
+        /*margin-right: 175px;*/
+        max-width: 90rem !important;
+        align-items: center !important;
+        margin: auto !important;
+        margin-left: 0% !important;
+    }
+
+
+    .container_title_form{
+        margin-top: 0.5rem !important;
+        margin-bottom: 40px !important;
+    }
+
+    .title_form_login{
+        font-family: var(--type-thirt);
+        text-align: center !important;
+        font-size: 50px !important;
+    }
+}
+
+@media only screen and (max-width: 300px) {
+    .container_form{
+        /*margin-right: 175px;*/
+        max-width: 90rem !important;
+        align-items: center !important;
+        margin: auto !important;
+        margin-left: 0% !important;
+    }
+
+
+    .container_title_form{
+        margin-top: 0.5rem !important;
+        margin-bottom: 40px !important;
+    }
+
+    .title_form_login{
+        font-family: var(--type-thirt);
+        text-align: center !important;
+        font-size: 50px !important;
+    }
+}
+
+@media only screen and (max-width: 400px) {
+    .container_form{
+        /*margin-right: 175px;*/
+        max-width: 90rem !important;
+        align-items: center !important;
+        margin: auto !important;
+        margin-left: 0% !important;
+    }
+
+
+    .container_title_form{
+        margin-top: 0.5rem !important;
+        margin-bottom: 40px !important;
+    }
+
+    .title_form_login{
+        font-family: var(--type-thirt);
+        text-align: center !important;
+        font-size: 50px !important;
+    }
+}
+
+@media only screen and (max-width: 500px) {
+    .container_form{
+        /*margin-right: 175px;*/
+        max-width: 90rem !important;
+        align-items: center !important;
+        margin: auto !important;
+        margin-left: 0% !important;
+    }
+
+
+    .container_title_form{
+        margin-top: 0.5rem !important;
+        margin-bottom: 40px !important;
+    }
+
+    .title_form_login{
+        font-family: var(--type-thirt);
+        text-align: center !important;
+        font-size: 50px !important;
+    }
+}
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (max-width: 600px) {
+    .container_form{
+        /*margin-right: 175px;*/
+        max-width: 90rem !important;
+        align-items: center !important;
+        margin: auto !important;
+        margin-left: 0% !important;
+    }
+
+
+    .container_title_form{
+        margin-top: 0.5rem !important;
+        margin-bottom: 40px !important;
+    }
+
+    .title_form_login{
+        font-family: var(--type-thirt);
+        text-align: center !important;
+        font-size: 50px !important;
+    }
 }
