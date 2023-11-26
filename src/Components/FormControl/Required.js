@@ -12,7 +12,7 @@ import Modal from '../Utils/Modal/index.js'
 import Profissionais from '../Profissionais/index.js';
 import Clientes from '../Clientes/index.js';
 
-const Required = ({data, url_btn, callback_selected, props_btn_search, label_btn_search, ...props})=>{
+const Required = ({data, url_btn, callback_selected, props_btn_search, label_btn_search, ComponentFilter, ...props})=>{
     const [cod, setCod] = React.useState('');
     const [description, setDescription] = React.useState(''); 
     const[activeSuggestion, setActiveSuggestion] = React.useState(0);
@@ -245,6 +245,9 @@ const Required = ({data, url_btn, callback_selected, props_btn_search, label_btn
     }, [atributsFormControlForm.value,atributsFormControlForm?.name_servico])
     //setCod(atributsFormControlForm?.value)
     
+    if(!ComponentFilter){
+       ComponentFilter = <Clientes/>
+    }
 
     return(
         <Row >
@@ -357,7 +360,7 @@ const Required = ({data, url_btn, callback_selected, props_btn_search, label_btn
                 }
             </Col>
             <Modal  handleConcluir={()=>null}  title={"Pessoas"} size="lg" noBtnConcluir={true} dialogClassName={'modal-90w modal-xl'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarProfissionais} showHide={()=>{setShowModalCriarProfissionais();setCadastrarProfissionais(false)}}>
-                <Clientes/>
+                {ComponentFilter}
             </Modal>
         </Row>
 

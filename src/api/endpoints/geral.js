@@ -2940,6 +2940,7 @@ export const CONTAS_RECEBER_UPDATE_POST = (id,data, token)=>{
     }
 
 }
+
 export const CONTAS_RECEBER_ESTORNAR_POST = (id,data, token)=>{
 
     var myHeaders = new Headers();
@@ -2957,6 +2958,29 @@ export const CONTAS_RECEBER_ESTORNAR_POST = (id,data, token)=>{
 
    return{
         url:BASE_URL+'/api/receber/estornar/'+id,
+        options:myInit
+    }
+
+}
+
+
+export const CONTAS_RECEBER_BAIXAR_POST = (id,data, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'PUT',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        body:JSON.stringify(data)
+   };
+
+   return{
+        url:BASE_URL+'/api/receber/baixar/'+id,
         options:myInit
     }
 

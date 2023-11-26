@@ -415,7 +415,7 @@ const ContasReceber = ({defaultFilters ,...props})=>{
                     )
                 }
                 
-                <Col style={{backgroundColor:'#FFF'}} className={'pt-3'}>
+                <Col style={{backgroundColor:'#FFF'}} className={'pt-3 mobile_card_report'} >
                     <Row>
                         <Col><span style={{fontWeight:'bolder', fontSize:'14pt'}} >Resultado</span></Col>
                     </Row>

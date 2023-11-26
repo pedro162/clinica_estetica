@@ -10,11 +10,12 @@ import useFetch from '../../../Hooks/useFetch.js';
 import {UserContex} from '../../../Context/UserContex.js'
 import Required from '../../FormControl/Required.js';
 import Load from '../../Utils/Load/index.js'
+import Caixa from '../../Caixa/index.js'
 import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible.js'
 import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../../functions/index.js'
 
 
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, SERVICO_SAVE_POST, SERVICO_ALL_POST, ORDEM_SERVICO_FINALIZAR_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST} from '../../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, SERVICO_SAVE_POST, SERVICO_ALL_POST, CONTAS_RECEBER_BAIXAR_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST} from '../../../api/endpoints/geral.js'
 
 
 const BaixarForm = ({dataContasReceberChoice, setDataContasReceber, setIdContasReceber, idContasReceber, showModalCriarContasReceber, setShowModalCriarContasReceber, callback, atualizarContasReceber, baixarContasReceber, setBaixarContasReceber, carregando})=>{
@@ -37,27 +38,16 @@ const BaixarForm = ({dataContasReceberChoice, setDataContasReceber, setIdContasR
         console.log('Aqui............')
     }
 
-    const sendData = async ({
-			rca_id,
-			pessoa_rca_id,
-			filial_id,
-			caixa_id,
-			profissional_id,
-			name_pessoa_contato
-		})=>{
+    const sendData = async (dados)=>{
 			
-		rca_id= pessoa_rca_id > 0 && !rca_id ?  pessoa_rca_id : rca_id;
 		const data = {
-			rca_id,
-			pessoa_rca_id,
-			filial_id,
-			caixa_id,
-			profissional_id,
-			name_pessoa_contato
+			...dados,
+			vr_pago:dados?.vr_final,
+			observacao:dados?.ds_observacao
 		}
 		
 
-		const {url, options} = ORDEM_SERVICO_FINALIZAR_POST(idContasReceber, data, getToken());
+		const {url, options} = CONTAS_RECEBER_BAIXAR_POST(idContasReceber, data, getToken());
 
 
 		const {response, json} = await request(url, options);
@@ -115,7 +105,7 @@ const BaixarForm = ({dataContasReceberChoice, setDataContasReceber, setIdContasR
     }
 
 	const calcularCobranca = (objParams={})=>{
-    	let obj = {filial_id:'', vrLiquido:'',status:'', vr_total:'', vr_acrescimo:'', vr_final:'', vr_multa:'', vr_juros:'', vr_desconto:'', ...dataBaixaContasReceber}
+    	let obj = {filial_id:'', vrLiquido:'',status:'', vr_total:'', vr_acrescimo:'', vr_final:'', vr_multa:'', vr_juros:'', vr_desconto:'', ds_observacao:'', ...dataBaixaContasReceber}
     	let data = dataBaixaContasReceber;//dataContasReceberChoice?.mensagem;
     	/*
 			if(dataContasReceberChoice && dataContasReceberChoice.hasOwnProperty('mensagem')){
@@ -399,6 +389,8 @@ const BaixarForm = ({dataContasReceberChoice, setDataContasReceber, setIdContasR
 																	hookToLoadFromDescription:CLIENTES_ALL_POST,
 																}
 															}
+															ComponentFilter={<Caixa/>}
+															titleCompontent={'Caixa'}
 															component={Required}
 													>   </Field>    
 													<ErrorMessage className="alerta_error_form_label" name="caixa_id" component="div" />

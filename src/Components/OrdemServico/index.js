@@ -368,7 +368,7 @@ const OrdemServico = (props)=>{
                     )
                 }
 
-                <Col style={{backgroundColor:'#FFF'}} className={'pt-3'}>
+                <Col style={{backgroundColor:'#FFF'}} className={'pt-3 mobile_card_report'}>
                     <Row>
                         <Col><span style={{fontWeight:'bolder'}} >Resultado</span></Col>
                     </Row>
