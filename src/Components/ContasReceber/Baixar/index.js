@@ -14,6 +14,7 @@ const Baixar = ({idContasReceber, setIdContasReceber, callback, BaixarContasRece
     const [showModalBaixarContasReceber, setShowModalBaixarContasReceber] = React.useState(false)
     const [carregando, setCarregando] = React.useState(false)
     const [dataContasReceber, setDataContasReceber] = React.useState(null)
+    const [erroValidacao, setErroValidacao] = React.useState(null)
     const [dataGrupo, setDataGrupo] = React.useState(null)
 	const {getToken, dataUser} = React.useContext(UserContex);
 
@@ -25,12 +26,18 @@ const Baixar = ({idContasReceber, setIdContasReceber, callback, BaixarContasRece
 				const {url, options} = CONTAS_RECEBER_ONE_GET(idContasReceber, getToken());
 				const {response, json} = await request(url, options);
 				if(json){
+
+					let data = json?.mensagem
+					let erroValidaao  = validarBaixa(data);
+					//erroValidaao = erroValidaao.join('<br/>')
+					setErroValidacao(erroValidaao)
 					
 					setDataContasReceber(json)
 					setShowModalBaixarContasReceber(true)
 					 
 		        }else{
 		        	setDataContasReceber([])
+		        	setErroValidacao(null)
 		        }
 			}
 		}
@@ -38,6 +45,28 @@ const Baixar = ({idContasReceber, setIdContasReceber, callback, BaixarContasRece
 		getContasReceber();
 		
 	}, [idContasReceber])
+
+	const validarBaixa = (data)=>{
+		let erros = [];
+
+		let {vrLiquido, vrPago, satus, id} = data;
+		vrLiquido 	= Number(vrLiquido)
+		vrPago 		= Number(vrPago)
+		let difAberto = vrLiquido - vrPago
+		let difAbertoAbs = Math.abs(difAberto);
+
+		if(!(String(satus) == 'aberto')){
+			erros.push(`O contas a receber de código n° ${id} encontra-se ${satus} e não poderá ser modificado`);
+		}
+
+		if(vrLiquido > vrPago ){
+			if(! (difAbertoAbs > 0.02) ){
+				erros.push(`O contas a receber de código n° ${id} não possui mais saldo para baixa`);
+			}
+		}
+
+		return erros;
+	}
 
 	/*
 		BaixarContasReceber && 
