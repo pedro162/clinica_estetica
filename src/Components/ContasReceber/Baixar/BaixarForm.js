@@ -307,6 +307,7 @@ const BaixarForm = ({dataContasReceberChoice, setDataContasReceber, setIdContasR
 		  	text: error,
 		  	footer: '',//'<a href="#">Why do I have this issue?</a>'
 			confirmButtonColor: "#07B201",
+			//width:'20rem',
 		});
 	}
 
