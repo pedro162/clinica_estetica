@@ -13,6 +13,7 @@ import {UserContex} from '../../../Context/UserContex.js'
 import Required from '../../FormControl/Required.js';
 import Load from '../../Utils/Load/index.js'
 import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible.js'
+import Swal from 'sweetalert2'//https://sweetalert2.github.io/#examples
 
 
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, SERVICO_SAVE_POST, SERVICO_ALL_POST, ORDEM_SERVICO_FINALIZAR_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST, CONTAS_RECEBER_UPDATE_POST, CONTAS_RECEBER_SAVE_POST} from '../../../api/endpoints/geral.js'
@@ -98,6 +99,14 @@ const FormContasReceber = ({dataContasReceberChoice, setDataContasReceber, setId
 			setShowModalCriarContasReceber();
 			setAtualizarContasReceber(false);
 			setIdContasReceber(null);
+
+			Swal.fire({
+			  icon: "success",
+			  title: "",
+			  text: 'Reigistrado com sucesso',
+			  footer: '',//'<a href="#">Why do I have this issue?</a>'
+			  confirmButtonColor: "#07B201",
+			});
 		}
     }
 

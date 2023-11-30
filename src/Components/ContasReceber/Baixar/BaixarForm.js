@@ -13,6 +13,7 @@ import Load from '../../Utils/Load/index.js'
 import Caixa from '../../Caixa/index.js'
 import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible.js'
 import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../../functions/index.js'
+import Swal from 'sweetalert2'
 
 
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, SERVICO_SAVE_POST, SERVICO_ALL_POST, CONTAS_RECEBER_BAIXAR_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST} from '../../../api/endpoints/geral.js'
@@ -53,6 +54,8 @@ const BaixarForm = ({dataContasReceberChoice, setDataContasReceber, setIdContasR
 		const {response, json} = await request(url, options);
 		console.log('Save consulta here')
 		console.log(json)
+
+
 		if(json){
 			console.log('Response Save consulta here')
 			console.log(json)
@@ -61,6 +64,14 @@ const BaixarForm = ({dataContasReceberChoice, setDataContasReceber, setIdContasR
 			setShowModalCriarContasReceber();
 			setBaixarContasReceber(false);
 			setIdContasReceber(null);
+
+			Swal.fire({
+			  icon: "success",
+			  title: "",
+			  text: 'Reigistrado com sucesso',
+			  footer: '',//'<a href="#">Why do I have this issue?</a>'
+			  confirmButtonColor: "#07B201",
+			});
 		}
     }
 
@@ -288,6 +299,17 @@ const BaixarForm = ({dataContasReceberChoice, setDataContasReceber, setIdContasR
 
 	const dataFormCob 		= calcularCobranca({})
 
+
+	if(error){
+		Swal.fire({
+		  	icon: "error",
+		  	title: "Oops...",
+		  	text: error,
+		  	footer: '',//'<a href="#">Why do I have this issue?</a>'
+			confirmButtonColor: "#07B201",
+		});
+	}
+
 	return(
 
 		<>
@@ -307,6 +329,10 @@ const BaixarForm = ({dataContasReceberChoice, setDataContasReceber, setIdContasR
 
 						if(!values.vr_final){
 						    errors.vr_final="Obrigatório"
+						}
+
+						if(!values.ds_observacao){
+						    errors.ds_observacao="Obrigatório"
 						}
 
 
