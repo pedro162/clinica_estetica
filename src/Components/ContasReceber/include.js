@@ -11,7 +11,7 @@ import ListMobile from '../Relatorio/ListMobile/index.js'
 
 import Filter from '../Relatorio/Filter/index.js'
 import Breadcrumbs from '../Helper/Breadcrumbs.js'
-import { faHome, faSearch, faPlus, faPen, faHandHoldingUsd, faList, faFile, faTrash, faHandHolding, faUser, faUserCircle, faEllipsisH } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faSearch, faPlus, faPen, faHandHoldingUsd, faList, faFile, faTrash, faHandHolding, faUser, faUserCircle, faEllipsisH, faChartLine } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from '../Utils/Modal/index.js'
 import Load from '../Utils/Load/index.js'
@@ -274,11 +274,20 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, ...props}
                         
                     }
 
+                    let line_style = {}
+                    if(atual.status == 'devolvido'){
+                        line_style.color = 'red';
+                    }else if(atual.status == 'pago'){
+                        line_style.color = 'green';
+                    }else if(atual.status == 'aberto'){
+                        //line_style.color = 'green';
+                    } 
+
                     //'remarcado','finalizado','cancelado','pendente'
                     data.push(
 
                         {
-                            propsRow:{id:(atual.id)},
+                            propsRow:{id:(atual.id), style:{...line_style}},
                             acoes:[
                                 ...acoesArr
                             ],
@@ -648,11 +657,21 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, ...props}
                         
                     }
 
+                    let line_style = {}
+                    if(atual.status == 'devolvido'){
+                        line_style.color = 'red';
+                    }else if(atual.status == 'pago'){
+                        line_style.color = 'green';
+                    }else if(atual.status == 'aberto'){
+                        //line_style.color = 'green';
+                    } 
+
+
                     //propsContainerTitulo, propsContainerButtons
                     data.push(
 
                         {
-                            propsRow:{id:(atual.id), titleRow:atual?.name},
+                            propsRow:{id:(atual.id), titleRow:atual?.name, style:{...line_style}, mainIcon:faChartLine},
                             acoes:[
                                 ...acoesArr
                             ],

@@ -548,7 +548,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idOrdemCr
                     data.push(
 
                         {
-                            propsRow:{id:(atual.id), titleRow:atual?.name},
+                            propsRow:{id:(atual.id), titleRow:atual?.name, style:{...line_style}},
                             acoes:[
                                 ...acoesArr
                             ],

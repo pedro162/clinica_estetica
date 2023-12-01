@@ -4,7 +4,7 @@ import Card from '../../Utils/Card/index.js'
 import Checkbox from '../../FormControl/Checkbox.js'
 import Load from '../../Utils/Load/index.js'
 import MenuOpcoes from '../MenuOpcoes/index.js'
-import { faHome, faSearch, faPlus, faPen, faHandHoldingUsd, faList, faFile, faTrash, faHandHolding, faUser, faUserCircle, faEllipsisH } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faSearch, faPlus, faPen, faHandHoldingUsd, faList, faFile, faTrash, faHandHolding, faUser, faUserCircle, faEllipsisH, faChartLine } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../../functions/index.js'
 
@@ -108,6 +108,8 @@ const ListMobile = ({children, titulosTableArr, rowsTableArr,loading, botoesHead
 
 
 				  				let titleRow 				= propsRowBodyTable.hasOwnProperty('titleRow') 		? propsRowBodyTable.titleRow: '';
+				  				let style 					= propsRowBodyTable.hasOwnProperty('style') 		? propsRowBodyTable.style: {};
+				  				let mainIcon 				= propsRowBodyTable.hasOwnProperty('mainIcon') 		? propsRowBodyTable.mainIcon: faUserCircle;
 
 				  				id = Number(id);
 				  				let titleCard 			= item?.title
@@ -120,9 +122,9 @@ const ListMobile = ({children, titulosTableArr, rowsTableArr,loading, botoesHead
                                 return(
                                      <Col  key={id+index+arr.length}>
 
-                                     		<Row className={'pb-2 px-1'}  onClick={()=>{setDataMenu(acoesRowBodyTable);setShowModalOptions(true)}}  > 
+                                     		<Row className={'pb-2 px-1'}  onClick={()=>{setDataMenu(acoesRowBodyTable);setShowModalOptions(true)}} style={{...style}} > 
 												<Col xs="2" sm="2" md="2"  style={{textAlign:'left', alignItems:'center', justifyContent:'center', margin:'auto',fontSize:'25pt'}}>
-                                                    <FontAwesomeIcon size={'lg'} icon={faUserCircle}/>
+                                                    <FontAwesomeIcon size={'sm'} icon={mainIcon}/>
                                                 </Col>
                                                 <Col xs="10" sm="10" md="10"  style={{textAlign:'left', fontSize:'10pt'}}>
                                                 	<Row className={'mb-1'}>

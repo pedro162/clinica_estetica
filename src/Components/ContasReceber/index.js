@@ -7,7 +7,7 @@ import {Col, Row, Button } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
 import Breadcrumbs from '../Helper/Breadcrumbs.js'
-import { faHome, faSearch, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faSearch, faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from '../Utils/Modal/index.js'
 import Load from '../Utils/Load/index.js'
@@ -35,6 +35,12 @@ const ContasReceber = ({defaultFilters ,...props})=>{
     const [mostarFiltros, setMostarFiltros] = React.useState(false) 
     const [acao, setAcao] = React.useState(null)
     const [filtroMobile, setFiltroMobile] = React.useState(null)
+    const [filtroAbertas, setFiltroAbertas] = React.useState(false)
+    const [filtroPagas, setFiltroPagas] = React.useState(false)
+    const [filtroVencidas, setFiltroVencidas] = React.useState(false)
+    const [filtroAvencer, setFiltroAvencer] = React.useState(false)
+
+
     const [referenciaContasReceber, setReferenciaContasReceber] = React.useState(()=>{
         return defaultFilters?.referencia
     })
@@ -259,8 +265,42 @@ const ContasReceber = ({defaultFilters ,...props})=>{
             };
         }
 
-        //, 
-        
+        if(filtroAbertas){
+            filtros['status'] += 'aberto,';
+            detalhesFiltros['status'] = {
+                label:'Status',
+                value:pessoa,
+                resetFilter:()=>setFiltroAbertas(false),
+            };
+        }
+
+        if(filtroPagas){
+            filtros['status'] += 'pago,';
+            detalhesFiltros['status'] = {
+                label:'Status',
+                value:pessoa,
+                resetFilter:()=>setFiltroPagas(false),
+            };
+        }
+
+        if(filtroVencidas){
+            filtros['vencido'] = 'yes';
+            detalhesFiltros['status'] = {
+                label:'Vencidos',
+                value:pessoa,
+                resetFilter:()=>setFiltroVencidas(false),
+            };
+        }
+
+        if(filtroAvencer){
+            filtros['vencido'] = 'no';
+            detalhesFiltros['status'] = {
+                label:'Vencidos',
+                value:pessoa,
+                resetFilter:()=>setFiltroAvencer(false),
+            };
+        }
+
 
         return {filtros, detalhesFiltros};
     }
@@ -278,10 +318,33 @@ const ContasReceber = ({defaultFilters ,...props})=>{
         if(json){
             setContasReceber(json)
         }
-        setMostarFiltros(false)
+        //setMostarFiltros(false)
 
             
     }
+
+    const requestAbertas = async ()=>{
+        setContasReceber([])
+
+        let {filtros, detalhesFiltros} = montarFiltro();
+       // filtros['status'] += 'aberto';
+       filtros.status = 'aberto';
+        const {url, options} = CONTAS_RECEBER_ALL_POST({...filtros}, getToken());
+
+
+        const {response, json} = await request(url, options);
+        console.log('All contas receber here')
+        console.log({'name_pessoa':pessoa})
+        console.log(json)
+        if(json){
+            setContasReceber(json)
+        }
+        //setMostarFiltros(false)
+    }
+
+
+
+
 
     React.useEffect(()=>{
 
@@ -295,7 +358,7 @@ const ContasReceber = ({defaultFilters ,...props})=>{
         requestAllContasRecebersEffect();
 
         
-    }, [])
+    }, [filtroAvencer, filtroVencidas, filtroPagas, filtroAbertas])
 
     /*
         {mostarFiltros && 
@@ -375,7 +438,8 @@ const ContasReceber = ({defaultFilters ,...props})=>{
                                                                     if (ev.key === "Enter") {
                                                                         requestAllContasRecebers();
                                                                     }
-                                                                }
+                                                                }, 
+                                                                value:filtroMobile,
 
                                                             }
                                                         }
@@ -389,7 +453,14 @@ const ContasReceber = ({defaultFilters ,...props})=>{
                                         
                                             
                                          </Row>
-
+                                        <Row className={'mt-2'}>
+                                            <div  style={{display:'flex', flexDirection:'collumn', flexWrap:'wrap'}}>
+                                                {(filtroAbertas ? <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroAbertas(false);}} ><FontAwesomeIcon icon={faTimes} /> Abertas</Button> : '')}
+                                                {(filtroPagas ? <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroPagas(false);}} ><FontAwesomeIcon icon={faTimes} /> Pagas</Button> : '')}
+                                                {(filtroVencidas ? <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroVencidas(false);}} ><FontAwesomeIcon icon={faTimes} /> Vencidas</Button> : '')}
+                                                {(filtroAvencer ? <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroAvencer(false);}} ><FontAwesomeIcon icon={faTimes} /> A vencer</Button> : '')}
+                                            </div>
+                                        </Row>
                                     </Col>
                                     
                                     
@@ -406,9 +477,13 @@ const ContasReceber = ({defaultFilters ,...props})=>{
                                     </Col>
                                 </Row>
                                 <Row>
-                                    <Col>
-                                        <Button className={'btn btn-sm btn-secondary'} onClick={()=>{setCadastrarContasReceber(true);}} ><FontAwesomeIcon icon={faPlus} /></Button>
-                                    </Col>
+                                    <div style={{display:'flex', flexDirection:'collumn', flexWrap:'wrap'}}>
+                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setCadastrarContasReceber(true);}} ><FontAwesomeIcon icon={faPlus} /> Receita</Button>
+                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroAbertas(true); requestAllContasRecebers();}} ><FontAwesomeIcon icon={faSearch} /> Abertas</Button>
+                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroPagas(true); requestAllContasRecebers();}} ><FontAwesomeIcon icon={faSearch} /> Pagas</Button>
+                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroVencidas(true); requestAllContasRecebers();}} ><FontAwesomeIcon icon={faSearch} /> Vencidas</Button>
+                                        <Button style={{borderRadius:'50px', marginBottom:'10px'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroAvencer(true); requestAllContasRecebers();}} ><FontAwesomeIcon icon={faSearch} /> A vencer</Button>
+                                    </div>
                                 </Row>
                             </Col>
                         </>

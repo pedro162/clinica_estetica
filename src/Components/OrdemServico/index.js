@@ -7,7 +7,7 @@ import {Col, Row, Button } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
 import Breadcrumbs from '../Helper/Breadcrumbs.js'
-import { faHome, faSearch, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faSearch, faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from '../Utils/Modal/index.js'
 import Load from '../Utils/Load/index.js'
@@ -39,6 +39,11 @@ const OrdemServico = (props)=>{
     const [acao, setAcao] = React.useState(null)
     const [pessoa, setPessoa] = React.useState('')
     const [ordenacao, setOrdenacao] = React.useState('')
+
+
+    const [filtroAbertas, setFiltroAbertas] = React.useState(false)
+    const [filtroConcluidas, setFiltroConcluidas] = React.useState(false)
+    const [filtroCanceladas, setFiltroCanceladas] = React.useState(false)
 
 
     const {getToken} = React.useContext(UserContex);
@@ -220,7 +225,34 @@ const OrdemServico = (props)=>{
             };
         }
 
-        
+        if(filtroAbertas){
+            filtros['status'] += 'aberto,';
+            detalhesFiltros['status'] = {
+                label:'Status',
+                value:filtroMobile,
+                resetFilter:()=>setFiltroAbertas(''),
+            };
+        }
+
+        if(filtroConcluidas){
+            filtros['status'] += 'concluido,';
+            detalhesFiltros['status'] = {
+                label:'Status',
+                value:filtroMobile,
+                resetFilter:()=>setFiltroConcluidas(''),
+            };
+        }
+
+        if(filtroCanceladas){
+            filtros['status'] += 'cancelado,';
+            detalhesFiltros['status'] = {
+                label:'Status',
+                value:filtroMobile,
+                resetFilter:()=>setFiltroCanceladas(''),
+            };
+        }
+
+
 
         return {filtros, detalhesFiltros};
     }
@@ -240,7 +272,7 @@ const OrdemServico = (props)=>{
         if(json){
             setOrdemServico(json)
         }
-        setMostarFiltros(false)
+        //setMostarFiltros(false)
         //setFiltroMobile(null)
             
     }
@@ -257,7 +289,9 @@ const OrdemServico = (props)=>{
         requestAllOrdemServicosEffect();
 
         
-    }, [])
+    }, [filtroConcluidas, filtroCanceladas, filtroAbertas])
+
+
 
     /**
      * Deve ter a opção de cadastrar salas de consulta
@@ -343,6 +377,13 @@ const OrdemServico = (props)=>{
                                             
                                          </Row>
 
+                                         <Row className={'mt-2'}>
+                                            <div  style={{display:'flex', flexDirection:'collumn', flexWrap:'wrap'}}>
+                                                {(filtroAbertas ? <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroAbertas(false);}} ><FontAwesomeIcon icon={faTimes} /> Abertas</Button> : '')}
+                                                {(filtroConcluidas ? <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroConcluidas(false);}} ><FontAwesomeIcon icon={faTimes} /> Concluídas</Button> : '')}
+                                                {(filtroCanceladas ? <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroCanceladas(false);}} ><FontAwesomeIcon icon={faTimes} /> Canceladas</Button> : '')}
+                                            </div>
+                                        </Row>
                                     </Col>
                                     
                                     
@@ -359,9 +400,13 @@ const OrdemServico = (props)=>{
                                     </Col>
                                 </Row>
                                 <Row>
-                                    <Col>
-                                        <Button className={'btn btn-sm btn-secondary'} onClick={()=>{setIniciarOrdemServico(true);}} ><FontAwesomeIcon icon={faPlus} /></Button>
-                                    </Col>
+
+                                    <div style={{display:'flex', flexDirection:'collumn', flexWrap:'wrap'}}>
+                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setIniciarOrdemServico(true);}} ><FontAwesomeIcon icon={faPlus} /> O. serviço</Button>
+                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroAbertas(true);}} ><FontAwesomeIcon icon={faSearch} /> Abertas</Button>
+                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroConcluidas(true);}} ><FontAwesomeIcon icon={faSearch} /> Concluídas</Button>
+                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroCanceladas(true);}} ><FontAwesomeIcon icon={faSearch} /> Canceladas</Button>
+                                    </div>
                                 </Row>
                             </Col>
                         </>

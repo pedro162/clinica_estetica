@@ -6,9 +6,10 @@ import {Col, Row } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
 import Breadcrumbs from '../Helper/Breadcrumbs.js'
-import { faHome, faSearch, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faSearch, faPlus, faUserCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from '../Utils/Modal/index.js'
+import ListMobile from '../Relatorio/ListMobile/index.js'
 import Load from '../Utils/Load/index.js'
 import Cadastrar from './Cadastrar/index.js'
 import Atualizar from './Atualizar/index.js'
@@ -137,6 +138,89 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idOrdemCr
 
         return tableTitle;
     }
+
+
+    const gerarListMobileRelatorio = ()=>{
+       
+        let data = [];
+        let dataClientes = clientes.mensagem
+        if(dataClientes && Array.isArray(dataClientes) && dataClientes.length > 0){
+            for(let i=0; !(i == dataClientes.length); i++){
+                let atual = dataClientes[i];
+                if(atual){
+                    let acoesArr = [
+                        {acao:()=>atualizarCliente(atual.id), label:'Editar', propsOption:{}, propsLabel:{}},
+                        {acao:()=>novoAtendimento(atual.id), label:'Novo atendimento', propsOption:{}, propsLabel:{}},
+                        {acao:()=>consultaTodosAtendimentos(atual.id), label:'Histórico de atendimentos', propsOption:{}, propsLabel:{}},
+                        {acao:()=>cadastrarFichaAtendimento(atual.id), label:'Nova ficha', propsOption:{}, propsLabel:{}},
+                        {acao:()=>fichaAtendimento(atual.id), label:'Visualizar ficha', propsOption:{}, propsLabel:{}},
+                        {acao:()=>consultaAgendaCalendario(atual.id), label:'Calendário da agenda', propsOption:{}, propsLabel:{}},
+                    ];
+                    let btnEditar                   = true;
+                    let btnIniciarProcedimento      = true;
+                    let btnFinalizar                = true;
+                    let btnVisualizarFinanceiro     = true;
+                    let btnVisualizar               = true;
+                    let btnCotinuarDigitacao        = true;
+                    let btnCancelar                 = true;
+
+                    
+
+                    let line_style = {}
+                    /*if(atual.status == 'cancelado'){
+                        line_style.color = 'red';
+                    }else if(atual.status == 'concluido'){
+                        line_style.color = 'green';
+                    } */
+
+                    //propsContainerTitulo, propsContainerButtons
+                    data.push(
+
+                        {
+                            propsRow:{id:(atual.id), titleRow:atual?.name},
+                            acoes:[
+                                ...acoesArr
+                            ],
+                            title:<> <div style={{display:'flex', justifyContent:'space-between',fontSize:'18pt', fontWeight:'bolder'}} ><span><FontAwesomeIcon size={'lg'} icon={faUserCircle}/> {atual?.name} </span> </div> </>,
+                            propsContainerTitulo:{md:'11', sm:'9', xs:'9'},
+                            propsContainerButtons:{md:'1', sm:'4', xs:'2'},
+                            acoesBottomCard:[
+                              
+                            ],
+                            celBodyTableArr:[
+                                [
+                                    
+                                    {
+                                        title:<span style={{fontWeight:'480'}}>Cpf: </span>,
+                                        label:atual?.documento,
+                                        props:{style:{textAlign:'left'}},
+                                        toSum:1,
+                                        isCoin:1,
+                                    },
+                                    {
+                                        title:<span style={{fontWeight:'480'}}>Contato: </span>,
+                                        label:'(99)99999-9999',
+                                        props:{style:{textAlign:'left'}},
+                                        toSum:1,
+                                        isCoin:1,
+                                    },
+
+                                ],
+                                
+                               
+                               
+                            ]
+                        }
+
+                    )
+
+                }
+
+            }
+        }
+
+        return data;
+    }
     //------------
 
     const requestAllClients = async() =>{
@@ -256,8 +340,30 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idOrdemCr
 		<>
 
             <Row>
-                
-                <Col  xs="12" sm="12" md="12">
+                <Col  xs="12" sm="12" md="12" className={'mobile_card_report py-4'}  style={{backgroundColor:'#FFF',}}>
+
+                   
+                    
+                    <ListMobile
+                        titulosTableArr={null}
+                        rowsTableArr={gerarListMobileRelatorio()}
+                        loading={loadingData}
+                        botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
+                    />
+
+                    {
+                    /*
+                    <CardMobile
+                        titulosTableArr={null}
+                        rowsTableArr={gerarCardContasReceber()}
+                        loading={loadingData}
+                        botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
+                    />
+                    */
+                    }
+                </Col>
+
+                <Col  xs="12" sm="12" md="12"  className={'default_card_report'}>
                     <Table
                         titulosTableArr={titulosTableArr}
                         rowsTableArr={rowsTableArr}
