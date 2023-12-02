@@ -294,7 +294,7 @@ const ContasReceber = ({defaultFilters ,...props})=>{
             };
         }
 
-        //if(! (filtroAvencer && filtroAvencer)){
+        if(! (filtroAvencer && filtroAvencer)){
 
         
             if(filtroVencidas){
@@ -325,7 +325,7 @@ const ContasReceber = ({defaultFilters ,...props})=>{
                     resetFilter:()=>setFiltroAvencer(false),
                 };
             }
-       // }
+        }
 
         return {filtros, detalhesFiltros};
     }

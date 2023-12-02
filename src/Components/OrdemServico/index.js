@@ -227,7 +227,12 @@ const OrdemServico = (props)=>{
         }
 
         if(filtroAbertas){
-            filtros['status'] += 'aberto,';
+            if(filtros.hasOwnProperty('status')){
+                filtros['status'] += 'aberto,';
+            }else{
+                filtros['status'] = 'aberto,';
+            }
+
             detalhesFiltros['status'] = {
                 label:'Status',
                 value:filtroMobile,
@@ -236,7 +241,12 @@ const OrdemServico = (props)=>{
         }
 
         if(filtroConcluidas){
-            filtros['status'] += 'concluido,';
+            if(filtros.hasOwnProperty('status')){
+                filtros['status'] += 'concluido,';
+            }else{
+                filtros['status'] = 'concluido,';
+            }
+            //filtros['status'] += 'concluido,';
             detalhesFiltros['status'] = {
                 label:'Status',
                 value:filtroMobile,
@@ -245,7 +255,12 @@ const OrdemServico = (props)=>{
         }
 
         if(filtroCanceladas){
-            filtros['status'] += 'cancelado,';
+            if(filtros.hasOwnProperty('status')){
+                filtros['status'] += 'cancelado,';
+            }else{
+                filtros['status'] = 'cancelado,';
+            }
+            //filtros['status'] += 'cancelado,';
             detalhesFiltros['status'] = {
                 label:'Status',
                 value:filtroMobile,
@@ -272,6 +287,14 @@ const OrdemServico = (props)=>{
         console.log(json)
         if(json){
             setOrdemServico(json)
+            if( json?.mensagem && json?.mensagem.length > 0){
+                setNadaEncontrado(false)
+            }else{
+                setNadaEncontrado(true)
+            }
+
+        }else{
+            setNadaEncontrado(true)
         }
         //setMostarFiltros(false)
         //setFiltroMobile(null)
