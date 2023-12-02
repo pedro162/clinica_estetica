@@ -6,6 +6,7 @@ import FormServico from '../FormServico/index.js'
 import Pesquisar from '../Pesquisar/index.js'
 import Modal from '../../Utils/Modal/index.js'
 import Load from '../../Utils/Load/index.js'
+import Swal from 'sweetalert2'
 
 const Cadastrar = ({idServico, setIdServico, callback, atualizarServico, setAtualizarServico, cadastrarServico, setCadastrarServico})=>{
 

@@ -2,6 +2,7 @@ import React from 'react';
 import useFetch from '../../../Hooks/useFetch.js';
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CONSULTA_ONE_GET} from '../../../api/endpoints/geral.js'
 import {UserContex} from '../../../Context/UserContex.js'
+import Swal from 'sweetalert2'
 
 const Pesquisar = ({idServico, setDataServico, setCarregandoDadosServico})=>{
 	const {getToken, dataUser} = React.useContext(UserContex);

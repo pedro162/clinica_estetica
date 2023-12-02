@@ -39,6 +39,7 @@ const ContasReceber = ({defaultFilters ,...props})=>{
     const [filtroPagas, setFiltroPagas] = React.useState(false)
     const [filtroVencidas, setFiltroVencidas] = React.useState(false)
     const [filtroAvencer, setFiltroAvencer] = React.useState(false)
+    const [nadaEncontrado, setNadaEncontrado] = React.useState(false)
 
 
     const [referenciaContasReceber, setReferenciaContasReceber] = React.useState(()=>{
@@ -266,7 +267,12 @@ const ContasReceber = ({defaultFilters ,...props})=>{
         }
 
         if(filtroAbertas){
-            filtros['status'] += 'aberto,';
+            if(filtros.hasOwnProperty('status')){
+                filtros['status'] += 'aberto,';
+            }else{
+                filtros['status'] = 'aberto,';
+            }
+            
             detalhesFiltros['status'] = {
                 label:'Status',
                 value:pessoa,
@@ -275,7 +281,12 @@ const ContasReceber = ({defaultFilters ,...props})=>{
         }
 
         if(filtroPagas){
-            filtros['status'] += 'pago,';
+            if(filtros.hasOwnProperty('status')){
+                filtros['status'] += 'pago,';
+            }else{
+                filtros['status'] = 'pago,';
+            }
+
             detalhesFiltros['status'] = {
                 label:'Status',
                 value:pessoa,
@@ -283,29 +294,44 @@ const ContasReceber = ({defaultFilters ,...props})=>{
             };
         }
 
-        if(filtroVencidas){
-            filtros['vencido'] = 'yes';
-            detalhesFiltros['status'] = {
-                label:'Vencidos',
-                value:pessoa,
-                resetFilter:()=>setFiltroVencidas(false),
-            };
-        }
+        if(! (filtroAvencer && filtroAvencer)){
 
-        if(filtroAvencer){
-            filtros['vencido'] = 'no';
-            detalhesFiltros['status'] = {
-                label:'Vencidos',
-                value:pessoa,
-                resetFilter:()=>setFiltroAvencer(false),
-            };
-        }
+        
+            if(filtroVencidas){
+                /*if(filtros.hasOwnProperty('status')){
+                    filtros['vencido'] += 'yes,';
+                }else{
+                    filtros['vencido'] = 'yes,';
+                }*/
+                filtros['vencido'] = 'yes';
+                detalhesFiltros['vencido'] = {
+                    label:'Vencidos',
+                    value:pessoa,
+                    resetFilter:()=>setFiltroVencidas(false),
+                };
+            }
 
+            if(filtroAvencer){
+               /* if(filtros.hasOwnProperty('status')){
+                    filtros['vencido'] += 'no,';
+                }else{
+                    filtros['vencido'] = 'no,';
+                }*/
+
+                filtros['vencido'] = 'no';
+                detalhesFiltros['vencido'] = {
+                    label:'Vencidos',
+                    value:pessoa,
+                    resetFilter:()=>setFiltroAvencer(false),
+                };
+            }
+        }
 
         return {filtros, detalhesFiltros};
     }
     const requestAllContasRecebers = async() =>{
         setContasReceber([])
+        setNadaEncontrado(false)
 
         let {filtros, detalhesFiltros} = montarFiltro();
         const {url, options} = CONTAS_RECEBER_ALL_POST({...filtros}, getToken());
@@ -317,8 +343,17 @@ const ContasReceber = ({defaultFilters ,...props})=>{
         console.log(json)
         if(json){
             setContasReceber(json)
+            if( json?.mensagem && json?.mensagem.length > 0){
+                setNadaEncontrado(false)
+            }else{
+                setNadaEncontrado(true)
+            }
+
+        }else{
+            setNadaEncontrado(true)
         }
         //setMostarFiltros(false)
+        //nadaEncontrado, setNadaEncontrado
 
             
     }
@@ -505,6 +540,7 @@ const ContasReceber = ({defaultFilters ,...props})=>{
                         loadingData={loading}
                         callBack={requestAllContasRecebers}
                         setMostarFiltros={setMostarFiltros}
+                        nadaEncontrado={nadaEncontrado}
                     />
                 </Col>
             </Row>

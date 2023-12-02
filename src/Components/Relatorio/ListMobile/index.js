@@ -8,7 +8,7 @@ import { faHome, faSearch, faPlus, faPen, faHandHoldingUsd, faList, faFile, faTr
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../../functions/index.js'
 
-const ListMobile = ({children, titulosTableArr, rowsTableArr,loading, botoesHeader, title, ... props})=>{
+const ListMobile = ({children, titulosTableArr, rowsTableArr,loading, nadaEncontrado, botoesHeader, title, ... props})=>{
 	const titulosTable = titulosTableArr ? titulosTableArr : []
 	const bodyTable =  rowsTableArr ? rowsTableArr : []
 	const [selecionados, setSelecionados] = React.useState([])
@@ -32,7 +32,8 @@ const ListMobile = ({children, titulosTableArr, rowsTableArr,loading, botoesHead
 		
 		
 	}
-
+    //nadaEncontrado={nadaEncontrado}
+	//
 	console.log(selecionados)
 
 	const selecionarTodos = (target)=>{
@@ -203,7 +204,7 @@ const ListMobile = ({children, titulosTableArr, rowsTableArr,loading, botoesHead
                                 )
                             })
                         ) : (
-                        	<Row>
+                        	nadaEncontrado && <Row>
                         		<Col style={{textAlign:'center'}} ><span>Ops...</span><br/><span style={{textAlign:'center'}}>Nenhum registro encontrado!</span></Col>
                         	</Row>
                         )

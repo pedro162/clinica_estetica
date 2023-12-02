@@ -22,7 +22,7 @@ import FormCliente from './FormCliente/index.js'
 import Home from '../Home/index.js'
 
 
-const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idOrdemCriada, ...props})=>{
+const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFiltros, idOrdemCriada, ...props})=>{
 
 	const {data, error, request, loading} = useFetch();
     const [clientes, setClientes] = React.useState([])
@@ -43,7 +43,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idOrdemCr
     const [defaultFiltersAgendaCalendario, setDefaultFiltersAgendaCalendario] = React.useState({})
     const [visualizarCalendarioAgenda, setVisualizarCalendarioAgenda] = React.useState(false)  
 
-
+    //nadaEncontrado
     const {getToken} = React.useContext(UserContex);
 
     const alerta = (target)=>{
@@ -348,6 +348,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idOrdemCr
                         titulosTableArr={null}
                         rowsTableArr={gerarListMobileRelatorio()}
                         loading={loadingData}
+                        nadaEncontrado={nadaEncontrado}
                         botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
                     />
 
@@ -368,6 +369,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idOrdemCr
                         titulosTableArr={titulosTableArr}
                         rowsTableArr={rowsTableArr}
                         loading={loadingData}
+                        nadaEncontrado={nadaEncontrado}
                         botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
 
                     />

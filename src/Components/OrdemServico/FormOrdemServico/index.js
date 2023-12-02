@@ -15,6 +15,7 @@ import Load from '../../Utils/Load/index.js'
 import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible.js'
 import FormOrdemServicoItens from '../FormOrdemServicoItens/index.js'
 import FormOrdemServicoCobrancas from '../FormOrdemServicoCobrancas/index.js'
+import Swal from 'sweetalert2'
 
 
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, SERVICO_SAVE_POST, SERVICO_ALL_POST, ORDEM_SERVICO_FINALIZAR_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST} from '../../../api/endpoints/geral.js'
@@ -72,6 +73,14 @@ const FormOrdemServico = ({dataOrdemServicoChoice, setDataOrdemServico, setIdOrd
 			setShowModalCriarOrdemServico();
 			setAtualizarOrdemServico(false);
 			setIdOrdemServico(null);
+
+			Swal.fire({
+			  icon: "success",
+			  title: "",
+			  text: 'Reigistrado com sucesso',
+			  footer: '',//'<a href="#">Why do I have this issue?</a>'
+			  confirmButtonColor: "#07B201",
+			});
 		}
     }
 
@@ -190,6 +199,17 @@ const FormOrdemServico = ({dataOrdemServicoChoice, setDataOrdemServico, setIdOrd
     console.log('----------------------------- data pais ----------------------------------')
     console.log(dataToFormOrdemServico())
 
+
+	if(error){
+		Swal.fire({
+		  	icon: "error",
+		  	title: "Oops...",
+		  	text: error,
+		  	footer: '',//'<a href="#">Why do I have this issue?</a>'
+			confirmButtonColor: "#07B201",
+			//width:'20rem',
+		});
+	}
 
 	return(
 

@@ -8,7 +8,7 @@ import { faHome, faSearch, faPlus, faPen, faHandHoldingUsd, faList, faFile, faTr
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../../functions/index.js'
 
-const CardMobile = ({children, titulosTableArr, rowsTableArr,loading, botoesHeader, title, ... props})=>{
+const CardMobile = ({children, titulosTableArr, rowsTableArr,loading, nadaEncontrado, botoesHeader, title, ... props})=>{
 	const titulosTable = titulosTableArr ? titulosTableArr : []
 	const bodyTable =  rowsTableArr ? rowsTableArr : []
 	const [selecionados, setSelecionados] = React.useState([])

@@ -8,6 +8,7 @@ import Modal from '../../Utils/Modal/index.js'
 import Load from '../../Utils/Load/index.js'
 import {Col, Row} from 'react-bootstrap';
 import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible.js'
+import Swal from 'sweetalert2'
 
 const AtualizarCabecalho = ({idOrdemServico, setIdOrdemServico, callback, atualizarOrdemServico, setAtualizarCabecalhoOrdemServico})=>{
 

@@ -38,6 +38,7 @@ const ClientesFichas = (props)=>{
     const [tipo, setTipo] = React.useState('')
     const [sigiloso, setSigiloso] = React.useState('')
     const [status, setStatus] = React.useState('')
+    const [nadaEncontrado, setNadaEncontrado] = React.useState(false)
 
     
     const {getToken} = React.useContext(UserContex);

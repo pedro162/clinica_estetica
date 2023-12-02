@@ -36,6 +36,7 @@ const Clientes = ({defaultFilters ,...props})=>{
     const [acao, setAcao] = React.useState(null)
     const [mostarFiltros, setMostarFiltros] = React.useState(false) 
     const [filtroMobile, setFiltroMobile] = React.useState(null)
+    const [nadaEncontrado, setNadaEncontrado] = React.useState(false)
 
      const [referenciaContasReceber, setReferenciaContasReceber] = React.useState(()=>{
         return defaultFilters?.referencia
@@ -166,7 +167,16 @@ const Clientes = ({defaultFilters ,...props})=>{
         console.log('All clients here')
         console.log(json)
         if(json){
-               setClientes(json)
+            
+              setClientes(json)
+            if( json?.mensagem && json?.mensagem.length > 0){
+                setNadaEncontrado(false)
+            }else{
+                setNadaEncontrado(true)
+            }
+
+        }else{
+            setNadaEncontrado(true)
         }
 
             
@@ -314,6 +324,7 @@ const Clientes = ({defaultFilters ,...props})=>{
                     <Include
                         dataEstado={clientes}
                         loadingData={loading}
+                        nadaEncontrado={nadaEncontrado}
                         callBack={requestAllClients}
                         setMostarFiltros={setMostarFiltros}
                         idClienteCriado={clientChoice}

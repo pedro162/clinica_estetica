@@ -3,11 +3,11 @@ import estilos from './Servico.module.css'
 import useFetch from '../../Hooks/useFetch.js';
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, SERVICO_ALL_POST} from '../../api/endpoints/geral.js'
 import {FORMAT_DATA_PT_BR} from '../../functions/index.js'
-import {Col, Row } from 'react-bootstrap';
+import {Col, Row, Button } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
 import Breadcrumbs from '../Helper/Breadcrumbs.js'
-import { faHome, faSearch, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faSearch, faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from '../Utils/Modal/index.js'
 import Load from '../Utils/Load/index.js'
@@ -15,6 +15,8 @@ import {UserContex} from '../../Context/UserContex.js'
 import FormServico from './FormServico/index.js'
 import Cadastrar from './Cadastrar/index.js'
 import Atualizar from './Atualizar/index.js'
+import Include from './include';
+import FormControlInput from '../FormControl/index.js'
 
 
 const Servico = (props)=>{
@@ -30,12 +32,25 @@ const Servico = (props)=>{
     const [cadastrarServico, setCadastrarServico] = React.useState(false) 
     const [acao, setAcao] = React.useState(null)
     const [pessoa, setPessoa] = React.useState('')
+    const [mostarFiltros, setMostarFiltros] = React.useState(false) 
+    const [filtroMobile, setFiltroMobile] = React.useState(null)
+    const [filtroAtivos, setFiltroAtivos] = React.useState(null)
+    const [filtroInativos, setFiltroInAtivos] = React.useState(null)
+    const [ordenacao, setOrdenacao] = React.useState('')
+    const [nadaEncontrado, setNadaEncontrado] = React.useState(false)
+
+
+
 
 
     const {getToken} = React.useContext(UserContex);
 
     const alerta = (target)=>{
         console.log(target)
+    }
+
+    const handleFiltroMobile = ({target})=>{
+        setFiltroMobile(target.value)
     }
 
     const setNamePessoa = ({target})=>{
@@ -154,6 +169,71 @@ const Servico = (props)=>{
         
     }, [cadastrarServico])
 
+
+    //------------
+    const montarFiltro = ()=>{
+        let filtros = {}
+        let detalhesFiltros = {}
+        
+        if(pessoa){
+            filtros['name'] = pessoa;
+            detalhesFiltros['name'] = {
+                label:'Servico',
+                value:pessoa,
+                resetFilter:()=>setPessoa(''),
+            };
+        }
+        if(pessoa){
+            filtros['name_servico'] = pessoa;
+            detalhesFiltros['name_servico'] = {
+                label:'Servico',
+                value:pessoa,
+                resetFilter:()=>setPessoa(''),
+            };
+        }
+
+        
+
+        if(ordenacao){
+            filtros['ordem'] = ordenacao;
+            detalhesFiltros['ordem'] = {
+                label:'Ordenação',
+                value:ordenacao,
+                resetFilter:()=>setOrdenacao(''),
+            };
+        }
+
+        if(filtroMobile){
+            filtros['name'] = filtroMobile;
+            detalhesFiltros['name'] = {
+                label:'Filtro',
+                value:filtroMobile,
+                resetFilter:()=>setFiltroMobile(''),
+            };
+        }
+
+        if(filtroAtivos){
+            filtros['status'] += 'ativo,';
+            detalhesFiltros['status'] = {
+                label:'Status',
+                value:filtroMobile,
+                resetFilter:()=>setFiltroAtivos(null),
+            };
+        }
+
+        if(filtroInativos){
+            filtros['status'] += 'inativo,';
+            detalhesFiltros['status'] = {
+                label:'Status',
+                value:filtroMobile,
+                resetFilter:()=>setFiltroInAtivos(null),
+            };
+        }
+
+        return {filtros, detalhesFiltros};
+    }
+
+
     const atualizarServicoAction = (idServico)=>{
         setServicoChoice(idServico)
         setAcao('editar')
@@ -248,7 +328,9 @@ const Servico = (props)=>{
 
     const requestAllServicos = async() =>{
        
-        const {url, options} = SERVICO_ALL_POST({'name_servico':pessoa}, getToken());
+       let {filtros, detalhesFiltros} = montarFiltro();
+
+        const {url, options} = SERVICO_ALL_POST({...filtros}, getToken());
 
 
         const {response, json} = await request(url, options);
@@ -256,9 +338,17 @@ const Servico = (props)=>{
         console.log({'name_servico':pessoa})
         console.log(json)
         if(json){
+            
             setServico(json)
-        }
+            if( json?.mensagem && json?.mensagem.length > 0){
+                setNadaEncontrado(false)
+            }else{
+                setNadaEncontrado(true)
+            }
 
+        }else{
+           setNadaEncontrado(true)
+        }
             
     }
 
@@ -274,12 +364,14 @@ const Servico = (props)=>{
         requestAllServicosEffect();
 
         
-    }, [])
+    }, [filtroAtivos, filtroInativos])
 
     const rowsTableArr = gerarTableServico();    
     const titulosTableArr = gerarTitleTable();
     return(
         <>
+            
+
             <Breadcrumbs
                 items={[
                         {
@@ -291,20 +383,115 @@ const Servico = (props)=>{
                             label:'Servico'
                         }
                     ]}
+
+                buttonFiltroMobile={true}
+                setMostarFiltros={setMostarFiltros}
+                mostarFiltros={mostarFiltros}
             />
             <Row>
-                <Col  xs="12" sm="12" md="3">
-                    <Filter
-                        filtersArr={filtersArr}
-                        actionsArr={acoesBottomCard}
-                    />
-                </Col>
-                <Col  xs="12" sm="12" md="9">
-                    <Table
-                        titulosTableArr={titulosTableArr}
-                        rowsTableArr={rowsTableArr}
-                        loading={loading}
+                {mostarFiltros && 
+                    (
+                        <>
+                            <Col  xs="12" sm="12" md="3" className={'default_card_report'}>
+                                <Filter
+                                    filtersArr={filtersArr}
+                                    actionsArr={acoesBottomCard}
+                                />
+                            </Col>
 
+                            <Col  xs="12" sm="12" md="12" className={'mobile_card_report pt-4'}  style={{backgroundColor:'#FFF'}}>
+                                <Row className={''} >
+                                    <Col className={'mx-2'}  >
+                                       <Row style={{borderRadius:'24px 24px 24px 24px', border:'1px solid #000'}}>
+                                            <Col xs="11" sm="11" md="11" >
+                                                <FormControlInput
+                                                    data={
+                                                        {
+                                                            atributsFormControl:{
+                                                                type:'input',
+                                                                placeholder:'Search...',
+                                                                style:{
+                                                                    border:'none',
+                                                                    outline:'0',
+                                                                    'box-shadow':'0 0 0 0',
+                                                                    height:'50px',
+                                                                    borderRadius:'24px 24px 24px 24px'
+                                                                    
+                                                                },
+                                                                onChange:(ev)=>{handleFiltroMobile(ev);},
+                                                                onBlur:(ev)=>{handleFiltroMobile(ev);},
+                                                                onKeyUp:(ev)=>{
+
+                                                                    if (ev.key === "Enter") {
+                                                                        requestAllServicos();
+                                                                    }
+                                                                },
+                                                                value:filtroMobile
+
+                                                            }
+                                                        }
+                                                    }
+                                                 />
+                                            </Col>
+
+                                            <Col xs="1" sm="1" md="1" style={{textAlign:'left', alignItems:'center', justifyContent:'center', margin:'auto',padding:'0'}} >
+                                                <FontAwesomeIcon onClick={()=>{requestAllServicos();}} size={'lg'} icon={faSearch}/>
+                                            </Col>
+                                        
+                                            
+                                         </Row>
+
+                                         <Row className={'mt-2'}>
+                                            <div  style={{display:'flex', flexDirection:'collumn', flexWrap:'wrap'}}>
+                                                {(filtroAtivos ? <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroAtivos(false);}} ><FontAwesomeIcon icon={faTimes} /> Abertas</Button> : '')}
+                                                {(filtroInativos ? <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroInAtivos(false);}} ><FontAwesomeIcon icon={faTimes} /> Concluídas</Button> : '')}
+                                            </div>
+                                        </Row>
+                                    </Col>
+                                    
+                                    
+                                </Row>
+                                <Row className={'my-2'}>
+                                    <Col>
+                                        <Row>
+                                            <Col><span style={{fontWeight:'bolder', fontSize:'14pt'}} >Ações</span></Col>
+                                        </Row>
+
+                                        <div>
+                                             <hr style={{margin:'0',padding:'0'}}/>  
+                                        </div>
+                                    </Col>
+                                </Row>
+                                <Row>
+
+                                    <div style={{display:'flex', flexDirection:'collumn', flexWrap:'wrap'}}>
+                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setCadastrarServico(true);}} ><FontAwesomeIcon icon={faPlus} /> Serviço</Button>
+                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroAtivos(true);}} ><FontAwesomeIcon icon={faSearch} /> Ativos</Button>
+                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroInAtivos(true);}} ><FontAwesomeIcon icon={faSearch} /> Inativos</Button>
+                                    </div>
+                                </Row>
+                            </Col>
+                        </>
+                    )
+                }
+
+                <Col style={{backgroundColor:'#FFF'}} className={'pt-3 mobile_card_report'}>
+                    <Row>
+                        <Col><span style={{fontWeight:'bolder'}} >Resultado</span></Col>
+                    </Row>
+                    <div>
+                         <hr style={{margin:'0',padding:'0'}}/>  
+                    </div>
+                </Col>
+                
+                <Col  xs="12" sm="12" md={mostarFiltros ? "9":"12"}>
+                    <Include
+                        dataEstado={estado}
+                        loadingData={loading}
+                        callBack={requestAllServicos}
+                        setMostarFiltros={setMostarFiltros}
+                        idOrdemCriada={consultaChoice}
+                        nadaEncontrado={nadaEncontrado}
                     />
                 </Col>
             </Row>
@@ -313,10 +500,6 @@ const Servico = (props)=>{
                 cadastrarServico && <Cadastrar cadastrarServico={cadastrarServico} setCadastrarServico={setCadastrarServico} atualizarServico={atualizarServico} setAtualizarServico={setAtualizarServico}  idServico={consultaChoice} setIdServico={setServicoChoice} callback={requestAllServicos} />
             }
             
-            {
-                atualizarServico &&
-                <Atualizar atualizarServico={atualizarServico} setAtualizarServico={setAtualizarServico}  idServico={consultaChoice} setIdServico={setServicoChoice} callback={requestAllServicos} />
-            }
            
          </>
 

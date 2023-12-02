@@ -8,7 +8,7 @@ import Table from '../Relatorio/Table/index.js'
 import ListMobile from '../Relatorio/ListMobile/index.js'
 import Filter from '../Relatorio/Filter/index.js'
 import Breadcrumbs from '../Helper/Breadcrumbs.js'
-import { faHome, faSearch, faPlus, faUserCircle, faHandHoldingUsd,faHandHolding } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faSearch, faPlus, faUserCircle, faHandHoldingUsd,faHandHolding, faTasks, faFileAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from '../Utils/Modal/index.js'
 import Load from '../Utils/Load/index.js'
@@ -26,7 +26,7 @@ import { Button } from 'bootstrap';
 import reactDom from 'react-dom';
 //
 
-const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idOrdemCriada, ...props})=>{
+const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncontrado, idOrdemCriada, ...props})=>{
     const {data, error, request, loading} = useFetch();
     const [estado, setOrdemServico] = React.useState([])
     const [exemplos, setExemplos] = React.useState([])
@@ -548,7 +548,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idOrdemCr
                     data.push(
 
                         {
-                            propsRow:{id:(atual.id), titleRow:atual?.name, style:{...line_style}},
+                            propsRow:{id:(atual.id), titleRow:atual?.name, style:{...line_style}, mainIcon:faFileAlt},
                             acoes:[
                                 ...acoesArr
                             ],
@@ -721,6 +721,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idOrdemCr
                         titulosTableArr={null}
                         rowsTableArr={gerarListMobileRelatorio()}
                         loading={loadingData}
+                        nadaEncontrado={nadaEncontrado}
                         botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
                     />
 
@@ -741,6 +742,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idOrdemCr
                         titulosTableArr={titulosTableArr}
                         rowsTableArr={rowsTableArr}
                         loading={loadingData}
+                        nadaEncontrado={nadaEncontrado}
                         botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
 
                     />

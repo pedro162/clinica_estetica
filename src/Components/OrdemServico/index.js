@@ -39,6 +39,7 @@ const OrdemServico = (props)=>{
     const [acao, setAcao] = React.useState(null)
     const [pessoa, setPessoa] = React.useState('')
     const [ordenacao, setOrdenacao] = React.useState('')
+    const [nadaEncontrado, setNadaEncontrado] = React.useState(false)
 
 
     const [filtroAbertas, setFiltroAbertas] = React.useState(false)
@@ -429,6 +430,7 @@ const OrdemServico = (props)=>{
                         callBack={requestAllOrdemServicos}
                         setMostarFiltros={setMostarFiltros}
                         idOrdemCriada={consultaChoice}
+                        nadaEncontrado={nadaEncontrado}
                     />
                 </Col>
             </Row>

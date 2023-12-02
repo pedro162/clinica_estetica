@@ -13,6 +13,7 @@ import Load from '../../Utils/Load/index.js'
 import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible.js'
 import FormOrdemServicoItens from '../FormOrdemServicoItens/index.js'
 import FormOrdemServicoCobrancas from '../FormOrdemServicoCobrancas/index.js'
+import Swal from 'sweetalert2'
 
 
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, ORDEM_SERVICO_CANCEL_POST, MOTIVOS_CANCEL_OS_ALL_POST} from '../../../api/endpoints/geral.js'
@@ -55,6 +56,14 @@ const CancelarForm = ({dataOrdemServicoChoice, setDataOrdemServico, setIdOrdemSe
 			setShowModalCriarOrdemServico();
 			setCancelarOrdemServico(false);
 			setIdOrdemServico(null);
+
+			Swal.fire({
+			  icon: "success",
+			  title: "",
+			  text: 'Reigistrado com sucesso',
+			  footer: '',//'<a href="#">Why do I have this issue?</a>'
+			  confirmButtonColor: "#07B201",
+			});
 		}
     }
 
@@ -121,6 +130,19 @@ const CancelarForm = ({dataOrdemServicoChoice, setDataOrdemServico, setIdOrdemSe
 
     console.log('----------------------------- data pais ----------------------------------')
     console.log(dataToFormOrdemServico())
+
+    if(error){
+		Swal.fire({
+		  	icon: "error",
+		  	title: "Oops...",
+		  	text: error,
+		  	footer: '',//'<a href="#">Why do I have this issue?</a>'
+			confirmButtonColor: "#07B201",
+			//width:'20rem',
+		});
+	}
+
+	
 	return(
 
 		<>

@@ -25,7 +25,7 @@ import Card from '../Utils/Card/index.js'
 import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../functions/index.js'
 
 
-const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, ...props})=>{
+const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncontrado, ...props})=>{
     const {data, error, request, loading} = useFetch();
     const [estado, setContasReceber] = React.useState([])
     const [exemplos, setExemplos] = React.useState([])
@@ -780,6 +780,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, ...props}
                         titulosTableArr={null}
                         rowsTableArr={gerarListMobileContasReceber()}
                         loading={loadingData}
+                        nadaEncontrado={nadaEncontrado}
                         botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
                     />
 
@@ -800,6 +801,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, ...props}
                         titulosTableArr={titulosTableArr}
                         rowsTableArr={rowsTableArr}
                         loading={loadingData}
+                        nadaEncontrado={nadaEncontrado}
                         botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
                     />
                 </Col>
