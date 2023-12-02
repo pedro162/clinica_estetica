@@ -603,7 +603,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
         if(dataContasReceber && Array.isArray(dataContasReceber) && dataContasReceber.length > 0){
             for(let i=0; !(i == dataContasReceber.length); i++){
                 let atual = dataContasReceber[i];
-                if(atual){
+                if(atual && atual.id > 0){
                     let acoesArr = [];
                     let btnEditar                   = true;
                     let baixar                      = true;
@@ -671,7 +671,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                     data.push(
 
                         {
-                            propsRow:{id:(atual.id), titleRow:atual?.name, style:{...line_style}, mainIcon:faChartLine},
+                            propsRow:{id:(atual.id), titleRow: atual.id+' - '+atual?.name, style:{...line_style}, mainIcon:faChartLine},
                             acoes:[
                                 ...acoesArr
                             ],

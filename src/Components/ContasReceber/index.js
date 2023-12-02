@@ -294,7 +294,7 @@ const ContasReceber = ({defaultFilters ,...props})=>{
             };
         }
 
-        if(! (filtroAvencer && filtroAvencer)){
+        //if(! (filtroAvencer && filtroAvencer)){
 
         
             if(filtroVencidas){
@@ -325,7 +325,7 @@ const ContasReceber = ({defaultFilters ,...props})=>{
                     resetFilter:()=>setFiltroAvencer(false),
                 };
             }
-        }
+       // }
 
         return {filtros, detalhesFiltros};
     }
@@ -514,10 +514,10 @@ const ContasReceber = ({defaultFilters ,...props})=>{
                                 <Row>
                                     <div style={{display:'flex', flexDirection:'collumn', flexWrap:'wrap'}}>
                                         <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setCadastrarContasReceber(true);}} ><FontAwesomeIcon icon={faPlus} /> Receita</Button>
-                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroAbertas(true); requestAllContasRecebers();}} ><FontAwesomeIcon icon={faSearch} /> Abertas</Button>
-                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroPagas(true); requestAllContasRecebers();}} ><FontAwesomeIcon icon={faSearch} /> Pagas</Button>
-                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroVencidas(true); requestAllContasRecebers();}} ><FontAwesomeIcon icon={faSearch} /> Vencidas</Button>
-                                        <Button style={{borderRadius:'50px', marginBottom:'10px'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroAvencer(true); requestAllContasRecebers();}} ><FontAwesomeIcon icon={faSearch} /> A vencer</Button>
+                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroAbertas(true); }} ><FontAwesomeIcon icon={faSearch} /> Abertas</Button>
+                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroPagas(true); }} ><FontAwesomeIcon icon={faSearch} /> Pagas</Button>
+                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroVencidas(true); }} ><FontAwesomeIcon icon={faSearch} /> Vencidas</Button>
+                                        <Button style={{borderRadius:'50px', marginBottom:'10px'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroAvencer(true);}} ><FontAwesomeIcon icon={faSearch} /> A vencer</Button>
                                     </div>
                                 </Row>
                             </Col>
