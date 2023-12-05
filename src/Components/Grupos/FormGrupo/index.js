@@ -11,6 +11,8 @@ import {UserContex} from '../../../Context/UserContex.js'
 import Load from '../../Utils/Load/index.js'
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, GRUPOS_SAVE_POST, GRUPOS_UPDATE_POST, GRUPOS_ONE_GET} from '../../../api/endpoints/geral.js'
 import Atualizar from '../Atualizar/index.js'
+import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible.js'
+import Swal from 'sweetalert2'
 
 const FormGrupo = ({dataGrupoChoice, setIdGrupo, idGrupo, showModalCriarGrupo, setShowModalCriarGrupo, callback, atualizarCadastro, setAtualizarCadastro, carregando})=>{
     
@@ -52,6 +54,15 @@ const FormGrupo = ({dataGrupoChoice, setIdGrupo, idGrupo, showModalCriarGrupo, s
                 setShowModalCriarGrupo();
                 setAtualizarCadastro(false);
                 setIdGrupo(null);
+
+
+                 Swal.fire({
+                  icon: "success",
+                  title: "",
+                  text: 'Reigistrado com sucesso',
+                  footer: '',//'<a href="#">Why do I have this issue?</a>'
+                  confirmButtonColor: "#07B201",
+                });
             }
 
         }else{
@@ -70,6 +81,14 @@ const FormGrupo = ({dataGrupoChoice, setIdGrupo, idGrupo, showModalCriarGrupo, s
             	callback();
             	setShowModalCriarGrupo();
                 setAtualizarCadastro(false);
+
+                 Swal.fire({
+                  icon: "success",
+                  title: "",
+                  text: 'Reigistrado com sucesso',
+                  footer: '',//'<a href="#">Why do I have this issue?</a>'
+                  confirmButtonColor: "#07B201",
+                });
             }
 
         }
@@ -95,19 +114,17 @@ const FormGrupo = ({dataGrupoChoice, setIdGrupo, idGrupo, showModalCriarGrupo, s
     	return obj;
     }
     
-   /* if(atualizarCadastro){
-        return(
-            <Modal  handleConcluir={()=>null}  title={'Cadastrar Grupo ..'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarGrupo} showHide={()=>{setShowModalCriarGrupo();}}>
-                {carregandoDadosChoice && <Load/>}
-                <Atualizar
-                    idGrupo={idGrupo} 
-                    setDataGrupo={setDataGrupoChoice}
-                    setCarregandoDadosGrupo={setCarregandoDadosChoice}
-                />
-             </Modal>
-        )
+   if(error){
+        Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: error,
+            footer: '',//'<a href="#">Why do I have this issue?</a>'
+            confirmButtonColor: "#07B201",
+            //width:'20rem',
+        });
     }
-   */
+
 	return(
 
 		<>
@@ -124,7 +141,7 @@ const FormGrupo = ({dataGrupoChoice, setIdGrupo, idGrupo, showModalCriarGrupo, s
                         }
 
                         if(!values.descricao){
-                            errors.descricao="Obrigatório"
+                           //errors.descricao="Obrigatório"
                         }
 
                         return errors;
@@ -153,7 +170,7 @@ const FormGrupo = ({dataGrupoChoice, setIdGrupo, idGrupo, showModalCriarGrupo, s
                         }
                     )=>(
 
-                        <Modal  handleConcluir={()=>{handleSubmit(); }}  title={'Cadastrar Grupo'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarGrupo} showHide={()=>{setShowModalCriarGrupo();setAtualizarCadastro(false);setIdGrupo(null);}}>
+                        <Modal  handleConcluir={()=>{handleSubmit(); }}  title={'Cadastrar Grupo'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarGrupo} showHide={()=>{setShowModalCriarGrupo();setAtualizarCadastro(false);setIdGrupo(null);}}>
                                 {
                                     carregando && carregando==true
                                     ?
@@ -166,6 +183,16 @@ const FormGrupo = ({dataGrupoChoice, setIdGrupo, idGrupo, showModalCriarGrupo, s
 	                        			<span className="label_title_grup_forms">Dados básicos</span>
 	                        		</Col>
 	                        	</Row>
+
+                                {
+                                    error && <Row className="my-3">
+                                        <Col xs="12" sm="12" md="12">
+                                            <AlertaDismissible title="Atenção:" message={error} variant={"danger"} />
+                                        </Col>
+                                    </Row>
+                                }
+
+
 	                        	<Row className="mb-1">
 	                        		<Col xs="12" sm="12" md="6">
 	                        			 <Field
@@ -179,7 +206,7 @@ const FormGrupo = ({dataGrupoChoice, setIdGrupo, idGrupo, showModalCriarGrupo, s
 				                                        atributsFormControl:{
 				                                            type:'text',
 				                                            name:'nome',
-				                                            placeholder:'fulano de tal',
+				                                            placeholder:'Nome do grupo',
 				                                            id:'nome',
 				                                            onChange:handleChange,
 				                                            onBlur:handleBlur,
@@ -203,14 +230,14 @@ const FormGrupo = ({dataGrupoChoice, setIdGrupo, idGrupo, showModalCriarGrupo, s
 				                                data={
 				                                    {
 				                                        hasLabel:true,
-				                                        contentLabel:'Sobrenome',
+				                                        contentLabel:'Descrição',
 				                                        atributsFormLabel:{
 
 				                                        },
 				                                        atributsFormControl:{
 				                                            type:'text',
 				                                            name:'descricao',
-				                                            placeholder:'fulano de tal',
+				                                            placeholder:'Descrição do grupo',
 				                                            id:'descricao',
 				                                            onChange:handleChange,
 				                                            onBlur:handleBlur,

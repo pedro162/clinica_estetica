@@ -8,7 +8,7 @@ import { faHome, faSearch, faPlus, faPen, faHandHoldingUsd, faList, faFile, faTr
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../../functions/index.js'
 
-const ListMobile = ({children, titulosTableArr, rowsTableArr,loading, nadaEncontrado, botoesHeader, title, ... props})=>{
+const ListMobile = ({children, titulosTableArr, rowsTableArr,loading, nadaEncontrado, botoesHeader, title, withoutFirstCol, ... props})=>{
 	const titulosTable = titulosTableArr ? titulosTableArr : []
 	const bodyTable =  rowsTableArr ? rowsTableArr : []
 	const [selecionados, setSelecionados] = React.useState([])
@@ -89,6 +89,11 @@ const ListMobile = ({children, titulosTableArr, rowsTableArr,loading, nadaEncont
 		)
 	}
 
+	let nrColList = 2;
+	if(!withoutFirstCol){
+		nrColList = 12
+	}
+
 	
 	return(
 		<>
@@ -124,10 +129,12 @@ const ListMobile = ({children, titulosTableArr, rowsTableArr,loading, nadaEncont
                                      <Col  key={id+index+arr.length}>
 
                                      		<Row className={'pb-2 px-1'}  onClick={()=>{setDataMenu(acoesRowBodyTable);setShowModalOptions(true)}} style={{...style}} > 
-												<Col xs="2" sm="2" md="2"  style={{textAlign:'left', alignItems:'center', justifyContent:'center', margin:'auto',fontSize:'25pt'}}>
-                                                    <FontAwesomeIcon size={'sm'} icon={mainIcon}/>
-                                                </Col>
-                                                <Col xs="10" sm="10" md="10"  style={{textAlign:'left', fontSize:'10pt'}}>
+												{!withoutFirstCol && (
+													<Col xs="2" sm="2" md="2"  style={{textAlign:'left', alignItems:'center', justifyContent:'center', margin:'auto',fontSize:'25pt'}}>
+                                                    	<FontAwesomeIcon size={'sm'} icon={mainIcon}/>
+                                               	 	</Col>
+												)}
+                                                <Col xs={withoutFirstCol} sm={withoutFirstCol} md={withoutFirstCol}  style={{textAlign:'left', fontSize:'10pt'}}>
                                                 	<Row className={'mb-1'}>
                                                         <span style={{fontSize:'14pt', fontWeight:'bolder'}} >{titleRow}</span>
                                                     </Row>

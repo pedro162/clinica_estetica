@@ -1,12 +1,12 @@
 import React from 'react';
-import {Table as TableBootstrap } from 'react-bootstrap';
+import {Table as TableBootstrap, Row, Col } from 'react-bootstrap';
 import Card from '../../Utils/Card/index.js'
 import Checkbox from '../../FormControl/Checkbox.js'
 import Load from '../../Utils/Load/index.js'
 import MenuOpcoes from '../MenuOpcoes/index.js'
 import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../../functions/index.js'
 
-const Table = ({children, titulosTableArr, rowsTableArr,loading, botoesHeader, ... props})=>{
+const Table = ({children, titulosTableArr, rowsTableArr,loading, nadaEncontrado, botoesHeader, ... props})=>{
 	const titulosTable = titulosTableArr ? titulosTableArr : []
 	const bodyTable =  rowsTableArr ? rowsTableArr : []
 	const [selecionados, setSelecionados] = React.useState([])
@@ -30,7 +30,7 @@ const Table = ({children, titulosTableArr, rowsTableArr,loading, botoesHeader, .
 		
 		
 	}
-
+	//nadaEncontrado
 	console.log(selecionados)
 
 	const selecionarTodos = (target)=>{
@@ -85,6 +85,8 @@ const Table = ({children, titulosTableArr, rowsTableArr,loading, botoesHeader, .
 				propsCard={{className:'cardFilter'}}
 				botoesHeader={botoesHeader}
 			>
+				<div  style={{maxHeight:'36rem', overflow:'auto'}} className={'mx-2'}  >
+				
 				{
 
 					loading 
@@ -106,8 +108,11 @@ const Table = ({children, titulosTableArr, rowsTableArr,loading, botoesHeader, .
 							  					titulosTable.map((item, index, arr)=>{
 							  						let labelCelHeadrTable 		= item.hasOwnProperty('label') ? item.label : '';
 							  						let propsLabelHeaderTable 	= item.hasOwnProperty('props') ? item.props: {};
+							  						let rand = Math.floor(Math.random()*999999);
 										  			console.log(labelCelHeadrTable)
-										  			return <th key={index} { ...propsLabelHeaderTable} >{labelCelHeadrTable}</th>
+
+
+										  			return <th key={index+arr.length+labelCelHeadrTable+rand} { ...propsLabelHeaderTable} >{labelCelHeadrTable}</th>
 
 										  		})
 							  				}
@@ -130,13 +135,17 @@ const Table = ({children, titulosTableArr, rowsTableArr,loading, botoesHeader, .
 				  						id = Number(id);
 
 				  						let acoesRowBodyTable 	= item.hasOwnProperty('acoes') ? item.acoes: {};
+				  						let rand = Math.floor(Math.random()*999999);
 							  			
 							  			return (
-							  				<tr onClick={()=>{setDataMenu(acoesRowBodyTable);setShowModalOptions(true)}}  key={index} { ...propsRowBodyTable}>
+							  				<tr onClick={()=>{setDataMenu(acoesRowBodyTable);setShowModalOptions(true)}}  key={index+arr.length+id+'body'+rand} { ...propsRowBodyTable}>
 							  					<td><Checkbox type="checkbox" value={id} checked={id > 0 ? selecionados.includes(id) : false} label="" setValue={handleChange} /></td>
 							  					{
 							  						celBodyTableArr && Array.isArray(celBodyTableArr) && celBodyTableArr.length > 0 ? (
 														celBodyTableArr.map((itemCel, indexCel, arrCel)=>{
+
+															let rand = Math.floor(Math.random()*999999);
+
 															let labelCel = itemCel.hasOwnProperty('label') ? itemCel.label :'';
 															let toSum = itemCel.hasOwnProperty('toSum') ? itemCel.toSum :0;
 															//, 
@@ -167,7 +176,7 @@ const Table = ({children, titulosTableArr, rowsTableArr,loading, botoesHeader, .
 															
 
 															let propsCelBodyTable 	= itemCel.hasOwnProperty('props') ? itemCel.props : {};
-															return <td key={indexCel} {...propsCelBodyTable}>{labelCel}</td>
+															return <td key={indexCel+id+arrCel.length+'td'+rand} {...propsCelBodyTable}>{labelCel}</td>
 														})
 
 													) : ('')
@@ -188,6 +197,7 @@ const Table = ({children, titulosTableArr, rowsTableArr,loading, botoesHeader, .
 									<td></td>
 									{Object.keys(arraySum).map((ojKey, index, arr)=>{
 										let {valor,isCoin} = arraySum[ojKey]
+										let rand = Math.floor(Math.random()*999999);
 										
 										if(! (String(valor).trim().length > 0)){
 											return <td></td>
@@ -199,7 +209,7 @@ const Table = ({children, titulosTableArr, rowsTableArr,loading, botoesHeader, .
 										}else{
 											valorAtual = valor;
 										}
-										return <td>{valorAtual}</td>
+										return <td key={rand+index+'tfooter'} >{valorAtual}</td>
 									})}
 
 									
@@ -212,6 +222,8 @@ const Table = ({children, titulosTableArr, rowsTableArr,loading, botoesHeader, .
 
 					
 				}
+				
+				</div>
 			</Card>
 			<MenuOpcoes showModal={showModalOptions} setShowModal={setShowModalOptions} opcoes={dataMenu} />
 		</>

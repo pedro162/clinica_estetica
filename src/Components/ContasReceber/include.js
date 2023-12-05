@@ -768,11 +768,11 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
     const rowsTableArr = gerarTableContasReceber();    
     const titulosTableArr = gerarTitleTable();
     const dataContasReceberRelatorio = estado.mensagem;
-
+    //
     return(
         <>
             <Row >
-                <Col  xs="12" sm="12" md="12" className={'mobile_card_report py-4'}  style={{backgroundColor:'#FFF',}}>
+                <Col  xs="12" sm="12" md="12" className={'mobile_card_report py-4'}  style={{backgroundColor:'#FFF'}}>
 
                    
                     
@@ -784,19 +784,10 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                         botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
                     />
 
-                    {
-                    /*
-                    <CardMobile
-                        titulosTableArr={null}
-                        rowsTableArr={gerarCardContasReceber()}
-                        loading={loadingData}
-                        botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
-                    />
-                    */
-                    }
+                    
                 </Col>
 
-                <Col  xs="12" sm="12" md="12" className={'default_card_report'}>
+                <Col  xs="12" sm="12" md="12"  className={'default_card_report'}>
                     <Table
                         titulosTableArr={titulosTableArr}
                         rowsTableArr={rowsTableArr}

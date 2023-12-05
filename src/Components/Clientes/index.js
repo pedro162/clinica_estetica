@@ -37,6 +37,8 @@ const Clientes = ({defaultFilters ,...props})=>{
     const [mostarFiltros, setMostarFiltros] = React.useState(false) 
     const [filtroMobile, setFiltroMobile] = React.useState(null)
     const [nadaEncontrado, setNadaEncontrado] = React.useState(false)
+    const [pessoa, setPessoa] = React.useState(null)
+    const [codigoPessoa, setCodigoPessoa] = React.useState(null)
 
      const [referenciaContasReceber, setReferenciaContasReceber] = React.useState(()=>{
         return defaultFilters?.referencia
@@ -52,8 +54,22 @@ const Clientes = ({defaultFilters ,...props})=>{
         console.log(target)
     }
 
+    const handleCodPessoaFilter = ({target})=>{
+        setCodigoPessoa(target.value)
+    }
+
+    const handleNamePessoaFilter = ({target})=>{
+        setPessoa(target.value)
+    }
+
     const handleFiltroMobile = ({target})=>{
         setFiltroMobile(target.value)
+    }
+
+    const handleSearch = (ev)=>{
+        if (ev.key === "Enter") {
+            requestAllClients();
+        }
     }
 
     const filtersArr = [
@@ -61,43 +77,20 @@ const Clientes = ({defaultFilters ,...props})=>{
             type:'text',
             options:[], 
             hasLabel: true,
-            contentLabel:'Teste',
+            contentLabel:'Cód pessoa',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"12",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name':'nome',onChange:alerta,    onBlur:alerta},
+            atributsContainer:{xs:"4", sm:"4", md:"4",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'name':'nome',onChange:handleCodPessoaFilter, onBlur:handleCodPessoaFilter, onKeyUp:handleSearch},
 
         },
         {
-            type:'radio',
-            options:[
-                {
-                    hasLabel: true,
-                    contentLabel:'Teste Radio 01',
-                    atributsFormLabel:{},
-                    atributsFormControl:{'type':'radio', value:'12', size:"sm",'checked':true,'name':'nome',onChange:alerta,    onBlur:alerta},
-                },
-                {
-                    hasLabel: true,
-                    contentLabel:'Teste Radio',
-                    atributsFormLabel:{},
-                    atributsFormControl:{'type':'radio', value:'12', size:"sm",'checked':true,'name':'nome',onChange:alerta,    onBlur:alerta},
-                }
-            ],  
-            hasLabel: true,
-            contentLabel:'Teste',
-            atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"12",className:'mb-2',},
-            atributsFormControl:{},
-
-        }
-        ,{
-            type:'checkbox',
+            type:'text',
             options:[], 
             hasLabel: true,
-            contentLabel:'Teste',
+            contentLabel:'Nome pessoa',
             atributsFormLabel:{},
-            atributsContainer:{ xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'checkbox', value:'12',size:"sm",'checked':false,'name':'nome',onChange:alerta, onBlur:alerta},
+            atributsContainer:{xs:"8", sm:"8", md:"8",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'name':'nome',onChange:handleNamePessoaFilter, onBlur:handleNamePessoaFilter, onKeyUp:handleSearch},
 
         }
     ]
@@ -121,6 +114,27 @@ const Clientes = ({defaultFilters ,...props})=>{
     const montarFiltro = ()=>{
         let filtros = {}
         let detalhesFiltros = {}
+
+
+        
+        if(codigoPessoa){
+            filtros['id'] = codigoPessoa;
+            detalhesFiltros['id'] = {
+                label:'id',
+                value:codigoPessoa,
+                resetFilter:()=>setPessoa(''),
+            };
+        }
+
+        if(pessoa){
+            filtros['name'] = pessoa;
+            detalhesFiltros['name'] = {
+                label:'name',
+                value:pessoa,
+                resetFilter:()=>setPessoa(''),
+            };
+        }
+
         if(referenciaContasReceber){
             filtros['referencia'] = referenciaContasReceber;
             detalhesFiltros['referencia'] = {
@@ -311,7 +325,7 @@ const Clientes = ({defaultFilters ,...props})=>{
                     )
                 }
                 
-                 <Col style={{backgroundColor:'#FFF'}} className={'pt-3 mobile_card_report'} >
+                 <Col  xs="12" sm="12"  md="12" style={{backgroundColor:'#FFF'}} className={'pt-3 mobile_card_report'} >
                     <Row>
                         <Col><span style={{fontWeight:'bolder', fontSize:'14pt'}} >Resultado</span></Col>
                     </Row>

@@ -44,7 +44,7 @@ const Atualizar = ({idGrupo, setIdGrupo, callback, atualizarCadastro, setAtualiz
 	return(
 		<>
 			{! dataGrupo &&
-				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={()=>null}  title={'Atualizar Grupo'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="" show={setShowModalAtualizarGrupo} showHide={()=>{setShowModalAtualizarGrupo();}}>
+				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={()=>null}  title={'Atualizar Grupo'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="" show={setShowModalAtualizarGrupo} showHide={()=>{setShowModalAtualizarGrupo();}}>
 					<Load/>
 				</Modal>
 			}
