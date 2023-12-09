@@ -3,11 +3,11 @@ import estilos from './Consulta.module.css'
 import useFetch from '../../Hooks/useFetch.js';
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CONSULTA_ALL_POST} from '../../api/endpoints/geral.js'
 import {FORMAT_DATA_PT_BR} from '../../functions/index.js'
-import {Col, Row } from 'react-bootstrap';
+import {Col, Row, Button } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
 import Breadcrumbs from '../Helper/Breadcrumbs.js'
-import { faHome, faSearch, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faSearch, faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from '../Utils/Modal/index.js'
 import Load from '../Utils/Load/index.js'
@@ -17,6 +17,7 @@ import Cadastrar from './Cadastrar/index.js'
 import Atualizar from './Atualizar/index.js'
 import Cancelar from './Cancelar/index.js'
 import Include from './include';
+import FormControlInput from '../FormControl/index.js'
 
 
 const Consulta = (props)=>{
@@ -33,12 +34,34 @@ const Consulta = (props)=>{
     const [mostarFiltros, setMostarFiltros] = React.useState(false) 
     const [acao, setAcao] = React.useState(null)
     const [pessoa, setPessoa] = React.useState('')
+    const [codigoPessoa, setCodigoPessoa] = React.useState(null)
+    const [profissional, setProfissional] = React.useState('')
+    const [codigoProfissional, setCodigoProfissional] = React.useState(null)
+    const [codigoConsulta, setCodigoConsulta] = React.useState(null)
+    const [codigoFilial, setCodigoFilial] = React.useState(null)
+    const [status, setStatus] = React.useState(null)
+    const [prioridade, setPrioridade] = React.useState(null)
+    const [historico, setHistorico] = React.useState(null)
+    const [tipo, setTipo] = React.useState(null)
+    const [dtInicio, setDtInicio] = React.useState(null)
+    const [dtFim, setDtFim] = React.useState(null)
+    const [filtroMobile, setFiltroMobile] = React.useState(null)
+    const [nadaEncontrado, setNadaEncontrado] = React.useState(false)
 
+    const [filtroAbertas, setFiltroAbertas] = React.useState(false)
+    const [filtroConcluidas, setFiltroConcluidas] = React.useState(false)
+    const [filtroCanceladas, setFiltroCanceladas] = React.useState(false)
+    const [filtroRemarcadas, setFiltroRemarcadas] = React.useState(false)
 
     const {getToken} = React.useContext(UserContex);
 
     const alerta = (target)=>{
         console.log(target)
+    }
+    const handleSearch = (ev)=>{
+        if (ev.key === "Enter") {
+            requestAllConsultas();
+        }
     }
 
     const setNamePessoa = ({target})=>{
@@ -46,7 +69,90 @@ const Consulta = (props)=>{
         setPessoa(target.value)
     }
 
+    const handleCodPessoaFilter = ({target})=>{
+        setCodigoPessoa(target.value)
+    }
+
+    const handleNamePessoaFilter = ({target})=>{
+        setPessoa(target.value)
+    }
+
+    const handleCodProfissionalFilter = ({target})=>{
+        setCodigoProfissional(target.value)
+    }
+
+    const handleNameProfissionalFilter = ({target})=>{
+        setProfissional(target.value)
+    }
+
+    const handleFiltroMobile = ({target})=>{
+        setFiltroMobile(target.value)
+    }
+
+    const handleStatusFilter = ({target})=>{
+        setStatus(target.value)
+    }
+
+    const handleTipoFilter = ({target})=>{
+        setTipo(target.value)
+    }
+
+    const handlePrioridadeFilter = ({target})=>{
+        setPrioridade(target.value)
+    }
+    const handleHistoricoFilter = ({target})=>{
+        setHistorico(target.value)
+    }
+
+    const handleCodigoConsultaFilter = ({target})=>{
+        setCodigoConsulta(target.value)
+    }
+
+    const handleCodigoFilialFilter = ({target})=>{
+        setCodigoFilial(target.value)
+    }
+
+    const handleDtInicioFilter = ({target})=>{
+        setDtInicio(target.value)
+    }
+
+
+    const handleDtFimFilter = ({target})=>{
+        setDtFim(target.value)
+    }
+
+
     const filtersArr = [
+        {
+            type:'text',
+            options:[], 
+            hasLabel: true,
+            contentLabel:'Código',
+            atributsFormLabel:{},
+            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'id':codigoConsulta,onChange:handleCodigoConsultaFilter,    onBlur:handleCodigoConsultaFilter, onKeyUp:handleSearch},
+
+        },
+        {
+            type:'select',
+            options:[], 
+            hasLabel: true,
+            contentLabel:'Filial',
+            atributsFormLabel:{},
+            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'id':codigoFilial,onChange:handleCodigoFilialFilter,    onBlur:handleCodigoFilialFilter, onKeyUp:handleSearch},
+
+        },
+        {
+            type:'text',
+            options:[], 
+            hasLabel: true,
+            contentLabel:'Cod pessoa',
+            atributsFormLabel:{},
+            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'name':pessoa,onChange:handleCodPessoaFilter,    onBlur:handleCodPessoaFilter, onKeyUp:handleSearch},
+
+        },
         {
             type:'text',
             options:[], 
@@ -54,37 +160,86 @@ const Consulta = (props)=>{
             contentLabel:'Pessoa',
             atributsFormLabel:{},
             atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
+            atributsFormControl:{'type':'text', size:"sm",'name_atendido':pessoa,onChange:handleNamePessoaFilter,    onBlur:handleNamePessoaFilter, onKeyUp:handleSearch},
 
         },
         {
             type:'text',
             options:[], 
             hasLabel: true,
-            contentLabel:'Contato',
+            contentLabel:'Cod profissional',
             atributsFormLabel:{},
             atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name_atendido':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
+            atributsFormControl:{'type':'text', size:"sm",'profissional_id':codigoProfissional,onChange:handleCodProfissionalFilter,    onBlur:handleCodProfissionalFilter, onKeyUp:handleSearch},
 
         },
         {
             type:'text',
             options:[], 
+            hasLabel: true,
+            contentLabel:'Profissional',
+            atributsFormLabel:{},
+            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'name_profissional':profissional,onChange:handleNameProfissionalFilter,    onBlur:handleNameProfissionalFilter, onKeyUp:handleSearch},
+
+        },
+        {
+            type:'select',
+            options:[
+                {label:'Selecione...',valor:'',props:{selected:'selected'}},
+                {label:'Pendente',valor:'pendente',props:{}},
+                {label:'Remarcado',valor:'remarcado',props:{}},
+                {label:'Finalizado',valor:'finalizado',props:{}},
+                {label:'Cancelado',valor:'cancelado',props:{}},
+            ], 
             hasLabel: true,
             contentLabel:'Status',
             atributsFormLabel:{},
             atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'status':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
+            atributsFormControl:{'type':'text', size:"sm",'status':status,onChange:handleStatusFilter,    onBlur:handleStatusFilter, onKeyUp:handleSearch},
+
+        },
+        {
+            type:'select',
+            options:[
+                {label:'Selecione...',valor:'',props:{selected:'selected'}},
+                {label:'Serviço',valor:'servico',props:{}},
+                {label:'Avaliação',valor:'avaliacao',props:{}},
+                {label:'Consulta',valor:'consulta',props:{}},
+                {label:'Retorno',valor:'retorno',props:{}},
+            ], 
+            hasLabel: true,
+            contentLabel:'Tipo',
+            atributsFormLabel:{},
+            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'tipo':tipo,onChange:handleTipoFilter,    onBlur:handleTipoFilter, onKeyUp:handleSearch},
+
+        },
+        {
+            type:'select',
+            options:[
+                {label:'Selecione...',valor:'',props:{selected:'selected'}},
+                {label:'Baixa',valor:'baixa',props:{}},
+                {label:'Normal',valor:'normal',props:{}},
+                {label:'Média',valor:'media',props:{}},
+                {label:'Alta',valor:'altar',props:{}},
+                {label:'Urgente',valor:'urgente',props:{}},
+            ], 
+            hasLabel: true,
+            contentLabel:'Prioridade',
+            atributsFormLabel:{},
+            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'prioridade':prioridade,onChange:handlePrioridadeFilter,    onBlur:handlePrioridadeFilter, onKeyUp:handleSearch},
 
         },
         {
             type:'text',
             options:[], 
             hasLabel: true,
-            contentLabel:'Tipo',
+            contentLabel:'Histórico',
             atributsFormLabel:{},
             atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'tipo':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
+            atributsFormControl:{'type':'text', size:"sm",'historico':historico,onChange:handleHistoricoFilter,    onBlur:handleHistoricoFilter, onKeyUp:handleSearch},
 
         },
         {
@@ -94,7 +249,7 @@ const Consulta = (props)=>{
             contentLabel:'Dt. inicio',
             atributsFormLabel:{},
             atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'date', size:"sm",'dt_inico':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
+            atributsFormControl:{'type':'date', size:"sm",'dt_inico':dtInicio,onChange:handleDtInicioFilter,    onBlur:handleDtInicioFilter, onKeyUp:handleSearch},
 
         },
         {
@@ -104,7 +259,7 @@ const Consulta = (props)=>{
             contentLabel:'Dt. fim',
             atributsFormLabel:{},
             atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'date', size:"sm",'dt_fim':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
+            atributsFormControl:{'type':'date', size:"sm",'dt_fim':dtFim,onChange:handleDtFimFilter,    onBlur:handleDtFimFilter, onKeyUp:handleSearch},
 
         },
     ]
@@ -174,222 +329,228 @@ const Consulta = (props)=>{
         setAtualizarConsulta(true);
     }
 
-    const gerarTableConsulta = ()=>{
-       
-        let data = [];
-        let dataConsulta = estado.mensagem
-        if(dataConsulta && Array.isArray(dataConsulta) && dataConsulta.length > 0){
-            for(let i=0; !(i == dataConsulta.length); i++){
-                let atual = dataConsulta[i];
-                if(atual){
-                    let acoesArr = [];
-                    let btnCancelar         = true;
-                    let btnEditar           = true;
-                    let btnExames           = true;
-                    let btnDiagnostico      = true;
-                    let btnFicha            = true;
-                    let btnDetalhes         = true;
-                    let btnGerarFinanceiro  = true;
-
-                    if(atual.status == 'cancelado'){
-                        btnCancelar         = false;
-                        btnEditar           = false;
-                        btnGerarFinanceiro  = false;
-                    }
-
-                    if(atual.status == 'finalizado'){
-                        btnCancelar = false;
-                        btnEditar   = false;
-                    }
-
-                    if(btnGerarFinanceiro){
-                        acoesArr.push({acao:()=>atualizarConsultaAction(atual.id), label:'Gerar financeiro', propsOption:{}, propsLabel:{}})
-                    }
-
-                    if(btnEditar){
-                        acoesArr.push({acao:()=>atualizarConsultaAction(atual.id), label:'Editar', propsOption:{}, propsLabel:{}})
-                    }
-
-                    if(btnCancelar){
-                        acoesArr.push({acao:()=>cancelarConsultaAction(atual.id), label:'Cancelar', propsOption:{}, propsLabel:{}})
-                    }
-
-                    if(btnExames){
-                        acoesArr.push({acao:()=>atualizarConsultaAction(atual.id), label:'Exames', propsOption:{}, propsLabel:{}})
-                    }
-
-                    if(btnDiagnostico){
-                        acoesArr.push({acao:()=>atualizarConsultaAction(atual.id), label:'Diagnóstico', propsOption:{}, propsLabel:{}})
-                    }
-                    if(btnFicha){
-                        acoesArr.push({acao:()=>atualizarConsultaAction(atual.id), label:'Ficha', propsOption:{}, propsLabel:{}})
-                    }
-
-                    if(btnDetalhes){
-                        acoesArr.push({acao:()=>alert('Detalhes qui: '+(atual.id)), label:'Detalhes', propsOption:{}, propsLabel:{}})
-                    }
-
-                    
-                    //'remarcado','finalizado','cancelado','pendente'
-                    data.push(
-
-                        {
-                            propsRow:{id:(atual.id)},
-                            acoes:[
-                                ...acoesArr
-                            ],
-                            celBodyTableArr:[
-                                {
-
-                                    label:atual.id,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual.filial_id,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual.pessoa_id,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual.name_pessoa,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual.status,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual.prioridade,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual.profissional_id,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual.name_profissional,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:FORMAT_DATA_PT_BR(atual.dt_inicio),
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual.hr_inicio,
-                                    propsRow:{}
-                                },{
-
-                                    label:String(FORMAT_DATA_PT_BR(atual.dt_fim)).length > 0 && FORMAT_DATA_PT_BR(atual.dt_fim),
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual.hr_fim,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:String(FORMAT_DATA_PT_BR(atual.dt_cancelamento)).length > 0 && FORMAT_DATA_PT_BR(atual.dt_cancelamento),
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual.ds_cancelamento,
-                                    propsRow:{}
-                                },
-                            ]
-                        }
-
-                    )
-
-                }
-
-            }
-        }
-
-        return data;
-    }
-
-    const gerarTitleTable = ()=>{
-        let tableTitle = [
-            {
-                label:'Código',
-                props:{}
-            },
-            {
-                label:'Cód. filial',
-                props:{}
-            },
-            {
-                label:'Cód. pessoa',
-                props:{}
-            },
-            {
-                label:'Pessoa',
-                props:{}
-            },
-            {
-                label:'Status',
-                props:{}
-            },
-            {
-                label:'Prioridade',
-                props:{}
-            },
-            {
-                label:'Cód. profissional',
-                props:{}
-            },
-            {
-                label:'Profissional',
-                props:{}
-            },
-            {
-                label:'Data início',
-                props:{}
-            },
-            {
-                label:'Horário início',
-                props:{}
-            },
-            {
-                label:'Data fim',
-                props:{}
-            },
-            {
-                label:'Horário fim',
-                props:{}
-            },
-            {
-                label:'Cancelado em',
-                props:{}
-            },
-            {
-                label:'Motivo cancelamento',
-                props:{}
-            },
-        ]
-
-        return tableTitle;
-    }
    //name_profissional
 
     //------------
 
+
+    //------------
+    const montarFiltro = ()=>{
+        let filtros = {}
+        let detalhesFiltros = {}
+
+
+        
+        if(codigoPessoa){
+            filtros['pessoa_id'] = codigoPessoa;
+            detalhesFiltros['pessoa_id'] = {
+                label:'pessoa_id',
+                value:codigoPessoa,
+                resetFilter:()=>setPessoa(''),
+            };
+        }
+
+        if(pessoa){
+            filtros['name'] = pessoa;
+            detalhesFiltros['name'] = {
+                label:'name',
+                value:pessoa,
+                resetFilter:()=>setPessoa(''),
+            };
+
+            filtros['name_pessoa'] = pessoa;
+            detalhesFiltros['name_pessoa'] = {
+                label:'name_pessoa',
+                value:pessoa,
+                resetFilter:()=>setPessoa(''),
+            };
+        }
+
+
+        if(codigoProfissional){
+            filtros['profissional_id'] = codigoProfissional;
+            detalhesFiltros['profissional_id'] = {
+                label:'profissional_id',
+                value:codigoProfissional,
+                resetFilter:()=>setCodigoProfissional(''),
+            };
+        }
+
+
+        if(profissional){
+            filtros['name_profissional'] = profissional;
+            detalhesFiltros['name_profissional'] = {
+                label:'name_profissional',
+                value:profissional,
+                resetFilter:()=>setProfissional(''),
+            };
+        }
+
+
+        if(codigoConsulta){
+            filtros['id'] = codigoConsulta;
+            detalhesFiltros['id'] = {
+                label:'id',
+                value:codigoConsulta,
+                resetFilter:()=>setCodigoConsulta(''),
+            };
+        }
+
+
+        if(codigoFilial){
+            filtros['filial_id'] = codigoFilial;
+            detalhesFiltros['filial_id'] = {
+                label:'filial_id',
+                value:codigoFilial,
+                resetFilter:()=>setCodigoFilial(''),
+            };
+        }
+
+
+        if(status){
+            filtros['status'] = status;
+            detalhesFiltros['status'] = {
+                label:'status',
+                value:status,
+                resetFilter:()=>setStatus(''),
+            };
+        }
+
+
+        if(prioridade){
+            filtros['prioridade'] = prioridade;
+            detalhesFiltros['prioridade'] = {
+                label:'prioridade',
+                value:prioridade,
+                resetFilter:()=>setPrioridade(''),
+            };
+        }
+
+
+        if(historico){
+            filtros['historico'] = historico;
+            detalhesFiltros['historico'] = {
+                label:'historico',
+                value:historico,
+                resetFilter:()=>setHistorico(''),
+            };
+        }
+
+
+        if(tipo){
+            filtros['tipo'] = tipo;
+            detalhesFiltros['tipo'] = {
+                label:'tipo',
+                value:tipo,
+                resetFilter:()=>setTipo(''),
+            };
+        }
+
+
+        if(dtInicio){
+            filtros['dt_inicio'] = dtInicio;
+            detalhesFiltros['dt_inicio'] = {
+                label:'dt_inicio',
+                value:dtInicio,
+                resetFilter:()=>setDtInicio(''),
+            };
+        }
+
+
+        if(dtFim){
+            filtros['dt_fim'] = dtFim;
+            detalhesFiltros['dt_fim'] = {
+                label:'dt_fim',
+                value:dtFim,
+                resetFilter:()=>setDtFim(''),
+            };
+        }
+
+        if(dtInicio && dtFim){
+
+            filtros['dt_periodo'] = dtInicio+','+dtInicio;
+            detalhesFiltros['dt_periodo'] = {
+                label:'dt_periodo',
+                value:dtInicio+','+dtInicio,
+                resetFilter:()=>{setDtInicio('');setDtFim('');},
+            };
+        }
+        
+
+        if(filtroMobile){
+            filtros['name'] = filtroMobile;
+            detalhesFiltros['name'] = {
+                label:'Filtro',
+                value:filtroMobile,
+                resetFilter:()=>setFiltroMobile(''),
+            };
+        }
+
+        if(filtroAbertas){
+            if(filtros.hasOwnProperty('status')){
+                filtros['status'] += 'pendente,';
+            }else{
+                filtros['status'] = 'pendente,';
+            }
+
+            detalhesFiltros['status'] = {
+                label:'Status',
+                value:filtroMobile,
+                resetFilter:()=>setFiltroAbertas(''),
+            };
+        }
+
+        if(filtroConcluidas){
+            if(filtros.hasOwnProperty('status')){
+                filtros['status'] += 'concluido,';
+            }else{
+                filtros['status'] = 'concluido,';
+            }
+            //filtros['status'] += 'concluido,';
+            detalhesFiltros['status'] = {
+                label:'Status',
+                value:filtroMobile,
+                resetFilter:()=>setFiltroConcluidas(''),
+            };
+        }
+
+        if(filtroCanceladas){
+            if(filtros.hasOwnProperty('status')){
+                filtros['status'] += 'cancelado,';
+            }else{
+                filtros['status'] = 'cancelado,';
+            }
+            //filtros['status'] += 'cancelado,';
+            detalhesFiltros['status'] = {
+                label:'Status',
+                value:filtroMobile,
+                resetFilter:()=>setFiltroCanceladas(''),
+            };
+        }
+
+        if(filtroRemarcadas){
+            if(filtros.hasOwnProperty('status')){
+                filtros['status'] += 'remarcado,';
+            }else{
+                filtros['status'] = 'remarcado,';
+            }
+            //filtros['status'] += 'cancelado,';
+            detalhesFiltros['status'] = {
+                label:'Status',
+                value:filtroMobile,
+                resetFilter:()=>setFiltroRemarcadas(''),
+            };
+        }
+
+
+        return {filtros, detalhesFiltros};
+    }
+
     const requestAllConsultas = async() =>{
-       
-        const {url, options} = CONSULTA_ALL_POST({'name_pessoa':pessoa}, getToken());
+        setConsulta([])
+
+        let {filtros, detalhesFiltros} = montarFiltro();
+        const {url, options} = CONSULTA_ALL_POST({...filtros}, getToken());
 
 
         const {response, json} = await request(url, options);
@@ -398,6 +559,15 @@ const Consulta = (props)=>{
         console.log(json)
         if(json){
             setConsulta(json)
+
+            if( json?.mensagem && json?.mensagem.length > 0){
+                setNadaEncontrado(false)
+            }else{
+                setNadaEncontrado(true)
+            }
+
+        }else{
+            setNadaEncontrado(true)
         }
 
             
@@ -415,52 +585,10 @@ const Consulta = (props)=>{
         requestAllConsultasEffect();
 
         
-    }, [])
+    }, [filtroConcluidas, filtroCanceladas, filtroAbertas, filtroRemarcadas])
 
-    const rowsTableArr = gerarTableConsulta();    
-    const titulosTableArr = gerarTitleTable();
 
-    /*
-    
-        <Breadcrumbs
-                items={[
-                        {
-                            props:{},
-                            label:'Início'
-                        },
-                        {
-                            props:{},
-                            label:'Ordem de servico'
-                        }
-                    ]}
-            />
-            <Row>
-                {mostarFiltros && 
-                    (
-                        <Col  xs="12" sm="12" md="3">
-                            <Filter
-                                filtersArr={filtersArr}
-                                actionsArr={acoesBottomCard}
-                            />
-                        </Col>
-                    )
-                }
-                
-                <Col  xs="12" sm="12" md={mostarFiltros ? "9":"12"}>
-                    <Include
-                        dataEstado={estado}
-                        loadingData={loading}
-                        callBack={requestAllClientesFichass}
-                        setMostarFiltros={setMostarFiltros}
-                        idConsultaCriada={consultaChoice}
-                    />
-                </Col>
-            </Row>
-            {
-                cadastrarClientesFichas &&
-                <Cadastrar cadastrarClientesFichas={cadastrarClientesFichas} setCadastrarClientesFichas={setCadastrarClientesFichas} atualizarClientesFichas={atualizarClientesFichas} setAtualizarClientesFichas={setAtualizarClientesFichas}  idClientesFichas={consultaChoice} setIdClientesFichas={setClientesFichasChoice} callback={requestAllClientesFichass} />
-            }
-    */
+   
     return(
         <>
             <Breadcrumbs
@@ -474,18 +602,126 @@ const Consulta = (props)=>{
                             label:'Consulta'
                         }
                     ]}
+                buttonFiltroMobile={true}
+                setMostarFiltros={setMostarFiltros}
+                mostarFiltros={mostarFiltros}
             />
             <Row>
                 {mostarFiltros && 
                     (
-                        <Col  xs="12" sm="12" md="3">
-                            <Filter
-                                filtersArr={filtersArr}
-                                actionsArr={acoesBottomCard}
-                            />
-                        </Col>
+                        <>
+                            <Col  xs="12" sm="12" md="3" className={'default_card_report'} >
+                                <Filter
+                                    filtersArr={filtersArr}
+                                    actionsArr={acoesBottomCard}
+                                />
+                            </Col>
+                            <Col  xs="12" sm="12" md="12" className={'mobile_card_report pt-4'}  style={{backgroundColor:'#FFF'}}>
+                                <Row className={''} >
+                                    <Col className={'mx-2'}  >
+                                       <Row style={{borderRadius:'24px 24px 24px 24px', border:'1px solid #000'}}>
+                                            <Col xs="11" sm="11" md="11" >
+                                                <FormControlInput
+                                                    data={
+                                                        {
+                                                            atributsFormControl:{
+                                                                type:'input',
+                                                                placeholder:'Search...',
+                                                                style:{
+                                                                    border:'none',
+                                                                    outline:'0',
+                                                                    'box-shadow':'0 0 0 0',
+                                                                    height:'50px',
+                                                                    borderRadius:'24px 24px 24px 24px'
+                                                                    
+                                                                },
+                                                                onChange:(ev)=>{handleFiltroMobile(ev);},
+                                                                onBlur:(ev)=>{handleFiltroMobile(ev);},
+                                                                onKeyUp:(ev)=>{
+
+                                                                    if (ev.key === "Enter") {
+                                                                        requestAllConsultas();
+                                                                    }
+                                                                },
+                                                                value:filtroMobile
+
+                                                            }
+                                                        }
+                                                    }
+                                                 />
+                                            </Col>
+
+                                            <Col xs="1" sm="1" md="1" style={{textAlign:'left', alignItems:'center', justifyContent:'center', margin:'auto',padding:'0'}} >
+                                                <FontAwesomeIcon onClick={()=>{requestAllConsultas();}} size={'lg'} icon={faSearch}/>
+                                            </Col>
+                                        
+                                            
+                                         </Row>
+
+                                         <Row className={'mt-2'}>
+                                            <div  style={{display:'flex', flexDirection:'collumn', flexWrap:'wrap'}}>
+                                               {(filtroAbertas ? <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroAbertas(false);}} ><FontAwesomeIcon icon={faTimes} /> Pendentes</Button> : '')}
+                                                {(filtroConcluidas ? <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroConcluidas(false);}} ><FontAwesomeIcon icon={faTimes} /> Concluídas</Button> : '')}
+                                                {(filtroCanceladas ? <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroCanceladas(false);}} ><FontAwesomeIcon icon={faTimes} /> Canceladas</Button> : '')}
+                                                {(filtroRemarcadas ? <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroRemarcadas(false);}} ><FontAwesomeIcon icon={faTimes} /> Canceladas</Button> : '')}
+                                                
+                                            </div>
+                                        </Row>
+                                    </Col>
+                                    
+                                    
+                                </Row>
+                               
+                                <Row className={'my-2'}>
+                                    <Col>
+                                        <Row>
+                                            <Col><span style={{fontWeight:'bolder', fontSize:'14pt'}} >Filtros</span></Col>
+                                        </Row>
+
+                                        <div>
+                                             <hr style={{margin:'0',padding:'0'}}/>  
+                                        </div>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <div style={{display:'flex', flexDirection:'collumn', flexWrap:'wrap'}}>
+                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroAbertas(true);}} ><FontAwesomeIcon icon={faSearch} /> Pendentes</Button>
+                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroConcluidas(true);}} ><FontAwesomeIcon icon={faSearch} /> Concluídas</Button>
+                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroCanceladas(true);}} ><FontAwesomeIcon icon={faSearch} /> Canceladas</Button>
+                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroRemarcadas(true);}} ><FontAwesomeIcon icon={faSearch} /> Remarcadas</Button>
+                                    </div>
+                                    
+                                </Row>
+
+                                 <Row className={'my-2'}>
+                                    <Col>
+                                        <Row>
+                                            <Col><span style={{fontWeight:'bolder', fontSize:'14pt'}} >Ações</span></Col>
+                                        </Row>
+
+                                        <div>
+                                             <hr style={{margin:'0',padding:'0'}}/>  
+                                        </div>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <div style={{display:'flex', flexDirection:'collumn', flexWrap:'wrap'}}>
+                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setCadastrarConsulta(true);}} ><FontAwesomeIcon icon={faPlus} /> Consulta</Button>
+                                    </div>
+                                </Row>
+                            </Col> 
+                        </>
                     )
                 }
+                 <Col  xs="12" sm="12"  md="12" style={{backgroundColor:'#FFF'}} className={'pt-3 mobile_card_report'} >
+                    <Row>
+                        <Col><span style={{fontWeight:'bolder', fontSize:'14pt'}} >Resultado</span></Col>
+                    </Row>
+                    <div>
+                         <hr style={{margin:'0',padding:'0'}}/>  
+                    </div>
+                </Col>
+
                  <Col  xs="12" sm="12" md={mostarFiltros ? "9":"12"}>
                     <Include
                         dataEstado={estado}
@@ -493,6 +729,7 @@ const Consulta = (props)=>{
                         callBack={requestAllConsultas}
                         setMostarFiltros={setMostarFiltros}
                         idConsultaCriada={consultaChoice}
+                        nadaEncontrado={nadaEncontrado}
                     />
                 </Col>
             </Row>

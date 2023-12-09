@@ -7,6 +7,7 @@ import Required from '../../FormControl/Required.js';
 import Load from '../../Utils/Load/index.js'
 import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible'
 import {FORMAT_DATA_PT_BR} from '../../../functions/index.js'
+import Swal from 'sweetalert2'
 
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CONSULTA_SAVE_POST, CONSULTA_ALL_POST, CONSULTA_CANCELAR_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST} from '../../../api/endpoints/geral.js'
 
@@ -42,6 +43,14 @@ const FormCancelarConsulta = ({dataConsultaChoice, setIdConsulta, idConsulta, sh
             setShowModalCancelarConsulta();
             setCancelarConsulta(false);
             setIdConsulta(null);
+
+            Swal.fire({
+              icon: "success",
+              title: "",
+              text: 'Reigistrado com sucesso',
+              footer: '',//'<a href="#">Why do I have this issue?</a>'
+              confirmButtonColor: "#07B201",
+            });
     	}
     }
 
@@ -160,6 +169,18 @@ const FormCancelarConsulta = ({dataConsultaChoice, setIdConsulta, idConsulta, sh
 		sendData({ds_cancelamento:'Desistiu'})
 	}
 	const dataFormatCancel = dataToFormCancelarConsulta();
+
+	if(error){
+        Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: error,
+            footer: '',//'<a href="#">Why do I have this issue?</a>'
+            confirmButtonColor: "#07B201",
+            //width:'20rem',
+        });
+    }
+    
 	return(
 
 		<>
