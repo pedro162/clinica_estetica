@@ -5,9 +5,10 @@ import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, FORMULARIO_PESSOA_ALL_POST} from '.
 import {FORMAT_DATA_PT_BR} from '../../functions/index.js'
 import {Col, Row } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
+import ListMobile from '../Relatorio/ListMobile/index.js'
 import Filter from '../Relatorio/Filter/index.js'
 import Breadcrumbs from '../Helper/Breadcrumbs.js'
-import { faHome, faSearch, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faSearch, faPlus, faUserCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from '../Utils/Modal/index.js'
 import Load from '../Utils/Load/index.js'
@@ -25,7 +26,7 @@ import { Button } from 'bootstrap';
 import reactDom from 'react-dom';
 //
 
-const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idClienteFichaCriada, ...props})=>{
+const Include = ({dataEstado, loadingData, callBack, nadaEncontrado, setMostarFiltros, idClienteFichaCriada, ...props})=>{
     const {data, error, request, loading} = useFetch();
     const [estado, setClientesFichas] = React.useState([])
     const [exemplos, setExemplos] = React.useState([])
@@ -367,6 +368,127 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idCliente
     }
    //name_profissional
 
+
+   const gerarListMobileRelatorio = ()=>{
+       
+        let data = [];
+        let dataRequest = estado.mensagem
+        if(dataRequest && Array.isArray(dataRequest) && dataRequest.length > 0){
+            for(let i=0; !(i == dataRequest.length); i++){
+                let atual = dataRequest[i];
+                if(atual){
+                    let acoesArr = [];
+                    let btnEditar                   = true;
+                    let btnIniciarProcedimento      = true;
+                    let btnFinalizar                = true;
+                    let btnVisualizarFinanceiro     = true;
+                    let btnVisualizar               = true;
+                    let btnCotinuarDigitacao        = true;
+                    let btnCancelar                 = true;
+
+                    if(atual?.status != 'cancelado'){
+                        
+                        if(atual?.is_faturado == 'yes'){
+                            btnCotinuarDigitacao        = false;
+                            btnVisualizarFinanceiro     = true;
+                            btnIniciarProcedimento      = false;
+                        }else{
+                            btnFinalizar                = false;
+                            btnIniciarProcedimento      = false;
+                            btnVisualizarFinanceiro     = false;
+                        }
+
+                        if(atual?.status == 'concluido'){
+                            btnCotinuarDigitacao    = false;
+                            btnFinalizar            = false;
+                            btnEditar               = false;
+                            btnIniciarProcedimento  = false;
+                        }
+
+                    }else{
+
+                        btnCotinuarDigitacao    = false;
+                        btnFinalizar            = false;
+                        btnIniciarProcedimento  = false;
+                        acoesArr                = [];
+                        btnEditar               = false;
+                    }
+
+                    if(btnEditar){
+                        acoesArr.push({acao:()=>atualizarClientesFichasAction(atual.id), label:'Editar', propsOption:{}, propsLabel:{}})
+                    }
+
+                    if(btnVisualizar){
+                        acoesArr.push({acao:()=>visuatualizarClientesFichasAction(atual.id), label:'Visualizar', propsOption:{}, propsLabel:{}})
+                    }
+
+                    if(btnCancelar){
+                        acoesArr.push({acao:()=>cancelarClientesFichasAction(atual.id), label:'Cancelar', propsOption:{}, propsLabel:{}})
+                    }
+
+                    let line_style = {}
+                    if(atual.status == 'cancelado'){
+                        line_style.color = 'red';
+                    }else if(atual.status == 'concluido'){
+                        line_style.color = 'green';
+                    } 
+
+                    //propsContainerTitulo, propsContainerButtons
+                    data.push(
+
+                        {
+                            propsRow:{id:(atual.id), titleRow:atual?.name},
+                            acoes:[
+                                ...acoesArr
+                            ],
+                            title:<> <div style={{display:'flex', justifyContent:'space-between',fontSize:'18pt', fontWeight:'bolder'}} ><span><FontAwesomeIcon size={'lg'} icon={faUserCircle}/> {atual?.name} </span> </div> </>,
+                            propsContainerTitulo:{md:'11', sm:'9', xs:'9'},
+                            propsContainerButtons:{md:'1', sm:'4', xs:'2'},
+                            acoesBottomCard:[
+                              
+                            ],
+                            celBodyTableArr:[
+                                [
+                                    
+                                    {
+                                        title:<span style={{fontWeight:'480'}}>Status: </span>,
+                                        label:atual?.status,
+                                        props:{style:{textAlign:'left', fontWeight:'bolder'}, md:'4', sm:'4', xs:'4'},
+                                        toSum:1,
+                                        isCoin:1,
+                                    },{
+                                        title:<span style={{fontWeight:'480'}}>Tipo: </span>,
+                                        label:atual?.name_form,
+                                        props:{style:{textAlign:'left'}, md:'4', sm:'4', xs:'4'},
+                                        toSum:1,
+                                        isCoin:1,
+                                    },
+                                    {
+                                        title:<span style={{fontWeight:'480'}}>Prof: </span>,
+                                        label:atual?.name_profissional,
+                                        props:{style:{textAlign:'left'}, md:'4', sm:'4', xs:'4'},
+                                        toSum:1,
+                                        isCoin:1,
+                                    },
+
+                                ],
+                                
+                               
+                               
+                            ]
+                        }
+
+                    )
+
+                }
+
+            }
+        }
+
+        return data;
+    }
+    //------------
+
     //------------
 
     const requestAllClientesFichas = async() =>{
@@ -410,12 +532,27 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, idCliente
     return(
         <>
             <Row>
-                
-                <Col  xs="12" sm="12" md="12">
+                <Col  xs="12" sm="12" md="12" className={'mobile_card_report py-4'}  style={{backgroundColor:'#FFF',}}>
+
+                   
+                    
+                    <ListMobile
+                        titulosTableArr={null}
+                        rowsTableArr={gerarListMobileRelatorio()}
+                        loading={loadingData}
+                        nadaEncontrado={nadaEncontrado}
+                        withoutFirstCol={true}
+                        botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
+                    />
+
+                </Col>
+
+                <Col  xs="12" sm="12" md="12"  className={'default_card_report'}>
                     <Table
                         titulosTableArr={titulosTableArr}
                         rowsTableArr={rowsTableArr}
                         loading={loadingData}
+                        nadaEncontrado={nadaEncontrado}
                         botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
 
                     />

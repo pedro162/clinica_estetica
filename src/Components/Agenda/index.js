@@ -2,11 +2,11 @@ import React from 'react';
 import estilos from './Agenda.module.css'
 import useFetch from '../../Hooks/useFetch.js';
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, AGENDA_ALL_POST} from '../../api/endpoints/geral.js'
-import {Col, Row } from 'react-bootstrap';
+import {Col, Row, Button } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
 import Breadcrumbs from '../Helper/Breadcrumbs.js'
-import { faHome, faSearch, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faSearch, faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from '../Utils/Modal/index.js'
 import Load from '../Utils/Load/index.js'
@@ -14,6 +14,8 @@ import Cadastrar from './Cadastrar/index.js'
 import Atualizar from './Atualizar/index.js'
 import {UserContex} from '../../Context/UserContex.js'
 import FormAgenda from './FormAgenda/index.js'
+import Include from './include';
+import FormControlInput from '../FormControl/index.js'
 
 
 const Agenda = (props)=>{
@@ -29,7 +31,20 @@ const Agenda = (props)=>{
     const [cadastrarAgenda, setCadastrarAgenda] = React.useState(false)    
     const [dataEstado, setDataEstado] = React.useState(null)
     const [pessoa, setPessoa] = React.useState('')
+    const [codigoPessoa, setCodigoPessoa] = React.useState(null)
+    const [status, setStatus] = React.useState(null)
+    const [historico, setHistorico] = React.useState(null)
     const [agenda_id, setAgendaId] = React.useState('')
+    const [mostarFiltros, setMostarFiltros] = React.useState(false) 
+    const [filtroMobile, setFiltroMobile] = React.useState(null)
+    const [acao, setAcao] = React.useState(null)
+    const [ordenacao, setOrdenacao] = React.useState('')
+    const [nadaEncontrado, setNadaEncontrado] = React.useState(false)
+    const [filtroPendentes, setFiltroPendentes] = React.useState(false)
+    const [filtroConcluidas, setFiltroConcluidas] = React.useState(false)
+    const [filtroCanceladas, setFiltroCanceladas] = React.useState(false)
+    const [dtInicio, setDtInicio] = React.useState(null)
+    const [dtFim, setDtFim] = React.useState(null)
 
 
     const {getToken} = React.useContext(UserContex);
@@ -37,6 +52,196 @@ const Agenda = (props)=>{
     const alerta = (target)=>{
         console.log(target)
     }
+
+
+    const setNamePessoa = ({target})=>{
+        
+        setPessoa(target.value)
+    }
+
+    const handleCodPessoaFilter = ({target})=>{
+        setCodigoPessoa(target.value)
+    }
+
+    const handleNamePessoaFilter = ({target})=>{
+        setPessoa(target.value)
+    }
+
+    const handleStatusFilter = ({target})=>{    
+        setStatus(target.value)
+    }
+    const handleHistoricoFilter = ({target})=>{    
+        setHistorico(target.value)
+    }
+
+    const handleIdFilter = ({target})=>{    
+        setAgendaId(target.value)
+    }
+
+    
+
+    const handleSearch = (ev)=>{
+        if (ev.key === "Enter") {
+            requestAllAgenda();
+        }
+    }
+
+
+    const handleFiltroMobile = ({target})=>{
+        setFiltroMobile(target.value)
+    }
+
+    //------------
+    const montarFiltro = ()=>{
+        let filtros = {}
+        let detalhesFiltros = {}
+
+
+        
+        if(codigoPessoa){
+            filtros['pessoa_id'] = codigoPessoa;
+            detalhesFiltros['pessoa_id'] = {
+                label:'pessoa_id',
+                value:codigoPessoa,
+                resetFilter:()=>setCodigoPessoa(''),
+            };
+        }
+
+        if(pessoa){
+            filtros['name'] = pessoa;
+            detalhesFiltros['name'] = {
+                label:'name',
+                value:pessoa,
+                resetFilter:()=>setPessoa(''),
+            };
+
+            filtros['name_pessoa'] = pessoa;
+            detalhesFiltros['name_pessoa'] = {
+                label:'name_pessoa',
+                value:pessoa,
+                resetFilter:()=>setPessoa(''),
+            };
+        }
+
+        if(agenda_id){
+            filtros['id'] = agenda_id;
+            detalhesFiltros['id'] = {
+                label:'id',
+                value:agenda_id,
+                resetFilter:()=>setAgendaId(''),
+            };
+        }
+
+
+
+
+        if(status){
+            filtros['status'] = status;
+            detalhesFiltros['status'] = {
+                label:'status',
+                value:status,
+                resetFilter:()=>setStatus(''),
+            };
+        }
+
+
+        if(historico){
+            filtros['historico'] = historico;
+            detalhesFiltros['historico'] = {
+                label:'historico',
+                value:historico,
+                resetFilter:()=>setHistorico(''),
+            };
+        }
+
+        if(dtInicio){
+            filtros['dt_inicio'] = dtInicio;
+            detalhesFiltros['dt_inicio'] = {
+                label:'dt_inicio',
+                value:dtInicio,
+                resetFilter:()=>setDtInicio(''),
+            };
+        }
+
+
+        if(dtFim){
+            filtros['dt_fim'] = dtFim;
+            detalhesFiltros['dt_fim'] = {
+                label:'dt_fim',
+                value:dtFim,
+                resetFilter:()=>setDtFim(''),
+            };
+        }
+
+        if(dtInicio && dtFim){
+
+            filtros['dt_periodo'] = dtInicio+','+dtInicio;
+            detalhesFiltros['dt_periodo'] = {
+                label:'dt_periodo',
+                value:dtInicio+','+dtInicio,
+                resetFilter:()=>{setDtInicio('');setDtFim('');},
+            };
+        }
+        
+
+        if(filtroMobile){
+            filtros['name'] = filtroMobile;
+            detalhesFiltros['name'] = {
+                label:'Filtro',
+                value:filtroMobile,
+                resetFilter:()=>setFiltroMobile(''),
+            };
+        }
+
+        if(filtroPendentes){
+            if(filtros.hasOwnProperty('status')){
+                filtros['status'] += 'pendente,';
+            }else{
+                filtros['status'] = 'pendente,';
+            }
+
+            detalhesFiltros['status'] = {
+                label:'Status',
+                value:filtroMobile,
+                resetFilter:()=>setFiltroPendentes(''),
+            };
+        }
+
+        if(filtroConcluidas){
+            if(filtros.hasOwnProperty('status')){
+                filtros['status'] += 'concluido,';
+            }else{
+                filtros['status'] = 'concluido,';
+            }
+            //filtros['status'] += 'concluido,';
+            detalhesFiltros['status'] = {
+                label:'Status',
+                value:filtroMobile,
+                resetFilter:()=>setFiltroConcluidas(''),
+            };
+        }
+
+        if(filtroCanceladas){
+            if(filtros.hasOwnProperty('status')){
+                filtros['status'] += 'cancelado,';
+            }else{
+                filtros['status'] = 'cancelado,';
+            }
+            //filtros['status'] += 'cancelado,';
+            detalhesFiltros['status'] = {
+                label:'Status',
+                value:filtroMobile,
+                resetFilter:()=>setFiltroCanceladas(''),
+            };
+        }
+
+
+
+        return {filtros, detalhesFiltros};
+    }
+
+
+
     const filtersArr = [
         {
             type:'text',
@@ -45,7 +250,7 @@ const Agenda = (props)=>{
             contentLabel:'Código',
             atributsFormLabel:{},
             atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name':agenda_id,onChange:setAgendaId,    onBlur:setAgendaId},
+            atributsFormControl:{'type':'text', size:"sm",'name':agenda_id,onChange:handleIdFilter,    onBlur:handleIdFilter, onKeyUp:handleSearch},
 
         },
         {
@@ -55,7 +260,7 @@ const Agenda = (props)=>{
             contentLabel:'Código pessoa',
             atributsFormLabel:{},
             atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name':pessoa,onChange:setPessoa,    onBlur:setPessoa},
+            atributsFormControl:{'type':'text', size:"sm",'name':pessoa,onChange:handleCodPessoaFilter,    onBlur:handleCodPessoaFilter, onKeyUp:handleSearch},
 
         },
         {
@@ -65,17 +270,22 @@ const Agenda = (props)=>{
             contentLabel:'Pessoa',
             atributsFormLabel:{},
             atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name':'nome',onChange:alerta,    onBlur:alerta},
+            atributsFormControl:{'type':'text', size:"sm",'name':'nome',onChange:handleNamePessoaFilter,    onBlur:handleNamePessoaFilter, onKeyUp:handleSearch},
 
         },
         {
-            type:'text',
-            options:[], 
+            type:'select',
+            options:[
+                {label:'Selecione...',valor:'',props:{selected:'selected'}},
+                {label:'Pendente',valor:'pendente',props:{}},
+                {label:'Finalizado',valor:'finalizado',props:{}},
+                {label:'Cancelado',valor:'cancelado',props:{}},
+            ], 
             hasLabel: true,
             contentLabel:'Status',
             atributsFormLabel:{},
             atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name':'nome',onChange:alerta,    onBlur:alerta},
+            atributsFormControl:{'type':'text', size:"sm",'name':'nome',onChange:handleStatusFilter,    onBlur:handleStatusFilter, onKeyUp:handleSearch},
 
         },
         {
@@ -85,7 +295,7 @@ const Agenda = (props)=>{
             contentLabel:'Histórico',
             atributsFormLabel:{},
             atributsContainer:{xs:"12", sm:"12", md:"12",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name':'nome',onChange:alerta,    onBlur:alerta},
+            atributsFormControl:{'type':'text', size:"sm",'name':'nome',onChange:handleHistoricoFilter,    onBlur:handleHistoricoFilter, onKeyUp:handleSearch},
 
         }
     ]
@@ -101,169 +311,30 @@ const Agenda = (props)=>{
             props:{onClick:()=>setCadastrarAgenda(true), className:'btn btn-sm mx-2 btn-secondary'}
         }
     ];
-    const gerarExemplos = ()=>{
-         let exemplos = [];
-        for(let i=0; !(i == 10); i++){
-            exemplos.push(
 
-                    {
-                        propsRow:{id:(i+1)},
-                        celBodyTableArr:[
-                            {
-
-                                label:'1',
-                                propsRow:{}
-                            },
-                            {
-
-                                label:'Peddro',
-                                propsRow:{}
-                            },
-                            {
-
-                                label:'(98) 98425-7623',
-                                propsRow:{}
-                            },
-                            {
-
-                                label:'phedroclooney@gmail.com',
-                                propsRow:{}
-                            }
-                        ]
-                    }
-
-                )
-
-        }
-
-        return exemplos;
-    }
-
-    const gerarTableAgenda = ()=>{
-       
-        let data = [];
-        let dataAgenda = cidade.mensagem
-        if(dataAgenda && Array.isArray(dataAgenda) && dataAgenda.length > 0){
-            for(let i=0; !(i == dataAgenda.length); i++){
-                let atual = dataAgenda[i];
-                if(atual){
-
-
-                    data.push(
-
-                        {
-                            propsRow:{id:(atual.id)},
-                            acoes:[
-                                {acao:()=>setAgendaChoice(atual.id), label:'Editar', propsOption:{}, propsLabel:{}},
-                                {acao:()=>alert('Agenda qui: '+(atual.id)), label:'Agenda', propsOption:{}, propsLabel:{}},
-                                {acao:()=>alert('Histórico de atentimentos: '+(atual.id)), label:'Histórico de atendimentos', propsOption:{}, propsLabel:{}},
-                                {acao:()=>alert('Central do cliente: '+(atual.id)), label:'Central do cliente', propsOption:{}, propsLabel:{}},
-                            ],
-                            celBodyTableArr:[
-                                {
-
-                                    label:atual?.id,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual?.name_pessoa,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual?.status,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual?.descricao,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual?.data_format,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual?.hora,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual?.name_pessoa_cancelamento,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual?.dt_cancelamento,
-                                    propsRow:{}
-                                }
-                            ]
-                        }
-
-                    )
-
-                }
-
-            }
-        }
-
-        return data;
-    }
-
-    const gerarTitleTable = ()=>{
-        let tableTitle = [
-            {
-                label:'Código',
-                props:{}
-            },
-            {
-                label:'Pessoa',
-                props:{}
-            },
-            {
-                label:'Status',
-                props:{}
-            },
-            {
-                label:'Histórico',
-                props:{}
-            },
-            {
-                label:'Data',
-                props:{}
-            },
-            {
-                label:'Hora',
-                props:{}
-            },
-            {
-                label:'Cancelado por',
-                props:{}
-            },
-            {
-                label:'Cancelado em',
-                props:{}
-            },
-        ]
-
-        return tableTitle;
-    }
 
     const requestAllAgenda = async() =>{
-        const fil = {'name':pessoa, 'id':agenda_id};
-        console.log(fil)
-        
-        const {url, options} = AGENDA_ALL_POST({}, getToken());
+        setAgenda([])
+
+        let {filtros, detalhesFiltros} = montarFiltro();
+
+        const {url, options} = AGENDA_ALL_POST({...filtros}, getToken());
 
 
         const {response, json} = await request(url, options);
         console.log('All clients here')
         console.log(json)
         if(json){
-               setAgenda(json)
+            setAgenda(json)
+            
+            if( json?.mensagem && json?.mensagem.length > 0){
+                setNadaEncontrado(false)
+            }else{
+                setNadaEncontrado(true)
+            }
+
+        }else{
+            setNadaEncontrado(true)
         }
 
             
@@ -281,7 +352,7 @@ const Agenda = (props)=>{
         requestAllAgendaEffect();
 
         
-    }, [])
+    }, [filtroPendentes, filtroConcluidas, filtroCanceladas])
 
     React.useEffect(()=>{
 
@@ -306,10 +377,9 @@ const Agenda = (props)=>{
     }, [cadastrarAgenda])
 
     
-    const rowsTableArr = gerarTableAgenda();    
-    const titulosTableArr = gerarTitleTable();
 	return(
 		<>
+         
             <Breadcrumbs
                 items={[
                         {
@@ -321,20 +391,137 @@ const Agenda = (props)=>{
                             label:'Agenda'
                         }
                     ]}
+
+                buttonFiltroMobile={true}
+                setMostarFiltros={setMostarFiltros}
+                mostarFiltros={mostarFiltros}
             />
             <Row>
-                <Col  xs="12" sm="12" md="3">
-                    <Filter
-                        filtersArr={filtersArr}
-                        actionsArr={acoesBottomCard}
-                    />
-                </Col>
-                <Col  xs="12" sm="12" md="9">
-                    <Table
-                        titulosTableArr={titulosTableArr}
-                        rowsTableArr={rowsTableArr}
-                        loading={loading}
+                {mostarFiltros && 
+                    (
+                        <>
+                            <Col  xs="12" sm="12" md="3" className={'default_card_report'}>
+                                <Filter
+                                    filtersArr={filtersArr}
+                                    actionsArr={acoesBottomCard}
+                                />
+                            </Col>
 
+                            <Col  xs="12" sm="12" md="12" className={'mobile_card_report pt-4'}  style={{backgroundColor:'#FFF'}}>
+                                <Row className={''} >
+                                    <Col className={'mx-2'}  >
+                                       <Row style={{borderRadius:'24px 24px 24px 24px', border:'1px solid #000'}}>
+                                            <Col xs="11" sm="11" md="11" >
+                                                <FormControlInput
+                                                    data={
+                                                        {
+                                                            atributsFormControl:{
+                                                                type:'input',
+                                                                placeholder:'Search...',
+                                                                style:{
+                                                                    border:'none',
+                                                                    outline:'0',
+                                                                    'box-shadow':'0 0 0 0',
+                                                                    height:'50px',
+                                                                    borderRadius:'24px 24px 24px 24px'
+                                                                    
+                                                                },
+                                                                onChange:(ev)=>{handleFiltroMobile(ev);},
+                                                                onBlur:(ev)=>{handleFiltroMobile(ev);},
+                                                                onKeyUp:(ev)=>{
+
+                                                                    if (ev.key === "Enter") {
+                                                                        requestAllAgenda();
+                                                                    }
+                                                                },
+                                                                value:filtroMobile
+
+                                                            }
+                                                        }
+                                                    }
+                                                 />
+                                            </Col>
+
+                                            <Col xs="1" sm="1" md="1" style={{textAlign:'left', alignItems:'center', justifyContent:'center', margin:'auto',padding:'0'}} >
+                                                <FontAwesomeIcon onClick={()=>{requestAllAgenda();}} size={'lg'} icon={faSearch}/>
+                                            </Col>
+                                        
+                                            
+                                         </Row>
+
+                                         <Row className={'mt-2'}>
+                                            <div  style={{display:'flex', flexDirection:'collumn', flexWrap:'wrap'}}>
+                                                {(filtroPendentes ? <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroPendentes(false);}} ><FontAwesomeIcon icon={faTimes} /> Pendentes</Button> : '')}
+                                                {(filtroConcluidas ? <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroConcluidas(false);}} ><FontAwesomeIcon icon={faTimes} /> Concluídas</Button> : '')}
+                                                {(filtroCanceladas ? <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroCanceladas(false);}} ><FontAwesomeIcon icon={faTimes} /> Canceladas</Button> : '')}
+                                            </div>
+                                        </Row>
+                                    </Col>
+                                    
+                                    
+                                </Row>
+
+                                <Row className={'my-2'}>
+                                    <Col>
+                                        <Row>
+                                            <Col><span style={{fontWeight:'bolder', fontSize:'14pt'}} >Filtros</span></Col>
+                                        </Row>
+
+                                        <div>
+                                             <hr style={{margin:'0',padding:'0'}}/>  
+                                        </div>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <div style={{display:'flex', flexDirection:'collumn', flexWrap:'wrap'}}>
+                                        
+                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroPendentes(true);}} ><FontAwesomeIcon icon={faSearch} /> Abertas</Button>
+                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroConcluidas(true);}} ><FontAwesomeIcon icon={faSearch} /> Concluídas</Button>
+                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroCanceladas(true);}} ><FontAwesomeIcon icon={faSearch} /> Canceladas</Button>
+                                    </div>
+                                    
+                                </Row>
+
+                                 <Row className={'my-2'}>
+                                    <Col>
+                                        <Row>
+                                            <Col><span style={{fontWeight:'bolder', fontSize:'14pt'}} >Ações</span></Col>
+                                        </Row>
+
+                                        <div>
+                                             <hr style={{margin:'0',padding:'0'}}/>  
+                                        </div>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <div style={{display:'flex', flexDirection:'collumn', flexWrap:'wrap'}}>
+                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setCadastrarAgenda(true);}} ><FontAwesomeIcon icon={faPlus} /> Agenda</Button>
+                                    </div>
+                                </Row>
+
+
+                            </Col>
+                        </>
+                    )
+                }
+
+                <Col style={{backgroundColor:'#FFF'}} className={'pt-3 mobile_card_report'}>
+                    <Row>
+                        <Col><span style={{fontWeight:'bolder'}} >Resultado</span></Col>
+                    </Row>
+                    <div>
+                         <hr style={{margin:'0',padding:'0'}}/>  
+                    </div>
+                </Col>
+                
+                <Col  xs="12" sm="12" md={mostarFiltros ? "9":"12"}>
+                    <Include
+                        dataEstado={cidade}
+                        loadingData={loading}
+                        callBack={requestAllAgenda}
+                        setMostarFiltros={setMostarFiltros}
+                        idAgendaCriada={cidadeChoice}
+                        nadaEncontrado={nadaEncontrado}
                     />
                 </Col>
             </Row>

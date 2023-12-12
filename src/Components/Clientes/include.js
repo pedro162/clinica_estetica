@@ -352,16 +352,6 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                         botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
                     />
 
-                    {
-                    /*
-                    <CardMobile
-                        titulosTableArr={null}
-                        rowsTableArr={gerarCardContasReceber()}
-                        loading={loadingData}
-                        botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
-                    />
-                    */
-                    }
                 </Col>
 
                 <Col  xs="12" sm="12" md="12"  className={'default_card_report'}>

@@ -11,6 +11,7 @@ import {UserContex} from '../../../Context/UserContex.js'
 import Load from '../../Utils/Load/index.js'
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CIDADE_SAVE_POST, CIDADE_UPDATE_POST, CIDADE_ONE_GET} from '../../../api/endpoints/geral.js'
 import Atualizar from '../Atualizar/index.js'
+import Swal from 'sweetalert2'
 
 const FormAgenda = ({dataAgendaChoice, dataEstado, setIdAgenda, idAgenda, showModalCriarAgenda, setShowModalCriarAgenda, callback, atualizarCadastro, setAtualizarCadastro, carregando})=>{
     
@@ -55,6 +56,14 @@ const FormAgenda = ({dataAgendaChoice, dataEstado, setIdAgenda, idAgenda, showMo
                 setShowModalCriarAgenda();
                 setAtualizarCadastro(false);
                 setIdAgenda(null);
+
+                Swal.fire({
+                  icon: "success",
+                  title: "",
+                  text: 'Reigistrado com sucesso',
+                  footer: '',//'<a href="#">Why do I have this issue?</a>'
+                  confirmButtonColor: "#07B201",
+                });
             }
 
         }else{
@@ -73,6 +82,14 @@ const FormAgenda = ({dataAgendaChoice, dataEstado, setIdAgenda, idAgenda, showMo
             	callback();
             	setShowModalCriarAgenda();
                 setAtualizarCadastro(false);
+
+                Swal.fire({
+                  icon: "success",
+                  title: "",
+                  text: 'Reigistrado com sucesso',
+                  footer: '',//'<a href="#">Why do I have this issue?</a>'
+                  confirmButtonColor: "#07B201",
+                });
             }
 
         }
@@ -146,6 +163,18 @@ const FormAgenda = ({dataAgendaChoice, dataEstado, setIdAgenda, idAgenda, showMo
     }
     
 
+    if(error){
+        Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: error,
+            footer: '',//'<a href="#">Why do I have this issue?</a>'
+            confirmButtonColor: "#07B201",
+            //width:'20rem',
+        });
+    }
+
+
 	return(
 
 		<>
@@ -196,7 +225,7 @@ const FormAgenda = ({dataAgendaChoice, dataEstado, setIdAgenda, idAgenda, showMo
                         }
                     )=>(
 
-                        <Modal  handleConcluir={()=>{handleSubmit(); }}  title={ (atualizarCadastro == true ? 'Atualizar' : 'Cadastrar')+' Agenda'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarAgenda} showHide={()=>{setShowModalCriarAgenda();setAtualizarCadastro(false);setIdAgenda(null);}}>
+                        <Modal  handleConcluir={()=>{handleSubmit(); }}  title={ (atualizarCadastro == true ? 'Atualizar' : 'Cadastrar')+' Agenda'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarAgenda} showHide={()=>{setShowModalCriarAgenda();setAtualizarCadastro(false);setIdAgenda(null);}}>
                                 {
                                     carregando && carregando==true
                                     ?
