@@ -2,11 +2,11 @@ import React from 'react';
 import estilos from './Home.module.css'
 import useFetch from '../../Hooks/useFetch.js';
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, HOME_ALL_POST} from '../../api/endpoints/geral.js'
-import {Col, Row } from 'react-bootstrap';
+import {Col, Row, Button } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
 import Breadcrumbs from '../Helper/Breadcrumbs.js'
-import { faHome, faSearch, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faSearch, faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from '../Utils/Modal/index.js'
 import Load from '../Utils/Load/index.js'
@@ -16,12 +16,14 @@ import {UserContex} from '../../Context/UserContex.js'
 import FormHome from './FormHome/index.js'
 import Calendario  from '../Utils/Calendario/index.js'
 import Horario  from '../Utils/Calendario/Horario.js'
+import FormControlInput from '../FormControl/index.js'
+import Include from './include';
 
 
 const Home = (props)=>{
 
     const {data, error, request, loading} = useFetch();
-    const [Home, setHome] = React.useState([])
+    const [home, setHome] = React.useState([])
     const [exemplos, setExemplos] = React.useState([])
     const [exemplosTitleTable, setExemplosTitleTable] = React.useState([])
     const [showModalCriarCliente, setShowModalCriarCliente] = React.useState(false)
@@ -30,14 +32,40 @@ const Home = (props)=>{
     const [atualizarCadastro, setAtualizarCadastro] = React.useState(false)    
     const [cadastrarCliente, setCadastrarCliente] = React.useState(false)    
     const [dataGrupo, setDataGrupo] = React.useState(null)
-    const [tpView, setTpView] = React.useState('semana')//mes
+    const [tpView, setTpView] = React.useState('semana')//mes 
+    const [mostarFiltros, setMostarFiltros] = React.useState(false) 
+    const [filtroMobile, setFiltroMobile] = React.useState(null)
+    const [acao, setAcao] = React.useState(null)
+    const [pessoa, setPessoa] = React.useState('')
+    const [ordenacao, setOrdenacao] = React.useState('')
+    const [nadaEncontrado, setNadaEncontrado] = React.useState(false)
+
+
+    const [filtroAbertas, setFiltroAbertas] = React.useState(false)
+    const [filtroConcluidas, setFiltroConcluidas] = React.useState(false)
+    const [filtroCanceladas, setFiltroCanceladas] = React.useState(false)
 
 
     const {getToken} = React.useContext(UserContex);
 
     const alerta = (target)=>{
         console.log(target)
+    } 
+
+    const handleFiltroMobile = ({target})=>{
+        setFiltroMobile(target.value)
     }
+
+    const setNamePessoa = ({target})=>{
+        
+        setPessoa(target.value)
+    }
+
+    const setOrdenacaoFiltro = ({target})=>{
+        
+        setOrdenacao(target.value)
+    }
+
     const filtersArr = [
         {
             type:'text',
@@ -219,34 +247,7 @@ const Home = (props)=>{
         return tableTitle;
     }
     //------------
-   /* React.useEffect( ()=>{
-        const requestToken = async() =>{
-       
-           const {url, options} = TOKEN_POST({
-                'grant_type':'password',
-                'client_id': CLIENT_ID,
-                'client_secret':CLIENT_SECRET,
-                'username':'admin@gmail.com',
-                'password':'123456'
-             });
-
-
-            const {response, json} = await request(url, options);
-
-            
-        }
-
-        requestToken();
-        
-    }, []);*/
-
-    //----
-    /*React.useEffect(()=>{
-
-        setExemplos(gerarExemplos());
-        setExemplosTitleTable(gerarTitleTable());
-
-    }, [])*/
+   
 
     const requestAllClients = async() =>{
        
@@ -257,7 +258,7 @@ const Home = (props)=>{
         console.log('All clients here')
         console.log(json)
         if(json){
-               setHome(json)
+            setHome(json)
         }
 
             
@@ -275,18 +276,9 @@ const Home = (props)=>{
         requestAllClientsEffect();
 
         
-    }, [])
+    }, [filtroConcluidas, filtroCanceladas, filtroAbertas])
 
-    React.useEffect(()=>{
-
-        if(clientChoice > 0){
-            setAtualizarCadastro(true);
-        }else{
-            setAtualizarCadastro(false);
-        }
-
-        
-    }, [clientChoice])
+   
 
     React.useEffect(()=>{
 
@@ -299,14 +291,10 @@ const Home = (props)=>{
         
     }, [cadastrarCliente])
 
-    //---
-    console.log('View: '+tpView) 
-    //---
+   
     
-    const rowsTableArr = gerarTableHome();    
-    const titulosTableArr = gerarTitleTable();
     return(
-        <div className={`container-fluid back_container ${estilos.local_container}`}>
+        <>
             <Breadcrumbs
                 items={[
                         {
@@ -318,32 +306,135 @@ const Home = (props)=>{
                             label:'Home'
                         }
                     ]}
+                buttonFiltroMobile={true}
+                setMostarFiltros={setMostarFiltros}
+                mostarFiltros={mostarFiltros}
             />
             <Row>
-                <Col  xs="12" sm="12" md="3">
-                    <Filter
-                        filtersArr={filtersArr}
-                        actionsArr={acoesBottomCard}
-                    />
-                </Col>
-                <Col  xs="12" sm="12" md="9">
-                    {
-                        tpView == 'mes'
-                        ?
-                            (
-                                <Calendario/>
-                            )
-                        :
-                            (
-                                <Horario
-                                    titulosTableArr={titulosTableArr}
-                                    rowsTableArr={rowsTableArr}
-                                    loading={loading}
-
+                
+                {mostarFiltros && 
+                    (
+                        <>
+                            <Col  xs="12" sm="12" md="3" className={'default_card_report'}>
+                                <Filter
+                                    filtersArr={filtersArr}
+                                    actionsArr={acoesBottomCard}
                                 />
-                            )
+                            </Col>
 
-                    }
+                            <Col  xs="12" sm="12" md="12" className={'mobile_card_report pt-4'}  style={{backgroundColor:'#FFF'}}>
+                                <Row className={''} >
+                                    <Col className={'mx-2'}  >
+                                       <Row style={{borderRadius:'24px 24px 24px 24px', border:'1px solid #000'}}>
+                                            <Col xs="11" sm="11" md="11" >
+                                                <FormControlInput
+                                                    data={
+                                                        {
+                                                            atributsFormControl:{
+                                                                type:'input',
+                                                                placeholder:'Search...',
+                                                                style:{
+                                                                    border:'none',
+                                                                    outline:'0',
+                                                                    'box-shadow':'0 0 0 0',
+                                                                    height:'50px',
+                                                                    borderRadius:'24px 24px 24px 24px'
+                                                                    
+                                                                },
+                                                                onChange:(ev)=>{handleFiltroMobile(ev);},
+                                                                onBlur:(ev)=>{handleFiltroMobile(ev);},
+                                                                onKeyUp:(ev)=>{
+
+                                                                    if (ev.key === "Enter") {
+                                                                        requestAllClients();
+                                                                    }
+                                                                },
+                                                                value:filtroMobile
+
+                                                            }
+                                                        }
+                                                    }
+                                                 />
+                                            </Col>
+
+                                            <Col xs="1" sm="1" md="1" style={{textAlign:'left', alignItems:'center', justifyContent:'center', margin:'auto',padding:'0'}} >
+                                                <FontAwesomeIcon onClick={()=>{requestAllClients();}} size={'lg'} icon={faSearch}/>
+                                            </Col>
+                                        
+                                            
+                                         </Row>
+
+                                         <Row className={'mt-2'}>
+                                            <div  style={{display:'flex', flexDirection:'collumn', flexWrap:'wrap'}}>
+                                                {(filtroAbertas ? <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroAbertas(false);}} ><FontAwesomeIcon icon={faTimes} /> Abertas</Button> : '')}
+                                                {(filtroConcluidas ? <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroConcluidas(false);}} ><FontAwesomeIcon icon={faTimes} /> Concluídas</Button> : '')}
+                                                {(filtroCanceladas ? <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroCanceladas(false);}} ><FontAwesomeIcon icon={faTimes} /> Canceladas</Button> : '')}
+                                            </div>
+                                        </Row>
+                                    </Col>
+                                    
+                                    
+                                </Row>
+
+                                 <Row className={'my-2'}>
+                                    <Col>
+                                        <Row>
+                                            <Col><span style={{fontWeight:'bolder', fontSize:'14pt'}} >Filtros</span></Col>
+                                        </Row>
+
+                                        <div>
+                                             <hr style={{margin:'0',padding:'0'}}/>  
+                                        </div>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <div style={{display:'flex', flexDirection:'collumn', flexWrap:'wrap'}}>
+                                        
+                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroAbertas(true);}} ><FontAwesomeIcon icon={faSearch} /> Consultas</Button>
+                                    </div>
+                                    
+                                </Row>
+
+                                 <Row className={'my-2'}>
+                                    <Col>
+                                        <Row>
+                                            <Col><span style={{fontWeight:'bolder', fontSize:'14pt'}} >Ações</span></Col>
+                                        </Row>
+
+                                        <div>
+                                             <hr style={{margin:'0',padding:'0'}}/>  
+                                        </div>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <div style={{display:'flex', flexDirection:'collumn', flexWrap:'wrap'}}>
+                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setCadastrarCliente(true);}} ><FontAwesomeIcon icon={faPlus} /> Evento</Button>
+                                    </div>
+                                </Row>
+
+                            </Col>
+                        </>
+                    )
+                }
+
+                <Col style={{backgroundColor:'#FFF'}} className={'pt-3 mobile_card_report'}>
+                    <Row>
+                        <Col><span style={{fontWeight:'bolder'}} >Resultado</span></Col>
+                    </Row>
+                    <div>
+                         <hr style={{margin:'0',padding:'0'}}/>  
+                    </div>
+                </Col>
+                
+                <Col  xs="12" sm="12" md={mostarFiltros ? "9":"12"}>
+                     <Include
+                        dataEstado={home}
+                        loadingData={loading}
+                        callBack={requestAllClients}
+                        setMostarFiltros={setMostarFiltros}
+                        idAgendaCriada={clientChoice}
+                        nadaEncontrado={nadaEncontrado}
+                    />
                     
                 </Col>
             </Row>
@@ -355,7 +446,7 @@ const Home = (props)=>{
                 atualizarCadastro &&
                 <Atualizar atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro}  idCliente={clientChoice} setIdcliente={setClienteChoice} callback={requestAllClients} />
             }
-         </div>
+         </>
 
     )
 }

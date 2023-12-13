@@ -29,14 +29,14 @@
 
 .btn_ant{
 	
-	background: #07B201 !important;
+	/*background: #07B201 !important;*/
 	color: #FFF !important;
 	font-weight: bold !important;
 }
 
 .btn_pro{
 	
-	background: #07B201 !important;
+	/*background: #07B201 !important;*/
 	color: #FFF !important;
 	font-weight: bold !important;
 }
@@ -104,7 +104,7 @@
 } 
 
 .table .mes_anterior::hover, .table .proximo_mes::hover{
-	background-color: #98a0a0;
+	/*background-color: #98a0a0;*/
 } 
 
 .event{
@@ -135,4 +135,22 @@
 
 
 
+@media only screen and (max-width: 600px) {
+     .table td{
+		border: 1px solid #cbd2d2;
+		height: 40.4px;
+		text-align: center;
+		width: 60.4px;
+	}
 
+	.titulo, .ano{
+		margin-top: 0px;
+		font-size: 18px;
+		text-transform: uppercase;
+		font-weight: bolder;
+		color: #07B201;
+	}
+
+
+	
+}
