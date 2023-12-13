@@ -14,7 +14,7 @@
 }
 
 .btn-ant, .btn-pro{
-	position: absolute;
+	/*position: absolute;
 	top: 50%;
 	height: 32px;
 	width: 32px;
@@ -24,7 +24,7 @@
 	border-radius: 50%;
 	color: #cbd2d2;
 	font-size: 16px;
-	font-weight: bold;
+	font-weight: bold;*/
 }
 
 .btn_ant{

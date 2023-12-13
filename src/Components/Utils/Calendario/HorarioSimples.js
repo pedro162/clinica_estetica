@@ -2,6 +2,8 @@ import React from 'react';
 import { Col, Row, Modal as ModalBootstrap, Button } from 'react-bootstrap';
 import estilos from './Calendario.module.css'
 import Card from '../../Utils/Card/index.js'
+import { faHome, faSearch, faPlus, faTimes, faChevronCircleRight, faChevronCircleLeft } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Horario = (props)=>{
 	const[titulo, setTitulo] = React.useState('Dezembro')
@@ -167,32 +169,61 @@ const Horario = (props)=>{
 		<>
 			
 
+			{/*<Row >
+							<Col
+								xs="12" sm="12" md="12"
+								className={[estilos.header]}
+							>
+								<Row>
+									<Col >
+										<Button variant="primary" className={ `btn btn-sm ${estilos.mes_anterior} ${estilos.btn_ant}`} onClick={()=>semanaAnteior()}>
+						  		           {'<'}
+						  		        </Button>			  		    
+									</Col>
+									<Col>
+										<span
+											className={[estilos.titulo]}
+										>
+											{
+												meses[mes]+' - '+ano
+											}
+										</span>
+									</Col>
+									<Col>
+										<Button onClick={()=>proximaSemana()} className={ `btn btn-sm ${estilos.proximo_mes} ${estilos.btn_pro}`} > {'>'} </Button>
+									</Col>
+								</Row>
+							</Col>
+						</Row>*/}
+			
 			<Row >
 				<Col
 					xs="12" sm="12" md="12"
 					className={[estilos.header]}
 				>
 					<Row>
-						<Col >
-							<Button variant="primary" className={ `btn btn-sm ${estilos.mes_anterior} ${estilos.btn_ant}`} onClick={()=>semanaAnteior()}>
-			  		           {'<'}
-			  		        </Button>			  		    
-						</Col>
-						<Col>
+						<div style={{display:'flex', flexDirection:'collumn', alignItems:'center', justifyContent:'space-around', alignContent:'center'}}>
+							<Button className={ `btn btn-sm ${estilos.mes_anterior} ${estilos.btn_ant} btn-secondary`} style={{borderRadius:'50px'}} onClick={()=>semanaAnteior()}>
+			  		           <FontAwesomeIcon icon={faChevronCircleLeft} />
+			  		        </Button>
 							<span
-								className={[estilos.titulo]}
-							>
-								{
-									meses[mes]+' - '+ano
-								}
-							</span>
-						</Col>
-						<Col>
-							<Button onClick={()=>proximaSemana()} className={ `btn btn-sm ${estilos.proximo_mes} ${estilos.btn_pro}`} > {'>'} </Button>
-						</Col>
+									className={[estilos.titulo]}
+									style={{alignSelf:'center'}}
+								>
+									{
+										meses[mes]+' - '+ano
+									}
+								</span>
+							<Button onClick={()=>proximaSemana()} className={ `btn btn-sm ${estilos.proximo_mes} ${estilos.btn_pro} btn-secondary`} style={{borderRadius:'50px'}} >
+							 	<FontAwesomeIcon icon={faChevronCircleRight} /> 
+							</Button>
+						</div>
 					</Row>
 				</Col>
 			</Row>
+
+
+
 			<Row>
 				<Col
 					className={[estilos.table]}

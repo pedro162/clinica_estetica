@@ -44,7 +44,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
     const [acao, setAcao] = React.useState(null)
     const [pessoa, setPessoa] = React.useState('')
     const [defaultFiltersCobReceber, setDefaultFiltersCobReceber] = React.useState({})
-    const [tpView, setTpView] = React.useState('semana')//mes 
+    const [tpView, setTpView] = React.useState('semana')//mes//semana 
     const [atualizarCadastro, setAtualizarCadastro] = React.useState(false)
     const [cadastrarCliente, setCadastrarCliente] = React.useState(false)    
 
@@ -499,7 +499,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                             )
                         :
                             (
-                                <CalendarioSimples
+                                <HorarioSimples
                                     titulosTableArr={titulosTableArr}
                                     rowsTableArr={rowsTableArr}
                                     loading={loading}
