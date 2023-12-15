@@ -2,8 +2,11 @@ import React from 'react';
 import { Col, Row, Modal as ModalBootstrap, Button } from 'react-bootstrap';
 import estilos from './Calendario.module.css'
 import Card from '../../Utils/Card/index.js'
+import { faHome, faSearch, faPlus, faTimes, faChevronCircleRight, faChevronCircleLeft } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const Horario = (props)=>{
+
+const Horario = ({botoesHeader, rowsTableArr, ...props})=>{
 	const[titulo, setTitulo] = React.useState('Dezembro')
 	const[meses, setMeses] = React.useState([
 		'Janeiro',
@@ -163,11 +166,14 @@ const Horario = (props)=>{
 	let firstDayOfWeek =  data.getDate() - data.getDay(); //new Date(ano, mes, dia).getDay() -1;
 	let getLastDayThisMonth = new Date(ano, mes+1, 0).getDate();
 	let i = firstDayOfWeek;
+	let ic = firstDayOfWeek;
+	let dataDiaSemana = []
 	return(
 		<>
 			<Card
 				title="Agenda"
 				propsCard={{className:'cardFilter'}}
+				botoesHeader={botoesHeader}
 			>
 
 				<Row >
@@ -177,8 +183,8 @@ const Horario = (props)=>{
 					>
 						<Row>
 							<Col >
-								<Button variant="primary" className={ `btn btn-sm ${estilos.mes_anterior} ${estilos.btn_ant}`} onClick={()=>semanaAnteior()}>
-				  		           {'<'}
+								<Button variant="primary" className={ `btn btn-sm ${estilos.mes_anterior} ${estilos.btn_ant} btn-secondary`} style={{borderRadius:'50px'}}  onClick={()=>semanaAnteior()}>
+				  		            <FontAwesomeIcon icon={faChevronCircleLeft} />
 				  		        </Button>			  		    
 							</Col>
 							<Col>
@@ -191,7 +197,9 @@ const Horario = (props)=>{
 								</span>
 							</Col>
 							<Col>
-								<Button onClick={()=>proximaSemana()} className={ `btn btn-sm ${estilos.proximo_mes} ${estilos.btn_pro}`} > {'>'} </Button>
+								<Button onClick={()=>proximaSemana()} className={ `btn btn-sm ${estilos.proximo_mes} ${estilos.btn_pro} btn-secondary`} style={{borderRadius:'50px'}} >
+								 	<FontAwesomeIcon icon={faChevronCircleRight} /> 
+								</Button>
 							</Col>
 						</Row>
 					</Col>
@@ -224,6 +232,8 @@ const Horario = (props)=>{
 												classesEstilos += ' '+estilos.dia_atual
 											}
 
+											dataDiaSemana.push([dt.getFullYear(), dt.getMonth(), dt.getDate()])
+
 											if(i < 1){
 												classesEstilos += ' '+estilos.mes_anterior
 											}
@@ -235,8 +245,6 @@ const Horario = (props)=>{
 											if(i == 1){
 												//classesEstilos += ' '+estilos.event
 											}
-
-
 
 
 											i+= 1;
@@ -254,6 +262,23 @@ const Horario = (props)=>{
 							<tbody>
 								{
 									gerarHorario().map((iten, idx, arr)=>{
+										let itenArr = String(iten).split('-')
+										let horaMinInico = String(itenArr[0]).split(':')
+
+										let horaInico = horaMinInico[0]
+										horaInico = Number(horaInico)
+
+										let minInico = horaMinInico[1]
+										minInico = Number(minInico)
+
+
+										let horaMinFim = String(itenArr[1]).split(':')
+										let horaFim = horaMinFim[0]
+										horaFim = Number(horaFim)
+
+										let minFim = horaMinFim[1]
+										minFim = Number(minFim)
+
 										return(
 
 												<tr key={'ora'+idx+arr.length} >
@@ -266,9 +291,111 @@ const Horario = (props)=>{
 
 															i+= 1;
 
+															let dataAtual = dataDiaSemana[it];
+
+															let dt = new Date(dataAtual[0], dataAtual[1], dataAtual[2]);
+
+															let diaAtualTd = dt.getDate();
+															diaAtualTd = Number(diaAtualTd)
+
+															let anoAtualDt = dt.getFullYear();
+															anoAtualDt = Number(anoAtualDt)
+
+															let mesAtualDt = dt.getMonth();
+															mesAtualDt = Number(mesAtualDt)
+															mesAtualDt += 1;
+															
+															let dadosAgendaData = []
+
+															if(rowsTableArr){
+																for(let it=0; !(it == rowsTableArr.length); it++){
+																	let atualItemTable = rowsTableArr[it] 
+																	let {propsRow, data_format, hora, acoes, celBodyTableArr, dados} = atualItemTable
+
+																	let data_format_arr = String(data_format).split('-')
+																	let hora_arr = String(dados?.hora).split(':')
+
+																	if(Array.isArray(data_format_arr) && data_format_arr.length == 3){
+																		let nr_dia_form = data_format_arr[0]
+																		let nr_mes_form = data_format_arr[1]
+																		let nr_ano_form = data_format_arr[2]
+
+																		nr_dia_form = Number(nr_dia_form)
+																		nr_mes_form = Number(nr_mes_form)
+																		nr_ano_form = Number(nr_ano_form)
+
+																		if(anoAtualDt == nr_ano_form && mesAtualDt == nr_mes_form && diaAtualTd == nr_dia_form){
+																			if(Array.isArray(hora_arr) && hora_arr.length >=2){
+																				let horaPart = hora_arr[0]
+																				let minPart = hora_arr[1]
+
+																				horaPart = Number(horaPart)
+																				minPart = Number(minPart)
+																				if(horaInico <= horaPart && horaPart <= horaFim && minFim >=minPart && minInico <= minPart  ){
+																					dadosAgendaData.push(atualItemTable)
+																				}
+
+
+																			}
+																			
+																		}
+
+																	}
+																}
+															}
+															
+
+															ic += 1
+
 
 															return(
-																<td key={'day'+ind+ar.length}   ><span className={`${estilos.event}`}> </span></td>
+																<td key={'day'+ind+ar.length}   >
+																	{/*<span className={`${estilos.event}`}> </span>*/}
+
+																	<Col  className={'p-2'}>
+																		{dadosAgendaData && Array.isArray(dadosAgendaData) && dadosAgendaData.length > 0 ? (
+																			dadosAgendaData.map((dadosItem, indexDadosItem, arrDadosItem)=>{
+
+																				console.log('========================== dados dia ====================')
+																				console.log(dadosItem)
+																				console.log('========================== dados dia ====================')
+																				let {mainLabel, dados} = dadosItem
+																				return(
+																					<>
+																						
+																							<Col className={'mt-1 p-2'}  style={{backgroundColor:'orange', color:'#000'}}>
+																								<div>
+												                                                	{dados?.hora}
+												                                                </div>
+												                                                <div>
+												                                                	{mainLabel}
+												                                                </div>
+												                                                <div>
+												                                                	{dados?.name_pessoa}
+												                                                </div>
+												                                                {/*<div>
+												                                                												                                                	{dados?.data_format}
+												                                                												                                                </div>*/}
+
+												                                            </Col>
+												                                            
+												                                            {
+												                                            	/*
+												                                            		<div  style={{display:'flex', flexDirection:'collumn', flexWrap:'wrap'}}>
+														                                                <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{return null}} ><FontAwesomeIcon icon={faTimes} /> {mainLabel}</Button>
+														                                            </div>
+												                                            	*/
+												                                            }
+																					</>
+																				)
+																			})
+
+																		) : (null)}
+
+																		
+																	</Col>
+
+																</td>
 															)	
 														})
 														

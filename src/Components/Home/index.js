@@ -1,7 +1,7 @@
 import React from 'react';
 import estilos from './Home.module.css'
 import useFetch from '../../Hooks/useFetch.js';
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, HOME_ALL_POST} from '../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, AGENDA_ALL_POST} from '../../api/endpoints/geral.js'
 import {Col, Row, Button } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
@@ -23,7 +23,7 @@ import Include from './include';
 const Home = (props)=>{
 
     const {data, error, request, loading} = useFetch();
-    const [home, setHome] = React.useState([])
+    const [agenda, setAgenda] = React.useState([])
     const [exemplos, setExemplos] = React.useState([])
     const [exemplosTitleTable, setExemplosTitleTable] = React.useState([])
     const [showModalCriarCliente, setShowModalCriarCliente] = React.useState(false)
@@ -32,7 +32,7 @@ const Home = (props)=>{
     const [atualizarCadastro, setAtualizarCadastro] = React.useState(false)    
     const [cadastrarCliente, setCadastrarCliente] = React.useState(false)    
     const [dataGrupo, setDataGrupo] = React.useState(null)
-    const [tpView, setTpView] = React.useState('semana')//mes 
+    const [tpView, setTpView] = React.useState('mes')//mes 
     const [mostarFiltros, setMostarFiltros] = React.useState(false) 
     const [filtroMobile, setFiltroMobile] = React.useState(null)
     const [acao, setAcao] = React.useState(null)
@@ -100,7 +100,7 @@ const Home = (props)=>{
             atributsFormControl:{},
 
         }
-        ,{
+        /*,{
             type:'checkbox',
             options:[], 
             hasLabel: true,
@@ -109,13 +109,13 @@ const Home = (props)=>{
             atributsContainer:{ xs:"12", sm:"12", md:"6",className:'mb-2'},
             atributsFormControl:{'type':'checkbox', value:'12',size:"sm",'checked':false,'name':'nome',onChange:alerta, onBlur:alerta},
 
-        }
+        }*/
     ]
 
     const acoesBottomCard=[{
             label:'Pesquisar',
             icon:<FontAwesomeIcon icon={faSearch} />,
-            props:{onClick:()=>requestAllClients(), className:'btn btn-sm botao_success'}
+            props:{onClick:()=>requestAllAgenda(), className:'btn btn-sm botao_success'}
         },
         {
             label:'Cadastrar',
@@ -248,17 +248,50 @@ const Home = (props)=>{
     }
     //------------
    
+   //------------
+    const montarFiltro = ()=>{
+        let filtros = {}
+        let detalhesFiltros = {}
 
-    const requestAllClients = async() =>{
-       
-        const {url, options} = HOME_ALL_POST({}, getToken());
+
+        
+
+        if(filtroMobile){
+            filtros['name'] = filtroMobile;
+            detalhesFiltros['name'] = {
+                label:'Filtro',
+                value:filtroMobile,
+                resetFilter:()=>setFiltroMobile(''),
+            };
+        }
+
+
+
+
+        return {filtros, detalhesFiltros};
+    }
+
+    const requestAllAgenda = async() =>{
+        setAgenda([])
+
+        let {filtros, detalhesFiltros} = montarFiltro();
+
+        const {url, options} = AGENDA_ALL_POST({...filtros}, getToken());
 
 
         const {response, json} = await request(url, options);
-        console.log('All clients here')
-        console.log(json)
+        
         if(json){
-            setHome(json)
+            setAgenda(json)
+            
+            if( json?.mensagem && json?.mensagem.length > 0){
+                setNadaEncontrado(false)
+            }else{
+                setNadaEncontrado(true)
+            }
+
+        }else{
+            setNadaEncontrado(true)
         }
 
             
@@ -266,14 +299,14 @@ const Home = (props)=>{
 
     React.useEffect(()=>{
 
-        const requestAllClientsEffect = async() =>{
+        const requestAllAgendaEffect = async() =>{
        
-           await requestAllClients();
+           await requestAllAgenda();
 
             
         }
 
-        requestAllClientsEffect();
+        requestAllAgendaEffect();
 
         
     }, [filtroConcluidas, filtroCanceladas, filtroAbertas])
@@ -346,7 +379,7 @@ const Home = (props)=>{
                                                                 onKeyUp:(ev)=>{
 
                                                                     if (ev.key === "Enter") {
-                                                                        requestAllClients();
+                                                                        requestAllAgenda();
                                                                     }
                                                                 },
                                                                 value:filtroMobile
@@ -358,7 +391,7 @@ const Home = (props)=>{
                                             </Col>
 
                                             <Col xs="1" sm="1" md="1" style={{textAlign:'left', alignItems:'center', justifyContent:'center', margin:'auto',padding:'0'}} >
-                                                <FontAwesomeIcon onClick={()=>{requestAllClients();}} size={'lg'} icon={faSearch}/>
+                                                <FontAwesomeIcon onClick={()=>{requestAllAgenda();}} size={'lg'} icon={faSearch}/>
                                             </Col>
                                         
                                             
@@ -428,23 +461,24 @@ const Home = (props)=>{
                 
                 <Col  xs="12" sm="12" md={mostarFiltros ? "9":"12"}>
                      <Include
-                        dataEstado={home}
+                        dataEstado={agenda}
                         loadingData={loading}
-                        callBack={requestAllClients}
+                        callBack={requestAllAgenda}
                         setMostarFiltros={setMostarFiltros}
                         idAgendaCriada={clientChoice}
                         nadaEncontrado={nadaEncontrado}
+                        tpViewChoice={tpView}
                     />
                     
                 </Col>
             </Row>
             {
-                cadastrarCliente && <Cadastrar cadastrarCliente={cadastrarCliente} setCadastrarCliente={setCadastrarCliente} atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro}  idCliente={clientChoice} setIdcliente={setClienteChoice} callback={requestAllClients} />
+                cadastrarCliente && <Cadastrar cadastrarCliente={cadastrarCliente} setCadastrarCliente={setCadastrarCliente} atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro}  idCliente={clientChoice} setIdcliente={setClienteChoice} callback={requestAllAgenda} />
             }
             
             {
                 atualizarCadastro &&
-                <Atualizar atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro}  idCliente={clientChoice} setIdcliente={setClienteChoice} callback={requestAllClients} />
+                <Atualizar atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro}  idCliente={clientChoice} setIdcliente={setClienteChoice} callback={requestAllAgenda} />
             }
          </>
 

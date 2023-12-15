@@ -25,7 +25,7 @@ import HorarioSimples  from '../Utils/Calendario/HorarioSimples.js'
 import Atualizar from './Atualizar/index.js'
 //
 
-const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncontrado, idAgendaCriada, ...props})=>{
+const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, tpViewChoice, nadaEncontrado, idAgendaCriada, ...props})=>{
     const {data, error, request, loading} = useFetch();
     const [estado, setAgenda] = React.useState([])
     const [exemplos, setExemplos] = React.useState([])
@@ -44,7 +44,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
     const [acao, setAcao] = React.useState(null)
     const [pessoa, setPessoa] = React.useState('')
     const [defaultFiltersCobReceber, setDefaultFiltersCobReceber] = React.useState({})
-    const [tpView, setTpView] = React.useState('semana')//mes//semana 
+    const [tpView, setTpView] = React.useState(tpViewChoice)//mes//semana 
     const [atualizarCadastro, setAtualizarCadastro] = React.useState(false)
     const [cadastrarCliente, setCadastrarCliente] = React.useState(false)    
 
@@ -301,51 +301,64 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
             for(let i=0; !(i == dataAgenda.length); i++){
                 let atual = dataAgenda[i];
                 if(atual){
-                    let acoesArr = [];
-                    
 
-                    let line_style = {}
-                    
-                    
-                    //'remarcado','finalizado','cancelado','pendente'
+
                     data.push(
 
                         {
-                            propsRow:{id:(atual.id), style:{...line_style}},
+                            id:atual?.id,
+                            propsRow:{id:(atual.id)},
+                            data_format:atual?.data_format,
+                            hora:atual?.hora,
+                            mainLabel:atual?.descricao,
                             acoes:[
-                                ...acoesArr
+                                {acao:()=>setAgendaChoice(atual.id), label:'Editar', propsOption:{}, propsLabel:{}},
+                                //{acao:()=>alert('Agenda qui: '+(atual.id)), label:'Agenda', propsOption:{}, propsLabel:{}},
+                                //{acao:()=>alert('Histórico de atentimentos: '+(atual.id)), label:'Histórico de atendimentos', propsOption:{}, propsLabel:{}},
+                                //{acao:()=>alert('Central do cliente: '+(atual.id)), label:'Central do cliente', propsOption:{}, propsLabel:{}},
                             ],
+                            dados:atual,
                             celBodyTableArr:[
                                 {
 
-                                    label:atual.id,
+                                    label:atual?.id,
                                     propsRow:{}
                                 },
                                 {
 
-                                    label:atual.is_faturado == 'yes' ? 'Sim' : 'Não',
+                                    label:atual?.name_pessoa,
                                     propsRow:{}
                                 },
                                 {
 
-                                    label:FORMAT_DATA_PT_BR(atual.td_faturamento),
+                                    label:atual?.status,
                                     propsRow:{}
                                 },
                                 {
 
-                                    label:FORMAT_DATA_PT_BR(atual.td_cancelamento),
+                                    label:atual?.descricao,
                                     propsRow:{}
                                 },
                                 {
 
-                                    label:FORMAT_DATA_PT_BR(atual.td_conclusao),
+                                    label:atual?.data_format,
                                     propsRow:{}
                                 },
                                 {
 
-                                    label:FORMAT_DATA_PT_BR(atual.created_at),
+                                    label:atual?.hora,
                                     propsRow:{}
                                 },
+                                {
+
+                                    label:atual?.name_pessoa_cancelamento,
+                                    propsRow:{}
+                                },
+                                {
+
+                                    label:atual?.dt_cancelamento,
+                                    propsRow:{}
+                                }
                             ]
                         }
 
@@ -362,21 +375,45 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
     const gerarListMobileRelatorio = ()=>{
        
         let data = [];
-        let dataAgenda = estado.mensagem
-        if(dataAgenda && Array.isArray(dataAgenda) && dataAgenda.length > 0){
-            for(let i=0; !(i == dataAgenda.length); i++){
-                let atual = dataAgenda[i];
+        let dataOrdemServico = estado.mensagem
+        if(dataOrdemServico && Array.isArray(dataOrdemServico) && dataOrdemServico.length > 0){
+            for(let i=0; !(i == dataOrdemServico.length); i++){
+                let atual = dataOrdemServico[i];
                 if(atual){
-                    let acoesArr = [];
-                    
+                    let acoesArr = [
+                        {acao:()=>setAgendaChoice(atual.id), label:'Editar', propsOption:{}, propsLabel:{}},
+                        //{acao:()=>alert('Agenda qui: '+(atual.id)), label:'Agenda', propsOption:{}, propsLabel:{}},
+                        //{acao:()=>alert('Histórico de atentimentos: '+(atual.id)), label:'Histórico de atendimentos', propsOption:{}, propsLabel:{}},
+                        //{acao:()=>alert('Central do cliente: '+(atual.id)), label:'Central do cliente', propsOption:{}, propsLabel:{}},
+                    ];
+                    let btnEditar                   = true;
+                    let btnIniciarProcedimento      = true;
+                    let btnFinalizar                = true;
+                    let btnVisualizarFinanceiro     = true;
+                    let btnVisualizar               = true;
+                    let btnCotinuarDigitacao        = true;
+                    let btnCancelar                 = true;
+
+
+
                     let line_style = {}
-                    
+                    if(atual.status == 'cancelado'){
+                        line_style.color = 'red';
+                    }else if(atual.status == 'concluido'){
+                        line_style.color = 'green';
+                    } 
 
                     //propsContainerTitulo, propsContainerButtons
                     data.push(
 
                         {
-                            propsRow:{id:(atual.id), titleRow:atual?.name, style:{...line_style}, mainIcon:faFileAlt},
+                            id:atual?.id,
+                            propsRow:{id:(atual.id)},
+                            data_format:atual?.data_format,
+                            hora:atual?.hora,
+                            mainLabel:atual?.descricao,
+                            dados:atual,
+                            propsRow:{id:(atual.id), titleRow:atual?.name_pessoa, style:{...line_style}, mainIcon:faFileAlt},
                             acoes:[
                                 ...acoesArr
                             ],
@@ -388,10 +425,23 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                             ],
                             celBodyTableArr:[
                                 [
-                                    
                                     {
-                                        title:<span style={{fontWeight:'480'}}>Criado em: </span>,
-                                        label:FORMAT_DATA_PT_BR(atual.created_at),
+                                        title:<span style={{fontWeight:'480'}}>Status: </span>,
+                                        label:atual?.status,
+                                        props:{style:{textAlign:'left', fontWeight:'bolder'}},
+                                        toSum:1,
+                                        isCoin:1,
+                                    },
+                                    {
+                                        title:<span style={{fontWeight:'480'}}>Data / hora: </span>,
+                                        label:atual?.data_format +" "+atual?.hora,
+                                        props:{style:{textAlign:'left'}},
+                                        toSum:1,
+                                        isCoin:1,
+                                    },
+                                    {
+                                        title:<span style={{fontWeight:'480'}}>Observação: </span>,
+                                        label:atual?.descricao,
                                         props:{style:{textAlign:'left'}},
                                         toSum:1,
                                         isCoin:1,
@@ -421,14 +471,37 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                 props:{}
             },
             {
-                label:'Faturado em',
+                label:'Pessoa',
+                props:{}
+            },
+            {
+                label:'Status',
+                props:{}
+            },
+            {
+                label:'Histórico',
+                props:{}
+            },
+            {
+                label:'Data',
+                props:{}
+            },
+            {
+                label:'Hora',
+                props:{}
+            },
+            {
+                label:'Cancelado por',
+                props:{}
+            },
+            {
+                label:'Cancelado em',
                 props:{}
             },
         ]
 
         return tableTitle;
     }
-   //name_profissional
 
     //------------
 
@@ -466,6 +539,10 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
     React.useEffect(()=>{
         setAgenda(dataEstado)
     }, [dataEstado])
+
+    React.useEffect(()=>{
+        setTpView(tpViewChoice)
+    }, [tpViewChoice])
     
 
     const rowsTableArr = gerarTableAgenda();    
@@ -517,7 +594,14 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                         tpView == 'mes'
                         ?
                             (
-                                <Calendario/>
+                                <Calendario
+                                    titulosTableArr={titulosTableArr}
+                                    rowsTableArr={rowsTableArr}
+                                    loading={loading}
+                                    nadaEncontrado={nadaEncontrado}
+                                    botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
+
+                                />
                             )
                         :
                             (
@@ -525,6 +609,8 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                                     titulosTableArr={titulosTableArr}
                                     rowsTableArr={rowsTableArr}
                                     loading={loading}
+                                    nadaEncontrado={nadaEncontrado}
+                                    botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
 
                                 />
                             )

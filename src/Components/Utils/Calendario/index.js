@@ -2,8 +2,10 @@ import React from 'react';
 import { Col, Row, Modal as ModalBootstrap, Button } from 'react-bootstrap';
 import estilos from './Calendario.module.css'
 import Card from '../../Utils/Card/index.js'
+import { faHome, faSearch, faPlus, faTimes, faChevronCircleRight, faChevronCircleLeft } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const Calendario = (props)=>{
+const Calendario = ({botoesHeader, rowsTableArr, ...props})=>{
 	const[titulo, setTitulo] = React.useState('Dezembro')
 	const[meses, setMeses] = React.useState([
 		'Janeiro',
@@ -64,6 +66,7 @@ const Calendario = (props)=>{
 			<Card
 				title="Agenda"
 				propsCard={{className:'cardFilter'}}
+				botoesHeader={botoesHeader}
 			>
 
 				<Row >
@@ -73,9 +76,9 @@ const Calendario = (props)=>{
 					>
 						<Row>
 							<Col >
-								<Button variant="primary" className={ `btn btn-sm ${estilos.mes_anterior} ${estilos.btn_ant}`} onClick={()=>mesAnteior()}>
-				  		           {'<'}
-				  		        </Button>			  		    
+								<Button className={ `btn btn-sm ${estilos.mes_anterior} ${estilos.btn_ant} btn-secondary`} style={{borderRadius:'50px'}} onClick={()=>mesAnteior()}>
+				  		           <FontAwesomeIcon icon={faChevronCircleLeft} />
+				  		        </Button>		  		    
 							</Col>
 							<Col>
 								<span
@@ -87,7 +90,9 @@ const Calendario = (props)=>{
 								</span>
 							</Col>
 							<Col>
-								<Button onClick={()=>proximoMes()} className={ `btn btn-sm ${estilos.proximo_mes} ${estilos.btn_pro}`} > {'>'} </Button>
+								<Button onClick={()=>proximoMes()} className={ `btn btn-sm ${estilos.proximo_mes} ${estilos.btn_pro} btn-secondary`} style={{borderRadius:'50px'}} >
+								 	<FontAwesomeIcon icon={faChevronCircleRight} /> 
+								</Button>
 							</Col>
 						</Row>
 					</Col>
@@ -148,10 +153,87 @@ const Calendario = (props)=>{
 															classesEstilos += ' '+estilos.event
 														}
 
+														let diaAtualTd = dt.getDate();
+														diaAtualTd = Number(diaAtualTd)
+
+														let anoAtualDt = ano;
+														anoAtualDt = Number(anoAtualDt)
+
+														let mesAtualDt = mes;
+														mesAtualDt = Number(mesAtualDt)
+														
+														let dadosAgendaData = []
+
+														if(rowsTableArr){
+															for(let it=0; !(it == rowsTableArr.length); it++){
+																let atualItemTable = rowsTableArr[it] 
+																let {propsRow, data_format, hora, acoes, celBodyTableArr} = atualItemTable
+																let data_format_arr = String(data_format).split('-')
+
+																if(Array.isArray(data_format_arr) && data_format_arr.length == 3){
+																	let nr_dia_form = data_format_arr[0]
+																	let nr_mes_form = data_format_arr[1]
+																	let nr_ano_form = data_format_arr[2]
+
+																	nr_dia_form = Number(nr_dia_form)
+																	nr_mes_form = Number(nr_mes_form)
+																	nr_ano_form = Number(nr_ano_form)
+
+																	if(anoAtualDt == nr_ano_form && mesAtualDt == nr_mes_form && diaAtualTd == nr_dia_form){
+																		dadosAgendaData.push(atualItemTable)
+																	}
+
+																}
+															}
+														}
+																		//console.log('========================== dados dia ====================')
+																		//console.log(dadosAgendaData)
+																		//console.log('========================== dados dia ====================')
+
 
 														i+= 1;
 														return(
-															<td key={'day'+ind+ar.length}  className={classesEstilos} >{dt.getDate()}</td>
+															<td key={'day'+ind+ar.length}  className={classesEstilos}  >
+																{dt.getDate()}
+																<Col  className={'p-2'}>
+																	{dadosAgendaData && Array.isArray(dadosAgendaData) && dadosAgendaData.length > 0 ? (
+																		dadosAgendaData.map((dadosItem, indexDadosItem, arrDadosItem)=>{
+
+																			console.log('========================== dados dia ====================')
+																			console.log(dadosItem)
+																			console.log('========================== dados dia ====================')
+																			let {mainLabel, dados} = dadosItem
+																			return(
+																				<>
+																					
+																						<Col className={'mt-1 p-2'}  style={{backgroundColor:'orange', color:'#000'}}>
+																							<div>
+											                                                	{dados?.hora}
+											                                                </div>
+											                                                <div>
+											                                                	{mainLabel}
+											                                                </div>
+											                                                <div>
+											                                                	{dados?.name_pessoa}
+											                                                </div>
+											                                            </Col>
+											                                            
+											                                            {
+											                                            	/*
+											                                            		<div  style={{display:'flex', flexDirection:'collumn', flexWrap:'wrap'}}>
+													                                                <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{return null}} ><FontAwesomeIcon icon={faTimes} /> {mainLabel}</Button>
+													                                            </div>
+											                                            	*/
+											                                            }
+																				</>
+																			)
+																		})
+
+																	) : (null)}
+
+																	
+																</Col>
+															</td>
 														)	
 													})
 													
