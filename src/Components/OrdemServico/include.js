@@ -548,7 +548,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                     data.push(
 
                         {
-                            propsRow:{id:(atual.id), titleRow:atual?.name, style:{...line_style}, mainIcon:faFileAlt},
+                            propsRow:{id:(atual.id), titleRow: atual.id +' - '+ atual?.name, style:{...line_style}, mainIcon:faFileAlt},
                             acoes:[
                                 ...acoesArr
                             ],
@@ -561,32 +561,38 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                             celBodyTableArr:[
                                 [
                                     {
+                                        title:<span style={{fontWeight:'480'}}>Cód pessoa: </span>,
+                                        label:atual?.pessoa_id,
+                                        props:{style:{textAlign:'left', md:'1', sm:'1', xs:'1'}},
+                                        toSum:1,
+                                        isCoin:1,
+                                    }, {
                                         title:<span style={{fontWeight:'480'}}>Total R$: </span>,
                                         label:FORMAT_MONEY(atual?.vr_final),
-                                        props:{style:{textAlign:'left'}},
+                                        props:{style:{textAlign:'left', md:'3', sm:'3', xs:'3'}},
                                         toSum:1,
                                         isCoin:1,
                                     },
                                     {
                                         title:<span style={{fontWeight:'480'}}>Status: </span>,
                                         label:atual?.status,
-                                        props:{style:{textAlign:'left'}},
+                                        props:{style:{textAlign:'left', fontWeight:'bolder', md:'3', sm:'3', xs:'3'}},
                                         toSum:1,
                                         isCoin:1,
                                     },
-                                    /*{
+                                    {
                                         title:<span style={{fontWeight:'480'}}>Faturado: </span>,
                                         label:(atual.is_faturado == 'yes' ? 'Sim' : 'Não'),
-                                        props:{style:{textAlign:'left'}},
-                                        toSum:1,
-                                        isCoin:1,
-                                    },*/
+                                        props:{style:{textAlign:'left', md:'2', sm:'2', xs:'2'}},
+                                        toSum:0,
+                                        isCoin:0,
+                                    },
                                     {
                                         title:<span style={{fontWeight:'480'}}>Criado em: </span>,
                                         label:FORMAT_DATA_PT_BR(atual.created_at),
-                                        props:{style:{textAlign:'left'}},
-                                        toSum:1,
-                                        isCoin:1,
+                                        props:{style:{textAlign:'left', md:'3', sm:'3', xs:'3'}},
+                                        toSum:0,
+                                        isCoin:0,
                                     },
 
                                 ],
@@ -722,6 +728,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                         rowsTableArr={gerarListMobileRelatorio()}
                         loading={loadingData}
                         nadaEncontrado={nadaEncontrado}
+                        withoutFirstCol={true}
                         botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
                     />
 
