@@ -32,7 +32,7 @@ const Home = (props)=>{
     const [atualizarCadastro, setAtualizarCadastro] = React.useState(false)    
     const [cadastrarCliente, setCadastrarCliente] = React.useState(false)    
     const [dataGrupo, setDataGrupo] = React.useState(null)
-    const [tpView, setTpView] = React.useState('mes')//mes 
+    const [tpView, setTpView] = React.useState('mes')//mes//semana 
     const [mostarFiltros, setMostarFiltros] = React.useState(false) 
     const [filtroMobile, setFiltroMobile] = React.useState(null)
     const [acao, setAcao] = React.useState(null)

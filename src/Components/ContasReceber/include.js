@@ -689,23 +689,29 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                             celBodyTableArr:[
                                 [
                                     {
+                                        title:<span style={{fontWeight:'480'}}>Cód. pessoa: </span>,
+                                        label:atual?.pessoa_id,
+                                        props:{style:{textAlign:'left', md:'1', sm:'1', xs:'1'}},
+                                        toSum:1,
+                                        isCoin:1,
+                                    },{
                                         title:<span style={{fontWeight:'480'}}>Aberto R$: </span>,
                                         label:FORMAT_MONEY(atual?.vrAberto),
-                                        props:{style:{textAlign:'left'}},
+                                        props:{style:{textAlign:'left', md:'4', sm:'4', xs:'4'}},
                                         toSum:1,
                                         isCoin:1,
                                     },
                                     {
                                         title:<span style={{fontWeight:'480'}}>Status </span>,
                                         label:atual?.status,
-                                        props:{style:{textAlign:'left'}},
+                                        props:{style:{textAlign:'left', fontWeight:'bolder', md:'3', sm:'3', xs:'3'}},
                                         toSum:1,
                                         isCoin:1,
                                     },
                                     {
                                         title:<span style={{fontWeight:'480'}}>Vencimento </span>,
                                         label:FORMAT_DATA_PT_BR(atual.dtVencimento),
-                                        props:{style:{textAlign:'left'}},
+                                        props:{style:{textAlign:'left', md:'4', sm:'4', xs:'4'}},
                                         toSum:1,
                                         isCoin:1,
                                     },
@@ -781,6 +787,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                         rowsTableArr={gerarListMobileContasReceber()}
                         loading={loadingData}
                         nadaEncontrado={nadaEncontrado}
+                        withoutFirstCol={true}
                         botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
                     />
 

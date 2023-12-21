@@ -2,11 +2,11 @@ import React from 'react';
 import estilos from './Profissionais.module.css'
 import useFetch from '../../Hooks/useFetch.js';
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, PROFISSIONAIS_ALL_POST} from '../../api/endpoints/geral.js'
-import {Col, Row } from 'react-bootstrap';
+import {Col, Row,Button } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
 import Breadcrumbs from '../Helper/Breadcrumbs.js'
-import { faHome, faSearch, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faSearch, faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from '../Utils/Modal/index.js'
 import Load from '../Utils/Load/index.js'
@@ -14,12 +14,14 @@ import Cadastrar from './Cadastrar/index.js'
 import Atualizar from './Atualizar/index.js'
 import {UserContex} from '../../Context/UserContex.js'
 import FormProfissionais from './FormProfissionais/index.js'
+import Include from './include';
+import FormControlInput from '../FormControl/index.js'
 
 
 const Profissionais = (props)=>{
 
 	const {data, error, request, loading} = useFetch();
-    const [profissionais, setProfissionais] = React.useState([])
+    const [estado, setProfissionais] = React.useState([])
     const [exemplos, setExemplos] = React.useState([])
     const [exemplosTitleTable, setExemplosTitleTable] = React.useState([])
     const [showModalCriarProfissionais, setShowModalCriarProfissionais] = React.useState(false)
@@ -27,6 +29,17 @@ const Profissionais = (props)=>{
     const [profissionaisChoice, setProfissionaisChoice] = React.useState(null);
     const [atualizarCadastro, setAtualizarCadastro] = React.useState(false)    
     const [cadastrarProfissionais, setCadastrarProfissionais] = React.useState(false)    
+    const [ordenacao, setOrdenacao] = React.useState('')
+    const [nadaEncontrado, setNadaEncontrado] = React.useState(false)
+    const [acao, setAcao] = React.useState(null)
+    const [pessoa, setPessoa] = React.useState('')
+    const [codigoPessoa, setCodigoPessoa] = React.useState('')
+    const [codigoProfissional, setCodigoProfissional] = React.useState('')
+    const [status, setStatus] = React.useState('')
+    const [mostarFiltros, setMostarFiltros] = React.useState(false) 
+    const [filtroMobile, setFiltroMobile] = React.useState(null)
+    const [filtroAdmitidos, setFiltroAdmitidos] = React.useState(false)
+    const [filtroDemitidos, setFiltroDemitidos] = React.useState(false)
 
 
     const {getToken} = React.useContext(UserContex);
@@ -34,50 +47,94 @@ const Profissionais = (props)=>{
     const alerta = (target)=>{
         console.log(target)
     }
+
+    const handleFiltroMobile = ({target})=>{
+        setFiltroMobile(target.value)
+    }
+
+    const setNamePessoa = ({target})=>{
+        
+        setPessoa(target.value)
+    }
+
+    const setCodigoPessoaFiltro = ({target})=>{
+        
+        setCodigoPessoa(target.value)
+    }
+
+    const setOrdenacaoFiltro = ({target})=>{
+        
+        setOrdenacao(target.value)
+    }
+
+    const setStatusFiltro = ({target})=>{
+        
+        setStatus(target.value)
+    }
+    const setCodigoProfissionalFiltro = ({target})=>{
+        
+        setCodigoProfissional(target.value)
+    }
+
+    const handleSearch = (ev)=>{
+        if (ev.key === "Enter") {
+            requestAllProfissionais();
+        }
+    }
+
+   
     const filtersArr = [
         {
             type:'text',
             options:[], 
             hasLabel: true,
-            contentLabel:'Teste',
+            contentLabel:'Código',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"12",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name':'nome',onChange:alerta,    onBlur:alerta},
+            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'id':'id', value:codigoProfissional, onChange:setCodigoProfissionalFiltro,    onBlur:setCodigoProfissionalFiltro, onKeyUp:handleSearch},
 
         },
         {
-            type:'radio',
-            options:[
-                {
-                    hasLabel: true,
-                    contentLabel:'Teste Radio 01',
-                    atributsFormLabel:{},
-                    atributsFormControl:{'type':'radio', value:'12', size:"sm",'checked':true,'name':'nome',onChange:alerta,    onBlur:alerta},
-                },
-                {
-                    hasLabel: true,
-                    contentLabel:'Teste Radio',
-                    atributsFormLabel:{},
-                    atributsFormControl:{'type':'radio', value:'12', size:"sm",'checked':true,'name':'nome',onChange:alerta,    onBlur:alerta},
-                }
-            ],  
-            hasLabel: true,
-            contentLabel:'Teste',
-            atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"12",className:'mb-2',},
-            atributsFormControl:{},
-
-        }
-        ,{
-            type:'checkbox',
+            type:'text',
             options:[], 
             hasLabel: true,
-            contentLabel:'Teste',
+            contentLabel:'Código pessoa',
             atributsFormLabel:{},
-            atributsContainer:{ xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'checkbox', value:'12',size:"sm",'checked':false,'name':'nome',onChange:alerta, onBlur:alerta},
+            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'pessoa_id':'pessoa_id', value:codigoPessoa, onChange:setCodigoPessoaFiltro,    onBlur:setCodigoPessoaFiltro, onKeyUp:handleSearch},
 
-        }
+        },
+        {
+            type:'text',
+            options:[], 
+            hasLabel: true,
+            contentLabel:'Profissional',
+            atributsFormLabel:{},
+            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'name':'nome', value:pessoa, onChange:setNamePessoa,    onBlur:setNamePessoa, onKeyUp:handleSearch},
+
+        },
+        {
+            type:'select',
+            options:[{'label':'Selecione...', 'value':''},{'label':'Adminitidos', 'value':'admitido'},{'label':'Demitidos', 'value':'demitido'}], 
+            hasLabel: true,
+            contentLabel:'Status',
+            atributsFormLabel:{},
+            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsFormControl:{'type':'select', size:"sm",'status':status, value:status, onChange:setStatusFiltro,    onBlur:setStatusFiltro, onKeyUp:handleSearch},
+
+        },,{
+            type:'select',
+            options:[{'label':'Selecione...', 'value':''},{'label':'Código A-Z', 'value':'id-asc'},{'label':'Código Z-A', 'value':'id-desc'},
+            {'label':'Pessoa A-Z', 'value':'name-asc'},{'label':'Pessoa Z-A', 'value':'name-desc'},], 
+            hasLabel: true,
+            contentLabel:'Classificar',
+            atributsFormLabel:{},
+            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsFormControl:{'type':'select', size:"sm",'ordem':ordenacao, value:ordenacao, onChange:setOrdenacaoFiltro,    onBlur:setOrdenacaoFiltro, onKeyUp:handleSearch},
+
+        },
+        
     ]
 
     const acoesBottomCard=[{
@@ -91,149 +148,127 @@ const Profissionais = (props)=>{
             props:{onClick:()=>setCadastrarProfissionais(true), className:'btn btn-sm mx-2 btn-secondary'}
         }
     ];
-    const gerarExemplos = ()=>{
-         let exemplos = [];
-        for(let i=0; !(i == 10); i++){
-            exemplos.push(
 
-                    {
-                        propsRow:{id:(i+1)},
-                        celBodyTableArr:[
-                            {
-
-                                label:'1',
-                                propsRow:{}
-                            },
-                            {
-
-                                label:'Peddro',
-                                propsRow:{}
-                            },
-                            {
-
-                                label:'(98) 98425-7623',
-                                propsRow:{}
-                            },
-                            {
-
-                                label:'phedroclooney@gmail.com',
-                                propsRow:{}
-                            }
-                        ]
-                    }
-
-                )
-
+    //------------
+    const montarFiltro = ()=>{
+        let filtros = {}
+        let detalhesFiltros = {}
+        
+        if(pessoa){
+            filtros['name_pessoa'] = pessoa;
+            detalhesFiltros['name_pessoa'] = {
+                label:'Pessoa',
+                value:pessoa,
+                resetFilter:()=>setPessoa(''),
+            };
         }
 
-        return exemplos;
-    }
+        if(ordenacao){
+            filtros['ordem'] = ordenacao;
+            detalhesFiltros['ordem'] = {
+                label:'Ordenação',
+                value:ordenacao,
+                resetFilter:()=>setOrdenacao(''),
+            };
+        }
 
-    const gerarTableProfissionais = ()=>{
-       
-        let data = [];
-        let dataProfissionais = profissionais.mensagem
-        if(dataProfissionais && Array.isArray(dataProfissionais) && dataProfissionais.length > 0){
-            for(let i=0; !(i == dataProfissionais.length); i++){
-                let atual = dataProfissionais[i];
-                if(atual){
+        if(filtroMobile){
+            filtros['name_pessoa'] = filtroMobile;
+            detalhesFiltros['name_pessoa'] = {
+                label:'Filtro',
+                value:filtroMobile,
+                resetFilter:()=>setFiltroMobile(''),
+            };
+        }
 
 
-                    data.push(
-
-                        {
-                            propsRow:{id:(atual.id)},
-                            acoes:[
-                                {acao:()=>setProfissionaisChoice(atual.id), label:'Editar', propsOption:{}, propsLabel:{}},
-                                {acao:()=>alert('Agenda qui: '+(atual.id)), label:'Agenda', propsOption:{}, propsLabel:{}},
-                                {acao:()=>alert('Histórico de atentimentos: '+(atual.id)), label:'Histórico de atendimentos', propsOption:{}, propsLabel:{}},
-                                {acao:()=>alert('Central do cliente: '+(atual.id)), label:'Central do cliente', propsOption:{}, propsLabel:{}},
-                            ],
-                            celBodyTableArr:[
-                                {
-
-                                    label:atual.id,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual.name_pessoa,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual.name_opcional,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual.documento,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual.nr_doc,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual.org_expedidor,
-                                    propsRow:{}
-                                }
-                            ]
-                        }
-
-                    )
-
-                }
-
+        if(filtroAdmitidos){
+            if(filtros.hasOwnProperty('status')){
+                filtros['status'] += 'admitido,';
+            }else{
+                filtros['status'] = 'admitido,';
             }
+
+            detalhesFiltros['status'] = {
+                label:'Status',
+                value:filtroAdmitidos,
+                resetFilter:()=>setFiltroAdmitidos(''),
+            };
         }
 
-        return data;
-    }
+        if(filtroDemitidos){
+            if(filtros.hasOwnProperty('status')){
+                filtros['status'] += 'demitido,';
+            }else{
+                filtros['status'] = 'demitido,';
+            }
 
-    const gerarTitleTable = ()=>{
-        let tableTitle = [
-            {
+            detalhesFiltros['status'] = {
+                label:'Status',
+                value:filtroDemitidos,
+                resetFilter:()=>setFiltroDemitidos(''),
+            };
+        }
+
+
+
+        if(status){
+            
+            filtros['status'] = status;
+
+            detalhesFiltros['status'] = {
+                label:'Status',
+                value:status,
+                resetFilter:()=>setStatus(''),
+            };
+        }
+
+        if(codigoProfissional){
+             filtros['id'] = codigoProfissional;
+
+            detalhesFiltros['id'] = {
                 label:'Código',
-                props:{}
-            },
-            {
-                label:'Nome',
-                props:{}
-            },
-            {
-                label:'Nome complementar',
-                props:{}
-            },
-            {
-                label:'CPF / CNPJ',
-                props:{}
-            },
-            {
-                label:'Documento',
-                props:{}
-            },
-            {
-                label:'Orgão expedidor',
-                props:{}
-            }
-        ]
+                value:codigoProfissional,
+                resetFilter:()=>setCodigoProfissional(''),
+            };
+        }
 
-        return tableTitle;
+        if(codigoPessoa){
+             filtros['pessoa_id'] = codigoPessoa;
+
+            detalhesFiltros['pessoa_id'] = {
+                label:'Código pessoa',
+                value:codigoPessoa,
+                resetFilter:()=>setCodigoPessoa(''),
+            };
+        }
+
+
+
+        return {filtros, detalhesFiltros};
     }
+
 
     const requestAllProfissionais = async() =>{
-       
-        const {url, options} = PROFISSIONAIS_ALL_POST({}, getToken());
+        setProfissionais([])
+
+        let {filtros, detalhesFiltros} = montarFiltro();
+        const {url, options} = PROFISSIONAIS_ALL_POST({...filtros}, getToken());
 
 
         const {response, json} = await request(url, options);
         console.log('All clients here')
         console.log(json)
         if(json){
-               setProfissionais(json)
+            setProfissionais(json)
+            if( json?.mensagem && json?.mensagem.length > 0){
+                setNadaEncontrado(false)
+            }else{
+                setNadaEncontrado(true)
+            }
+
+        }else{
+            setNadaEncontrado(true)
         }
 
             
@@ -251,7 +286,7 @@ const Profissionais = (props)=>{
         requestAllProfissionaisEffect();
 
         
-    }, [])
+    }, [filtroAdmitidos, filtroDemitidos])
 
     React.useEffect(()=>{
 
@@ -276,8 +311,6 @@ const Profissionais = (props)=>{
     }, [cadastrarProfissionais])
 
     
-    const rowsTableArr = gerarTableProfissionais();    
-    const titulosTableArr = gerarTitleTable();
 	return(
 		<>
             <Breadcrumbs
@@ -291,20 +324,133 @@ const Profissionais = (props)=>{
                             label:'Profissionais'
                         }
                     ]}
+                buttonFiltroMobile={true}
+                setMostarFiltros={setMostarFiltros}
+                mostarFiltros={mostarFiltros}
             />
             <Row>
-                <Col  xs="12" sm="12" md="3">
-                    <Filter
-                        filtersArr={filtersArr}
-                        actionsArr={acoesBottomCard}
-                    />
-                </Col>
-                <Col  xs="12" sm="12" md="9">
-                    <Table
-                        titulosTableArr={titulosTableArr}
-                        rowsTableArr={rowsTableArr}
-                        loading={loading}
+                {mostarFiltros && 
+                    (
+                        <>
+                            <Col  xs="12" sm="12" md="3" className={'default_card_report'}>
+                                <Filter
+                                    filtersArr={filtersArr}
+                                    actionsArr={acoesBottomCard}
+                                />
+                            </Col>
 
+                            <Col  xs="12" sm="12" md="12" className={'mobile_card_report pt-4'}  style={{backgroundColor:'#FFF'}}>
+                                <Row className={''} >
+                                    <Col className={'mx-2'}  >
+                                       <Row style={{borderRadius:'24px 24px 24px 24px', border:'1px solid #000'}}>
+                                            <Col xs="11" sm="11" md="11" >
+                                                <FormControlInput
+                                                    data={
+                                                        {
+                                                            atributsFormControl:{
+                                                                type:'input',
+                                                                placeholder:'Search...',
+                                                                style:{
+                                                                    border:'none',
+                                                                    outline:'0',
+                                                                    'box-shadow':'0 0 0 0',
+                                                                    height:'50px',
+                                                                    borderRadius:'24px 24px 24px 24px'
+                                                                    
+                                                                },
+                                                                onChange:(ev)=>{handleFiltroMobile(ev);},
+                                                                onBlur:(ev)=>{handleFiltroMobile(ev);},
+                                                                onKeyUp:(ev)=>{
+
+                                                                    if (ev.key === "Enter") {
+                                                                        requestAllProfissionais();
+                                                                    }
+                                                                },
+                                                                value:filtroMobile
+
+                                                            }
+                                                        }
+                                                    }
+                                                 />
+                                            </Col>
+
+                                            <Col xs="1" sm="1" md="1" style={{textAlign:'left', alignItems:'center', justifyContent:'center', margin:'auto',padding:'0'}} >
+                                                <FontAwesomeIcon onClick={()=>{requestAllProfissionais();}} size={'lg'} icon={faSearch}/>
+                                            </Col>
+                                        
+                                            
+                                         </Row>
+
+                                         <Row className={'mt-2'}>
+                                            <div  style={{display:'flex', flexDirection:'collumn', flexWrap:'wrap'}}>
+                                                {(filtroAdmitidos ? <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroAdmitidos(false);}} ><FontAwesomeIcon icon={faTimes} /> Adminitidos</Button> : '')}
+                                                {(filtroDemitidos ? <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroDemitidos(false);}} ><FontAwesomeIcon icon={faTimes} /> Demitidos</Button> : '')}
+                                            </div>
+                                        </Row>
+                                    </Col>
+                                    
+                                    
+                                </Row>
+
+
+                                <Row className={'my-2'}>
+                                    <Col>
+                                        <Row>
+                                            <Col><span style={{fontWeight:'bolder', fontSize:'14pt'}} >Filtros</span></Col>
+                                        </Row>
+
+                                        <div>
+                                             <hr style={{margin:'0',padding:'0'}}/>  
+                                        </div>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <div style={{display:'flex', flexDirection:'collumn', flexWrap:'wrap'}}>
+                                        
+                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroAdmitidos(true);}} ><FontAwesomeIcon icon={faSearch} /> Adminitidos</Button>
+                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroDemitidos(true);}} ><FontAwesomeIcon icon={faSearch} /> Demitidos</Button>
+                                    </div>
+                                    
+                                </Row>
+
+                                 <Row className={'my-2'}>
+                                    <Col>
+                                        <Row>
+                                            <Col><span style={{fontWeight:'bolder', fontSize:'14pt'}} >Ações</span></Col>
+                                        </Row>
+
+                                        <div>
+                                             <hr style={{margin:'0',padding:'0'}}/>  
+                                        </div>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <div style={{display:'flex', flexDirection:'collumn', flexWrap:'wrap'}}>
+                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setCadastrarProfissionais(true);}} ><FontAwesomeIcon icon={faPlus} /> Cadastrar profissional</Button>
+                                    </div>
+                                </Row>
+                            </Col>
+                        </>
+                    )
+                }
+
+                <Col style={{backgroundColor:'#FFF'}} xs="12" sm="12" md="12"  className={'pt-3 mobile_card_report'}>
+                    <Row>
+                        <Col><span style={{fontWeight:'bolder'}} >Resultado</span></Col>
+                    </Row>
+                    <div>
+                         <hr style={{margin:'0',padding:'0'}}/>  
+                    </div>
+                </Col>
+                
+                <Col  xs="12" sm="12" md={mostarFiltros ? "9":"12"}>
+                    <Include
+                        dataEstado={estado}
+                        loadingData={loading}
+                        callBack={requestAllProfissionais}
+                        setMostarFiltros={setMostarFiltros}
+                        idProfissionalCriado={profissionaisChoice}
+                        nadaEncontrado={nadaEncontrado}
                     />
                 </Col>
             </Row>

@@ -572,7 +572,13 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, tpViewCho
                         tpView == 'mes'
                         ?
                             (
-                                <CalendarioSimples/>
+                                <CalendarioSimples
+
+                                    titulosTableArr={titulosTableArr}
+                                    rowsTableArr={rowsTableArr}
+                                    loading={loading}
+                                    nadaEncontrado={nadaEncontrado}
+                                />
                             )
                         :
                             (
@@ -580,6 +586,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, tpViewCho
                                     titulosTableArr={titulosTableArr}
                                     rowsTableArr={rowsTableArr}
                                     loading={loading}
+                                    nadaEncontrado={nadaEncontrado}
 
                                 />
                             )

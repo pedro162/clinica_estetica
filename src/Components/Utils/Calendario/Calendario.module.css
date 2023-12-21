@@ -133,6 +133,11 @@
 	font-weight: bolder;
 }
 
+.background_orange{
+	background-color: #6c757d;
+	color:#FFF !important;
+}
+
 
 
 @media only screen and (max-width: 600px) {

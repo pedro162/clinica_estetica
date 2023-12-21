@@ -8,6 +8,8 @@ import {Router, Route, Switch} from 'react-router'
 import {history} from './history.js'
 import {UserStorange, UserContex} from './Context/UserContex.js'
 import Header from './Components/Header/index.js'
+import HeaderCanvas from './Components/Header/HeaderCanvas.js'
+
 import { Container} from 'react-bootstrap';
 import {isAuthenticated} from './api/Auth/index.js'
 import ConstrutorFichaGrupo from './Components/ConstrutorFichaItem';

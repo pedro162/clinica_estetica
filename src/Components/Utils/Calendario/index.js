@@ -159,7 +159,7 @@ const Calendario = ({botoesHeader, rowsTableArr, ...props})=>{
 														let anoAtualDt = ano;
 														anoAtualDt = Number(anoAtualDt)
 
-														let mesAtualDt = mes;
+														let mesAtualDt = mes + 1;
 														mesAtualDt = Number(mesAtualDt)
 														
 														let dadosAgendaData = []

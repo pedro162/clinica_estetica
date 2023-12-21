@@ -5,7 +5,7 @@ import Card from '../../Utils/Card/index.js'
 import { faHome, faSearch, faPlus, faTimes, faChevronCircleRight, faChevronCircleLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const Calendario = (props)=>{
+const Calendario = ({botoesHeader, rowsTableArr, ...props})=>{
 	const[titulo, setTitulo] = React.useState('Dezembro')
 	const[meses, setMeses] = React.useState([
 		'Janeiro',
@@ -143,13 +143,64 @@ const Calendario = (props)=>{
 													}
 
 													if(i == 1){
-														classesEstilos += ' '+estilos.event
+														//classesEstilos += ' '+estilos.event
 													}
+
+
+													let diaAtualTd = dt.getDate();
+													diaAtualTd = Number(diaAtualTd)
+
+													let anoAtualDt = ano;
+													anoAtualDt = Number(anoAtualDt)
+
+													let mesAtualDt = mes + 1;
+													mesAtualDt = Number(mesAtualDt)
+													
+													let dadosAgendaData = []
+
+													if(rowsTableArr){
+														for(let it=0; !(it == rowsTableArr.length); it++){
+															let atualItemTable = rowsTableArr[it] 
+															let {propsRow, data_format, hora, acoes, celBodyTableArr} = atualItemTable
+															let data_format_arr = String(data_format).split('-')
+
+															if(Array.isArray(data_format_arr) && data_format_arr.length == 3){
+																let nr_dia_form = data_format_arr[0]
+																let nr_mes_form = data_format_arr[1]
+																let nr_ano_form = data_format_arr[2]
+
+																nr_dia_form = Number(nr_dia_form)
+																nr_mes_form = Number(nr_mes_form)
+																nr_ano_form = Number(nr_ano_form)
+
+																if(anoAtualDt == nr_ano_form && mesAtualDt == nr_mes_form && diaAtualTd == nr_dia_form){
+																	dadosAgendaData.push(atualItemTable)
+																	classesEstilos += ' '+estilos.event
+																	classesEstilos += ' '+estilos.background_orange
+
+																}
+
+															}
+														}
+													}
+																	//console.log('========================== dados dia ====================')
+																	//console.log(dadosAgendaData)
+																	//console.log('========================== dados dia ====================')
 
 
 													i+= 1;
 													return(
-														<td key={'day'+ind+ar.length}  className={classesEstilos} >{dt.getDate()}</td>
+														<td key={'day'+ind+ar.length}  className={classesEstilos} >
+
+															{dt.getDate()}
+															{dadosAgendaData && Array.isArray(dadosAgendaData) && dadosAgendaData.length > 0 ? (
+																null
+
+															) : (null)}
+
+																
+
+														</td>
 													)	
 												})
 												
