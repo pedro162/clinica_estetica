@@ -157,7 +157,7 @@ const Calendario = ({botoesHeader, rowsTableArr, ...props})=>{
 													mesAtualDt = Number(mesAtualDt)
 													
 													let dadosAgendaData = []
-
+													let propsDate = {}
 													if(rowsTableArr){
 														for(let it=0; !(it == rowsTableArr.length); it++){
 															let atualItemTable = rowsTableArr[it] 
@@ -178,6 +178,8 @@ const Calendario = ({botoesHeader, rowsTableArr, ...props})=>{
 																	classesEstilos += ' '+estilos.event
 																	classesEstilos += ' '+estilos.background_orange
 
+																	propsDate = propsRow 
+
 																}
 
 															}
@@ -190,7 +192,7 @@ const Calendario = ({botoesHeader, rowsTableArr, ...props})=>{
 
 													i+= 1;
 													return(
-														<td key={'day'+ind+ar.length}  className={classesEstilos} >
+														<td key={'day'+ind+ar.length}  className={classesEstilos} {...propsDate} >
 
 															{dt.getDate()}
 															{dadosAgendaData && Array.isArray(dadosAgendaData) && dadosAgendaData.length > 0 ? (

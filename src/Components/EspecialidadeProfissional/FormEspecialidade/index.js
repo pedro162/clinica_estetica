@@ -11,6 +11,7 @@ import {UserContex} from '../../../Context/UserContex.js'
 import Load from '../../Utils/Load/index.js'
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, ESPECIALIDADE_SAVE_POST, ESPECIALIDADE_UPDATE_POST, ESPECIALIDADE_ONE_GET} from '../../../api/endpoints/geral.js'
 import Atualizar from '../Atualizar/index.js'
+import Swal from 'sweetalert2'
 
 const FormEspecialidade = ({dataEspecialidadeChoice, setIdEspecialidade, idEspecialidade, showModalCriarEspecialidade, setShowModalCriarEspecialidade, callback, atualizarCadastro, setAtualizarCadastro, carregando})=>{
     
@@ -46,6 +47,15 @@ const FormEspecialidade = ({dataEspecialidadeChoice, setIdEspecialidade, idEspec
                 setShowModalCriarEspecialidade();
                 setAtualizarCadastro(false);
                 setIdEspecialidade(null);
+
+                Swal.fire({
+                  icon: "success",
+                  title: "",
+                  text: 'Reigistrado com sucesso',
+                  footer: '',//'<a href="#">Why do I have this issue?</a>'
+                  confirmButtonColor: "#07B201",
+                });
+
             }
 
         }else{
@@ -64,6 +74,14 @@ const FormEspecialidade = ({dataEspecialidadeChoice, setIdEspecialidade, idEspec
             	callback();
             	setShowModalCriarEspecialidade();
                 setAtualizarCadastro(false);
+
+                Swal.fire({
+                  icon: "success",
+                  title: "",
+                  text: 'Reigistrado com sucesso',
+                  footer: '',//'<a href="#">Why do I have this issue?</a>'
+                  confirmButtonColor: "#07B201",
+                });
             }
 
         }
@@ -84,6 +102,17 @@ const FormEspecialidade = ({dataEspecialidadeChoice, setIdEspecialidade, idEspec
     	
     	//console.log(obj)
     	return obj;
+    }
+
+    if(error){
+        Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: error,
+            footer: '',//'<a href="#">Why do I have this issue?</a>'
+            confirmButtonColor: "#07B201",
+            //width:'20rem',
+        });
     }
     
 

@@ -14,7 +14,7 @@ import Modal from '../Utils/Modal/index.js'
 import Load from '../Utils/Load/index.js'
 import {UserContex} from '../../Context/UserContex.js'
 import Cadastrar from './Cadastrar/index.js'
-import ContasReceber from '../ContasReceber/index.js'
+import Agenda from '../Agenda/index.js'
 import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../functions/index.js'
 import { Button } from 'bootstrap';
 import reactDom from 'react-dom';
@@ -37,7 +37,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, tpViewCho
     const [cancelarAgenda, setCancelarAgenda] = React.useState(false)   
     const [digitarAgenda, setDigitarAgenda] = React.useState(false)    
     const [cadastrarAgenda, setCadastrarAgenda] = React.useState(false)
-    const [visualizarContasReceber, setVisualizarContasReceber] = React.useState(false)  
+    const [listaAgenda, setListaAgenda] = React.useState(false)  
     const [atualizarCabecalhoAgenda, setAtualizarCabecalhoAgenda] = React.useState(false)  
     const [finalizarAgenda, setFinalizarAgenda] = React.useState(false)  
     const [incicarAgenda, setIniciarAgenda] = React.useState(false) 
@@ -46,7 +46,8 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, tpViewCho
     const [defaultFiltersCobReceber, setDefaultFiltersCobReceber] = React.useState({})
     const [tpView, setTpView] = React.useState(tpViewChoice)//mes//semana 
     const [atualizarCadastro, setAtualizarCadastro] = React.useState(false)
-    const [cadastrarCliente, setCadastrarCliente] = React.useState(false)    
+    const [cadastrarCliente, setCadastrarCliente] = React.useState(false)
+    const [defaultFiltersAgenda, setDefaultFiltersAgenda] = React.useState({})
 
 
     const {getToken} = React.useContext(UserContex);
@@ -145,66 +146,12 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, tpViewCho
                     setAtualizarAgenda(false);
                 }
                 break;
-            case 'cancelar':
+            case 'lista_agenda':
                 if(agendaChoice > 0){
-                    setCancelarAgenda(true);
+                    setListaAgenda(true);
                 }else{
-                    setCancelarAgenda(false);
+                    setListaAgenda(false);
                 }
-                break;
-            case 'digitar':
-                if(agendaChoice > 0){
-                    setDigitarAgenda(true);
-                }else{
-                    setDigitarAgenda(false);
-                }
-                break;
-            case 'visualizar':
-                if(agendaChoice > 0){
-                    setDigitarAgenda(true);
-                }else{
-                    setDigitarAgenda(false);
-                }
-                break;
-            case 'iniciar_procedimento':
-                if(agendaChoice > 0){
-                    setDigitarAgenda(true);
-                }else{
-                    setDigitarAgenda(false);
-                }
-                break;
-            
-            case 'finalizar_procedimento':
-                if(agendaChoice > 0){
-                    setDigitarAgenda(true);
-                }else{
-                    setDigitarAgenda(false);
-                }
-                break;        
-            case 'contas_receber':
-                if(agendaChoice > 0){
-                    setVisualizarContasReceber(true);
-                }else{
-                    setVisualizarContasReceber(false);
-                }
-                break;     
-            case 'editar_cabecalho':
-
-                if(agendaChoice > 0){
-                    setAtualizarCabecalhoAgenda(true);
-                }else{
-                    setAtualizarCabecalhoAgenda(false);
-                }
-
-                break;                 
-            case 'finalizar':
-
-                if(agendaChoice > 0){
-                    setFinalizarAgenda(true);
-                }else{
-                    setFinalizarAgenda(false);
-                }
-
                 break;
             default:
                 
@@ -240,10 +187,10 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, tpViewCho
 
     
 
-    const visualizarContasReceberAction = (idAgenda)=>{
+    const listaAgendaAction = (idAgenda)=>{
         setAgendaChoice(idAgenda)
-        setAcao('contas_receber')
-        setVisualizarContasReceber(true);
+        setAcao('lista_agenda')
+        setListaAgenda(true);
     }
 
     const digitarAgendaAction = (idAgenda)=>{
@@ -307,7 +254,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, tpViewCho
 
                         {
                             id:atual?.id,
-                            propsRow:{id:(atual.id)},
+                            propsRow:{id:(atual.id), onClick:()=>{listaAgendaAction(atual.id); setDefaultFiltersAgenda({...atual})}},
                             data_format:atual?.data_format,
                             hora:atual?.hora,
                             mainLabel:atual?.descricao,
@@ -633,6 +580,15 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, tpViewCho
             {
                 atualizarCadastro &&
                 <Atualizar atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro}  idCliente={agendaChoice} setIdcliente={setAgendaChoice} callback={requestAllAgendas} />
+            }
+
+            {
+                listaAgenda &&
+                <Modal noBtnCancelar={false} noBtnConcluir={true} handleConcluir={()=>null}  title={'Eventos de agenda'} size="lg" propsConcluir={{}} labelConcluir={''} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={agendaChoice} showHide={()=>{setListaAgenda(false);}}>
+                    
+                    <Agenda defaultFilters={defaultFiltersAgenda} listaAgenda={listaAgenda} setListaAgenda={setListaAgenda} atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro} idReferencia={null} referencia={null}  idAgenda={agendaChoice} setIdAgenda={setAgendaChoice} callback={callBack} />
+                
+                </Modal>
             }
         
         </>

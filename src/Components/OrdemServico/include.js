@@ -563,7 +563,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                                     {
                                         title:<span style={{fontWeight:'480'}}>Cód pessoa: </span>,
                                         label:atual?.pessoa_id,
-                                        props:{style:{textAlign:'left', md:'1', sm:'1', xs:'1'}},
+                                        props:{style:{textAlign:'left', md:'2', sm:'2', xs:'2'}},
                                         toSum:1,
                                         isCoin:1,
                                     }, {
@@ -580,17 +580,17 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                                         toSum:1,
                                         isCoin:1,
                                     },
-                                    {
+                                    /*{
                                         title:<span style={{fontWeight:'480'}}>Faturado: </span>,
                                         label:(atual.is_faturado == 'yes' ? 'Sim' : 'Não'),
                                         props:{style:{textAlign:'left', md:'2', sm:'2', xs:'2'}},
                                         toSum:0,
                                         isCoin:0,
-                                    },
+                                    },*/
                                     {
                                         title:<span style={{fontWeight:'480'}}>Criado em: </span>,
                                         label:FORMAT_DATA_PT_BR(atual.created_at),
-                                        props:{style:{textAlign:'left', md:'3', sm:'3', xs:'3'}},
+                                        props:{style:{textAlign:'left', md:'4', sm:'4', xs:'4'}},
                                         toSum:0,
                                         isCoin:0,
                                     },
