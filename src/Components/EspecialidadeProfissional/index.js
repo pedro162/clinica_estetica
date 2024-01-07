@@ -282,7 +282,7 @@ const Especialidade = (props)=>{
                          <hr style={{margin:'0',padding:'0'}}/>  
                     </div>
                 </Col>
-                <Col  xs="12" sm="12" md="9">
+                <Col  xs="12" sm="12"  md={mostarFiltros ? "9":"12"}>
                     <Include
                         dataEstado={estado}
                         loadingData={loading}

@@ -8,11 +8,12 @@ import estilos from './FormPais.module.css'
 import Modal from '../../Utils/Modal/index.js'
 import useFetch from '../../../Hooks/useFetch.js';
 import {UserContex} from '../../../Context/UserContex.js'
+import Swal from 'sweetalert2'
 
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, PAIS_SAVE_POST} from '../../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, PAIS_SAVE_POST, PAIS_UPDATE_POST} from '../../../api/endpoints/geral.js'
 
 
-const FormPais = ({showModalCriarPais, setShowModalCriarPais, callback})=>{
+const FormPais = ({dataPaisChoice, dataGrupo, setIdPais, idPais, showModalCriarPais, setShowModalCriarPais,  atualizarCadastro, setAtualizarCadastro, carregando, callback})=>{
 
 	const {data, error, request, loading} = useFetch();
 
@@ -35,27 +36,93 @@ const FormPais = ({showModalCriarPais, setShowModalCriarPais, callback})=>{
     		'padrao':padrao,
     	}
 
-    	const {url, options} = PAIS_SAVE_POST(data, getToken());
+    	
+        if(atualizarCadastro == true){
+            const {url, options} = PAIS_UPDATE_POST(idPais, data, getToken());
 
 
-        const {response, json} = await request(url, options);
-        console.log('Save clients here')
-        console.log(json)
-        if(json){
-            console.log('Response Save clients here')
-        	console.log(json)
-        	
-        	callback();
-        	setShowModalCriarPais();
+            const {response, json} = await request(url, options);
+            console.log('Save clients here')
+            console.log(json)
+            if(json){
+                console.log('Response Save clients here')
+                console.log(json)
+                
+                callback();
+                setShowModalCriarPais();
+                setAtualizarCadastro(false);
+                setIdPais(null);
+            }
+
+        }else{
+        	const {url, options} = PAIS_SAVE_POST(data, getToken());
+
+
+	        const {response, json} = await request(url, options);
+	        console.log('Save clients here')
+	        console.log(json)
+	        if(json){
+	            console.log('Response Save clients here')
+	        	console.log(json)
+	        	
+	        	callback();
+	        	setShowModalCriarPais();
+
+	        	Swal.fire({
+	              icon: "success",
+	              title: "",
+	              text: 'Reigistrado com sucesso',
+	              footer: '',//'<a href="#">Why do I have this issue?</a>'
+	              confirmButtonColor: "#07B201",
+	            });
+	        }
+
+
         }
     }
+
+
+    const dataToFormPais = ()=>{
+    	let obj = {namenome:'', cod_pais:'', padrao:''}
+    	if(dataPaisChoice && dataPaisChoice.hasOwnProperty('mensagem')){
+    		let data = dataPaisChoice.mensagem;
+           
+    		if(data.hasOwnProperty('name')){
+                obj.name = data.name;
+    		}
+
+    		if(data.hasOwnProperty('cod_pais')){
+                obj.cod_pais = data.cod_pais;
+    		}
+
+    		if(data.hasOwnProperty('padrao')){
+                obj.padrao = data.padrao;
+    		}
+
+    	}
+    	
+    	//console.log(obj)
+    	return obj;
+    }
+
+    if(error){
+        Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: error,
+            footer: '',//'<a href="#">Why do I have this issue?</a>'
+            confirmButtonColor: "#07B201",
+            //width:'20rem',
+        });
+    }
+    
 
 	return(
 
 		<>
 			 <Formik 
 
-                initialValues={{nome:'', cod_pais:'', padrao:''}}
+                initialValues={{... dataToFormPais()}}
                 validate={
                     values=>{
 
@@ -100,7 +167,7 @@ const FormPais = ({showModalCriarPais, setShowModalCriarPais, callback})=>{
                         }
                     )=>(
 
-                        <Modal  handleConcluir={()=>{handleSubmit(); }}  title={'Cadastrar Pais'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarPais} showHide={setShowModalCriarPais}>
+                        <Modal  handleConcluir={()=>{handleSubmit(); }}  title={'Cadastrar Pais'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarPais} showHide={()=>{setShowModalCriarPais();setAtualizarCadastro(false);setIdPais(null);}}>
 
 	                        <form onSubmit={handleSubmit}>
 	                            <Row className="my-3">

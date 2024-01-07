@@ -3,7 +3,7 @@ export const CLIENT_ID = 4;//3;//
 export const CLIENT_SECRET = 'Ko9WDBtcRdD0O0RfnK8rzSHs88ODPVcjDUeeba8D';//'PxXWykq33uGGN779ofMq0qnVeoN6GiiimUd4dtYz';//
 
 const SANDBOX = false;
-const BASE_URL =  (SANDBOX === true) ? "http://1.josepedro.tmp.k8.com.br/api" : 'http://192.168.100.111:8081';//192.168.100.5:8081///api//http://192.168.100.5:3000/ ////O laravel tem que roda no http://192.168.100.5:8081
+const BASE_URL =  (SANDBOX === true) ? "http://1.josepedro.tmp.k8.com.br/api" : 'http://192.168.100.5:8081';//192.168.100.5:8081//192.168.100.111:8081///api//http://192.168.100.5:3000/ ////O laravel tem que roda no http://192.168.100.5:8081
 
 export const TOKEN_POST = (data)=>{
    
@@ -608,6 +608,51 @@ export const PAIS_SAVE_POST = (data, token)=>{
 
 }
 
+
+export const PAIS_ONE_GET = (id, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'GET',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        //body:JSON.stringify(data)
+   };
+
+   return{
+        url:BASE_URL+'/api/pais/info/'+id,
+        options:myInit
+    }
+
+}
+
+
+export const PAIS_UPDATE_POST = (id,data, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'PUT',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        body:JSON.stringify(data)
+   };
+
+   return{
+        url:BASE_URL+'/api/pais/update/'+id,
+        options:myInit
+    }
+
+}
 
 //--- ESTADO -----------------------
 export const ESTADO_ALL_POST= (data, token)=>{

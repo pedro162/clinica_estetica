@@ -2,7 +2,7 @@ import React from 'react';
 import estilos from './Pais.module.css'
 import useFetch from '../../Hooks/useFetch.js';
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, PAIS_ALL_POST} from '../../api/endpoints/geral.js'
-import {Col, Row } from 'react-bootstrap';
+import {Col, Row, Button } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
 import Breadcrumbs from '../Helper/Breadcrumbs.js'
@@ -12,15 +12,28 @@ import Modal from '../Utils/Modal/index.js'
 import Load from '../Utils/Load/index.js'
 import {UserContex} from '../../Context/UserContex.js'
 import FormPais from './FormPais/index.js'
+import Include from './include';
+import FormControlInput from '../FormControl/index.js'
+import Cadastrar from './Cadastrar/index.js'
 
 
 const Pais = (props)=>{
 
     const {data, error, request, loading} = useFetch();
-    const [pais, setPais] = React.useState([])
+    const [estado, setPais] = React.useState([])
     const [exemplos, setExemplos] = React.useState([])
     const [exemplosTitleTable, setExemplosTitleTable] = React.useState([])
     const [showModalCriarPais, setShowModalCriarPais] = React.useState(false)
+    const [mostarFiltros, setMostarFiltros] = React.useState(false) 
+    const [filtroMobile, setFiltroMobile] = React.useState(null)
+    const [acao, setAcao] = React.useState(null)
+    const [ordenacao, setOrdenacao] = React.useState('')
+    const [nadaEncontrado, setNadaEncontrado] = React.useState(false)
+    const [consultaChoice, setPaisChoice] = React.useState(null);
+    const [cadastrarPais, setCadastrarPais] = React.useState(false) 
+    const [atualizarPais, setAtualizarPais] = React.useState(false) 
+    const [nomePais, setNomePais] = React.useState(null) 
+    const [codidoSistemaPais, setCodigoSistemaPais] = React.useState(null) 
 
 
     const {getToken} = React.useContext(UserContex);
@@ -28,50 +41,122 @@ const Pais = (props)=>{
     const alerta = (target)=>{
         console.log(target)
     }
+
+
+    const handleFiltroMobile = ({target})=>{
+        setFiltroMobile(target.value)
+    }
+
+    const setNamePaisFiltro = ({target})=>{
+        
+        setNomePais(target.value)
+    }
+
+    const setCodigoSistemaPaisFiltro = ({target})=>{
+        
+        setCodigoSistemaPais(target.value)
+    }
+
+    const setOrdenacaoFiltro = ({target})=>{
+        
+        setOrdenacao(target.value)
+    }
+
+
+    const handleSearch = (ev)=>{
+        if (ev.key === "Enter") {
+            requestAllPaises();
+        }
+    }
+
+
+    const montarFiltro = ()=>{
+        let filtros = {}
+        let detalhesFiltros = {}
+
+
+        
+        if(codidoSistemaPais){
+            filtros['id'] = codidoSistemaPais;
+            detalhesFiltros['id'] = {
+                label:'id',
+                value:codidoSistemaPais,
+                resetFilter:()=>setCodigoSistemaPais(''),
+            };
+        }
+
+        if(nomePais){
+            filtros['name'] = nomePais;
+            detalhesFiltros['name'] = {
+                label:'name',
+                value:nomePais,
+                resetFilter:()=>setNomePais(''),
+            };
+
+            filtros['name_nomepais'] = nomePais;
+            detalhesFiltros['name_nomepais'] = {
+                label:'name_nomepais',
+                value:nomePais,
+                resetFilter:()=>setNomePais(''),
+            };
+        }
+
+        if(filtroMobile){
+            filtros['name'] = filtroMobile;
+            detalhesFiltros['name'] = {
+                label:'Filtro',
+                value:filtroMobile,
+                resetFilter:()=>setFiltroMobile(''),
+            };
+        }
+
+        if(ordenacao){
+            filtros['ordem'] = ordenacao;
+            detalhesFiltros['ordem'] = {
+                label:'Ordem',
+                value:ordenacao,
+                resetFilter:()=>setOrdenacao(''),
+            };
+        }
+
+
+
+        return {filtros, detalhesFiltros};
+    }
+
+    
+
     const filtersArr = [
         {
             type:'text',
             options:[], 
             hasLabel: true,
-            contentLabel:'Teste',
+            contentLabel:'Código',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"12",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name':'nome',onChange:alerta,    onBlur:alerta},
+            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'name':codidoSistemaPais, value:codidoSistemaPais, onChange:setCodigoSistemaPaisFiltro, onBlur:setCodigoSistemaPaisFiltro, onKeyUp:handleSearch},
 
-        },
-        {
-            type:'radio',
-            options:[
-                {
-                    hasLabel: true,
-                    contentLabel:'Teste Radio 01',
-                    atributsFormLabel:{},
-                    atributsFormControl:{'type':'radio', value:'12', size:"sm",'checked':true,'name':'nome',onChange:alerta,    onBlur:alerta},
-                },
-                {
-                    hasLabel: true,
-                    contentLabel:'Teste Radio',
-                    atributsFormLabel:{},
-                    atributsFormControl:{'type':'radio', value:'12', size:"sm",'checked':true,'name':'nome',onChange:alerta,    onBlur:alerta},
-                }
-            ],  
-            hasLabel: true,
-            contentLabel:'Teste',
-            atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"12",className:'mb-2',},
-            atributsFormControl:{},
-
-        }
-        ,{
-            type:'checkbox',
+        },   {
+            type:'text',
             options:[], 
             hasLabel: true,
-            contentLabel:'Teste',
+            contentLabel:'Pais',
             atributsFormLabel:{},
-            atributsContainer:{ xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'checkbox', value:'12',size:"sm",'checked':false,'name':'nome',onChange:alerta, onBlur:alerta},
+            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'name':nomePais, value:nomePais, onChange:setNamePaisFiltro, onBlur:setNamePaisFiltro, onKeyUp:handleSearch},
 
-        }
+        },     
+        {
+            type:'select',
+            options:[{'label':'Selecione...', 'value':''},{'label':'Código A-Z', 'value':'id-asc'},{'label':'Código Z-A', 'value':'id-desc'},
+            {'label':'Pais A-Z', 'value':'name-asc'},{'label':'Pais Z-A', 'value':'name-desc'},], 
+            hasLabel: true,
+            contentLabel:'Classificar',
+            atributsFormLabel:{},
+            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsFormControl:{'type':'select', size:"sm",'ordem':ordenacao, value:ordenacao, onChange:setOrdenacaoFiltro, onBlur:setOrdenacaoFiltro, onKeyUp:handleSearch},
+
+        },
     ]
 
     const acoesBottomCard=[{
@@ -80,152 +165,25 @@ const Pais = (props)=>{
         props:{onClick:()=>requestAllPaises(), className:'btn btn-sm botao_success'}
     },
     {
-        label:'Cadastrar',
+        label:'Cadastrar país',
         icon:<FontAwesomeIcon icon={faPlus} />,
         props:{onClick:()=>setShowModalCriarPais(true), className:'btn btn-sm mx-2 btn-secondary'}
     }
     ];
-    const gerarExemplos = ()=>{
-         let exemplos = [];
-        for(let i=0; !(i == 10); i++){
-            exemplos.push(
+    
 
-                    {
-                        propsRow:{id:(i+1)},
-                        celBodyTableArr:[
-                            {
 
-                                label:'1',
-                                propsRow:{}
-                            },
-                            {
-
-                                label:'Peddro',
-                                propsRow:{}
-                            },
-                            {
-
-                                label:'(98) 98425-7623',
-                                propsRow:{}
-                            },
-                            {
-
-                                label:'phedroclooney@gmail.com',
-                                propsRow:{}
-                            }
-                        ]
-                    }
-
-                )
-
-        }
-
-        return exemplos;
+    const iniciarOrdemServico = (idPais)=>{
+        setCadastrarPais(idPais)
+        setAcao('iniciar')
+        setCadastrarPais(true);
     }
-
-    const gerarTablePais = ()=>{
-       
-        let data = [];
-        let dataPais = pais.mensagem
-        if(dataPais && Array.isArray(dataPais) && dataPais.length > 0){
-            for(let i=0; !(i == dataPais.length); i++){
-                let atual = dataPais[i];
-                if(atual){
-
-
-                    data.push(
-
-                        {
-                            propsRow:{id:(atual.id)},
-                            celBodyTableArr:[
-                                {
-
-                                    label:atual.id,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual.nmPais,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual.cdPais,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual.padrao,
-                                    propsRow:{}
-                                }
-                            ]
-                        }
-
-                    )
-
-                }
-
-            }
-        }
-
-        return data;
-    }
-
-    const gerarTitleTable = ()=>{
-        let tableTitle = [
-            {
-                label:'Código',
-                props:{}
-            },
-            {
-                label:'Nome',
-                props:{}
-            },
-            {
-                label:'Código pais',
-                props:{}
-            },
-            {
-                label:'Padrão',
-                props:{}
-            }
-        ]
-
-        return tableTitle;
-    }
-    //------------
-   /* React.useEffect( ()=>{
-        const requestToken = async() =>{
-       
-           const {url, options} = TOKEN_POST({
-                'grant_type':'password',
-                'client_id': CLIENT_ID,
-                'client_secret':CLIENT_SECRET,
-                'username':'admin@gmail.com',
-                'password':'123456'
-             });
-
-
-            const {response, json} = await request(url, options);
-
-            
-        }
-
-        requestToken();
-        
-    }, []);*/
-
-    //----
-    /*React.useEffect(()=>{
-
-        setExemplos(gerarExemplos());
-        setExemplosTitleTable(gerarTitleTable());
-
-    }, [])*/
 
     const requestAllPaises = async() =>{
        
-        const {url, options} = PAIS_ALL_POST({}, getToken());
+
+        let {filtros, detalhesFiltros} = montarFiltro();
+        const {url, options} = PAIS_ALL_POST({...filtros}, getToken());
 
 
         const {response, json} = await request(url, options);
@@ -251,8 +209,8 @@ const Pais = (props)=>{
 
         
     }, [])
-    const rowsTableArr = gerarTablePais();    
-    const titulosTableArr = gerarTitleTable();
+
+
     return(
         <>
             <Breadcrumbs
@@ -266,24 +224,119 @@ const Pais = (props)=>{
                             label:'Pais'
                         }
                     ]}
+
+                buttonFiltroMobile={true}
+                setMostarFiltros={setMostarFiltros}
+                mostarFiltros={mostarFiltros}
             />
             <Row>
-                <Col  xs="12" sm="12" md="3">
-                    <Filter
-                        filtersArr={filtersArr}
-                        actionsArr={acoesBottomCard}
-                    />
-                </Col>
-                <Col  xs="12" sm="12" md="9">
-                    <Table
-                        titulosTableArr={titulosTableArr}
-                        rowsTableArr={rowsTableArr}
-                        loading={loading}
+                {mostarFiltros && 
+                    (
+                        <>
+                            <Col  xs="12" sm="12" md="3" className={'default_card_report'}>
+                                <Filter
+                                    filtersArr={filtersArr}
+                                    actionsArr={acoesBottomCard}
+                                />
+                            </Col>
 
+                            <Col  xs="12" sm="12" md="12" className={'mobile_card_report pt-4'}  style={{backgroundColor:'#FFF'}}>
+                                <Row className={''} >
+                                    <Col className={'mx-2'}  >
+                                       <Row style={{borderRadius:'24px 24px 24px 24px', border:'1px solid #000'}}>
+                                            <Col xs="11" sm="11" md="11" >
+                                                <FormControlInput
+                                                    data={
+                                                        {
+                                                            atributsFormControl:{
+                                                                type:'input',
+                                                                placeholder:'Search...',
+                                                                style:{
+                                                                    border:'none',
+                                                                    outline:'0',
+                                                                    'box-shadow':'0 0 0 0',
+                                                                    height:'50px',
+                                                                    borderRadius:'24px 24px 24px 24px'
+                                                                    
+                                                                },
+                                                                onChange:(ev)=>{handleFiltroMobile(ev);},
+                                                                onBlur:(ev)=>{handleFiltroMobile(ev);},
+                                                                onKeyUp:(ev)=>{
+
+                                                                    if (ev.key === "Enter") {
+                                                                        requestAllPaises();
+                                                                    }
+                                                                },
+                                                                value:filtroMobile
+
+                                                            }
+                                                        }
+                                                    }
+                                                 />
+                                            </Col>
+
+                                            <Col xs="1" sm="1" md="1" style={{textAlign:'left', alignItems:'center', justifyContent:'center', margin:'auto',padding:'0'}} >
+                                                <FontAwesomeIcon onClick={()=>{requestAllPaises();}} size={'lg'} icon={faSearch}/>
+                                            </Col>
+                                        
+                                            
+                                         </Row>
+
+                                         <Row className={'mt-2'}>
+                                            <div  style={{display:'flex', flexDirection:'collumn', flexWrap:'wrap'}}>
+                                            </div>
+                                        </Row>
+                                    </Col>
+                                    
+                                    
+                                </Row>
+                                <Row className={'my-2'}>
+                                    <Col>
+                                        <Row>
+                                            <Col><span style={{fontWeight:'bolder', fontSize:'14pt'}} >Ações</span></Col>
+                                        </Row>
+
+                                        <div>
+                                             <hr style={{margin:'0',padding:'0'}}/>  
+                                        </div>
+                                    </Col>
+                                </Row>
+                                <Row>
+
+                                    <div style={{display:'flex', flexDirection:'collumn', flexWrap:'wrap'}}>
+                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setCadastrarPais(true);}} ><FontAwesomeIcon icon={faPlus} /> Cadastrar país</Button>
+                                    </div>
+                                </Row>
+                            </Col>
+                        </>
+                    )
+                }
+
+                <Col style={{backgroundColor:'#FFF'}} className={'pt-3 mobile_card_report'}>
+                    <Row>
+                        <Col><span style={{fontWeight:'bolder'}} >Resultado</span></Col>
+                    </Row>
+                    <div>
+                         <hr style={{margin:'0',padding:'0'}}/>  
+                    </div>
+                </Col>
+                
+                <Col  xs="12" sm="12" md={mostarFiltros ? "9":"12"}>
+                    <Include
+                        dataEstado={estado}
+                        loadingData={loading}
+                        callBack={requestAllPaises}
+                        setMostarFiltros={setMostarFiltros}
+                        idOrdemCriada={consultaChoice}
+                        nadaEncontrado={nadaEncontrado}
                     />
                 </Col>
             </Row>
-            <FormPais showModalCriarPais={showModalCriarPais} setShowModalCriarPais={setShowModalCriarPais} callback={requestAllPaises} />
+            
+            {
+                cadastrarPais &&
+                <Cadastrar cadastrarPais={cadastrarPais} setCadastrarPais={setCadastrarPais} atualizarPais={atualizarPais} setAtualizarPais={setAtualizarPais}  idPais={consultaChoice} setIdPais={setPaisChoice} callback={requestAllPaises} />
+            }
          </>
 
     )
