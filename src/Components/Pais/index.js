@@ -181,7 +181,7 @@ const Pais = (props)=>{
 
     const requestAllPaises = async() =>{
        
-
+        setPais([])
         let {filtros, detalhesFiltros} = montarFiltro();
         const {url, options} = PAIS_ALL_POST({...filtros}, getToken());
 
@@ -190,8 +190,18 @@ const Pais = (props)=>{
         console.log('All Paises here')
         console.log(json)
         if(json){
-               setPais(json)
+            setPais(json)
+
+            if( json?.mensagem && json?.mensagem.length > 0){
+                setNadaEncontrado(false)
+            }else{
+                setNadaEncontrado(true)
+            }
+
+        }else{
+            setNadaEncontrado(true)
         }
+        
 
             
     }

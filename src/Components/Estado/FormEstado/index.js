@@ -8,11 +8,12 @@ import estilos from './FormEstado.module.css'
 import Modal from '../../Utils/Modal/index.js'
 import useFetch from '../../../Hooks/useFetch.js';
 import {UserContex} from '../../../Context/UserContex.js'
+import Swal from 'sweetalert2'
 
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, ESTADO_SAVE_POST, PAIS_ALL_POST} from '../../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, ESTADO_SAVE_POST, PAIS_ALL_POST, ESTADO_UPDATE_POST} from '../../../api/endpoints/geral.js'
 
 
-const FormEstado = ({showModalCriarEstado, setShowModalCriarEstado, callback})=>{
+const FormEstado = ({dataEstadoChoice, dataGrupo, setIdEstado, idEstado, showModalCriarEstado, setShowModalCriarEstado,  atualizarCadastro, setAtualizarCadastro, carregando, callback})=>{
 
 	const {data, error, request, loading} = useFetch();
 	const dataRequest = useFetch();
@@ -42,18 +43,58 @@ const FormEstado = ({showModalCriarEstado, setShowModalCriarEstado, callback})=>
     		'padrao':padrao,
     	}
 
-    	const {url, options} = ESTADO_SAVE_POST(data, getToken());
+    	
+
+        if(atualizarCadastro == true){
+            const {url, options} = ESTADO_UPDATE_POST(idEstado, data, getToken());
 
 
-        const {response, json} = await request(url, options);
-        console.log('Save clients here')
-        console.log(json)
-        if(json){
-            console.log('Response Save clients here')
-        	console.log(json)
-        	
-        	callback();
-        	setShowModalCriarEstado();
+            const {response, json} = await request(url, options);
+            console.log('Save clients here')
+            console.log(json)
+            if(json){
+                console.log('Response Save clients here')
+                console.log(json)
+                
+                callback();
+                setShowModalCriarEstado();
+                setAtualizarCadastro(false);
+                setIdEstado(null);
+
+                Swal.fire({
+	              icon: "success",
+	              title: "",
+	              text: 'Reigistrado com sucesso',
+	              footer: '',//'<a href="#">Why do I have this issue?</a>'
+	              confirmButtonColor: "#07B201",
+	            });
+            }
+
+        }else{
+
+        	const {url, options} = ESTADO_SAVE_POST(data, getToken());
+
+
+	        const {response, json} = await request(url, options);
+	        console.log('Save clients here')
+	        console.log(json)
+
+	        if(json){
+	            console.log('Response Save clients here')
+	        	console.log(json)
+	        	
+	        	callback();
+	        	setShowModalCriarEstado();
+
+	        	Swal.fire({
+	              icon: "success",
+	              title: "",
+	              text: 'Reigistrado com sucesso',
+	              footer: '',//'<a href="#">Why do I have this issue?</a>'
+	              confirmButtonColor: "#07B201",
+	            });
+	        }
+
         }
     }
 
@@ -75,6 +116,44 @@ const FormEstado = ({showModalCriarEstado, setShowModalCriarEstado, callback})=>
             
     }
 
+
+
+    const dataToFormEstado = ()=>{
+    	let obj = {nome:'', cd_estado:'', sigla:'', pais_id:'', padrao:''}
+    	if(dataEstadoChoice && dataEstadoChoice.hasOwnProperty('mensagem')){
+    		let data = dataEstadoChoice.mensagem;
+           
+    		if(data.hasOwnProperty('name')){
+                obj.nome = data.name;
+    		}else if(data.hasOwnProperty('nmEStado')){
+    			 obj.nome = data.nmEStado;
+
+    		}
+
+    		if(data.hasOwnProperty('cd_estado')){
+                obj.cd_estado = data.cd_estado;
+    		}else if(data.hasOwnProperty('codEstado')){
+    			 obj.cd_estado = data.codEstado;
+
+    		}
+
+    		if(data.hasOwnProperty('sigla')){
+                obj.sigla = data.sigla;
+    		}
+
+    		if(data.hasOwnProperty('pais_id')){
+                obj.pais_id = data.pais_id;
+    		}
+
+    		if(data.hasOwnProperty('padrao')){
+                obj.padrao = data.padrao;// == 'yes' ? 'Sim' :  'Não';
+    		}
+    	}
+    	
+    	//console.log(obj)
+    	return obj;
+    }
+
     const preparaPaisToForm = ()=>{
     	if(dataPais.hasOwnProperty('mensagem') && Array.isArray(dataPais.mensagem) && dataPais.mensagem.length > 0){
     		let paises = dataPais.mensagem.map(({id, nmPais, cdPais, padrao}, index, arr)=>({label:nmPais,valor:id,props:{}}))
@@ -94,6 +173,19 @@ const FormEstado = ({showModalCriarEstado, setShowModalCriarEstado, callback})=>
 
     }, []);
 
+
+    if(error){
+        Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: error,
+            footer: '',//'<a href="#">Why do I have this issue?</a>'
+            confirmButtonColor: "#07B201",
+            //width:'20rem',
+        });
+    }
+    
+
     console.log('----------------------------- data pais ----------------------------------')
     console.log(dataPais)
 	return(
@@ -101,7 +193,8 @@ const FormEstado = ({showModalCriarEstado, setShowModalCriarEstado, callback})=>
 		<>
 			 <Formik 
 
-                initialValues={{nome:'', cd_estado:'', pais_id:'', padrao:'', sigla:''}}
+                initialValues={{... dataToFormEstado()}}
+                enableReinitialize={true}
                 validate={
                     values=>{
 
@@ -154,7 +247,7 @@ const FormEstado = ({showModalCriarEstado, setShowModalCriarEstado, callback})=>
                         }
                     )=>(
 
-                        <Modal  handleConcluir={()=>{handleSubmit(); }}  title={'Cadastrar Estado'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarEstado} showHide={setShowModalCriarEstado}>
+                        <Modal  handleConcluir={()=>{handleSubmit(); }}  title={ (atualizarCadastro == true ? 'Atualizar' : 'Cadastrar')+' Estado'}  size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarEstado} showHide={ ()=>{setShowModalCriarEstado();setAtualizarCadastro(false);setIdEstado(null);}}>
 
 	                        <form onSubmit={handleSubmit}>
 	                            <Row className="my-3">

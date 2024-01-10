@@ -52,6 +52,14 @@ const FormPais = ({dataPaisChoice, dataGrupo, setIdPais, idPais, showModalCriarP
                 setShowModalCriarPais();
                 setAtualizarCadastro(false);
                 setIdPais(null);
+
+                Swal.fire({
+	              icon: "success",
+	              title: "",
+	              text: 'Reigistrado com sucesso',
+	              footer: '',//'<a href="#">Why do I have this issue?</a>'
+	              confirmButtonColor: "#07B201",
+	            });
             }
 
         }else{
@@ -123,6 +131,7 @@ const FormPais = ({dataPaisChoice, dataGrupo, setIdPais, idPais, showModalCriarP
 			 <Formik 
 
                 initialValues={{... dataToFormPais()}}
+                enableReinitialize={true}
                 validate={
                     values=>{
 

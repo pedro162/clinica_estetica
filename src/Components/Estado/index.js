@@ -2,7 +2,7 @@ import React from 'react';
 import estilos from './Estado.module.css'
 import useFetch from '../../Hooks/useFetch.js';
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, ESTADO_ALL_POST} from '../../api/endpoints/geral.js'
-import {Col, Row } from 'react-bootstrap';
+import {Col, Row , Button} from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
 import Breadcrumbs from '../Helper/Breadcrumbs.js'
@@ -12,6 +12,9 @@ import Modal from '../Utils/Modal/index.js'
 import Load from '../Utils/Load/index.js'
 import {UserContex} from '../../Context/UserContex.js'
 import FormEstado from './FormEstado/index.js'
+import Include from './include';
+import FormControlInput from '../FormControl/index.js'
+import Cadastrar from './Cadastrar/index.js'
 
 
 const Estado = (props)=>{
@@ -21,57 +24,132 @@ const Estado = (props)=>{
     const [exemplos, setExemplos] = React.useState([])
     const [exemplosTitleTable, setExemplosTitleTable] = React.useState([])
     const [showModalCriarEstado, setShowModalCriarEstado] = React.useState(false)
+    const [mostarFiltros, setMostarFiltros] = React.useState(false) 
+    const [filtroMobile, setFiltroMobile] = React.useState(null)
+    const [acao, setAcao] = React.useState(null)
+    const [ordenacao, setOrdenacao] = React.useState('')
+    const [nadaEncontrado, setNadaEncontrado] = React.useState(false)
+    const [consultaChoice, setEstadoChoice] = React.useState(null);
+    const [cadastrarEstado, setCadastrarEstado] = React.useState(false) 
+    const [atualizarEstado, setAtualizarEstado] = React.useState(false) 
+    const [nomeEstado, setNomeEstado] = React.useState(null) 
+    const [codidoSistemaEstado, setCodigoSistemaEstado] = React.useState(null) 
 
 
     const {getToken} = React.useContext(UserContex);
 
-    const alerta = (target)=>{
-        console.log(target)
+    const handleFiltroMobile = ({target})=>{
+        setFiltroMobile(target.value)
     }
+
+    const setNameEstadoFiltro = ({target})=>{
+        
+        setNomeEstado(target.value)
+    }
+
+    const setCodigoSistemaEstadoFiltro = ({target})=>{
+        
+        setCodigoSistemaEstado(target.value)
+    }
+
+    const setOrdenacaoFiltro = ({target})=>{
+        
+        setOrdenacao(target.value)
+    }
+
+
+    const handleSearch = (ev)=>{
+        if (ev.key === "Enter") {
+            requestAllEstados();
+        }
+    }
+
+
+    const montarFiltro = ()=>{
+        let filtros = {}
+        let detalhesFiltros = {}
+
+
+        
+        if(codidoSistemaEstado){
+            filtros['id'] = codidoSistemaEstado;
+            detalhesFiltros['id'] = {
+                label:'id',
+                value:codidoSistemaEstado,
+                resetFilter:()=>setCodigoSistemaEstado(''),
+            };
+        }
+
+        if(nomeEstado){
+            filtros['name'] = nomeEstado;
+            detalhesFiltros['name'] = {
+                label:'name',
+                value:nomeEstado,
+                resetFilter:()=>setNomeEstado(''),
+            };
+
+            filtros['name_nomestado'] = nomeEstado;
+            detalhesFiltros['name_nomestado'] = {
+                label:'name_nomestado',
+                value:nomeEstado,
+                resetFilter:()=>setNomeEstado(''),
+            };
+        }
+
+        if(filtroMobile){
+            filtros['name'] = filtroMobile;
+            detalhesFiltros['name'] = {
+                label:'Filtro',
+                value:filtroMobile,
+                resetFilter:()=>setFiltroMobile(''),
+            };
+        }
+
+        if(ordenacao){
+            filtros['ordem'] = ordenacao;
+            detalhesFiltros['ordem'] = {
+                label:'Ordem',
+                value:ordenacao,
+                resetFilter:()=>setOrdenacao(''),
+            };
+        }
+
+
+
+        return {filtros, detalhesFiltros};
+    }
+
     const filtersArr = [
         {
             type:'text',
             options:[], 
             hasLabel: true,
-            contentLabel:'Teste',
+            contentLabel:'Código',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"12",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name':'nome',onChange:alerta,    onBlur:alerta},
+            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'estado_id':Estado, value:codidoSistemaEstado, onChange:setCodigoSistemaEstadoFiltro, onBlur:setCodigoSistemaEstadoFiltro, onKeyUp:handleSearch},
 
-        },
-        {
-            type:'radio',
-            options:[
-                {
-                    hasLabel: true,
-                    contentLabel:'Teste Radio 01',
-                    atributsFormLabel:{},
-                    atributsFormControl:{'type':'radio', value:'12', size:"sm",'checked':true,'name':'nome',onChange:alerta,    onBlur:alerta},
-                },
-                {
-                    hasLabel: true,
-                    contentLabel:'Teste Radio',
-                    atributsFormLabel:{},
-                    atributsFormControl:{'type':'radio', value:'12', size:"sm",'checked':true,'name':'nome',onChange:alerta,    onBlur:alerta},
-                }
-            ],  
-            hasLabel: true,
-            contentLabel:'Teste',
-            atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"12",className:'mb-2',},
-            atributsFormControl:{},
-
-        }
-        ,{
-            type:'checkbox',
+        },   {
+            type:'text',
             options:[], 
             hasLabel: true,
-            contentLabel:'Teste',
+            contentLabel:'Estado',
             atributsFormLabel:{},
-            atributsContainer:{ xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'checkbox', value:'12',size:"sm",'checked':false,'name':'nome',onChange:alerta, onBlur:alerta},
+            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'name':'name', value:nomeEstado, onChange:setNameEstadoFiltro, onBlur:setNameEstadoFiltro, onKeyUp:handleSearch},
 
-        }
+        },     
+        {
+            type:'select',
+            options:[{'label':'Selecione...', 'value':''},{'label':'Código A-Z', 'value':'id-asc'},{'label':'Código Z-A', 'value':'id-desc'},
+            {'label':'Estado A-Z', 'value':'name-asc'},{'label':'Estado Z-A', 'value':'name-desc'},], 
+            hasLabel: true,
+            contentLabel:'Classificar',
+            atributsFormLabel:{},
+            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsFormControl:{'type':'select', size:"sm",'ordem':ordenacao, value:ordenacao, onChange:setOrdenacaoFiltro, onBlur:setOrdenacaoFiltro, onKeyUp:handleSearch},
+
+        },
     ]
 
     const acoesBottomCard=[{
@@ -85,176 +163,32 @@ const Estado = (props)=>{
         props:{onClick:()=>setShowModalCriarEstado(true), className:'btn btn-sm mx-2 btn-secondary'}
     }
     ];
-    const gerarExemplos = ()=>{
-         let exemplos = [];
-        for(let i=0; !(i == 10); i++){
-            exemplos.push(
 
-                    {
-                        propsRow:{id:(i+1)},
-                        celBodyTableArr:[
-                            {
-
-                                label:'1',
-                                propsRow:{}
-                            },
-                            {
-
-                                label:'Peddro',
-                                propsRow:{}
-                            },
-                            {
-
-                                label:'(98) 98425-7623',
-                                propsRow:{}
-                            },
-                            {
-
-                                label:'phedroclooney@gmail.com',
-                                propsRow:{}
-                            }
-                        ]
-                    }
-
-                )
-
-        }
-
-        return exemplos;
-    }
-
-    const gerarTableEstado = ()=>{
-       
-        let data = [];
-        let dataEstado = estado.mensagem
-        if(dataEstado && Array.isArray(dataEstado) && dataEstado.length > 0){
-            for(let i=0; !(i == dataEstado.length); i++){
-                let atual = dataEstado[i];
-                if(atual){
-
-
-                    data.push(
-
-                        {
-                            propsRow:{id:(atual.id)},
-                            celBodyTableArr:[
-                                {
-
-                                    label:atual.id,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual.nmEStado,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual.codEstado,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual.nmPais,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual.cdPais,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual.padrao,
-                                    propsRow:{}
-                                }
-                            ]
-                        }
-
-                    )
-
-                }
-
-            }
-        }
-
-        return data;
-    }
-
-    const gerarTitleTable = ()=>{
-        let tableTitle = [
-            {
-                label:'Código',
-                props:{}
-            },
-            {
-                label:'Nome',
-                props:{}
-            },
-            {
-                label:'Código estado',
-                props:{}
-            },
-            {
-                label:'País',
-                props:{}
-            },
-            {
-                label:'Código país',
-                props:{}
-            },
-
-            {
-                label:'Padrão',
-                props:{}
-            }
-        ]
-
-        return tableTitle;
-    }
-    //------------
-   /* React.useEffect( ()=>{
-        const requestToken = async() =>{
-       
-           const {url, options} = TOKEN_POST({
-                'grant_type':'password',
-                'client_id': CLIENT_ID,
-                'client_secret':CLIENT_SECRET,
-                'username':'admin@gmail.com',
-                'password':'123456'
-             });
-
-
-            const {response, json} = await request(url, options);
-
-            
-        }
-
-        requestToken();
-        
-    }, []);*/
-
-    //----
-    /*React.useEffect(()=>{
-
-        setExemplos(gerarExemplos());
-        setExemplosTitleTable(gerarTitleTable());
-
-    }, [])*/
+    
 
     const requestAllEstados = async() =>{
        
-        const {url, options} = ESTADO_ALL_POST({}, getToken());
+        setEstado([])
+
+        let {filtros, detalhesFiltros} = montarFiltro();
+        const {url, options} = ESTADO_ALL_POST({...filtros}, getToken());
 
 
         const {response, json} = await request(url, options);
         console.log('All estados here')
         console.log(json)
         if(json){
-               setEstado(json)
-        }
+            setEstado(json)
 
-            
+            if( json?.mensagem && json?.mensagem.length > 0){
+                setNadaEncontrado(false)
+            }else{
+                setNadaEncontrado(true)
+            }
+
+        }else{
+            setNadaEncontrado(true)
+        }
     }
 
     React.useEffect(()=>{
@@ -270,8 +204,8 @@ const Estado = (props)=>{
 
         
     }, [])
-    const rowsTableArr = gerarTableEstado();    
-    const titulosTableArr = gerarTitleTable();
+
+
     return(
         <>
             <Breadcrumbs
@@ -282,27 +216,122 @@ const Estado = (props)=>{
                         },
                         {
                             props:{},
-                            label:'Estado'
+                            label:'Etado'
                         }
                     ]}
+
+                buttonFiltroMobile={true}
+                setMostarFiltros={setMostarFiltros}
+                mostarFiltros={mostarFiltros}
             />
             <Row>
-                <Col  xs="12" sm="12" md="3">
-                    <Filter
-                        filtersArr={filtersArr}
-                        actionsArr={acoesBottomCard}
-                    />
-                </Col>
-                <Col  xs="12" sm="12" md="9">
-                    <Table
-                        titulosTableArr={titulosTableArr}
-                        rowsTableArr={rowsTableArr}
-                        loading={loading}
+                {mostarFiltros && 
+                    (
+                        <>
+                            <Col  xs="12" sm="12" md="3" className={'default_card_report'}>
+                                <Filter
+                                    filtersArr={filtersArr}
+                                    actionsArr={acoesBottomCard}
+                                />
+                            </Col>
 
+                            <Col  xs="12" sm="12" md="12" className={'mobile_card_report pt-4'}  style={{backgroundColor:'#FFF'}}>
+                                <Row className={''} >
+                                    <Col className={'mx-2'}  >
+                                       <Row style={{borderRadius:'24px 24px 24px 24px', border:'1px solid #000'}}>
+                                            <Col xs="11" sm="11" md="11" >
+                                                <FormControlInput
+                                                    data={
+                                                        {
+                                                            atributsFormControl:{
+                                                                type:'input',
+                                                                placeholder:'Search...',
+                                                                style:{
+                                                                    border:'none',
+                                                                    outline:'0',
+                                                                    'box-shadow':'0 0 0 0',
+                                                                    height:'50px',
+                                                                    borderRadius:'24px 24px 24px 24px'
+                                                                    
+                                                                },
+                                                                onChange:(ev)=>{handleFiltroMobile(ev);},
+                                                                onBlur:(ev)=>{handleFiltroMobile(ev);},
+                                                                onKeyUp:(ev)=>{
+
+                                                                    if (ev.key === "Enter") {
+                                                                        requestAllEstados();
+                                                                    }
+                                                                },
+                                                                value:filtroMobile
+
+                                                            }
+                                                        }
+                                                    }
+                                                 />
+                                            </Col>
+
+                                            <Col xs="1" sm="1" md="1" style={{textAlign:'left', alignItems:'center', justifyContent:'center', margin:'auto',padding:'0'}} >
+                                                <FontAwesomeIcon onClick={()=>{requestAllEstados();}} size={'lg'} icon={faSearch}/>
+                                            </Col>
+                                        
+                                            
+                                         </Row>
+
+                                         <Row className={'mt-2'}>
+                                            <div  style={{display:'flex', flexDirection:'collumn', flexWrap:'wrap'}}>
+                                            </div>
+                                        </Row>
+                                    </Col>
+                                    
+                                    
+                                </Row>
+                                <Row className={'my-2'}>
+                                    <Col>
+                                        <Row>
+                                            <Col><span style={{fontWeight:'bolder', fontSize:'14pt'}} >Ações</span></Col>
+                                        </Row>
+
+                                        <div>
+                                             <hr style={{margin:'0',padding:'0'}}/>  
+                                        </div>
+                                    </Col>
+                                </Row>
+                                <Row>
+
+                                    <div style={{display:'flex', flexDirection:'collumn', flexWrap:'wrap'}}>
+                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setCadastrarEstado(true);}} ><FontAwesomeIcon icon={faPlus} /> Cadastrar estado</Button>
+                                    </div>
+                                </Row>
+                            </Col>
+                        </>
+                    )
+                }
+
+                <Col style={{backgroundColor:'#FFF'}} className={'pt-3 mobile_card_report'}>
+                    <Row>
+                        <Col><span style={{fontWeight:'bolder'}} >Resultado</span></Col>
+                    </Row>
+                    <div>
+                         <hr style={{margin:'0',padding:'0'}}/>  
+                    </div>
+                </Col>
+                
+                <Col  xs="12" sm="12" md={mostarFiltros ? "9":"12"}>
+                    <Include
+                        dataEstado={estado}
+                        loadingData={loading}
+                        callBack={requestAllEstados}
+                        setMostarFiltros={setMostarFiltros}
+                        idEstadoCriado={consultaChoice}
+                        nadaEncontrado={nadaEncontrado}
                     />
                 </Col>
             </Row>
-            <FormEstado showModalCriarEstado={showModalCriarEstado} setShowModalCriarEstado={setShowModalCriarEstado} callback={requestAllEstados} />
+            
+            {
+                cadastrarEstado &&
+                <Cadastrar cadastrarEstado={cadastrarEstado} setCadastrarEstado={setCadastrarEstado} atualizarEstado={atualizarEstado} setAtualizarEstado={setAtualizarEstado}  idPais={consultaChoice} setIdPais={setEstadoChoice} callback={requestAllEstados} />
+            }
          </>
 
     )

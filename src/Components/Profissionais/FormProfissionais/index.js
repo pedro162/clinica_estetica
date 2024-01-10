@@ -259,6 +259,7 @@ const FormProfissionais = ({dataProfissionaisChoice, setIdProfissionais, idProfi
              <Formik 
 
                 initialValues={{... dataToFormProfissionais()}}
+                enableReinitialize={true}
                 validate={
                     values=>{
 

@@ -304,6 +304,7 @@ const FormCliente = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, sho
 			 <Formik 
 
                 initialValues={{... dataToFormCliente()}}
+                enableReinitialize={true}
                 validate={
                     values=>{
 
