@@ -323,7 +323,7 @@ const FormCliente = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, sho
                         }
 
                         if(!values.doc_complementar){
-                            errors.doc_complementar="Obrigatório"
+                            //errors.doc_complementar="Obrigatório"
                         }
 
 						if(!values.cep){
@@ -343,7 +343,7 @@ const FormCliente = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, sho
                         }
 
                         if(!values.complemento){
-                            errors.complemento="Obrigatório"
+                            //errors.complemento="Obrigatório"
                         }
 
                         if(!values.numero){
@@ -352,7 +352,7 @@ const FormCliente = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, sho
 
 
                         if(!values.telefone){
-                            errors.telefone="Obrigatório"
+                            //errors.telefone="Obrigatório"
                         }
 
                         if(!values.celular){
@@ -360,7 +360,7 @@ const FormCliente = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, sho
                         }
 
                         if(!values.tp_telefone){
-                            errors.tp_telefone="Obrigatório"
+                            //errors.tp_telefone="Obrigatório"
                         }
 
                         if(!values.tp_celular){
@@ -368,18 +368,18 @@ const FormCliente = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, sho
                         }
 
                         if(!values.tp_email){
-                            errors.tp_email="Obrigatório"
+                            //errors.tp_email="Obrigatório"
                         }
 
                         if(!values.email){
-                            errors.email="Obrigatório"
+                            //errors.email="Obrigatório"
                         }
 
 						if(!values.bairro){
                             errors.bairro="Obrigatório"
                         }
                         if(!values.nascimento_fundacao){
-                            errors.nascimento_fundacao="Obrigatório"
+                            //errors.nascimento_fundacao="Obrigatório"
                         }
 
                         if(!values.groupo_id){

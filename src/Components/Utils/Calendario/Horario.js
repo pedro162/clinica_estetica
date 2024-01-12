@@ -306,8 +306,10 @@ const Horario = ({botoesHeader, rowsTableArr, ...props})=>{
 															mesAtualDt += 1;
 															
 															let dadosAgendaData = []
+															let propsDate = {}
 
 															if(rowsTableArr){
+																
 																for(let it=0; !(it == rowsTableArr.length); it++){
 																	let atualItemTable = rowsTableArr[it] 
 																	let {propsRow, data_format, hora, acoes, celBodyTableArr, dados} = atualItemTable
@@ -333,6 +335,11 @@ const Horario = ({botoesHeader, rowsTableArr, ...props})=>{
 																				minPart = Number(minPart)
 																				if(horaInico <= horaPart && horaPart <= horaFim && minFim >=minPart && minInico <= minPart  ){
 																					dadosAgendaData.push(atualItemTable)
+
+																					//classesEstilos += ' '+estilos.event
+																					//classesEstilos += ' '+estilos.background_orange
+
+																					propsDate = propsRow 
 																				}
 
 
@@ -363,7 +370,7 @@ const Horario = ({botoesHeader, rowsTableArr, ...props})=>{
 																				return(
 																					<>
 																						
-																							<Col className={'mt-1 p-2'}  style={{backgroundColor:'orange', color:'#000'}}>
+																							<Col className={'mt-1 p-2'}  style={{backgroundColor:'orange', color:'#000'}} {...propsDate}>
 																								<div>
 												                                                	{dados?.hora}
 												                                                </div>

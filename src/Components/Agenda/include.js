@@ -248,7 +248,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                     data.push(
 
                         {
-                            propsRow:{id:(atual.id), titleRow:atual?.name_pessoa, style:{...line_style}, mainIcon:faFileAlt},
+                            propsRow:{id:(atual.id), titleRow: atual.id+' - '+atual?.name_pessoa_atendimento, style:{...line_style}, mainIcon:faFileAlt},
                             acoes:[
                                 ...acoesArr
                             ],
@@ -261,23 +261,30 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                             celBodyTableArr:[
                                 [
                                     {
+                                        title:<span style={{fontWeight:'480'}}>Funcionário: </span>,
+                                        label:atual?.pessoa_id,
+                                        props:{style:{textAlign:'left', fontWeight:'bolder'}, md:'3', sm:'3', xs:'3'},
+                                        toSum:1,
+                                        isCoin:1,
+                                    },
+                                    {
                                         title:<span style={{fontWeight:'480'}}>Status: </span>,
                                         label:atual?.status,
-                                        props:{style:{textAlign:'left', fontWeight:'bolder'}},
+                                        props:{style:{textAlign:'left', fontWeight:'bolder'}, md:'3', sm:'3', xs:'3'},
                                         toSum:1,
                                         isCoin:1,
                                     },
                                     {
                                         title:<span style={{fontWeight:'480'}}>Data / hora: </span>,
                                         label:atual?.data_format +" "+atual?.hora,
-                                        props:{style:{textAlign:'left'}},
+                                        props:{style:{textAlign:'left'},  md:'3', sm:'3', xs:'3'},
                                         toSum:1,
                                         isCoin:1,
                                     },
                                     {
-                                        title:<span style={{fontWeight:'480'}}>Observação: </span>,
+                                        title:<span style={{fontWeight:'480'}}>Descrição: </span>,
                                         label:atual?.descricao,
-                                        props:{style:{textAlign:'left'}},
+                                        props:{style:{textAlign:'left'}, md:'3', sm:'3', xs:'3'},
                                         toSum:1,
                                         isCoin:1,
                                     },

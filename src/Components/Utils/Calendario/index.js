@@ -163,27 +163,35 @@ const Calendario = ({botoesHeader, rowsTableArr, ...props})=>{
 														mesAtualDt = Number(mesAtualDt)
 														
 														let dadosAgendaData = []
+														let propsDate = {}
 
 														if(rowsTableArr){
-															for(let it=0; !(it == rowsTableArr.length); it++){
-																let atualItemTable = rowsTableArr[it] 
-																let {propsRow, data_format, hora, acoes, celBodyTableArr} = atualItemTable
-																let data_format_arr = String(data_format).split('-')
+															if(dtNow.getFullYear() == dt.getFullYear() && dtNow.getMonth() == dt.getMonth() ){
+																for(let it=0; !(it == rowsTableArr.length); it++){
+																	let atualItemTable = rowsTableArr[it] 
+																	let {propsRow, data_format, hora, acoes, celBodyTableArr} = atualItemTable
+																	let data_format_arr = String(data_format).split('-')
 
-																if(Array.isArray(data_format_arr) && data_format_arr.length == 3){
-																	let nr_dia_form = data_format_arr[0]
-																	let nr_mes_form = data_format_arr[1]
-																	let nr_ano_form = data_format_arr[2]
+																	if(Array.isArray(data_format_arr) && data_format_arr.length == 3){
+																		let nr_dia_form = data_format_arr[0]
+																		let nr_mes_form = data_format_arr[1]
+																		let nr_ano_form = data_format_arr[2]
 
-																	nr_dia_form = Number(nr_dia_form)
-																	nr_mes_form = Number(nr_mes_form)
-																	nr_ano_form = Number(nr_ano_form)
+																		nr_dia_form = Number(nr_dia_form)
+																		nr_mes_form = Number(nr_mes_form)
+																		nr_ano_form = Number(nr_ano_form)
 
-																	if(anoAtualDt == nr_ano_form && mesAtualDt == nr_mes_form && diaAtualTd == nr_dia_form){
-																		dadosAgendaData.push(atualItemTable)
+																		if(anoAtualDt == nr_ano_form && mesAtualDt == nr_mes_form && diaAtualTd == nr_dia_form){
+																			dadosAgendaData.push(atualItemTable)
+																			//classesEstilos += ' '+estilos.event
+																			//classesEstilos += ' '+estilos.background_orange
+
+																			propsDate = propsRow 
+																		}
+
 																	}
-
 																}
+
 															}
 														}
 																		//console.log('========================== dados dia ====================')
@@ -206,7 +214,7 @@ const Calendario = ({botoesHeader, rowsTableArr, ...props})=>{
 																			return(
 																				<>
 																					
-																						<Col className={'mt-1 p-2'}  style={{backgroundColor:'orange', color:'#000'}}>
+																						<Col className={'mt-1 p-2'}  style={{backgroundColor:'orange', color:'#000'}} {...propsDate} >
 																							<div>
 											                                                	{dados?.hora}
 											                                                </div>

@@ -317,7 +317,7 @@ const Clientes = ({defaultFilters ,...props})=>{
                                 <Row>
 
                                     <div style={{display:'flex', flexDirection:'collumn', flexWrap:'wrap'}}>
-                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setCadastrarCliente(true);}} ><FontAwesomeIcon icon={faPlus} /> Pessoa física</Button>
+                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setCadastrarCliente(true);}} ><FontAwesomeIcon icon={faPlus} /> Cadastrar pessoa física</Button>
                                     </div>
                                 </Row>
                             </Col> 

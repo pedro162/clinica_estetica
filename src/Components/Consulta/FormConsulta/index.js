@@ -467,7 +467,7 @@ const FormConsulta = ({dataConsultaChoice, setIdConsulta, idConsulta, showModalC
 																					className:estilos.input,
 																					size:"sm"
 																				},
-																				options:[{label:'Selecione...',valor:'',props:{selected:'selected', disabled:'disabled'}},{label:'Serviço',valor:'servico',props:{}},{label:'Avaliacao',valor:'avaliacao',props:{}},{label:'Consulta',valor:'consulta',props:{}},{label:'Retorno',valor:'retorno',props:{}}],
+																				options:[{label:'Selecione...',valor:'',props:{selected:'selected', disabled:'disabled'}},{label:'Procedimento',valor:'procedimento',props:{}},{label:'Avaliacao',valor:'avaliacao',props:{}},{label:'Consulta',valor:'consulta',props:{}},{label:'Retorno',valor:'retorno',props:{}}],
 																				atributsContainer:{
 																					className:''
 																				}
