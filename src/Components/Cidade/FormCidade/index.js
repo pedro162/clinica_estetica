@@ -11,6 +11,7 @@ import {UserContex} from '../../../Context/UserContex.js'
 import Load from '../../Utils/Load/index.js'
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CIDADE_SAVE_POST, CIDADE_UPDATE_POST, CIDADE_ONE_GET} from '../../../api/endpoints/geral.js'
 import Atualizar from '../Atualizar/index.js'
+import Swal from 'sweetalert2'
 
 const FormCidade = ({dataCidadeChoice, dataEstado, setIdCidade, idCidade, showModalCriarCidade, setShowModalCriarCidade, callback, atualizarCadastro, setAtualizarCadastro, carregando})=>{
     
@@ -55,6 +56,14 @@ const FormCidade = ({dataCidadeChoice, dataEstado, setIdCidade, idCidade, showMo
                 setShowModalCriarCidade();
                 setAtualizarCadastro(false);
                 setIdCidade(null);
+
+                Swal.fire({
+                  icon: "success",
+                  title: "",
+                  text: 'Reigistrado com sucesso',
+                  footer: '',//'<a href="#">Why do I have this issue?</a>'
+                  confirmButtonColor: "#07B201",
+                });
             }
 
         }else{
@@ -73,6 +82,14 @@ const FormCidade = ({dataCidadeChoice, dataEstado, setIdCidade, idCidade, showMo
             	callback();
             	setShowModalCriarCidade();
                 setAtualizarCadastro(false);
+
+                Swal.fire({
+                  icon: "success",
+                  title: "",
+                  text: 'Reigistrado com sucesso',
+                  footer: '',//'<a href="#">Why do I have this issue?</a>'
+                  confirmButtonColor: "#07B201",
+                });
             }
 
         }
@@ -144,6 +161,21 @@ const FormCidade = ({dataCidadeChoice, dataEstado, setIdCidade, idCidade, showMo
 
         return grupoFormat;
     }
+
+
+    
+
+    if(error){
+        Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: error,
+            footer: '',//'<a href="#">Why do I have this issue?</a>'
+            confirmButtonColor: "#07B201",
+            //width:'20rem',
+        });
+    }
+    
     
 
 	return(
