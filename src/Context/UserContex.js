@@ -15,6 +15,24 @@ export const UserStorange = ({children})=>{
     const historyUser = useHistory();
     const {request, loading, data, error} = useFetch();
 
+     const getDataUser = React.useCallback(async ()=>{
+        
+
+        try{
+
+            
+           await getUser();
+
+        }catch(err){
+            
+
+        }finally{
+
+        }
+
+
+    }, [])
+
     const userLogout = ()=>{
         
       
@@ -42,8 +60,10 @@ export const UserStorange = ({children})=>{
                 const {url, options} = USER_GET(getToken())
                 const {response, json} = await request(url, options);
                 if(json){ 
-                       
-                    setDataUser(json)               
+                    console.log('====================== Dados do usuario aqui 00 =====')  
+                    setDataUser(json)    
+                    console.log(json)
+                    console.log('====================== Dados do usuario aqui 00 =====')           
                 }
             }
 
@@ -110,6 +130,10 @@ export const UserStorange = ({children})=>{
         }
 
     */
+
+    React.useEffect(()=>{
+        getDataUser()
+    }, [])
 
     return(
         <UserContex.Provider value={{userLogin, getUser,userLogout, isAuthenticated, sandBox,loginUser, setLoginUser, loading, data, error, dataUser, setDataUser, getToken}} >

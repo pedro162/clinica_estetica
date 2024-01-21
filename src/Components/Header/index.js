@@ -3,13 +3,38 @@ import { Link } from 'react-router-dom/cjs/react-router-dom.min';
 import {UserContex} from '../../Context/UserContex.js';
 import { Container, Col, Row, Navbar, Nav,NavDropdown } from 'react-bootstrap';
 import estilos from './Header.module.css'
+import ExternalHeader from './ExternalHeader.js'
 
 const Header = (props)=>{
-    const {isAuthenticated, userLogout} = React.useContext(UserContex)
+    const {isAuthenticated, userLogout, getUser, dataUser, loading} = React.useContext(UserContex)
     console.log(isAuthenticated)
     if(! isAuthenticated()){
         return <></>
 
+    }
+
+    if(loading){
+        return (
+            <Navbar collapseOnSelect expand="lg" className={[estilos.containerHeader]} fixed="top" >
+                <Container fluid>
+                    <Navbar.Brand  ><Link className={[estilos.link,estilos.logo]} to="/" >Stúdio beleza</Link></Navbar.Brand>
+                    <Navbar.Toggle aria-controls="responsive-navbar-nav" />                           
+
+
+                    <Navbar.Collapse id="responsive-navbar-nav">
+                        
+                    </Navbar.Collapse>
+                </Container>
+            </Navbar>
+
+        )
+    }
+
+    
+    const {type, is_system, tenant_id} = dataUser ? dataUser : {};
+
+    if(type=='external'){
+        return <ExternalHeader/>;
     }
 
 
@@ -27,7 +52,9 @@ const Header = (props)=>{
         <Navbar collapseOnSelect expand="lg" className={[estilos.containerHeader]} fixed="top" >
             <Container fluid>
                 <Navbar.Brand  ><Link className={[estilos.link,estilos.logo]} to="/" >Stúdio beleza</Link></Navbar.Brand>
-                <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+                <Navbar.Toggle aria-controls="responsive-navbar-nav" />                           
+
+
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="me-auto">
                         <NavDropdown title="Configurações" id="collasible-nav-dropdown">

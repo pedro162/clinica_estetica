@@ -5,9 +5,12 @@ import Login from '../User/Login.js'
 
 const ProtectedRoute = (props)=>{
     const history = useHistory();
-    const {isAuthenticated} = React.useContext(UserContex)
+    const {isAuthenticated, getUser} = React.useContext(UserContex)
    
     if(isAuthenticated() === true){
+         //---Carrego o usuario -----------------
+        //getUser()
+
         return <Route
             {...props}
         />
