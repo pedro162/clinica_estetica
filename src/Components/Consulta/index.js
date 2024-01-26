@@ -14,6 +14,7 @@ import Load from '../Utils/Load/index.js'
 import {UserContex} from '../../Context/UserContex.js'
 import FormConsulta from './FormConsulta/index.js'
 import Cadastrar from './Cadastrar/index.js'
+import CadastroExterno from './Cadastrar/CadastroExterno.js'
 import Atualizar from './Atualizar/index.js'
 import Cancelar from './Cancelar/index.js'
 import Include from './include';
@@ -53,7 +54,14 @@ const Consulta = (props)=>{
     const [filtroCanceladas, setFiltroCanceladas] = React.useState(false)
     const [filtroRemarcadas, setFiltroRemarcadas] = React.useState(false)
 
-    const {getToken} = React.useContext(UserContex);
+    const {getToken, dataUser} = React.useContext(UserContex);
+
+    const {type, is_system, tenant_id} = dataUser ? dataUser : {};
+
+    if(type=='external'){
+        
+    }
+
 
     const alerta = (target)=>{
         console.log(target)
@@ -735,7 +743,11 @@ const Consulta = (props)=>{
             </Row>
 
             {
-                cadastrarConsulta && <Cadastrar cadastrarConsulta={cadastrarConsulta} setCadastrarConsulta={setCadastrarConsulta} atualizarConsulta={atualizarConsulta} setAtualizarConsulta={setAtualizarConsulta}  idConsulta={consultaChoice} setIdConsulta={setConsultaChoice} callback={requestAllConsultas} />
+                type =='external' && cadastrarConsulta && <CadastroExterno cadastrarConsulta={cadastrarConsulta} setCadastrarConsulta={setCadastrarConsulta} atualizarConsulta={atualizarConsulta} setAtualizarConsulta={setAtualizarConsulta}  idConsulta={consultaChoice} setIdConsulta={setConsultaChoice} callback={requestAllConsultas} />
+            }
+
+            {
+                type !='external' && cadastrarConsulta && <Cadastrar cadastrarConsulta={cadastrarConsulta} setCadastrarConsulta={setCadastrarConsulta} atualizarConsulta={atualizarConsulta} setAtualizarConsulta={setAtualizarConsulta}  idConsulta={consultaChoice} setIdConsulta={setConsultaChoice} callback={requestAllConsultas} />
             }
             
            
