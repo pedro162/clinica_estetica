@@ -1,5 +1,6 @@
 {
     "require": {
-        "laravel/passport": "^10.4"
+        "laravel/passport": "^10.4",
+        "barryvdh/laravel-cors": "^3.0"
     }
 }

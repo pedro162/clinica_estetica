@@ -19,7 +19,7 @@ import Swal from 'sweetalert2'
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CONSULTA_SAVE_POST, CONSULTA_ALL_POST, CONSULTA_UPDATE_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST} from '../../../api/endpoints/geral.js'
 
 
-const FormConsultaExterno = ({dataConsultaChoice, setIdConsulta, idConsulta, showModalCriarConsulta, setShowModalCriarConsulta, callback, atualizarConsulta, setAtualizarConsulta, carregando})=>{
+const FormConsultaExterno = ({dataConsultaChoice, dataProfissionalHorarios, dataProfissionais, dataEspecializacoes, setIdConsulta, idConsulta, showModalCriarConsulta, setShowModalCriarConsulta, callback, atualizarConsulta, setAtualizarConsulta, carregando})=>{
 
 	const {data, error, request, loading} = useFetch();
 	const dataRequest = useFetch();
@@ -31,6 +31,7 @@ const FormConsultaExterno = ({dataConsultaChoice, setIdConsulta, idConsulta, sho
 	const [benfeficiario, setBeneficiario] = React.useState(null)
 	const [especializacao, setEspecializacao] = React.useState(null)
 	const [horario, setHorario] = React.useState(null)
+    const [dateConsultaAtendimento, setDateConsultaAtendimento] = React.useState(null)
 
 	const userLogar =  ()=>{
         console.log('Aqui............')
@@ -224,10 +225,10 @@ const FormConsultaExterno = ({dataConsultaChoice, setIdConsulta, idConsulta, sho
     const gerarListEspecializacao = ()=>{
        
         let data = [];
-        let dataOrdemServico = []
-        for(let ij=0; !(ij  == 20); ij++){
+        let dataOrdemServico = dataEspecializacoes?.mensagem//[]
+        /*for(let ij=0; !(ij  == 20); ij++){
         	dataOrdemServico.push({id:(ij + 1), name:'Especialização '+(ij+1)})
-        }
+        }*/
         if(dataOrdemServico && Array.isArray(dataOrdemServico) && dataOrdemServico.length > 0){
             for(let i=0; !(i == dataOrdemServico.length); i++){
                 let atual = dataOrdemServico[i];
@@ -271,54 +272,151 @@ const FormConsultaExterno = ({dataConsultaChoice, setIdConsulta, idConsulta, sho
         return data;
     }
 
+    const dividirArray = (arrayOriginal, tamanhoDoGrupo)=>{
+          let novoArray = [];
+
+          for (let i = 0; i < arrayOriginal.length; i += tamanhoDoGrupo) {
+            let grupo = arrayOriginal.slice(i, i + tamanhoDoGrupo);
+            novoArray.push(grupo);
+          }
+
+          return novoArray;
+    }
 
     const gerarListHorario = ()=>{
        
         let data = [];
-        let dataOrdemServico = []
-        for(let ij=0; !(ij  == 20); ij++){
+        let dataOrdemServico = dataProfissionalHorarios?.mensagem;//[]
+        /*for(let ij=0; !(ij  == 20); ij++){
         	dataOrdemServico.push({id:(ij + 1), name: 'Profissional : '+(ij+1)})
+        }*/
+        //let dataHorario = {}
+        let dataHorarioAtual = []
+        let dataHorarioProfissional = {}
+        let contador = 0;
+
+        if(dataOrdemServico && Array.isArray(dataOrdemServico) && dataOrdemServico.length > 0){
+            for(let i=0; !(i == dataOrdemServico.length); i++){
+                let atual = dataOrdemServico[i];
+                if(atual){
+
+                    let regigroAtual = {
+                        title:<span style={{fontWeight:'480'}}> {String(atual?.hora).substr(0,5)} </span>,
+                        label:`${String(atual?.hora).substr(0,5)}`,
+                        props:{className: `btn btn-sm ${horario > 0 && horario == atual?.id ? 'btn-primary' : 'btn-secondary'}  mb-2 `, style:{borderRadius:'50px'}, onClick:()=>setHorario((horario)=>{if(horario == atual?.id){ return 0;}else{ setAbaAtual('date'); return atual?.id;} }) },
+                        toSum:1,
+                        isCoin:1,
+                    }
+
+                    if( dataHorarioProfissional[atual?.profissional_id]){
+                        dataHorarioProfissional[atual?.profissional_id] = {
+                            hoarios:[...dataHorarioProfissional[atual?.profissional_id].hoarios, regigroAtual],
+                            name:atual?.name_profissional,
+                            id:atual?.profissional_id,
+                            profissional_id:atual?.profissional_id
+                        }
+                    }else{
+                        dataHorarioProfissional[atual?.profissional_id] = {
+                            hoarios:[regigroAtual],
+                            name:atual?.name_profissional,
+                            id:atual?.profissional_id,
+                            profissional_id:atual?.profissional_id
+                        }
+                    }
+
+                }
+
+            }
         }
+
+        if(dataHorarioProfissional){
+            for(let prp in dataHorarioProfissional){
+                let atual = dataHorarioProfissional[prp]
+                let {hoarios, name, profissional_id} = atual;
+
+                let dataHorario = []
+                let line_style = {}
+
+                if(hoarios){
+
+                    dataHorario = dividirArray(hoarios, 4);
+                    
+
+                    data.push(
+
+                        {
+                            propsRow:{id:(profissional_id), titleRow:name, style:{...line_style}, mainIcon:null},
+                            acoes:[
+                                
+                            ],
+                            title:<> <div style={{display:'flex', justifyContent:'space-between',fontSize:'18pt', fontWeight:'bolder'}} ><span> {name} </span> </div> </>,
+                            propsContainerTitulo:{md:'11', sm:'9', xs:'9'},
+                            propsContainerButtons:{md:'1', sm:'3', xs:'3'},
+                            acoesBottomCard:[
+                              
+                            ],
+                            celBodyTableArr:[
+                                ...dataHorario
+                               
+                            ]
+                        }
+                    );
+
+                }
+            }
+        }
+
+        return data;
+    }
+
+
+    const gerarListDate = ()=>{
+       
+        let data = [];
+        let dataOrdemServico = dataProfissionais; //[]
+        /*for(let ij=0; !(ij  == 20); ij++){
+            dataOrdemServico.push({id:(ij + 1), name: 'Profissional : '+(ij+1)})
+        }*/
         if(dataOrdemServico && Array.isArray(dataOrdemServico) && dataOrdemServico.length > 0){
             for(let i=0; !(i == dataOrdemServico.length); i++){
                 let atual = dataOrdemServico[i];
                 if(atual){
                     
                     let dataHorario = []
-			        for(let ij=0; !(ij  == 4); ij++){
-			        	dataHorario.push(
-			        		[
+                    for(let ij=0; !(ij  == 4); ij++){
+                        dataHorario.push(
+                            [
                                 {
-                                    title:<span style={{fontWeight:'480'}}> 11:25 </span>,
-                                    label:'11:25',
-                                    props:{className: `btn btn-sm ${especializacao > 0 && especializacao == atual?.id+(ij+1) ? 'btn-primary' : 'btn-secondary'}  mb-2 `, style:{borderRadius:'50px'}, onClick:()=>setEspecializacao((especializacao)=>{if(especializacao == atual?.id+(ij+1)){ return 0;}else{ setAbaAtual('date'); return atual?.id+(ij+1);} }) },
+                                    title:<span style={{fontWeight:'480'}}> 11/01/2024 </span>,
+                                    label:'11/01/2024',
+                                    props:{className: `btn btn-sm ${dateConsultaAtendimento > 0 && dateConsultaAtendimento == atual?.id ? 'btn-primary' : 'btn-secondary'}  mb-2 `, style:{borderRadius:'50px'}, onClick:()=>setDateConsultaAtendimento((dateConsultaAtendimento)=>{if(dateConsultaAtendimento == atual?.id){ return 0;}else{ setAbaAtual('confirm'); return atual?.id;} }) },
                                     toSum:1,
                                     isCoin:1,
                                 }, {
-                                    title:<span style={{fontWeight:'480'}}>12:35: </span>,
-                                    label:'12:35',
-                                    props:{className: `btn btn-sm ${especializacao > 0 && especializacao == atual?.id+(ij+2) ? 'btn-primary' : 'btn-secondary'} mb-2 `, style:{borderRadius:'50px'}, onClick:()=>setEspecializacao((especializacao)=>{if(especializacao == atual?.id+(ij+2)){ return 0;}else{ setAbaAtual('date'); return atual?.id+(ij+2);} }) },
+                                    title:<span style={{fontWeight:'480'}}>19/01/2024 </span>,
+                                    label:'19/01/2024',
+                                    props:{className: `btn btn-sm ${dateConsultaAtendimento > 0 && dateConsultaAtendimento == atual?.id ? 'btn-primary' : 'btn-secondary'} mb-2 `, style:{borderRadius:'50px'}, onClick:()=>setDateConsultaAtendimento((dateConsultaAtendimento)=>{if(dateConsultaAtendimento == atual?.id){ return 0;}else{ setAbaAtual('confirm'); return atual?.id;} }) },
                                     toSum:1,
                                     isCoin:1,
                                 },
                                 {
-                                    title:<span style={{fontWeight:'480'}}>14:31</span>,
-                                    label:'14:47',
-                                    props:{className: `btn btn-sm ${especializacao > 0 && especializacao == atual?.id+(ij+3) ? 'btn-primary' : 'btn-secondary'}  mb-2 `, style:{borderRadius:'50px'}, onClick:()=>setEspecializacao((especializacao)=>{if(especializacao == atual?.id+(ij+3)){ return 0;}else{ setAbaAtual('date'); return atual?.id+(ij+3);} }) },
+                                    title:<span style={{fontWeight:'480'}}>18/03/2024</span>,
+                                    label:'18/03/2024',
+                                    props:{className: `btn btn-sm ${dateConsultaAtendimento > 0 && dateConsultaAtendimento == atual?.id ? 'btn-primary' : 'btn-secondary'}  mb-2 `, style:{borderRadius:'50px'}, onClick:()=>setDateConsultaAtendimento((dateConsultaAtendimento)=>{if(dateConsultaAtendimento == atual?.id){ return 0;}else{ setAbaAtual('confirm'); return atual?.id;} }) },
                                     toSum:1,
                                     isCoin:1,
                                 },
                                 {
-                                    title:<span style={{fontWeight:'480'}}>16:55</span>,
-                                    label:'16:55',
-                                    props:{className: `btn btn-sm ${especializacao > 0 && especializacao == atual?.id+(ij+4) ? 'btn-primary' : 'btn-secondary'}  mb-2 `, style:{borderRadius:'50px'}, onClick:()=>setEspecializacao((especializacao)=>{if(especializacao == atual?.id+(ij+4)){ return 0;}else{ setAbaAtual('date'); return atual?.id+(ij+4);} }) },
+                                    title:<span style={{fontWeight:'480'}}>05/02/2024</span>,
+                                    label:'05/02/2024',
+                                    props:{className: `btn btn-sm ${dateConsultaAtendimento > 0 && dateConsultaAtendimento == atual?.id ? 'btn-primary' : 'btn-secondary'}  mb-2 `, style:{borderRadius:'50px'}, onClick:()=>setDateConsultaAtendimento((dateConsultaAtendimento)=>{if(dateConsultaAtendimento == atual?.id){ return 0;}else{ setAbaAtual('confirm'); return atual?.id;} }) },
                                     toSum:0,
                                     isCoin:0,
                                 },
 
                             ]
-			        	)
-			        }
+                        )
+                    }
 
 
                     let line_style = {}
@@ -464,7 +562,7 @@ const FormConsultaExterno = ({dataConsultaChoice, setIdConsulta, idConsulta, sho
                         }
                     )=>(
 
-						<Modal  handleConcluir={()=>{handleSubmit(); }}  title={ (atualizarConsulta == true ? 'Atualizar' : 'Cadastrar')+' Atendimento'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarConsulta} showHide={()=>{setShowModalCriarConsulta();setAtualizarConsulta(false);setIdConsulta(null);}}>
+						<Modal noBtnConcluir={true} handleConcluir={()=>{handleSubmit(); }}  title={ (atualizarConsulta == true ? 'Atualizar' : 'Cadastrar')+' Atendimento'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarConsulta} showHide={()=>{setShowModalCriarConsulta();setAtualizarConsulta(false);setIdConsulta(null);}}>
 							{
 									
                                 carregando && carregando==true
@@ -730,30 +828,136 @@ const FormConsultaExterno = ({dataConsultaChoice, setIdConsulta, idConsulta, sho
 																		</Row>
 																    </Tab>
 																  	<Tab eventKey="date" title={<span style={abaAtual == 'date' ? {color:'green', fontWeight:'bolder'} : {} } >Data</span>} { ...(abaAtual != 'date' ? {disabled:'disabled'} : {}) }  >
-																    	Tab content for Data
-																    	<Row>
-																			<Col >
-																				<Button className={ `btn btn-sm btn-secondary`} style={{borderRadius:'50px'}} onClick={()=>setAbaAtual('hour')}>
-																  		           <FontAwesomeIcon icon={faChevronCircleLeft} />
-																  		        </Button>		  		    
-																			</Col>
-																			<Col>
-																				<span
-																					
-																				>
-																					
-																				</span>
-																			</Col>
-																			<Col>
-																				<Button onClick={()=>setAbaAtual('confirm')} className={ `btn btn-sm btn-secondary`} style={{borderRadius:'50px'}} >
-																				 	<FontAwesomeIcon icon={faChevronCircleRight} /> 
-																				</Button>
-																			</Col>
-																		</Row>
+																    	<Row className="mb-2">
+                                                                            <Col>
+                                                                                {
+                                                                                    Array.isArray(gerarListDate()) && gerarListDate().length > 0 ? 
+                                                                                     (
+                                                                                        gerarListDate().map((item, index, arr)=>{
+                                                                                            let celBodyTableArr         = item.hasOwnProperty('celBodyTableArr')        ? item.celBodyTableArr : [];
+                                                                                            let propsRowBodyTable       = item.hasOwnProperty('propsRow')               ? item.propsRow: {};
+                                                                                            let id                      = propsRowBodyTable.hasOwnProperty('id')        ? propsRowBodyTable.id: 0;
+                                                                                            let propsContainerTitulo    = item.hasOwnProperty('propsContainerTitulo')   ? item.propsContainerTitulo: {};
+                                                                                            let propsContainerButtons   = item.hasOwnProperty('propsContainerButtons')  ? item.propsContainerButtons: {};
+                                                                                            let acoesBottomCard         = item.hasOwnProperty('acoesBottomCard')        ? item.acoesBottomCard: [];
+
+
+                                                                                            let titleRow                = propsRowBodyTable.hasOwnProperty('titleRow')      ? propsRowBodyTable.titleRow : '';
+                                                                                            let style                   = propsRowBodyTable.hasOwnProperty('style')         ? propsRowBodyTable.style : {};
+                                                                                            let mainIcon                = propsRowBodyTable.hasOwnProperty('mainIcon')      ? propsRowBodyTable.mainIcon : null;
+
+                                                                                            id = Number(id);
+                                                                                            let titleCard           = item?.title
+                                                                                            if(!titleCard){
+                                                                                                titleCard = ''
+                                                                                            }
+
+                                                                                            return(
+                                                                                                <Col  key={id+index+arr.length}>
+
+                                                                                                    <Row className={'pb-2 px-1'}  style={{...style}} > 
+                                                                                                        
+                                                                                                        <Col xs={12} sm={12} md={12}  style={{textAlign:'left', fontSize:'10pt'}}>
+                                                                                                            <Row className={'mb-1'}>
+                                                                                                                <span style={{fontSize:'14pt', fontWeight:'bolder'}} >{titleRow}</span>
+                                                                                                            </Row>
+
+                                                                                               
+                                                                                                        {
+                                                                                                            celBodyTableArr && Array.isArray(celBodyTableArr) && celBodyTableArr.length > 0 ? (
+                                                                                                                celBodyTableArr.map((itemCelArr, indexCelArr, arrCelArr)=>{
+
+                                                                                                                    return(
+                                                                                                                            <div  key={indexCelArr+arrCelArr.length+itemCelArr.length} >
+                                                                                                                                <Row>
+
+                                                                                                                                    {
+                                                                                                                                        Array.isArray(itemCelArr) && itemCelArr.length > 0 ? 
+
+                                                                                                                                        (
+                                                                                                                                            itemCelArr.map((itemCel, indexCel, arrCel)=>{
+
+
+                                                                                                                                                let labelCel = itemCel.hasOwnProperty('label') ? itemCel.label :'';
+                                                                                                                                                let toSum = itemCel.hasOwnProperty('toSum') ? itemCel.toSum :0;
+                                                                                                                                                let title = itemCel.hasOwnProperty('title') ? itemCel.title : '';
+                                                                                                                                                let propsRow = itemCel.hasOwnProperty('propsRow') ? itemCel.propsRow : {};
+                                                                                                                                                 
+                                                                                                                                                let isCoin              = itemCel.hasOwnProperty('isCoin') ? itemCel.isCoin :0;
+                                                                                                                                                
+                                                                                                                                                
+
+                                                                                                                                                let propsCelBodyTable   = itemCel.hasOwnProperty('props') ? itemCel.props : {};
+                                                                                                                                                return <Col key={indexCel} ><Button {...propsCelBodyTable} >{labelCel}</Button></Col>
+                                                                                                                                            })
+                                                                                                                                        )
+                                                                                                                                        :
+
+                                                                                                                                        ('')
+                                                                                                                                    }
+                                                                                                                                 </Row>
+                                                                                                                                    
+                                                                                                                            </div>  
+                                                                                                                    )
+                                                                                                                })
+
+                                                                                                            ) : ('')
+                                                                                                        }
+                                                                                                        </Col>
+                                                                                                    </Row>
+                                                                                                    <hr style={{margin:'0',padding:'0'}}/>
+
+                                                                                             </Col>
+                                                                                            )
+                                                                                        })
+                                       
+                                                                                    )
+                                                                                    :('')
+                                                                                 }
+
+                                                                            </Col>
+                                                                        </Row>
+                                                                        <Row >
+                                                                            
+
+                                                                            {dateConsultaAtendimento > 0 ? (
+                                                                                <>
+                                                                                    <Col md={4} sm={6} xs={6} style={{display:'flex', flexDierectoin:'column', alignItems:'center', justifyContent:'center'}} >
+                                                                                        <Button onClick={()=>{setAbaAtual('hour') } } className={ `btn btn-sm btn-secondary`} style={{borderRadius:'50px'}} >
+                                                                                            <FontAwesomeIcon icon={faChevronCircleLeft} /> 
+                                                                                        </Button>
+                                                                                    </Col>
+
+                                                                                    <Col md={{ span: 4, offset: 4 }} sm={6} xs={6} style={{display:'flex', flexDierectoin:'column', alignItems:'center', justifyContent:'center'}} >
+                                                                                        <Button onClick={()=>{setAbaAtual('confirm') } } className={ `btn btn-sm btn-secondary`} style={{borderRadius:'50px'}} >
+                                                                                            <FontAwesomeIcon icon={faChevronCircleRight} /> 
+                                                                                        </Button>
+                                                                                    </Col>
+                                                                                </>
+                                                                            ):(
+                                                                                <>
+                                                                                    <Col md={4} sm={6} xs={6} style={{display:'flex', flexDierectoin:'column', alignItems:'center', justifyContent:'center'}} >
+                                                                                        <Button onClick={()=>{setAbaAtual('hour') } } className={ `btn btn-sm btn-secondary`} style={{borderRadius:'50px'}} >
+                                                                                            <FontAwesomeIcon icon={faChevronCircleLeft} /> 
+                                                                                        </Button>
+                                                                                    </Col>
+                                                                                </>
+                                                                            )}
+
+                                                                        </Row>
+
+																    	
 																    </Tab>
 
 																  	<Tab eventKey="confirm" title={<span style={abaAtual == 'confirm' ? {color:'green', fontWeight:'bolder'} : {} } >Confirmar</span>}  { ...(abaAtual != 'confirm' ? {disabled:'disabled'} : {}) }  >
-																    	Tab content for confirmar
+																    	<Row>
+                                                                            <Col style={{display:'flex', flexDierectoin:'column', alignItems:'center', justifyContent:'center'}} >
+                                                                                <Button variant="primary" propsConcluir={{'disabled':loading}} className="botao_success btn btn-sm" onClick={()=>{handleSubmit(); }}>
+                                                                                    {loading ? 'Salvando...' : 'Concluir'}
+                                                                                </Button>
+                                                                            </Col>
+                                                                            
+                                                                        </Row>
 																    	<Row>
 																			<Col >
 																				<Button className={ `btn btn-sm btn-secondary`} style={{borderRadius:'50px'}} onClick={()=>setAbaAtual('date')}>
