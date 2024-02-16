@@ -81,65 +81,65 @@ function App() {
                         path="/usuario/login" 
                         component={Login}
                       />
-                      <Route
+                      <ProtectedRoute
                         path="/configuracoes/filial" 
                         component={Filial}
                       />
-                      <Route
+                      <ProtectedRoute
                         path="/configuracoes/sistema" 
                         component={Parametro}
                       />
-                      <Route
+                      <ProtectedRoute
                         path="/configuracoes/pais" 
                         component={Pais}
                       />
-                      <Route
+                      <ProtectedRoute
                         path="/configuracoes/estado" 
                         component={Estado}
                       />
-                      <Route
+                      <ProtectedRoute
                         path="/configuracoes/cidade" 
                         component={Cidade}
                       />
 
-                      <Route
+                      <ProtectedRoute
                         path="/configuracoes/construtor/ficha" 
                         component={ConstrutorFicha}
                       />
 
-                      <Route
+                      <ProtectedRoute
                         path="/configuracoes/construtor/ficha/grupo" 
                         component={ConstrutorFichaGrupo}
                       />
 
-                      <Route
+                      <ProtectedRoute
                         path="/configuracoes/construtor/ficha/item" 
                         component={ConstrutorFichaItem}
                       />
 
-                      <Route
+                      <ProtectedRoute
                         path="/consulta/index" 
                         component={Consulta}
                       />
 
-                      <Route
+                      <ProtectedRoute
                         path="/fichas/index" 
                         component={ClientesFichas}
                       />
 
-                      <Route
+                      <ProtectedRoute
                         path="/servico/painel" 
                         component={Servico}
                       />
 
-                      <Route
+                      <ProtectedRoute
                         path="/ordem/servico/painel" 
                         component={OrdemServico}
                       />
 
 
 
-                      <Route
+                      <ProtectedRoute
                         path="*" 
                         component={NotFound}
                       />

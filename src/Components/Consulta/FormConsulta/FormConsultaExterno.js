@@ -22,7 +22,7 @@ import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CONSULTA_SAVE_POST, CONSULTA_ALL_PO
 
 const FormConsultaExterno = ({dataConsultaChoice, dataProfissionais, setIdConsulta, idConsulta, showModalCriarConsulta, setShowModalCriarConsulta, callback, atualizarConsulta, setAtualizarConsulta, carregando})=>{
 
-	const {data, error, request, loading} = useFetch();
+	const {data, error, request, loading, setError} = useFetch();
 	const dataRequest = useFetch();
 
 	const {getToken, dataUser} = React.useContext(UserContex);
@@ -37,7 +37,9 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionais, setIdConsul
 	const [especializacao, setEspecializacao] = React.useState(null)
 	const [horario, setHorario] = React.useState(null)
     const [dateConsultaAtendimento, setDateConsultaAtendimento] = React.useState(null)
-
+    const [profissionalId, setProfissionalId] = React.useState(null)
+    const [filiallId, setFilialId] = React.useState(null)
+    //filial_id
 	const userLogar =  ()=>{
         console.log('Aqui............')
     }
@@ -60,18 +62,18 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionais, setIdConsul
 			
 
     	const data = {
-    		'name':name,
-    		'historico':historico,
-    		'pessoa_id':pessoa_id ? pessoa_id : benfeficiario,
+    		'name':name ? name : 'proprio',
+    		'historico':historico ? historico : 'consulta' ,
+    		'pessoa_id':pessoa_id > 0 ? pessoa_id : benfeficiario,
     		'dt_inicio':dt_inicio ? dt_inicio : dateConsultaAtendimento,
     		'hr_inicio':hr_inicio ? hr_inicio : horario,
     		'prioridade':prioridade ? prioridade : 'normal',
-    		'status':status ? status : benfeficiario,
-    		'profissional_id':profissional_id ? profissional_id : benfeficiario,
-    		'filial_id':filial_id ? filial_id : null,
+    		'status':status ? status : null,
+    		'profissional_id':profissional_id > 0 ? profissional_id : profissionalId,
+    		'filial_id':filial_id > 0 ? filial_id : filiallId,
 			'dt_fim':dt_fim ? dt_fim : null,
 			'hr_fim':hr_fim ? hr_fim : null,
-			'name_atendido':name_atendido ? name_atendido : null,
+			'name_atendido':name_atendido ? name_atendido : 'proprio',
 			'tipo':tipo ? tipo : 'consulta',
     	}
 
@@ -102,7 +104,7 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionais, setIdConsul
 
         }else{
 
-
+            console.table(data)
         	const {url, options} = CONSULTA_SAVE_POST(data, getToken());
 
 
@@ -126,7 +128,12 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionais, setIdConsul
                 });
             }
 
+
+
         }
+
+        
+        console.log('Disparou o evento')
     }
 
     const requestAllConsultas = async() =>{
@@ -308,7 +315,7 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionais, setIdConsul
                     let regigroAtual = {
                         title:<span style={{fontWeight:'480'}}> {String(atual?.hora).substr(0,5)} </span>,
                         label:`${String(atual?.hora).substr(0,5)}`,
-                        props:{className: `btn btn-sm ${horario > 0 && horario == atual?.id ? 'btn-primary' : 'btn-secondary'}  mb-2 `, style:{borderRadius:'50px'}, onClick:()=>setHorario((horario)=>{if(horario == atual?.id){ return 0;}else{ setAbaAtual('confirm'); return atual?.id;} }) },
+                        props:{className: `btn btn-sm ${horario > 0 && horario == atual?.id ? 'btn-primary' : 'btn-secondary'}  mb-2 `, style:{borderRadius:'50px'}, onClick:()=>setHorario((horario)=>{if(horario == atual?.id){ setProfissionalId(null); setFilialId(null); return 0;}else{ setAbaAtual('confirm'); setProfissionalId(atual?.profissional_id); setFilialId(atual?.filial_id); return atual?.id;} }) },
                         toSum:1,
                         isCoin:1,
                     }
@@ -563,18 +570,20 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionais, setIdConsul
     }, [dateConsultaAtendimento])
 
 
-
     if(error){
         Swal.fire({
-            icon: "error",
+             icon: "error",
             title: "Oops...",
             text: error,
             footer: '',//'<a href="#">Why do I have this issue?</a>'
             confirmButtonColor: "#07B201",
             //width:'20rem',
+            function() {
+                setError(null)
+            }
         });
     }
-    console.log('Disparou o evento')
+    
 
 
 
@@ -598,44 +607,44 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionais, setIdConsul
 						if(! atualizarConsulta){
 							
 							if(!values.pessoa_id){
-								errors.pessoa_id="Obrigatório"
+								//errors.pessoa_id="Obrigatório"
 							}
 			
 							if(!values.name_atendido){
-								errors.name_atendido="Obrigatório"   			
+								//errors.name_atendido="Obrigatório"   			
 							}
 
 							if(!values.filial_id){
-								errors.filial_id="Obrigatório"
+								//errors.filial_id="Obrigatório"
 							}
 						}
                         if(!values.historico){
-                            errors.historico="Obrigatório"
+                            //errors.historico="Obrigatório"
                         }
 
 
                         if(!values.dt_inicio){
-                            errors.dt_inicio="Obrigatório"
+                            //errors.dt_inicio="Obrigatório"
                         }
 
                         
 						
 						if(!values.hr_inicio){
-						    errors.hr_inicio="Obrigatório"
+						    //errors.hr_inicio="Obrigatório"
 						}
 
 						if(!values.prioridade){
-						    errors.prioridade="Obrigatório"
+						    //errors.prioridade="Obrigatório"
 						}
 
 			
 						if(!values.tipo){
-							errors.tipo="Obrigatório"    			
+							//errors.tipo="Obrigatório"    			
 						}
 
 
 						if(!values.profissional_id){
-						    errors.profissional_id="Obrigatório"
+						    //errors.profissional_id="Obrigatório"
 						}
 
 						
@@ -1075,7 +1084,7 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionais, setIdConsul
 																  	<Tab eventKey="confirm" title={<span style={abaAtual == 'confirm' ? {color:'green', fontWeight:'bolder'} : {} } >Confirmar</span>}  { ...(abaAtual != 'confirm' ? {disabled:'disabled'} : {}) }  >
 																    	<Row>
                                                                             <Col style={{display:'flex', flexDierectoin:'column', alignItems:'center', justifyContent:'center'}} >
-                                                                                <Button variant="primary" propsConcluir={{'disabled':loading}} className="botao_success btn btn-sm" onClick={()=>{handleSubmit(); }}>
+                                                                                <Button variant="primary" propsConcluir={{'disabled':loading}} className="botao_success btn btn-sm" onClick={()=>{handleSubmit(); alert('aqui')}}>
                                                                                     {loading ? 'Salvando...' : 'Concluir'}
                                                                                 </Button>
                                                                             </Col>
