@@ -1160,6 +1160,117 @@ export const PROFISSIONAL_HORARIOS_DELETE_POST = (id, token)=>{
 
 }
 
+
+
+//--- HORARIOS PROFISSIONAIS  ----------------------------------
+export const PROFISSIONAL_DIAS_EXPEDIENTE_ALL_POST = (data, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'POST',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        body:JSON.stringify(data)
+   };
+
+   return{
+        url:BASE_URL+'/api/profissional/dia/exprediente/json',
+        options:myInit
+    }
+
+}
+export const PROFISSIONAL_DIAS_EXPEDIENTE_ONE_GET = (id, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'GET',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        //body:JSON.stringify(data)
+   };
+
+   return{
+        url:BASE_URL+'/api/profissional/dia/exprediente/info/'+id,
+        options:myInit
+    }
+
+}
+
+export const PROFISSIONAL_DIAS_EXPEDIENTE_SAVE_POST = (data, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'POST',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        body:JSON.stringify(data)
+   };
+
+   return{
+        url:BASE_URL+'/api/profissional/dia/exprediente/store',
+        options:myInit
+    }
+
+}
+
+export const PROFISSIONAL_DIAS_EXPEDIENTE_UPDATE_POST = (id,data, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'PUT',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        body:JSON.stringify(data)
+   };
+
+   return{
+        url:BASE_URL+'/api/profissional/dia/exprediente/update/'+id,
+        options:myInit
+    }
+
+}
+
+export const PROFISSIONAL_DIAS_EXPEDIENTE_DELETE_POST = (id, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'GET',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+   };
+
+   return{
+        url:BASE_URL+'/api/profissional/dia/exprediente/destroy/'+id,
+        options:myInit
+    }
+
+}
+
 //--- PROFISSIONAIS  ----------------------------------
 export const PROFISSIONAIS_ALL_POST = (data, token)=>{
 

@@ -14,17 +14,22 @@ import Load from '../../Utils/Load/index.js'
 import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible'
 import { faHome, faSearch, faPlus, faTimes, faChevronCircleRight, faChevronCircleLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import CalendarioSimplesConsultaExterno  from '../../Utils/Calendario/CalendarioSimplesConsultaExterno.js'
 import Swal from 'sweetalert2'
 
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CONSULTA_SAVE_POST, CONSULTA_ALL_POST, CONSULTA_UPDATE_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST} from '../../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CONSULTA_SAVE_POST, CONSULTA_ALL_POST, CONSULTA_UPDATE_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST, ESPECIALIDADE_ALL_POST, PROFISSIONAL_HORARIOS_ALL_POST, PROFISSIONAL_DIAS_EXPEDIENTE_ALL_POST} from '../../../api/endpoints/geral.js'
 
 
-const FormConsultaExterno = ({dataConsultaChoice, dataProfissionalHorarios, dataProfissionais, dataEspecializacoes, setIdConsulta, idConsulta, showModalCriarConsulta, setShowModalCriarConsulta, callback, atualizarConsulta, setAtualizarConsulta, carregando})=>{
+const FormConsultaExterno = ({dataConsultaChoice, dataProfissionais, setIdConsulta, idConsulta, showModalCriarConsulta, setShowModalCriarConsulta, callback, atualizarConsulta, setAtualizarConsulta, carregando})=>{
 
 	const {data, error, request, loading} = useFetch();
 	const dataRequest = useFetch();
 
 	const {getToken, dataUser} = React.useContext(UserContex);
+
+    const [dataEspecializacoes, setEspecializacoes] = React.useState(null)    
+    const [dataProfissionalHorarios, setDataProfissionalHorarios] = React.useState(null)
+    const [dataProfissionalDiasExprediente, setDataProfissionalDiasExprediente] = React.useState(null)
 	const [dataConsulta, setDataConsulta] = React.useState([])
 	const [abaAtual, setAbaAtual] = React.useState('benfeficiario')
 	const [abaAtualProperty, setAbaAtualProperty] = React.useState({})
@@ -57,17 +62,17 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionalHorarios, data
     	const data = {
     		'name':name,
     		'historico':historico,
-    		'pessoa_id':pessoa_id,
-    		'dt_inicio':dt_inicio,
-    		'hr_inicio':hr_inicio,
-    		'prioridade':prioridade,
-    		'status':status,
-    		'profissional_id':profissional_id,
-    		'filial_id':filial_id,
-			'dt_fim':dt_fim,
-			'hr_fim':hr_fim,
-			'name_atendido':name_atendido,
-			'tipo':tipo,
+    		'pessoa_id':pessoa_id ? pessoa_id : benfeficiario,
+    		'dt_inicio':dt_inicio ? dt_inicio : dateConsultaAtendimento,
+    		'hr_inicio':hr_inicio ? hr_inicio : horario,
+    		'prioridade':prioridade ? prioridade : 'normal',
+    		'status':status ? status : benfeficiario,
+    		'profissional_id':profissional_id ? profissional_id : benfeficiario,
+    		'filial_id':filial_id ? filial_id : null,
+			'dt_fim':dt_fim ? dt_fim : null,
+			'hr_fim':hr_fim ? hr_fim : null,
+			'name_atendido':name_atendido ? name_atendido : null,
+			'tipo':tipo ? tipo : 'consulta',
     	}
 
 		if(atualizarConsulta == true){
@@ -241,7 +246,7 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionalHorarios, data
                     data.push(
 
                         {
-                            propsRow:{id:(atual.id), titleRow: atual?.name, style:{...line_style}, mainIcon:null, className: `btn btn-sm ${especializacao > 0 && especializacao == atual?.id ? 'btn-primary' : 'btn-secondary'} `, style:{borderRadius:'50px'}, onClick:()=>setEspecializacao((especializacao)=>{if(especializacao == atual?.id){ return 0;}else{ setAbaAtual('hour'); return atual?.id;} }) },
+                            propsRow:{id:(atual.id), titleRow: atual?.name, style:{...line_style}, mainIcon:null, className: `btn btn-sm ${especializacao > 0 && especializacao == atual?.id ? 'btn-primary' : 'btn-secondary'} `, style:{borderRadius:'50px'}, onClick:()=>{setEspecializacao((especializacao)=>{if(especializacao == atual?.id){ return 0;}else{ setAbaAtual('date'); return atual?.id;} }); setDataProfissionalDiasExprediente([]);} },
                             acoes:[
                                 
                             ],
@@ -303,7 +308,7 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionalHorarios, data
                     let regigroAtual = {
                         title:<span style={{fontWeight:'480'}}> {String(atual?.hora).substr(0,5)} </span>,
                         label:`${String(atual?.hora).substr(0,5)}`,
-                        props:{className: `btn btn-sm ${horario > 0 && horario == atual?.id ? 'btn-primary' : 'btn-secondary'}  mb-2 `, style:{borderRadius:'50px'}, onClick:()=>setHorario((horario)=>{if(horario == atual?.id){ return 0;}else{ setAbaAtual('date'); return atual?.id;} }) },
+                        props:{className: `btn btn-sm ${horario > 0 && horario == atual?.id ? 'btn-primary' : 'btn-secondary'}  mb-2 `, style:{borderRadius:'50px'}, onClick:()=>setHorario((horario)=>{if(horario == atual?.id){ return 0;}else{ setAbaAtual('confirm'); return atual?.id;} }) },
                         toSum:1,
                         isCoin:1,
                     }
@@ -370,10 +375,49 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionalHorarios, data
     }
 
 
+    const gerarTableAgenda = ()=>{
+       
+        let data = [];
+        let dataAgenda = dataProfissionalDiasExprediente?.mensagem; //[{id:1, data_format:'06-02-2024'}, {id:2, data_format:'23-02-2024'}];
+        if(dataAgenda && Array.isArray(dataAgenda) && dataAgenda.length > 0){
+            for(let i=0; !(i == dataAgenda.length); i++){
+                let atual = dataAgenda[i];
+                if(atual){
+
+
+                    data.push(
+
+                        {
+                            id:atual?.id,
+                            propsRow:{id:(atual.id), setDataEscolhida:setDateConsultaAtendimento, callback:()=>{setAbaAtual('hour')}},
+                            data_format:null,
+                            dia_semana:atual?.nr_dia,
+                            hora:null,
+                            mainLabel:atual?.name,
+                            acoes:[
+                                {acao:()=>{setDateConsultaAtendimento(atual.id);setAbaAtual('hour'); }, label:'Editar', propsOption:{}, propsLabel:{}},
+                            ],
+                            dados:atual,
+                            celBodyTableArr:[
+                                
+                            ]
+                        }
+
+                    )
+
+                }
+
+            }
+        }
+
+        return data;
+    }
+
+
     const gerarListDate = ()=>{
        
         let data = [];
-        let dataOrdemServico = dataProfissionais; //[]
+        let dataOrdemServico = dataProfissionalDiasExprediente?.mensagem; //[]
         /*for(let ij=0; !(ij  == 20); ij++){
             dataOrdemServico.push({id:(ij + 1), name: 'Profissional : '+(ij+1)})
         }*/
@@ -389,27 +433,27 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionalHorarios, data
                                 {
                                     title:<span style={{fontWeight:'480'}}> 11/01/2024 </span>,
                                     label:'11/01/2024',
-                                    props:{className: `btn btn-sm ${dateConsultaAtendimento > 0 && dateConsultaAtendimento == atual?.id ? 'btn-primary' : 'btn-secondary'}  mb-2 `, style:{borderRadius:'50px'}, onClick:()=>setDateConsultaAtendimento((dateConsultaAtendimento)=>{if(dateConsultaAtendimento == atual?.id){ return 0;}else{ setAbaAtual('confirm'); return atual?.id;} }) },
+                                    props:{className: `btn btn-sm ${dateConsultaAtendimento > 0 && dateConsultaAtendimento == atual?.id ? 'btn-primary' : 'btn-secondary'}  mb-2 `, style:{borderRadius:'50px'}, onClick:()=>setDateConsultaAtendimento((dateConsultaAtendimento)=>{if(dateConsultaAtendimento == atual?.id){ return 0;}else{ setAbaAtual('hour'); return atual?.id;} }) },
                                     toSum:1,
                                     isCoin:1,
                                 }, {
                                     title:<span style={{fontWeight:'480'}}>19/01/2024 </span>,
                                     label:'19/01/2024',
-                                    props:{className: `btn btn-sm ${dateConsultaAtendimento > 0 && dateConsultaAtendimento == atual?.id ? 'btn-primary' : 'btn-secondary'} mb-2 `, style:{borderRadius:'50px'}, onClick:()=>setDateConsultaAtendimento((dateConsultaAtendimento)=>{if(dateConsultaAtendimento == atual?.id){ return 0;}else{ setAbaAtual('confirm'); return atual?.id;} }) },
+                                    props:{className: `btn btn-sm ${dateConsultaAtendimento > 0 && dateConsultaAtendimento == atual?.id ? 'btn-primary' : 'btn-secondary'} mb-2 `, style:{borderRadius:'50px'}, onClick:()=>setDateConsultaAtendimento((dateConsultaAtendimento)=>{if(dateConsultaAtendimento == atual?.id){ return 0;}else{ setAbaAtual('hour'); return atual?.id;} }) },
                                     toSum:1,
                                     isCoin:1,
                                 },
                                 {
                                     title:<span style={{fontWeight:'480'}}>18/03/2024</span>,
                                     label:'18/03/2024',
-                                    props:{className: `btn btn-sm ${dateConsultaAtendimento > 0 && dateConsultaAtendimento == atual?.id ? 'btn-primary' : 'btn-secondary'}  mb-2 `, style:{borderRadius:'50px'}, onClick:()=>setDateConsultaAtendimento((dateConsultaAtendimento)=>{if(dateConsultaAtendimento == atual?.id){ return 0;}else{ setAbaAtual('confirm'); return atual?.id;} }) },
+                                    props:{className: `btn btn-sm ${dateConsultaAtendimento > 0 && dateConsultaAtendimento == atual?.id ? 'btn-primary' : 'btn-secondary'}  mb-2 `, style:{borderRadius:'50px'}, onClick:()=>setDateConsultaAtendimento((dateConsultaAtendimento)=>{if(dateConsultaAtendimento == atual?.id){ return 0;}else{ setAbaAtual('hour'); return atual?.id;} }) },
                                     toSum:1,
                                     isCoin:1,
                                 },
                                 {
                                     title:<span style={{fontWeight:'480'}}>05/02/2024</span>,
                                     label:'05/02/2024',
-                                    props:{className: `btn btn-sm ${dateConsultaAtendimento > 0 && dateConsultaAtendimento == atual?.id ? 'btn-primary' : 'btn-secondary'}  mb-2 `, style:{borderRadius:'50px'}, onClick:()=>setDateConsultaAtendimento((dateConsultaAtendimento)=>{if(dateConsultaAtendimento == atual?.id){ return 0;}else{ setAbaAtual('confirm'); return atual?.id;} }) },
+                                    props:{className: `btn btn-sm ${dateConsultaAtendimento > 0 && dateConsultaAtendimento == atual?.id ? 'btn-primary' : 'btn-secondary'}  mb-2 `, style:{borderRadius:'50px'}, onClick:()=>setDateConsultaAtendimento((dateConsultaAtendimento)=>{if(dateConsultaAtendimento == atual?.id){ return 0;}else{ setAbaAtual('hour'); return atual?.id;} }) },
                                     toSum:0,
                                     isCoin:0,
                                 },
@@ -453,6 +497,48 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionalHorarios, data
 
 
 
+    const getProEspecializacoes = async ()=>{
+        setEspecializacoes([])
+        
+        const {url, options} = ESPECIALIDADE_ALL_POST({}, getToken());
+        const {response, json} = await request(url, options);
+        if(json){
+                
+            setEspecializacoes(json)
+            
+        }else{
+            setEspecializacoes([])
+        }
+    }
+
+    const getProfissionalHorarios = async ()=>{
+        setDataProfissionalHorarios([])
+
+        const {url, options} = PROFISSIONAL_HORARIOS_ALL_POST({}, getToken());
+        const {response, json} = await request(url, options);
+        if(json){
+               
+            setDataProfissionalHorarios(json)
+        }else{
+            setDataProfissionalHorarios([])
+        }
+    }
+
+
+    const getProfissionalDiaExpediente = async ()=>{
+        setDataProfissionalDiasExprediente([])
+
+        const {url, options} = PROFISSIONAL_DIAS_EXPEDIENTE_ALL_POST({}, getToken());
+        const {response, json} = await request(url, options);
+        if(json){
+            
+            setDataProfissionalDiasExprediente(json)
+        }else{
+            setDataProfissionalDiasExprediente([])
+        }
+    }
+
+
     React.useEffect(()=>{
     	const requesPais = async ()=>{
     		await requestAllConsultas();
@@ -461,6 +547,20 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionalHorarios, data
     	requesPais();
 
     }, []);
+
+
+    React.useEffect(()=>{
+
+        getProEspecializacoes()
+    }, [benfeficiario])
+
+    React.useEffect(()=>{
+        getProfissionalDiaExpediente()
+    }, [especializacao])
+
+    React.useEffect(()=>{
+        getProfissionalHorarios()
+    }, [dateConsultaAtendimento])
 
 
 
@@ -475,6 +575,11 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionalHorarios, data
         });
     }
     console.log('Disparou o evento')
+
+
+
+    const rowsTableArr = gerarTableAgenda();    
+    const titulosTableArr = null;
     
 	return(
 
@@ -602,7 +707,7 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionalHorarios, data
 																	<Tab eventKey="benfeficiario" title={<span style={abaAtual == 'benfeficiario' ? {color:'green', fontWeight:'bolder'} : {} } >Beneficíario</span>} { ...( abaAtual != 'benfeficiario' ? {disabled:'disabled'} : {}) }  variant="pills"   >
 																    	<Row className="mb-1" >
 																    		<Col className={'justify-content-md-center'} md={{ span: 6, offset: 3 }} style={{display:'flex', flexDierectoin:'column', alignItems:'center', justifyContent:'center'}} >
-																				<Button className={ `btn btn-sm ${benfeficiario > 0 ? 'btn-primary' : 'btn-secondary'} `} style={{borderRadius:'50px'}} onClick={()=>{setBeneficiario((benfeficiario)=>{ if(benfeficiario > 0){ return 0}else{setAbaAtual('especialization'); return 1;} } ); }}>
+																				<Button className={ `btn btn-sm ${benfeficiario > 0 ? 'btn-primary' : 'btn-secondary'} `} style={{borderRadius:'50px'}} onClick={()=>{setBeneficiario((benfeficiario)=>{ if(benfeficiario > 0){ return 0}else{setAbaAtual('especialization'); return 1;} } ); setEspecializacoes([]); }}>
 																  		           	José pedro Aguirar Ferreira
 																  		        </Button>	
 																			</Col>
@@ -640,7 +745,7 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionalHorarios, data
 																    	 
 																    	<Row className="mb-2" >
 																    		
-																    	
+																    	   {loading && <Load/>}
 
 																	    	{Array.isArray(gerarListEspecializacao()) && gerarListEspecializacao().length > 0 ? 
 																	    		 (
@@ -664,7 +769,7 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionalHorarios, data
 																		  				}
 
 																		  				return(
-																		  					<Col md={3} sm={6} xs={6} key={id+index+arr.length} className={'justify-content-md-center mb-4'} style={{display:'flex', flexDierectoin:'column', alignItems:'center', justifyContent:'center'}} >
+																		  					<Col md={6} sm={6} xs={6} key={id+index+arr.length} className={'justify-content-md-center mb-4'} style={{display:'flex', flexDierectoin:'column', alignItems:'center', justifyContent:'center'}} >
 																								<Button {...propsRowBodyTable} >
 																				  		           	{titleRow}
 																				  		        </Button>	
@@ -690,7 +795,7 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionalHorarios, data
 		        																	</Col>
 
 		        																	<Col md={{ span: 4, offset: 4 }} sm={6} xs={6} style={{display:'flex', flexDierectoin:'column', alignItems:'center', justifyContent:'center'}} >
-		        																		<Button onClick={()=>{setAbaAtual('hour') } } className={ `btn btn-sm btn-secondary`} style={{borderRadius:'50px'}} >
+		        																		<Button onClick={()=>{setAbaAtual('date') } } className={ `btn btn-sm btn-secondary`} style={{borderRadius:'50px'}} >
 																						 	<FontAwesomeIcon icon={faChevronCircleRight} /> 
 																						</Button>
 		        																	</Col>
@@ -707,8 +812,146 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionalHorarios, data
 
 																		</Row>
 																    </Tab>
+
+                                                                    <Tab eventKey="date" title={<span style={abaAtual == 'date' ? {color:'green', fontWeight:'bolder'} : {} } >Data</span>} { ...(abaAtual != 'date' ? {disabled:'disabled'} : {}) }  >
+                                                                        <Row className="mb-2">
+                                                                            {loading && <Load/>}
+                                                                            
+                                                                            <Col>
+                                                                            {! loading && dataProfissionalDiasExprediente && (
+                                                                                        <CalendarioSimplesConsultaExterno
+
+                                                                                            titulosTableArr={titulosTableArr}
+                                                                                            rowsTableArr={rowsTableArr}
+                                                                                            loading={loading}
+                                                                                            nadaEncontrado={null}
+                                                                                            defaultDate={dateConsultaAtendimento}
+                                                                                        />
+                                                                                )}
+                                                                                
+                                                                                {
+                                                                                    /*Array.isArray(gerarListDate()) && gerarListDate().length > 0 ? 
+                                                                                     (
+                                                                                        gerarListDate().map((item, index, arr)=>{
+                                                                                            let celBodyTableArr         = item.hasOwnProperty('celBodyTableArr')        ? item.celBodyTableArr : [];
+                                                                                            let propsRowBodyTable       = item.hasOwnProperty('propsRow')               ? item.propsRow: {};
+                                                                                            let id                      = propsRowBodyTable.hasOwnProperty('id')        ? propsRowBodyTable.id: 0;
+                                                                                            let propsContainerTitulo    = item.hasOwnProperty('propsContainerTitulo')   ? item.propsContainerTitulo: {};
+                                                                                            let propsContainerButtons   = item.hasOwnProperty('propsContainerButtons')  ? item.propsContainerButtons: {};
+                                                                                            let acoesBottomCard         = item.hasOwnProperty('acoesBottomCard')        ? item.acoesBottomCard: [];
+
+
+                                                                                            let titleRow                = propsRowBodyTable.hasOwnProperty('titleRow')      ? propsRowBodyTable.titleRow : '';
+                                                                                            let style                   = propsRowBodyTable.hasOwnProperty('style')         ? propsRowBodyTable.style : {};
+                                                                                            let mainIcon                = propsRowBodyTable.hasOwnProperty('mainIcon')      ? propsRowBodyTable.mainIcon : null;
+
+                                                                                            id = Number(id);
+                                                                                            let titleCard           = item?.title
+                                                                                            if(!titleCard){
+                                                                                                titleCard = ''
+                                                                                            }
+
+                                                                                            return(
+                                                                                                <Col  key={id+index+arr.length}>
+
+                                                                                                    <Row className={'pb-2 px-1'}  style={{...style}} > 
+                                                                                                        
+                                                                                                        <Col xs={12} sm={12} md={12}  style={{textAlign:'left', fontSize:'10pt'}}>
+                                                                                                            <Row className={'mb-1'}>
+                                                                                                                <span style={{fontSize:'14pt', fontWeight:'bolder'}} >{titleRow}</span>
+                                                                                                            </Row>
+
+                                                                                               
+                                                                                                        {
+                                                                                                            celBodyTableArr && Array.isArray(celBodyTableArr) && celBodyTableArr.length > 0 ? (
+                                                                                                                celBodyTableArr.map((itemCelArr, indexCelArr, arrCelArr)=>{
+
+                                                                                                                    return(
+                                                                                                                            <div  key={indexCelArr+arrCelArr.length+itemCelArr.length} >
+                                                                                                                                <Row>
+
+                                                                                                                                    {
+                                                                                                                                        Array.isArray(itemCelArr) && itemCelArr.length > 0 ? 
+
+                                                                                                                                        (
+                                                                                                                                            itemCelArr.map((itemCel, indexCel, arrCel)=>{
+
+
+                                                                                                                                                let labelCel = itemCel.hasOwnProperty('label') ? itemCel.label :'';
+                                                                                                                                                let toSum = itemCel.hasOwnProperty('toSum') ? itemCel.toSum :0;
+                                                                                                                                                let title = itemCel.hasOwnProperty('title') ? itemCel.title : '';
+                                                                                                                                                let propsRow = itemCel.hasOwnProperty('propsRow') ? itemCel.propsRow : {};
+                                                                                                                                                 
+                                                                                                                                                let isCoin              = itemCel.hasOwnProperty('isCoin') ? itemCel.isCoin :0;
+                                                                                                                                                
+                                                                                                                                                
+
+                                                                                                                                                let propsCelBodyTable   = itemCel.hasOwnProperty('props') ? itemCel.props : {};
+                                                                                                                                                return <Col key={indexCel} ><Button {...propsCelBodyTable} >{labelCel}</Button></Col>
+                                                                                                                                            })
+                                                                                                                                        )
+                                                                                                                                        :
+
+                                                                                                                                        ('')
+                                                                                                                                    }
+                                                                                                                                 </Row>
+                                                                                                                                    
+                                                                                                                            </div>  
+                                                                                                                    )
+                                                                                                                })
+
+                                                                                                            ) : ('')
+                                                                                                        }
+                                                                                                        </Col>
+                                                                                                    </Row>
+                                                                                                    <hr style={{margin:'0',padding:'0'}}/>
+
+                                                                                             </Col>
+                                                                                            )
+                                                                                        })
+                                       
+                                                                                    )
+                                                                                    :('')*/
+                                                                                 }
+
+                                                                            </Col>
+                                                                        </Row>
+                                                                        <Row >
+                                                                            
+
+                                                                            {dateConsultaAtendimento ? (
+                                                                                <>
+                                                                                    <Col md={4} sm={6} xs={6} style={{display:'flex', flexDierectoin:'column', alignItems:'center', justifyContent:'center'}} >
+                                                                                        <Button onClick={()=>{setAbaAtual('especialization') } } className={ `btn btn-sm btn-secondary`} style={{borderRadius:'50px'}} >
+                                                                                            <FontAwesomeIcon icon={faChevronCircleLeft} /> 
+                                                                                        </Button>
+                                                                                    </Col>
+
+                                                                                    <Col md={{ span: 4, offset: 4 }} sm={6} xs={6} style={{display:'flex', flexDierectoin:'column', alignItems:'center', justifyContent:'center'}} >
+                                                                                        <Button onClick={()=>{setAbaAtual('hour') } } className={ `btn btn-sm btn-secondary`} style={{borderRadius:'50px'}} >
+                                                                                            <FontAwesomeIcon icon={faChevronCircleRight} /> 
+                                                                                        </Button>
+                                                                                    </Col>
+                                                                                </>
+                                                                            ):(
+                                                                                <>
+                                                                                    <Col md={4} sm={6} xs={6} style={{display:'flex', flexDierectoin:'column', alignItems:'center', justifyContent:'center'}} >
+                                                                                        <Button onClick={()=>{setAbaAtual('especialization') } } className={ `btn btn-sm btn-secondary`} style={{borderRadius:'50px'}} >
+                                                                                            <FontAwesomeIcon icon={faChevronCircleLeft} /> 
+                                                                                        </Button>
+                                                                                    </Col>
+                                                                                </>
+                                                                            )}
+
+                                                                        </Row>
+
+                                                                        
+                                                                    </Tab>
+
 																  	<Tab eventKey="hour" title={<span style={abaAtual == 'hour' ? {color:'green', fontWeight:'bolder'} : {} } >Horáro</span>} { ...(abaAtual != 'hour' ? {disabled:'disabled'} : {}) }  >
 																    	<Row className="mb-2">
+                                                                            {loading && <Load/>}
+
 																    		<Col>
 																    			{
 																    				Array.isArray(gerarListHorario()) && gerarListHorario().length > 0 ? 
@@ -804,13 +1047,13 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionalHorarios, data
 																			{horario > 0 ? (
         																		<>
         																			<Col md={4} sm={6} xs={6} style={{display:'flex', flexDierectoin:'column', alignItems:'center', justifyContent:'center'}} >
-		        																		<Button onClick={()=>{setAbaAtual('especialization') } } className={ `btn btn-sm btn-secondary`} style={{borderRadius:'50px'}} >
+		        																		<Button onClick={()=>{setAbaAtual('date') } } className={ `btn btn-sm btn-secondary`} style={{borderRadius:'50px'}} >
 																						 	<FontAwesomeIcon icon={faChevronCircleLeft} /> 
 																						</Button>
 		        																	</Col>
 
 		        																	<Col md={{ span: 4, offset: 4 }} sm={6} xs={6} style={{display:'flex', flexDierectoin:'column', alignItems:'center', justifyContent:'center'}} >
-		        																		<Button onClick={()=>{setAbaAtual('date') } } className={ `btn btn-sm btn-secondary`} style={{borderRadius:'50px'}} >
+		        																		<Button onClick={()=>{setAbaAtual('confirm') } } className={ `btn btn-sm btn-secondary`} style={{borderRadius:'50px'}} >
 																						 	<FontAwesomeIcon icon={faChevronCircleRight} /> 
 																						</Button>
 		        																	</Col>
@@ -818,7 +1061,7 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionalHorarios, data
         																	):(
         																		<>
         																			<Col md={4} sm={6} xs={6} style={{display:'flex', flexDierectoin:'column', alignItems:'center', justifyContent:'center'}} >
-		        																		<Button onClick={()=>{setAbaAtual('especialization') } } className={ `btn btn-sm btn-secondary`} style={{borderRadius:'50px'}} >
+		        																		<Button onClick={()=>{setAbaAtual('date') } } className={ `btn btn-sm btn-secondary`} style={{borderRadius:'50px'}} >
 																						 	<FontAwesomeIcon icon={faChevronCircleLeft} /> 
 																						</Button>
 		        																	</Col>
@@ -827,127 +1070,7 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionalHorarios, data
 
 																		</Row>
 																    </Tab>
-																  	<Tab eventKey="date" title={<span style={abaAtual == 'date' ? {color:'green', fontWeight:'bolder'} : {} } >Data</span>} { ...(abaAtual != 'date' ? {disabled:'disabled'} : {}) }  >
-																    	<Row className="mb-2">
-                                                                            <Col>
-                                                                                {
-                                                                                    Array.isArray(gerarListDate()) && gerarListDate().length > 0 ? 
-                                                                                     (
-                                                                                        gerarListDate().map((item, index, arr)=>{
-                                                                                            let celBodyTableArr         = item.hasOwnProperty('celBodyTableArr')        ? item.celBodyTableArr : [];
-                                                                                            let propsRowBodyTable       = item.hasOwnProperty('propsRow')               ? item.propsRow: {};
-                                                                                            let id                      = propsRowBodyTable.hasOwnProperty('id')        ? propsRowBodyTable.id: 0;
-                                                                                            let propsContainerTitulo    = item.hasOwnProperty('propsContainerTitulo')   ? item.propsContainerTitulo: {};
-                                                                                            let propsContainerButtons   = item.hasOwnProperty('propsContainerButtons')  ? item.propsContainerButtons: {};
-                                                                                            let acoesBottomCard         = item.hasOwnProperty('acoesBottomCard')        ? item.acoesBottomCard: [];
 
-
-                                                                                            let titleRow                = propsRowBodyTable.hasOwnProperty('titleRow')      ? propsRowBodyTable.titleRow : '';
-                                                                                            let style                   = propsRowBodyTable.hasOwnProperty('style')         ? propsRowBodyTable.style : {};
-                                                                                            let mainIcon                = propsRowBodyTable.hasOwnProperty('mainIcon')      ? propsRowBodyTable.mainIcon : null;
-
-                                                                                            id = Number(id);
-                                                                                            let titleCard           = item?.title
-                                                                                            if(!titleCard){
-                                                                                                titleCard = ''
-                                                                                            }
-
-                                                                                            return(
-                                                                                                <Col  key={id+index+arr.length}>
-
-                                                                                                    <Row className={'pb-2 px-1'}  style={{...style}} > 
-                                                                                                        
-                                                                                                        <Col xs={12} sm={12} md={12}  style={{textAlign:'left', fontSize:'10pt'}}>
-                                                                                                            <Row className={'mb-1'}>
-                                                                                                                <span style={{fontSize:'14pt', fontWeight:'bolder'}} >{titleRow}</span>
-                                                                                                            </Row>
-
-                                                                                               
-                                                                                                        {
-                                                                                                            celBodyTableArr && Array.isArray(celBodyTableArr) && celBodyTableArr.length > 0 ? (
-                                                                                                                celBodyTableArr.map((itemCelArr, indexCelArr, arrCelArr)=>{
-
-                                                                                                                    return(
-                                                                                                                            <div  key={indexCelArr+arrCelArr.length+itemCelArr.length} >
-                                                                                                                                <Row>
-
-                                                                                                                                    {
-                                                                                                                                        Array.isArray(itemCelArr) && itemCelArr.length > 0 ? 
-
-                                                                                                                                        (
-                                                                                                                                            itemCelArr.map((itemCel, indexCel, arrCel)=>{
-
-
-                                                                                                                                                let labelCel = itemCel.hasOwnProperty('label') ? itemCel.label :'';
-                                                                                                                                                let toSum = itemCel.hasOwnProperty('toSum') ? itemCel.toSum :0;
-                                                                                                                                                let title = itemCel.hasOwnProperty('title') ? itemCel.title : '';
-                                                                                                                                                let propsRow = itemCel.hasOwnProperty('propsRow') ? itemCel.propsRow : {};
-                                                                                                                                                 
-                                                                                                                                                let isCoin              = itemCel.hasOwnProperty('isCoin') ? itemCel.isCoin :0;
-                                                                                                                                                
-                                                                                                                                                
-
-                                                                                                                                                let propsCelBodyTable   = itemCel.hasOwnProperty('props') ? itemCel.props : {};
-                                                                                                                                                return <Col key={indexCel} ><Button {...propsCelBodyTable} >{labelCel}</Button></Col>
-                                                                                                                                            })
-                                                                                                                                        )
-                                                                                                                                        :
-
-                                                                                                                                        ('')
-                                                                                                                                    }
-                                                                                                                                 </Row>
-                                                                                                                                    
-                                                                                                                            </div>  
-                                                                                                                    )
-                                                                                                                })
-
-                                                                                                            ) : ('')
-                                                                                                        }
-                                                                                                        </Col>
-                                                                                                    </Row>
-                                                                                                    <hr style={{margin:'0',padding:'0'}}/>
-
-                                                                                             </Col>
-                                                                                            )
-                                                                                        })
-                                       
-                                                                                    )
-                                                                                    :('')
-                                                                                 }
-
-                                                                            </Col>
-                                                                        </Row>
-                                                                        <Row >
-                                                                            
-
-                                                                            {dateConsultaAtendimento > 0 ? (
-                                                                                <>
-                                                                                    <Col md={4} sm={6} xs={6} style={{display:'flex', flexDierectoin:'column', alignItems:'center', justifyContent:'center'}} >
-                                                                                        <Button onClick={()=>{setAbaAtual('hour') } } className={ `btn btn-sm btn-secondary`} style={{borderRadius:'50px'}} >
-                                                                                            <FontAwesomeIcon icon={faChevronCircleLeft} /> 
-                                                                                        </Button>
-                                                                                    </Col>
-
-                                                                                    <Col md={{ span: 4, offset: 4 }} sm={6} xs={6} style={{display:'flex', flexDierectoin:'column', alignItems:'center', justifyContent:'center'}} >
-                                                                                        <Button onClick={()=>{setAbaAtual('confirm') } } className={ `btn btn-sm btn-secondary`} style={{borderRadius:'50px'}} >
-                                                                                            <FontAwesomeIcon icon={faChevronCircleRight} /> 
-                                                                                        </Button>
-                                                                                    </Col>
-                                                                                </>
-                                                                            ):(
-                                                                                <>
-                                                                                    <Col md={4} sm={6} xs={6} style={{display:'flex', flexDierectoin:'column', alignItems:'center', justifyContent:'center'}} >
-                                                                                        <Button onClick={()=>{setAbaAtual('hour') } } className={ `btn btn-sm btn-secondary`} style={{borderRadius:'50px'}} >
-                                                                                            <FontAwesomeIcon icon={faChevronCircleLeft} /> 
-                                                                                        </Button>
-                                                                                    </Col>
-                                                                                </>
-                                                                            )}
-
-                                                                        </Row>
-
-																    	
-																    </Tab>
 
 																  	<Tab eventKey="confirm" title={<span style={abaAtual == 'confirm' ? {color:'green', fontWeight:'bolder'} : {} } >Confirmar</span>}  { ...(abaAtual != 'confirm' ? {disabled:'disabled'} : {}) }  >
 																    	<Row>
@@ -960,7 +1083,7 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionalHorarios, data
                                                                         </Row>
 																    	<Row>
 																			<Col >
-																				<Button className={ `btn btn-sm btn-secondary`} style={{borderRadius:'50px'}} onClick={()=>setAbaAtual('date')}>
+																				<Button className={ `btn btn-sm btn-secondary`} style={{borderRadius:'50px'}} onClick={()=>setAbaAtual('hour')}>
 																  		           <FontAwesomeIcon icon={faChevronCircleLeft} />
 																  		        </Button>		  		    
 																			</Col>
@@ -980,310 +1103,7 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionalHorarios, data
 															</Col >
 														</Row>
 
-														{/*<Row className="mb-1">
-														        															<Col xs="12" sm="12" md="6">
-														        																<Field
-														        																		data={
-														        																			{
-														        																				hasLabel:true,
-														        																				contentLabel:'Pessoa *',
-														        																				atributsFormLabel:{
-														        
-														        																				},
-														        																				atributsFormControl:{
-														        																					type:'text',
-														        																					name:'pessoa_id',
-														        																					placeholder:'Ex: fulano de tal',
-														        																					id:'pessoa_id',
-														        																					name_cod:'pessoa_id',
-														        																					name_desacription:'pessoa_name',
-														        																					onChange:handleChange,
-														        																					onBlur:handleBlur,
-														        																					value:values.pessoa_id,
-														        																					className:`${estilos.input}`,
-														        																					size:"sm"
-														        																				},
-														        																				atributsContainer:{
-														        																					className:''
-														        																				},
-														        																				hookToLoadFromDescription:CLIENTES_ALL_POST,
-														        																			}
-														        																		}
-														        																		component={FormControlRadio}
-														        																		
-														        																>   </Field>    
-														        																<ErrorMessage className="alerta_error_form_label" name="pessoa_id" component="div" />
-														        															</Col>
-														        
-														        															<Col xs="12" sm="12" md="6">
-														        																<Field
-														        																		data={
-														        																			{
-														        																				hasLabel:true,
-														        																				contentLabel:'Pessoa do contato *',
-														        																				atributsFormLabel:{
-														        
-														        																				},
-														        																				atributsFormControl:{
-														        																					type:'text',
-														        																					name:'name_atendido',
-														        																					placeholder:'Ex: fulano de tal',
-														        																					id:'name_atendido',
-														        																					name_cod:'name_atendido',
-														        																					name_desacription:'pessoa_name',
-														        																					onChange:handleChange,
-														        																					onBlur:handleBlur,
-														        																					value:values.name_atendido,
-														        																					className:`${estilos.input}`,
-														        																					size:"sm"
-														        																				},
-														        																				atributsContainer:{
-														        																					className:''
-														        																				},
-														        																				hookToLoadFromDescription:CLIENTES_ALL_POST,
-														        																			}
-														        																		}
-														        																		component={FormControlInput}
-														        																>   </Field>    
-														        																<ErrorMessage className="alerta_error_form_label" name="name_atendido" component="div" />
-														        															</Col>
-														        														</Row>
-														        
-														        														<Row className="mb-1">
-														        																										
-														        															<Col xs="12" sm="12" md="6">
-														        																<Field
-														        																		data={
-														        																			{
-														        																				hasLabel:true,
-														        																				contentLabel:'Filial *',
-														        																				atributsFormLabel:{
-														        
-														        																				},
-														        																				atributsFormControl:{
-														        																					type:'text',
-														        																					name:'filial_id',
-														        																					placeholder:'Ex: fulano de tal',
-														        																					id:'filial_id',
-														        																					name_cod:'filial_id',
-														        																					name_desacription:'filial_name',
-														        																					onChange:handleChange,
-														        																					onBlur:handleBlur,
-														        																					value:values.filial_id,
-														        																					className:`${estilos.input}`,
-														        																					size:"sm"
-														        																				},
-														        																				atributsContainer:{
-														        																					className:''
-														        																				},
-														        																				hookToLoadFromDescription:CLIENTES_ALL_POST,
-														        																			}
-														        																		}
-														        																		component={Required}
-														        																>   </Field>    
-														        																<ErrorMessage className="alerta_error_form_label" name="filial_id" component="div" />
-														        															</Col>
-														        															<Col>
-														        																<Field
-														        																		data={
-														        																			{
-														        																				hasLabel:true,
-														        																				contentLabel:'Tipo',
-														        																				atributsFormLabel:{
-														        
-														        																				},
-														        																				atributsFormControl:{
-														        																					type:'text',
-														        																					name:'tipo',
-														        																					placeholder:'Informe a tipo',
-														        																					id:'tipo',
-														        																					onChange:handleChange,
-														        																					onBlur:handleBlur,
-														        																					value:values.tipo,
-														        																					className:estilos.input,
-														        																					size:"sm"
-														        																				},
-														        																				options:[{label:'Selecione...',valor:'',props:{selected:'selected', disabled:'disabled'}},{label:'Procedimento',valor:'procedimento',props:{}},{label:'Avaliacao',valor:'avaliacao',props:{}},{label:'Consulta',valor:'consulta',props:{}},{label:'Retorno',valor:'retorno',props:{}}],
-														        																				atributsContainer:{
-														        																					className:''
-														        																				}
-														        																			}
-														        																		}
-														        																	
-														        																		component={FormControlSelect}
-														        																	></Field>
-														        																	<ErrorMessage className="alerta_error_form_label" name="tipo" component="div" />
-														        															</Col>
-														        
-														        														</Row>
-														        
-														        														<Row className="mb-1">
-														        															<Col xs="12" sm="12" md="6">
-														        																<Field
-														        																		data={
-														        																			{
-														        																				hasLabel:true,
-														        																				contentLabel:'Profissional *',
-														        																				atributsFormLabel:{
-														        
-														        																				},
-														        																				atributsFormControl:{
-														        																					type:'text',
-														        																					name:'profissional_id',
-														        																					placeholder:'Ex: fulano de tal',
-														        																					id:'profissional_id',
-														        																					name_cod:'profissional_id',
-														        																					name_desacription:'profissional_name',
-														        																					onChange:handleChange,
-														        																					onBlur:handleBlur,
-														        																					value:values.profissional_id,
-														        																					className:`${estilos.input}`,
-														        																					size:"sm"
-														        																				},
-														        																				atributsContainer:{
-														        																					className:''
-														        																				},
-														        																				hookToLoadFromDescription:PROFISSIONAIS_ALL_POST,
-														        																			}
-														        																		}
-														        																		component={Required}
-														        																>   </Field>    
-														        																<ErrorMessage className="alerta_error_form_label" name="profissional_id" component="div" />
-														        															</Col>
-														        
-														        															<Col xs="12" sm="12" md="6">
-														        																<Field
-														        																		data={
-														        																			{
-														        																				hasLabel:true,
-														        																				contentLabel:'Prioridade',
-														        																				atributsFormLabel:{
-														        
-														        																				},
-														        																				atributsFormControl:{
-														        																					type:'text',
-														        																					name:'prioridade',
-														        																					placeholder:'Informe a prioridade',
-														        																					id:'prioridade',
-														        																					onChange:handleChange,
-														        																					onBlur:handleBlur,
-														        																					value:values.prioridade,
-														        																					className:estilos.input,
-														        																					size:"sm"
-														        																				},
-														        																				options:[{label:'Selecione...',valor:'',props:{selected:'selected', disabled:'disabled'}},{label:'Baixa',valor:'baixa',props:{}},{label:'Normal',valor:'normal',props:{}},{label:'Média',valor:'media',props:{}},{label:'Alta',valor:'alta',props:{}},{label:'Urgente',valor:'urgente',props:{}}],
-														        																				atributsContainer:{
-														        																					className:''
-														        																				}
-														        																			}
-														        																		}
-														        																	
-														        																		component={FormControlSelect}
-														        																	></Field>
-														        																	<ErrorMessage className="alerta_error_form_label" name="prioridade" component="div" />
-														        															</Col>
-														        														</Row>
-														        														<Row>
-														        															
-														        															<Col xs="12" sm="12" md="6">
-														        																<Field
-														        																		data={
-														        																			{
-														        																				hasLabel:true,
-														        																				contentLabel:'Data iníco',
-														        																				atributsFormLabel:{
-														        
-														        																				},
-														        																				atributsFormControl:{
-														        																					type:'date',
-														        																					name:'dt_inicio',
-														        																					placeholder:'DD/MM/AAAA',
-														        																					id:'dt_inicio',
-														        																					onChange:handleChange,
-														        																					onBlur:handleBlur,
-														        																					value:values.dt_inicio,
-														        																					className:estilos.input,
-														        																					size:"sm"
-														        																				},
-														        																				options:[],
-														        																				atributsContainer:{
-														        																					className:''
-														        																				}
-														        																			}
-														        																		}
-														        																	
-														        																		component={FormControlInput}
-														        																	></Field>
-														        																	<ErrorMessage className="alerta_error_form_label" name="dt_inicio" component="div" />
-														        															</Col>
-														        
-														        															<Col xs="12" sm="12" md="6">
-														        																<Field
-														        																		data={
-														        																			{
-														        																				hasLabel:true,
-														        																				contentLabel:'Horário início',
-														        																				atributsFormLabel:{
-														        
-														        																				},
-														        																				atributsFormControl:{
-														        																					type:'time',
-														        																					name:'hr_inicio',
-														        																					placeholder:'HH:ii',
-														        																					id:'hr_inicio',
-														        																					onChange:handleChange,
-														        																					onBlur:handleBlur,
-														        																					value:values.hr_inicio,
-														        																					className:estilos.input,
-														        																					size:"sm"
-														        																				},
-														        																				options:[],
-														        																				atributsContainer:{
-														        																					className:''
-														        																				}
-														        																			}
-														        																		}
-														        																	
-														        																		component={FormControlInput}
-														        																	></Field>
-														        																	<ErrorMessage className="alerta_error_form_label" name="hr_inicio" component="div" />
-														        															</Col>
-														        														</Row> 
-														        
-														        														<Row>
-														        															
-														        															<Col xs="12" sm="12" md="12">
-														        																<Field
-														        																		data={
-														        																			{
-														        																				hasLabel:true,
-														        																				contentLabel:'Observação',
-														        																				atributsFormLabel:{
-														        
-														        																				},
-														        																				atributsFormControl:{
-														        																					type:'text',
-														        																					name:'historico',
-														        																					placeholder:'Observação',
-														        																					id:'historico',
-														        																					onChange:handleChange,
-														        																					onBlur:handleBlur,
-														        																					value:values.historico,
-														        																					className:estilos.input,
-														        																					size:"sm"
-														        																				},
-														        																				options:[],
-														        																				atributsContainer:{
-														        																					className:''
-														        																				}
-														        																			}
-														        																		}
-														        																	
-														        																		component={FormControlInput}
-														        																	></Field>
-														        																	<ErrorMessage className="alerta_error_form_label" name="historico" component="div" />
-														        															</Col>
-														        														</Row>   */}        
+														  
 													</>
 												)
 

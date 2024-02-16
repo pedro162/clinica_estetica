@@ -1,6 +1,6 @@
 import React from 'react';
 import useFetch from '../../../Hooks/useFetch.js';
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CONSULTA_ONE_GET, GRUPOS_ALL_POST, PROFISSIONAIS_ALL_POST, ESPECIALIDADE_ALL_POST, PROFISSIONAL_HORARIOS_ALL_POST} from '../../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CONSULTA_ONE_GET, GRUPOS_ALL_POST, PROFISSIONAIS_ALL_POST, ESPECIALIDADE_ALL_POST, PROFISSIONAL_HORARIOS_ALL_POST, PROFISSIONAL_DIAS_EXPEDIENTE_ALL_POST} from '../../../api/endpoints/geral.js'
 import {UserContex} from '../../../Context/UserContex.js'
 import FormConsultaExterno from '../FormConsulta/FormConsultaExterno.js'
 import Pesquisar from '../Pesquisar/index.js'
@@ -17,6 +17,7 @@ const CadastroExterno = ({idConsulta, setIdConsulta, callback, atualizarConsulta
     const [dataProfissionais, setProfissionais] = React.useState(null)
     const [dataEspecializacoes, setEspecializacoes] = React.useState(null)
     const [dataProfissionalHorarios, setDataProfissionalHorarios] = React.useState(null)
+    const [dataProfissionalDiasExprediente, setDataProfissionalDiasExprediente] = React.useState(null)
 	const {getToken, dataUser} = React.useContext(UserContex);
 
 	const {data, error, request, loading} = useFetch();
@@ -48,6 +49,22 @@ const CadastroExterno = ({idConsulta, setIdConsulta, callback, atualizarConsulta
 	        }
 		}
 
+
+		const getProfissionalDiaExpediente = async ()=>{
+			const {url, options} = PROFISSIONAL_DIAS_EXPEDIENTE_ALL_POST({}, getToken());
+			const {response, json} = await request(url, options);
+			if(json){
+				
+				setDataProfissionalDiasExprediente(json)
+				//setShowModalAtualizarProfissionais(true)
+				 //s
+	        }else{
+	        	setDataProfissionalDiasExprediente([])
+	        }
+		}
+
+		//
+
 		const getProEspecializacoes = async ()=>{
 			const {url, options} = ESPECIALIDADE_ALL_POST({}, getToken());
 			const {response, json} = await request(url, options);
@@ -78,8 +95,10 @@ const CadastroExterno = ({idConsulta, setIdConsulta, callback, atualizarConsulta
 			getGrupo();
 		}
 		getProfissionais();
-		getProEspecializacoes();
-		getProfissionalHorarios();		
+		//getProEspecializacoes();
+		//getProfissionalHorarios();	
+		//getProfissionalDiaExpediente();		
+
 		setShowModalAtualizarConsulta(true)
 		
 	}, [cadastrarConsulta])
@@ -97,7 +116,7 @@ const CadastroExterno = ({idConsulta, setIdConsulta, callback, atualizarConsulta
 				</Modal>
 			}
 			{dataGrupo &&
-				<FormConsultaExterno dataProfissionalHorarios={dataProfissionalHorarios} dataProfissionais={dataProfissionais} dataEspecializacoes={dataEspecializacoes} dataGrupo={dataGrupo} setIdConsulta={setIdConsulta} idConsulta={idConsulta} carregando={false} dataConsultaChoice={dataConsulta} setAtualizarConsulta={setAtualizarConsulta} atualizarConsulta={atualizarConsulta} showModalCriarConsulta={showModalAtualizarConsulta} setShowModalCriarConsulta={()=>{setShowModalAtualizarConsulta();setCadastrarConsulta()}} callback={callback} />
+				<FormConsultaExterno dataProfissionalDiasExprediente={dataProfissionalDiasExprediente} dataProfissionalHorarios={dataProfissionalHorarios} dataProfissionais={dataProfissionais} dataEspecializacoes={dataEspecializacoes} dataGrupo={dataGrupo} setIdConsulta={setIdConsulta} idConsulta={idConsulta} carregando={false} dataConsultaChoice={dataConsulta} setAtualizarConsulta={setAtualizarConsulta} atualizarConsulta={atualizarConsulta} showModalCriarConsulta={showModalAtualizarConsulta} setShowModalCriarConsulta={()=>{setShowModalAtualizarConsulta();setCadastrarConsulta()}} callback={callback} />
 			}
 		</>
 	)

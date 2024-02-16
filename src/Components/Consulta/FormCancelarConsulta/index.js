@@ -9,7 +9,7 @@ import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible'
 import {FORMAT_DATA_PT_BR} from '../../../functions/index.js'
 import Swal from 'sweetalert2'
 
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CONSULTA_SAVE_POST, CONSULTA_ALL_POST, CONSULTA_CANCELAR_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST} from '../../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CONSULTA_SAVE_POST, CONSULTA_ALL_POST, CONSULTA_CANCELAR_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST, PROFISSIONAL_DIAS_EXPEDIENTE_ALL_POST} from '../../../api/endpoints/geral.js'
 
 
 const FormCancelarConsulta = ({dataConsultaChoice, setIdConsulta, idConsulta, showModalCancelarConsulta, setShowModalCancelarConsulta, callback, cancelarConsulta, setCancelarConsulta, carregando})=>{
