@@ -33,7 +33,7 @@ const Home = (props)=>{
     const [cadastrarCliente, setCadastrarCliente] = React.useState(false)    
     const [dataGrupo, setDataGrupo] = React.useState(null)
     const [tpView, setTpView] = React.useState('mes')//mes//semana 
-    const [mostarFiltros, setMostarFiltros] = React.useState(false) 
+    const [mostarFiltros, setMostarFiltros] = React.useState(true) 
     const [filtroMobile, setFiltroMobile] = React.useState(null)
     const [acao, setAcao] = React.useState(null)
     const [pessoa, setPessoa] = React.useState('')
@@ -45,8 +45,9 @@ const Home = (props)=>{
     const [filtroConcluidas, setFiltroConcluidas] = React.useState(false)
     const [filtroCanceladas, setFiltroCanceladas] = React.useState(false)
 
+    const {getToken, dataUser, isMobile} = React.useContext(UserContex);
 
-    const {getToken} = React.useContext(UserContex);
+    const {type, is_system, tenant_id} = dataUser ? dataUser : {};
 
     const alerta = (target)=>{
         console.log(target)
@@ -459,7 +460,7 @@ const Home = (props)=>{
                     </div>
                 </Col>
                 
-                <Col  xs="12" sm="12" md={mostarFiltros ? "9":"12"}>
+                <Col  xs="12" sm="12" md={isMobile ==true ? '12' : mostarFiltros ? "9":"12"}>
                      <Include
                         dataEstado={agenda}
                         loadingData={loading}

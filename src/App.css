@@ -127,8 +127,8 @@ a{
         display: block;
     }
 
-    /* Extra large devices (large laptops and desktops, 1200px and up) */
-    @media only screen and (min-width: 1200px) {
+    /* Extra large devices (large laptops and desktops, 1200px and up) 1200px*/
+    @media only screen and (min-width: 1024px) {
         display: none;
     }
 }
@@ -169,6 +169,9 @@ a{
     /* Medium devices (landscape tablets, 768px and up) */
     @media only screen and (min-width: 768px) {
         display: none;
+    }/* Extra large devices (large laptops and desktops, 1200px and up) */
+    @media only screen and (min-width: 1024px) {
+        display: block;
     }
 
     /* Extra large devices (large laptops and desktops, 1200px and up) */
@@ -234,4 +237,3 @@ a{
 
     }
 }
-

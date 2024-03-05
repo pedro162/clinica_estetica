@@ -4,6 +4,7 @@ import {useHistory} from 'react-router-dom'
 import {login, logout, getToken, isAuthenticated, sandBox} from '../api/Auth/index.js'
 import useFetch from '../Hooks/useFetch.js';
 import {Login} from '../View/index.js'
+import {IS_MOBILE, MOBILE_WITH, isMobileYet, WINDOW_WIDTH} from '../var/index.js'
 
 export const UserContex = React.createContext();
 
@@ -11,6 +12,7 @@ export const UserStorange = ({children})=>{
 
     const [loginUser, setLoginUser] = React.useState(null)
     const [dataUser, setDataUser] = React.useState(null)
+    const [isMobile, setIsMobile] = React.useState(false) 
 
     const historyUser = useHistory();
     const {request, loading, data, error} = useFetch();
@@ -135,8 +137,24 @@ export const UserStorange = ({children})=>{
         getDataUser()
     }, [])
 
+
+     React.useEffect(() => {
+        const handleResize = () => {
+          setIsMobile(isMobileYet());
+        };
+
+        // Adiciona um listener de redimensionamento
+        window.addEventListener('resize', handleResize);
+
+        // Remove o listener quando o componente é desmontado
+        return () => {
+          window.removeEventListener('resize', handleResize);
+        };
+      }, []); // O segundo parâmetro vazio assegura que o efeito é executado apenas uma vez durante a montagem do componente
+
+
     return(
-        <UserContex.Provider value={{userLogin, getUser,userLogout, isAuthenticated, sandBox,loginUser, setLoginUser, loading, data, error, dataUser, setDataUser, getToken}} >
+        <UserContex.Provider value={{isMobile, userLogin, getUser,userLogout, isAuthenticated, sandBox,loginUser, setLoginUser, loading, data, error, dataUser, setDataUser, getToken}} >
             {children}
         </UserContex.Provider>
     )

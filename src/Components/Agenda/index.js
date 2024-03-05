@@ -35,7 +35,7 @@ const Agenda = (props)=>{
     const [status, setStatus] = React.useState(null)
     const [historico, setHistorico] = React.useState(null)
     const [agenda_id, setAgendaId] = React.useState('')
-    const [mostarFiltros, setMostarFiltros] = React.useState(false) 
+    const [mostarFiltros, setMostarFiltros] = React.useState(true) 
     const [filtroMobile, setFiltroMobile] = React.useState(null)
     const [acao, setAcao] = React.useState(null)
     const [ordenacao, setOrdenacao] = React.useState('')
@@ -46,8 +46,10 @@ const Agenda = (props)=>{
     const [dtInicio, setDtInicio] = React.useState(null)
     const [dtFim, setDtFim] = React.useState(null)
 
+    
+    const {getToken, dataUser, isMobile} = React.useContext(UserContex);
 
-    const {getToken} = React.useContext(UserContex);
+    const {type, is_system, tenant_id} = dataUser ? dataUser : {};
 
     const alerta = (target)=>{
         console.log(target)
@@ -514,7 +516,7 @@ const Agenda = (props)=>{
                     </div>
                 </Col>
                 
-                <Col  xs="12" sm="12" md={mostarFiltros ? "9":"12"}>
+                <Col  xs="12" sm="12" md={isMobile ==true ? '12' : mostarFiltros ? "9":"12"}>
                     <Include
                         dataEstado={cidade}
                         loadingData={loading}

@@ -3,6 +3,7 @@ import estilos from './Consulta.module.css'
 import useFetch from '../../Hooks/useFetch.js';
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CONSULTA_ALL_POST} from '../../api/endpoints/geral.js'
 import {FORMAT_DATA_PT_BR} from '../../functions/index.js'
+import {IS_MOBILE, MOBILE_WITH, isMobileYet, WINDOW_WIDTH} from '../../var/index.js'
 import {Col, Row, Button } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
@@ -32,7 +33,7 @@ const Consulta = (props)=>{
     const [atualizarConsulta, setAtualizarConsulta] = React.useState(false)   
     const [cancelarConsulta, setCancelarConsulta] = React.useState(false)    
     const [cadastrarConsulta, setCadastrarConsulta] = React.useState(false) 
-    const [mostarFiltros, setMostarFiltros] = React.useState(false) 
+    const [mostarFiltros, setMostarFiltros] = React.useState(true) 
     const [acao, setAcao] = React.useState(null)
     const [pessoa, setPessoa] = React.useState('')
     const [codigoPessoa, setCodigoPessoa] = React.useState(null)
@@ -54,7 +55,7 @@ const Consulta = (props)=>{
     const [filtroCanceladas, setFiltroCanceladas] = React.useState(false)
     const [filtroRemarcadas, setFiltroRemarcadas] = React.useState(false)
 
-    const {getToken, dataUser} = React.useContext(UserContex);
+    const {getToken, dataUser, isMobile} = React.useContext(UserContex);
 
     const {type, is_system, tenant_id} = dataUser ? dataUser : {};
 
@@ -340,7 +341,11 @@ const Consulta = (props)=>{
    //name_profissional
 
     //------------
-
+/*
+    React.useEffect(()=>{
+        setIsMobile(isMobileYet())
+    }, [IS_MOBILE, isMobileYet, WINDOW_WIDTH])
+*/
 
     //------------
     const montarFiltro = ()=>{
@@ -618,6 +623,7 @@ const Consulta = (props)=>{
                 {mostarFiltros && 
                     (
                         <>
+
                             <Col  xs="12" sm="12" md="3" className={'default_card_report'} >
                                 <Filter
                                     filtersArr={filtersArr}
@@ -730,7 +736,7 @@ const Consulta = (props)=>{
                     </div>
                 </Col>
 
-                 <Col  xs="12" sm="12" md={mostarFiltros ? "9":"12"}>
+                 <Col  xs="12" sm="12" md={isMobile ==true ? '12' : mostarFiltros ? "9":"12"}>
                     <Include
                         dataEstado={estado}
                         loadingData={loading}

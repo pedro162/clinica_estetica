@@ -34,7 +34,8 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
     const [pessoa, setPessoa] = React.useState('')
 
 
-    const {getToken} = React.useContext(UserContex);
+    const {getToken, dataUser} = React.useContext(UserContex);
+    const {type, is_system, tenant_id} = dataUser ? dataUser : {};
 
     const alerta = (target)=>{
         console.log(target)
@@ -126,6 +127,13 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                         btnEditar   = false;
                     }
 
+                    if(type=='external'){
+                        btnGerarFinanceiro  = false;
+                        btnEditar           = false;
+                        
+                    }
+
+
                     if(btnGerarFinanceiro){
                         acoesArr.push({acao:()=>atualizarConsultaAction(atual.id), label:'Gerar financeiro', propsOption:{}, propsLabel:{}})
                     }
@@ -139,18 +147,17 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                     }
 
                     if(btnExames){
-                        acoesArr.push({acao:()=>atualizarConsultaAction(atual.id), label:'Exames', propsOption:{}, propsLabel:{}})
+                        
                     }
 
                     if(btnDiagnostico){
-                        acoesArr.push({acao:()=>atualizarConsultaAction(atual.id), label:'Diagnóstico', propsOption:{}, propsLabel:{}})
+                        
                     }
                     if(btnFicha){
-                        acoesArr.push({acao:()=>atualizarConsultaAction(atual.id), label:'Ficha', propsOption:{}, propsLabel:{}})
+                        
                     }
 
                     if(btnDetalhes){
-                        acoesArr.push({acao:()=>alert('Detalhes qui: '+(atual.id)), label:'Detalhes', propsOption:{}, propsLabel:{}})
                     }
 
                     
@@ -329,7 +336,7 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                     let btnGerarFinanceiro  = true;
 
                     if(atual.status == 'cancelado'){
-                        btnCancelar         = false;
+                        //btnCancelar         = false;
                         btnEditar           = false;
                         btnGerarFinanceiro  = false;
                         line_style.color = 'red';
@@ -339,6 +346,12 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                         btnCancelar         = false;
                         btnEditar           = false;
                         line_style.color    = 'green';
+                    }
+
+                    if(type=='external'){
+                        btnGerarFinanceiro  = false;
+                        btnEditar           = false;
+                        
                     }
 
                     if(btnGerarFinanceiro){
@@ -354,18 +367,18 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                     }
 
                     if(btnExames){
-                        acoesArr.push({acao:()=>atualizarConsultaAction(atual.id), label:'Exames', propsOption:{}, propsLabel:{}})
+                        
                     }
 
                     if(btnDiagnostico){
-                        acoesArr.push({acao:()=>atualizarConsultaAction(atual.id), label:'Diagnóstico', propsOption:{}, propsLabel:{}})
+                        
                     }
                     if(btnFicha){
-                        acoesArr.push({acao:()=>atualizarConsultaAction(atual.id), label:'Ficha', propsOption:{}, propsLabel:{}})
+                        
                     }
 
                     if(btnDetalhes){
-                        acoesArr.push({acao:()=>alert('Detalhes qui: '+(atual.id)), label:'Detalhes', propsOption:{}, propsLabel:{}})
+                        
                     }
 
                     

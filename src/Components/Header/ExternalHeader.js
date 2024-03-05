@@ -34,7 +34,6 @@ const ExternalHeader = (props)=>{
                         
                         <NavDropdown title="Meu prontuário" id="collasible-nav-dropdown">
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} onClick={handleLinkClick} to="/consulta/index" >Consultas</Link></NavDropdown.Item>
-                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} onClick={handleLinkClick} to="/consulta/index" >Cancelar consulta</Link></NavDropdown.Item>
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} onClick={handleLinkClick} to="/fichas/index" >Fichas</Link></NavDropdown.Item>
                             
                         </NavDropdown>

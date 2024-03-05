@@ -25,7 +25,9 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionais, setIdConsul
 	const {data, error, request, loading, setError} = useFetch();
 	const dataRequest = useFetch();
 
-	const {getToken, dataUser} = React.useContext(UserContex);
+	const {getToken, dataUser, isMobile} = React.useContext(UserContex);
+
+    const {type, is_system, tenant_id} = dataUser ? dataUser : {};
 
     const [dataEspecializacoes, setEspecializacoes] = React.useState(null)    
     const [dataProfissionalHorarios, setDataProfissionalHorarios] = React.useState(null)
@@ -36,7 +38,9 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionais, setIdConsul
 	const [benfeficiario, setBeneficiario] = React.useState(null)
 	const [especializacao, setEspecializacao] = React.useState(null)
 	const [horario, setHorario] = React.useState(null)
+    const [horarioId, setHorarioId] = React.useState(null)
     const [dateConsultaAtendimento, setDateConsultaAtendimento] = React.useState(null)
+    const [dateOfWeekConsultaAtendimento, setDateOfWeekConsultaAtendimento] = React.useState(null)
     const [profissionalId, setProfissionalId] = React.useState(null)
     const [filiallId, setFilialId] = React.useState(null)
     //filial_id
@@ -50,6 +54,7 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionais, setIdConsul
 			pessoa_id,
 			dt_inicio,
 			hr_inicio,
+            horario_id,
 			prioridade,
 			status,
 			profissional_id,
@@ -67,6 +72,7 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionais, setIdConsul
     		'pessoa_id':pessoa_id > 0 ? pessoa_id : benfeficiario,
     		'dt_inicio':dt_inicio ? dt_inicio : dateConsultaAtendimento,
     		'hr_inicio':hr_inicio ? hr_inicio : horario,
+            'horario_id':horario_id? horario_id : horarioId,
     		'prioridade':prioridade ? prioridade : 'normal',
     		'status':status ? status : null,
     		'profissional_id':profissional_id > 0 ? profissional_id : profissionalId,
@@ -76,6 +82,9 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionais, setIdConsul
 			'name_atendido':name_atendido ? name_atendido : 'proprio',
 			'tipo':tipo ? tipo : 'consulta',
     	}
+
+        //console.table(data)
+        //return false;
 
 		if(atualizarConsulta == true){
             const {url, options} = CONSULTA_UPDATE_POST(idConsulta, data, getToken());
@@ -154,8 +163,12 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionais, setIdConsul
             
     }
 
+    const verficaMobile = ()=>{
+        return window.innderWith <= 768;
+    }
+
 	const dataToFormConsulta = ()=>{
-    	let obj = {name:'', historico:'', pessoa_id:'',	dt_inicio:'', hr_inicio:'', prioridade:'', status:'', profissional_id:'',
+    	let obj = {name:'', historico:'', pessoa_id:'',	dt_inicio:'', hr_inicio:'', horario_id:'', prioridade:'', status:'', profissional_id:'',
 		filial_id:'', dt_fim:'', hr_fim:'', name_atendido:'', tipo:''}
     	if(dataConsultaChoice && dataConsultaChoice.hasOwnProperty('mensagem')){
     		let data = dataConsultaChoice.mensagem;
@@ -175,6 +188,10 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionais, setIdConsul
 			if(data.hasOwnProperty('hr_inicio')){
     			obj.hr_inicio = data.hr_inicio;
     		}
+
+            if(data.hasOwnProperty('horario_id')){
+                obj.horario_id = data.horario_id;
+            }
 
             if(data.hasOwnProperty('prioridade')){
                 obj.prioridade = data.prioridade;
@@ -315,7 +332,7 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionais, setIdConsul
                     let regigroAtual = {
                         title:<span style={{fontWeight:'480'}}> {String(atual?.hora).substr(0,5)} </span>,
                         label:`${String(atual?.hora).substr(0,5)}`,
-                        props:{className: `btn btn-sm ${horario > 0 && horario == atual?.id ? 'btn-primary' : 'btn-secondary'}  mb-2 `, style:{borderRadius:'50px'}, onClick:()=>setHorario((horario)=>{if(horario == atual?.id){ setProfissionalId(null); setFilialId(null); return 0;}else{ setAbaAtual('confirm'); setProfissionalId(atual?.profissional_id); setFilialId(atual?.filial_id); return atual?.id;} }) },
+                        props:{className: `btn btn-sm ${horarioId > 0 && horarioId == atual?.id ? 'btn-primary' : 'btn-secondary'}  mb-2 `, style:{borderRadius:'50px'}, onClick:()=>setHorarioId((horarioId)=>{if(horarioId == atual?.id){ setProfissionalId(null); setFilialId(null); setHorario(null); return 0;}else{ setAbaAtual('confirm'); setProfissionalId(atual?.profissional_id); setFilialId(atual?.filial_id); setHorario(atual?.hora); return atual?.id;} }) },
                         toSum:1,
                         isCoin:1,
                     }
@@ -396,13 +413,13 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionais, setIdConsul
 
                         {
                             id:atual?.id,
-                            propsRow:{id:(atual.id), setDataEscolhida:setDateConsultaAtendimento, callback:()=>{setAbaAtual('hour')}},
+                            propsRow:{id:(atual.id), setDataEscolhida:setDateConsultaAtendimento, callback:()=>{setAbaAtual('hour'); setDateOfWeekConsultaAtendimento(atual?.nr_dia)}},
                             data_format:null,
                             dia_semana:atual?.nr_dia,
                             hora:null,
                             mainLabel:atual?.name,
                             acoes:[
-                                {acao:()=>{setDateConsultaAtendimento(atual.id);setAbaAtual('hour'); }, label:'Editar', propsOption:{}, propsLabel:{}},
+                                //{acao:()=>{setDateConsultaAtendimento(atual.id);setAbaAtual('hour'); }, label:'Editar', propsOption:{}, propsLabel:{}},
                             ],
                             dados:atual,
                             celBodyTableArr:[
@@ -521,7 +538,15 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionais, setIdConsul
     const getProfissionalHorarios = async ()=>{
         setDataProfissionalHorarios([])
 
-        const {url, options} = PROFISSIONAL_HORARIOS_ALL_POST({}, getToken());
+        let dataSearch = {com_agenda:1, agenda_livre:1}
+        
+        //dataSearch['verificar_data_agenda'] = 1;
+        if(String(dateConsultaAtendimento).trim().length > 0){
+            dataSearch['verificar_data_agenda'] = dateConsultaAtendimento;
+        }
+
+
+        const {url, options} = PROFISSIONAL_HORARIOS_ALL_POST({...dataSearch}, getToken());
         const {response, json} = await request(url, options);
         if(json){
                
@@ -535,7 +560,16 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionais, setIdConsul
     const getProfissionalDiaExpediente = async ()=>{
         setDataProfissionalDiasExprediente([])
 
-        const {url, options} = PROFISSIONAL_DIAS_EXPEDIENTE_ALL_POST({}, getToken());
+        let dataSearch = {com_agenda:1, agenda_livre:1}
+        if(dateOfWeekConsultaAtendimento >= 0){
+            dataSearch['nr_dia'] = dateOfWeekConsultaAtendimento;
+        }
+
+        if(String(dateConsultaAtendimento).trim().length > 0){
+            dataSearch['verificar_data_agenda'] = dateConsultaAtendimento;
+        }
+
+        const {url, options} = PROFISSIONAL_DIAS_EXPEDIENTE_ALL_POST({...dataSearch}, getToken());
         const {response, json} = await request(url, options);
         if(json){
             
@@ -659,6 +693,8 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionais, setIdConsul
                         setSubmitting(false);
                       }, 400);*/
                       //alert('aqui')
+                      //console.table({...values})
+                      //return false; 
 					 
                      await sendData({...values});
                 }}
@@ -713,7 +749,7 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionais, setIdConsul
 																      className="mb-3"
 																      fill
 																 >
-																	<Tab eventKey="benfeficiario" title={<span style={abaAtual == 'benfeficiario' ? {color:'green', fontWeight:'bolder'} : {} } >Beneficíario</span>} { ...( abaAtual != 'benfeficiario' ? {disabled:'disabled'} : {}) }  variant="pills"   >
+																	<Tab eventKey="benfeficiario" title={<span style={abaAtual == 'benfeficiario' ? {color:'green', fontWeight:'bolder'} : {} } >Cliente</span>} { ...( abaAtual != 'benfeficiario' ? {disabled:'disabled'} : {}) }  variant="pills"   >
 																    	<Row className="mb-1" >
 																    		<Col className={'justify-content-md-center'} md={{ span: 6, offset: 3 }} style={{display:'flex', flexDierectoin:'column', alignItems:'center', justifyContent:'center'}} >
 																				<Button className={ `btn btn-sm ${benfeficiario > 0 ? 'btn-primary' : 'btn-secondary'} `} style={{borderRadius:'50px'}} onClick={()=>{setBeneficiario((benfeficiario)=>{ if(benfeficiario > 0){ return 0}else{setAbaAtual('especialization'); return 1;} } ); setEspecializacoes([]); }}>
@@ -727,22 +763,22 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionais, setIdConsul
         																	{benfeficiario > 0 ? (
         																		<>
         																			<Col md={4} sm={6} xs={6} style={{display:'flex', flexDierectoin:'column', alignItems:'center', justifyContent:'center'}} >
-		        																		<Button onClick={()=>{setAbaAtual('especialization') } } className={ `btn btn-sm btn-secondary`} style={{borderRadius:'50px'}} >
-																						 	<FontAwesomeIcon icon={faChevronCircleRight} /> 
+		        																		<Button onClick={()=>{setAbaAtual('especialization') } } className={ `btn btn-sm btn-primary`} style={{borderRadius:'50px'}} >
+																						 	<FontAwesomeIcon icon={faChevronCircleLeft} /> Anterior
 																						</Button>
 		        																	</Col>
 
 		        																	<Col md={{ span: 4, offset: 4 }} sm={6} xs={6} style={{display:'flex', flexDierectoin:'column', alignItems:'center', justifyContent:'center'}} >
-		        																		<Button onClick={()=>{setAbaAtual('especialization') } } className={ `btn btn-sm btn-secondary`} style={{borderRadius:'50px'}} >
-																						 	<FontAwesomeIcon icon={faChevronCircleRight} /> 
+		        																		<Button onClick={()=>{setAbaAtual('especialization') } } className={ `btn btn-sm btn-primary`} style={{borderRadius:'50px'}} >
+																						 	Próximo  <FontAwesomeIcon icon={faChevronCircleRight} /> 
 																						</Button>
 		        																	</Col>
         																		</>
         																	):(
         																		<>
         																			<Col md={{ span: 4, offset: 8 }}>
-		        																		<Button onClick={()=>{setAbaAtual('especialization') } } className={ `btn btn-sm btn-secondary`} style={{borderRadius:'50px'}} >
-																						 	<FontAwesomeIcon icon={faChevronCircleRight} /> 
+		        																		<Button onClick={()=>{setAbaAtual('especialization') } } className={ `btn btn-sm btn-primary`} style={{borderRadius:'50px'}} >
+																						 	Próximo <FontAwesomeIcon icon={faChevronCircleRight} /> 
 																						</Button>
 		        																	</Col>
         																		</>
@@ -750,7 +786,7 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionais, setIdConsul
 																		</Row>
 
 																    </Tab>
-																  	<Tab eventKey="especialization" title={<span style={abaAtual == 'especialization' ? {color:'green', fontWeight:'bolder'} : {} } >Especialização</span>}   { ...(abaAtual != 'especialization' ? {disabled:'disabled'} : {}) } className={'btn-next-especialization'}   >
+																  	<Tab eventKey="especialization" title={<span style={abaAtual == 'especialization' ? {color:'green', fontWeight:'bolder'} : {} } >Serviço</span>}   { ...(abaAtual != 'especialization' ? {disabled:'disabled'} : {}) } className={'btn-next-especialization'}   >
 																    	 
 																    	<Row className="mb-2" >
 																    		
@@ -798,22 +834,22 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionais, setIdConsul
 																			{especializacao > 0 ? (
         																		<>
         																			<Col md={4} sm={6} xs={6} style={{display:'flex', flexDierectoin:'column', alignItems:'center', justifyContent:'center'}} >
-		        																		<Button onClick={()=>{setAbaAtual('benfeficiario') } } className={ `btn btn-sm btn-secondary`} style={{borderRadius:'50px'}} >
-																						 	<FontAwesomeIcon icon={faChevronCircleLeft} /> 
+		        																		<Button onClick={()=>{setAbaAtual('benfeficiario') } } className={ `btn btn-sm btn-primary`} style={{borderRadius:'50px'}} >
+																						 	<FontAwesomeIcon icon={faChevronCircleLeft} /> Anterior
 																						</Button>
 		        																	</Col>
 
 		        																	<Col md={{ span: 4, offset: 4 }} sm={6} xs={6} style={{display:'flex', flexDierectoin:'column', alignItems:'center', justifyContent:'center'}} >
-		        																		<Button onClick={()=>{setAbaAtual('date') } } className={ `btn btn-sm btn-secondary`} style={{borderRadius:'50px'}} >
-																						 	<FontAwesomeIcon icon={faChevronCircleRight} /> 
+		        																		<Button onClick={()=>{setAbaAtual('date') } } className={ `btn btn-sm btn-primary`} style={{borderRadius:'50px'}} >
+																						 	Próximo <FontAwesomeIcon icon={faChevronCircleRight} /> 
 																						</Button>
 		        																	</Col>
         																		</>
         																	):(
         																		<>
         																			<Col md={4} sm={6} xs={6} style={{display:'flex', flexDierectoin:'column', alignItems:'center', justifyContent:'center'}} >
-		        																		<Button onClick={()=>{setAbaAtual('benfeficiario') } } className={ `btn btn-sm btn-secondary`} style={{borderRadius:'50px'}} >
-																						 	<FontAwesomeIcon icon={faChevronCircleLeft} /> 
+		        																		<Button onClick={()=>{setAbaAtual('benfeficiario') } } className={ `btn btn-sm btn-primary`} style={{borderRadius:'50px'}} >
+																						 	<FontAwesomeIcon icon={faChevronCircleLeft} /> Anterior
 																						</Button>
 		        																	</Col>
         																		</>
@@ -838,90 +874,6 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionais, setIdConsul
                                                                                         />
                                                                                 )}
                                                                                 
-                                                                                {
-                                                                                    /*Array.isArray(gerarListDate()) && gerarListDate().length > 0 ? 
-                                                                                     (
-                                                                                        gerarListDate().map((item, index, arr)=>{
-                                                                                            let celBodyTableArr         = item.hasOwnProperty('celBodyTableArr')        ? item.celBodyTableArr : [];
-                                                                                            let propsRowBodyTable       = item.hasOwnProperty('propsRow')               ? item.propsRow: {};
-                                                                                            let id                      = propsRowBodyTable.hasOwnProperty('id')        ? propsRowBodyTable.id: 0;
-                                                                                            let propsContainerTitulo    = item.hasOwnProperty('propsContainerTitulo')   ? item.propsContainerTitulo: {};
-                                                                                            let propsContainerButtons   = item.hasOwnProperty('propsContainerButtons')  ? item.propsContainerButtons: {};
-                                                                                            let acoesBottomCard         = item.hasOwnProperty('acoesBottomCard')        ? item.acoesBottomCard: [];
-
-
-                                                                                            let titleRow                = propsRowBodyTable.hasOwnProperty('titleRow')      ? propsRowBodyTable.titleRow : '';
-                                                                                            let style                   = propsRowBodyTable.hasOwnProperty('style')         ? propsRowBodyTable.style : {};
-                                                                                            let mainIcon                = propsRowBodyTable.hasOwnProperty('mainIcon')      ? propsRowBodyTable.mainIcon : null;
-
-                                                                                            id = Number(id);
-                                                                                            let titleCard           = item?.title
-                                                                                            if(!titleCard){
-                                                                                                titleCard = ''
-                                                                                            }
-
-                                                                                            return(
-                                                                                                <Col  key={id+index+arr.length}>
-
-                                                                                                    <Row className={'pb-2 px-1'}  style={{...style}} > 
-                                                                                                        
-                                                                                                        <Col xs={12} sm={12} md={12}  style={{textAlign:'left', fontSize:'10pt'}}>
-                                                                                                            <Row className={'mb-1'}>
-                                                                                                                <span style={{fontSize:'14pt', fontWeight:'bolder'}} >{titleRow}</span>
-                                                                                                            </Row>
-
-                                                                                               
-                                                                                                        {
-                                                                                                            celBodyTableArr && Array.isArray(celBodyTableArr) && celBodyTableArr.length > 0 ? (
-                                                                                                                celBodyTableArr.map((itemCelArr, indexCelArr, arrCelArr)=>{
-
-                                                                                                                    return(
-                                                                                                                            <div  key={indexCelArr+arrCelArr.length+itemCelArr.length} >
-                                                                                                                                <Row>
-
-                                                                                                                                    {
-                                                                                                                                        Array.isArray(itemCelArr) && itemCelArr.length > 0 ? 
-
-                                                                                                                                        (
-                                                                                                                                            itemCelArr.map((itemCel, indexCel, arrCel)=>{
-
-
-                                                                                                                                                let labelCel = itemCel.hasOwnProperty('label') ? itemCel.label :'';
-                                                                                                                                                let toSum = itemCel.hasOwnProperty('toSum') ? itemCel.toSum :0;
-                                                                                                                                                let title = itemCel.hasOwnProperty('title') ? itemCel.title : '';
-                                                                                                                                                let propsRow = itemCel.hasOwnProperty('propsRow') ? itemCel.propsRow : {};
-                                                                                                                                                 
-                                                                                                                                                let isCoin              = itemCel.hasOwnProperty('isCoin') ? itemCel.isCoin :0;
-                                                                                                                                                
-                                                                                                                                                
-
-                                                                                                                                                let propsCelBodyTable   = itemCel.hasOwnProperty('props') ? itemCel.props : {};
-                                                                                                                                                return <Col key={indexCel} ><Button {...propsCelBodyTable} >{labelCel}</Button></Col>
-                                                                                                                                            })
-                                                                                                                                        )
-                                                                                                                                        :
-
-                                                                                                                                        ('')
-                                                                                                                                    }
-                                                                                                                                 </Row>
-                                                                                                                                    
-                                                                                                                            </div>  
-                                                                                                                    )
-                                                                                                                })
-
-                                                                                                            ) : ('')
-                                                                                                        }
-                                                                                                        </Col>
-                                                                                                    </Row>
-                                                                                                    <hr style={{margin:'0',padding:'0'}}/>
-
-                                                                                             </Col>
-                                                                                            )
-                                                                                        })
-                                       
-                                                                                    )
-                                                                                    :('')*/
-                                                                                 }
 
                                                                             </Col>
                                                                         </Row>
@@ -931,22 +883,22 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionais, setIdConsul
                                                                             {dateConsultaAtendimento ? (
                                                                                 <>
                                                                                     <Col md={4} sm={6} xs={6} style={{display:'flex', flexDierectoin:'column', alignItems:'center', justifyContent:'center'}} >
-                                                                                        <Button onClick={()=>{setAbaAtual('especialization') } } className={ `btn btn-sm btn-secondary`} style={{borderRadius:'50px'}} >
-                                                                                            <FontAwesomeIcon icon={faChevronCircleLeft} /> 
+                                                                                        <Button onClick={()=>{setAbaAtual('especialization') } } className={ `btn btn-sm btn-primary`} style={{borderRadius:'50px'}} >
+                                                                                            <FontAwesomeIcon icon={faChevronCircleLeft} /> Anterior 
                                                                                         </Button>
                                                                                     </Col>
 
                                                                                     <Col md={{ span: 4, offset: 4 }} sm={6} xs={6} style={{display:'flex', flexDierectoin:'column', alignItems:'center', justifyContent:'center'}} >
-                                                                                        <Button onClick={()=>{setAbaAtual('hour') } } className={ `btn btn-sm btn-secondary`} style={{borderRadius:'50px'}} >
-                                                                                            <FontAwesomeIcon icon={faChevronCircleRight} /> 
+                                                                                        <Button onClick={()=>{setAbaAtual('hour') } } className={ `btn btn-sm btn-primary`} style={{borderRadius:'50px'}} >
+                                                                                            Próximo <FontAwesomeIcon icon={faChevronCircleRight} /> 
                                                                                         </Button>
                                                                                     </Col>
                                                                                 </>
                                                                             ):(
                                                                                 <>
                                                                                     <Col md={4} sm={6} xs={6} style={{display:'flex', flexDierectoin:'column', alignItems:'center', justifyContent:'center'}} >
-                                                                                        <Button onClick={()=>{setAbaAtual('especialization') } } className={ `btn btn-sm btn-secondary`} style={{borderRadius:'50px'}} >
-                                                                                            <FontAwesomeIcon icon={faChevronCircleLeft} /> 
+                                                                                        <Button onClick={()=>{setAbaAtual('especialization') } } className={ `btn btn-sm btn-primary`} style={{borderRadius:'50px'}} >
+                                                                                            <FontAwesomeIcon icon={faChevronCircleLeft} /> Anterior
                                                                                         </Button>
                                                                                     </Col>
                                                                                 </>
@@ -1056,22 +1008,22 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionais, setIdConsul
 																			{horario > 0 ? (
         																		<>
         																			<Col md={4} sm={6} xs={6} style={{display:'flex', flexDierectoin:'column', alignItems:'center', justifyContent:'center'}} >
-		        																		<Button onClick={()=>{setAbaAtual('date') } } className={ `btn btn-sm btn-secondary`} style={{borderRadius:'50px'}} >
-																						 	<FontAwesomeIcon icon={faChevronCircleLeft} /> 
+		        																		<Button onClick={()=>{setAbaAtual('date') } } className={ `btn btn-sm btn-primary`} style={{borderRadius:'50px'}} >
+																						 	<FontAwesomeIcon icon={faChevronCircleLeft} /> Anterior 
 																						</Button>
 		        																	</Col>
 
 		        																	<Col md={{ span: 4, offset: 4 }} sm={6} xs={6} style={{display:'flex', flexDierectoin:'column', alignItems:'center', justifyContent:'center'}} >
-		        																		<Button onClick={()=>{setAbaAtual('confirm') } } className={ `btn btn-sm btn-secondary`} style={{borderRadius:'50px'}} >
-																						 	<FontAwesomeIcon icon={faChevronCircleRight} /> 
+		        																		<Button onClick={()=>{setAbaAtual('confirm') } } className={ `btn btn-sm btn-primary`} style={{borderRadius:'50px'}} >
+																						 	Próximo <FontAwesomeIcon icon={faChevronCircleRight} /> 
 																						</Button>
 		        																	</Col>
         																		</>
         																	):(
         																		<>
         																			<Col md={4} sm={6} xs={6} style={{display:'flex', flexDierectoin:'column', alignItems:'center', justifyContent:'center'}} >
-		        																		<Button onClick={()=>{setAbaAtual('date') } } className={ `btn btn-sm btn-secondary`} style={{borderRadius:'50px'}} >
-																						 	<FontAwesomeIcon icon={faChevronCircleLeft} /> 
+		        																		<Button onClick={()=>{setAbaAtual('date') } } className={ `btn btn-sm btn-primary`} style={{borderRadius:'50px'}} >
+																						 	<FontAwesomeIcon icon={faChevronCircleLeft} /> Anterior 
 																						</Button>
 		        																	</Col>
         																		</>
@@ -1084,7 +1036,7 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionais, setIdConsul
 																  	<Tab eventKey="confirm" title={<span style={abaAtual == 'confirm' ? {color:'green', fontWeight:'bolder'} : {} } >Confirmar</span>}  { ...(abaAtual != 'confirm' ? {disabled:'disabled'} : {}) }  >
 																    	<Row>
                                                                             <Col style={{display:'flex', flexDierectoin:'column', alignItems:'center', justifyContent:'center'}} >
-                                                                                <Button variant="primary" propsConcluir={{'disabled':loading}} className="botao_success btn btn-sm" onClick={()=>{handleSubmit(); alert('aqui')}}>
+                                                                                <Button variant="primary" propsConcluir={{'disabled':loading}} className="botao_success btn btn-sm" onClick={()=>{handleSubmit(); }}>
                                                                                     {loading ? 'Salvando...' : 'Concluir'}
                                                                                 </Button>
                                                                             </Col>
@@ -1092,8 +1044,8 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionais, setIdConsul
                                                                         </Row>
 																    	<Row>
 																			<Col >
-																				<Button className={ `btn btn-sm btn-secondary`} style={{borderRadius:'50px'}} onClick={()=>setAbaAtual('hour')}>
-																  		           <FontAwesomeIcon icon={faChevronCircleLeft} />
+																				<Button className={ `btn btn-sm btn-primary`} style={{borderRadius:'50px'}} onClick={()=>setAbaAtual('hour')}>
+																  		           <FontAwesomeIcon icon={faChevronCircleLeft} /> Anterior
 																  		        </Button>		  		    
 																			</Col>
 																			<Col>
@@ -1120,138 +1072,6 @@ const FormConsultaExterno = ({dataConsultaChoice, dataProfissionais, setIdConsul
 												(
 													<>
 														
-														<Row className="mb-1">
-															<Col xs="12" sm="12" md="6">
-																<Field
-																		data={
-																			{
-																				hasLabel:true,
-																				contentLabel:'Profissional *',
-																				atributsFormLabel:{
-
-																				},
-																				atributsFormControl:{
-																					type:'text',
-																					name:'profissional_id',
-																					placeholder:'Ex: fulano de tal',
-																					id:'profissional_id',
-																					name_cod:'profissional_id',
-																					name_desacription:'profissional_name',
-																					onChange:handleChange,
-																					onBlur:handleBlur,
-																					value:values.profissional_id,
-																					className:`${estilos.input}`,
-																					size:"sm"
-																				},
-																				atributsContainer:{
-																					className:''
-																				},
-																				hookToLoadFromDescription:PROFISSIONAIS_ALL_POST,
-																			}
-																		}
-																		component={Required}
-																>   </Field>    
-																<ErrorMessage className="alerta_error_form_label" name="profissional_id" component="div" />
-															</Col>
-
-															<Col xs="12" sm="12" md="6">
-																<Field
-																		data={
-																			{
-																				hasLabel:true,
-																				contentLabel:'Prioridade',
-																				atributsFormLabel:{
-
-																				},
-																				atributsFormControl:{
-																					type:'text',
-																					name:'prioridade',
-																					placeholder:'Informe a prioridade',
-																					id:'prioridade',
-																					onChange:handleChange,
-																					onBlur:handleBlur,
-																					value:values.prioridade,
-																					className:estilos.input,
-																					size:"sm"
-																				},
-																				options:[{label:'Selecione...',valor:'',props:{selected:'selected', disabled:'disabled'}},{label:'Baixa',valor:'baixa',props:{}},{label:'Normal',valor:'normal',props:{}},{label:'Média',valor:'media',props:{}},{label:'Alta',valor:'alta',props:{}},{label:'Urgente',valor:'urgente',props:{}}],
-																				atributsContainer:{
-																					className:''
-																				}
-																			}
-																		}
-																	
-																		component={FormControlSelect}
-																	></Field>
-																	<ErrorMessage className="alerta_error_form_label" name="prioridade" component="div" />
-															</Col>
-														</Row>
-														<Row>
-															
-															<Col xs="12" sm="12" md="6">
-																<Field
-																		data={
-																			{
-																				hasLabel:true,
-																				contentLabel:'Data iníco',
-																				atributsFormLabel:{
-
-																				},
-																				atributsFormControl:{
-																					type:'date',
-																					name:'dt_inicio',
-																					placeholder:'DD/MM/AAAA',
-																					id:'dt_inicio',
-																					onChange:handleChange,
-																					onBlur:handleBlur,
-																					value:values.dt_inicio,
-																					className:estilos.input,
-																					size:"sm"
-																				},
-																				options:[],
-																				atributsContainer:{
-																					className:''
-																				}
-																			}
-																		}
-																	
-																		component={FormControlInput}
-																	></Field>
-																	<ErrorMessage className="alerta_error_form_label" name="dt_inicio" component="div" />
-															</Col>
-
-															<Col xs="12" sm="12" md="6">
-																<Field
-																		data={
-																			{
-																				hasLabel:true,
-																				contentLabel:'Horário início',
-																				atributsFormLabel:{
-
-																				},
-																				atributsFormControl:{
-																					type:'time',
-																					name:'hr_inicio',
-																					placeholder:'HH:ii',
-																					id:'hr_inicio',
-																					onChange:handleChange,
-																					onBlur:handleBlur,
-																					value:values.hr_inicio,
-																					className:estilos.input,
-																					size:"sm"
-																				},
-																				options:[],
-																				atributsContainer:{
-																					className:''
-																				}
-																			}
-																		}
-																	
-																		component={FormControlInput}
-																	></Field>
-																	<ErrorMessage className="alerta_error_form_label" name="hr_inicio" component="div" />
-															</Col>
-														</Row> 
 
 														<Row>
 															<Col xs="12" sm="12" md="6">
