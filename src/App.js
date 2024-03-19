@@ -2,7 +2,7 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import {Home, NotFound, Login, ProtectedRoute, PainelInicial, Clientes, Grupos, ContasReceber, Caixa, Filial, Parametro, Pais, Estado, Cidade, Agenda, AgendaEvento, CategoriaEvento, Especialidade, Profissionais, Consulta, ConstrutorFicha, ConstrutorFichaItem, Servico,
-  OrdemServico, ClientesFichas
+  OrdemServico, ClientesFichas,MovimentacoesFinanceiras
 } from './View/index.js'
 import {Router, Route, Switch} from 'react-router'
 import {history} from './history.js'
@@ -66,6 +66,11 @@ function App() {
                       <ProtectedRoute
                         exact path="/financeiro/contas_receber" 
                         component={ContasReceber}
+                      />
+                      
+                      <ProtectedRoute
+                        exact path="/financeiro/movimentacoes/painel" 
+                        component={MovimentacoesFinanceiras}
                       />
 
                       <ProtectedRoute

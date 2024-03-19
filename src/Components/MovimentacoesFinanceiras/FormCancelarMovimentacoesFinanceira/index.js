@@ -12,13 +12,13 @@ import Swal from 'sweetalert2'
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CONSULTA_SAVE_POST, CONSULTA_ALL_POST, CONSULTA_CANCELAR_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST, PROFISSIONAL_DIAS_EXPEDIENTE_ALL_POST} from '../../../api/endpoints/geral.js'
 
 
-const FormCancelarConsulta = ({dataConsultaChoice, setIdConsulta, idConsulta, showModalCancelarConsulta, setShowModalCancelarConsulta, callback, cancelarConsulta, setCancelarConsulta, carregando})=>{
+const FormCancelarMovimentacoesFinanceira = ({dataMovimentacoesFinanceiraChoice, setIdMovimentacoesFinanceira, idMovimentacoesFinanceira, showModalCancelarMovimentacoesFinanceira, setShowModalCancelarMovimentacoesFinanceira, callback, cancelarMovimentacoesFinanceira, setCancelarMovimentacoesFinanceira, carregando})=>{
 
 	const {data, error, request, loading} = useFetch();
 	const dataRequest = useFetch();
 
 	const {getToken, dataUser} = React.useContext(UserContex);
-	const [dataConsulta, setDataConsulta] = React.useState([])
+	const [dataMovimentacoesFinanceira, setDataMovimentacoesFinanceira] = React.useState([])
 
     const sendData = async ({
 			ds_cancelamento
@@ -29,7 +29,7 @@ const FormCancelarConsulta = ({dataConsultaChoice, setIdConsulta, idConsulta, sh
     		'ds_cancelamento':ds_cancelamento,
     	}
 
-		const {url, options} = CONSULTA_CANCELAR_POST(idConsulta, data, getToken());
+		const {url, options} = CONSULTA_CANCELAR_POST(idMovimentacoesFinanceira, data, getToken());
 
 
         const {response, json} = await request(url, options);
@@ -40,9 +40,9 @@ const FormCancelarConsulta = ({dataConsultaChoice, setIdConsulta, idConsulta, sh
             console.log(json)
                 
             callback();
-            setShowModalCancelarConsulta();
-            setCancelarConsulta(false);
-            setIdConsulta(null);
+            setShowModalCancelarMovimentacoesFinanceira();
+            setCancelarMovimentacoesFinanceira(false);
+            setIdMovimentacoesFinanceira(null);
 
             Swal.fire({
               icon: "success",
@@ -54,7 +54,7 @@ const FormCancelarConsulta = ({dataConsultaChoice, setIdConsulta, idConsulta, sh
     	}
     }
 
-    const requestAllConsultas = async() =>{
+    const requestAllMovimentacoesFinanceiras = async() =>{
        
         const {url, options} = CONSULTA_ALL_POST({}, getToken());
 
@@ -63,20 +63,20 @@ const FormCancelarConsulta = ({dataConsultaChoice, setIdConsulta, idConsulta, sh
         console.log('All consultas here')
         console.log(json)
         if(json){
-            setDataConsulta(json)
+            setDataMovimentacoesFinanceira(json)
         }else{
 
-        	setDataConsulta([]);
+        	setDataMovimentacoesFinanceira([]);
         }
 
             
     }
 
-	const dataToFormCancelarConsulta = ()=>{
+	const dataToFormCancelarMovimentacoesFinanceira = ()=>{
     	let obj = {name:'', historico:'', pessoa_id:'',	dt_inicio:'', hr_inicio:'', prioridade:'', status:'', profissional_id:'',
 		name_profissional:'',filial_id:'', dt_fim:'', hr_fim:'', name_atendido:'', tipo:'', id:''}
-    	if(dataConsultaChoice && dataConsultaChoice.hasOwnProperty('mensagem')){
-    		let data = dataConsultaChoice.mensagem;
+    	if(dataMovimentacoesFinanceiraChoice && dataMovimentacoesFinanceiraChoice.hasOwnProperty('mensagem')){
+    		let data = dataMovimentacoesFinanceiraChoice.mensagem;
 			if(data.hasOwnProperty('id')){
                 obj.id = data.id;
     		}
@@ -168,7 +168,7 @@ const FormCancelarConsulta = ({dataConsultaChoice, setIdConsulta, idConsulta, sh
 	const handleSubmit = ()=>{
 		sendData({ds_cancelamento:'Desistiu'})
 	}
-	const dataFormatCancel = dataToFormCancelarConsulta();
+	const dataFormatCancel = dataToFormCancelarMovimentacoesFinanceira();
 
 	if(error){
         Swal.fire({
@@ -184,7 +184,7 @@ const FormCancelarConsulta = ({dataConsultaChoice, setIdConsulta, idConsulta, sh
 	return(
 
 		<>
-			 <Modal  handleConcluir={()=>{handleSubmit(); }}  title={' Cancelar consulta'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCancelarConsulta} showHide={()=>{setShowModalCancelarConsulta();setCancelarConsulta(false);setIdConsulta(null);}}>
+			 <Modal  handleConcluir={()=>{handleSubmit(); }}  title={' Cancelar consulta'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCancelarMovimentacoesFinanceira} showHide={()=>{setShowModalCancelarMovimentacoesFinanceira();setCancelarMovimentacoesFinanceira(false);setIdMovimentacoesFinanceira(null);}}>
 				{
 						
 					carregando && carregando==true
@@ -246,4 +246,4 @@ const FormCancelarConsulta = ({dataConsultaChoice, setIdConsulta, idConsulta, sh
 	)
 }
 
-export default FormCancelarConsulta;
+export default FormCancelarMovimentacoesFinanceira;

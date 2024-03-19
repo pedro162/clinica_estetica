@@ -1,5 +1,5 @@
 import React from 'react';
-import estilos from './Consulta.module.css'
+import estilos from './MovimentacoesFinanceira.module.css'
 import useFetch from '../../Hooks/useFetch.js';
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CONSULTA_ALL_POST} from '../../api/endpoints/geral.js'
 import {FORMAT_DATA_PT_BR} from '../../functions/index.js'
@@ -12,24 +12,24 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from '../Utils/Modal/index.js'
 import Load from '../Utils/Load/index.js'
 import {UserContex} from '../../Context/UserContex.js'
-import FormConsulta from './FormConsulta/index.js'
+import FormMovimentacoesFinanceira from './FormMovimentacoesFinanceira/index.js'
 import Cadastrar from './Cadastrar/index.js'
 import Atualizar from './Atualizar/index.js'
 import Cancelar from './Cancelar/index.js'
 import ListMobile from '../Relatorio/ListMobile/index.js'
 
 
-const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFiltros, idConsultaCriada, ...props})=>{
+const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFiltros, idMovimentacoesFinanceiraCriada, ...props})=>{
 
     const {data, error, request, loading} = useFetch();
-    const [estado, setConsulta] = React.useState([])
+    const [estado, setMovimentacoesFinanceira] = React.useState([])
     const [exemplos, setExemplos] = React.useState([])
     const [exemplosTitleTable, setExemplosTitleTable] = React.useState([])
-    const [showModalCriarConsulta, setShowModalCriarConstula] = React.useState(false)
-    const [consultaChoice, setConsultaChoice] = React.useState(null);
-    const [atualizarConsulta, setAtualizarConsulta] = React.useState(false)   
-    const [cancelarConsulta, setCancelarConsulta] = React.useState(false)    
-    const [cadastrarConsulta, setCadastrarConsulta] = React.useState(false) 
+    const [showModalCriarMovimentacoesFinanceira, setShowModalCriarConstula] = React.useState(false)
+    const [consultaChoice, setMovimentacoesFinanceiraChoice] = React.useState(null);
+    const [atualizarMovimentacoesFinanceira, setAtualizarMovimentacoesFinanceira] = React.useState(false)   
+    const [cancelarMovimentacoesFinanceira, setCancelarMovimentacoesFinanceira] = React.useState(false)    
+    const [cadastrarMovimentacoesFinanceira, setCadastrarMovimentacoesFinanceira] = React.useState(false) 
     const [acao, setAcao] = React.useState(null)
     const [pessoa, setPessoa] = React.useState('')
 
@@ -51,16 +51,16 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
         switch(acao){
             case 'editar':
                 if(consultaChoice > 0){
-                    setAtualizarConsulta(true);
+                    setAtualizarMovimentacoesFinanceira(true);
                 }else{
-                    setAtualizarConsulta(false);
+                    setAtualizarMovimentacoesFinanceira(false);
                 }
                 break;
             case 'cancelar':
                 if(consultaChoice > 0){
-                    setCancelarConsulta(true);
+                    setCancelarMovimentacoesFinanceira(true);
                 }else{
-                    setCancelarConsulta(false);
+                    setCancelarMovimentacoesFinanceira(false);
                 }
                 break;
             default://
@@ -73,39 +73,39 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
 
     React.useEffect(()=>{
 
-        if(cadastrarConsulta == true){
+        if(cadastrarMovimentacoesFinanceira == true){
             setShowModalCriarConstula(true);
         }else{
             setShowModalCriarConstula(false);
         }
 
         
-    }, [cadastrarConsulta])
+    }, [cadastrarMovimentacoesFinanceira])
 
-    const atualizarConsultaAction = (idConsulta)=>{
-        setConsultaChoice(idConsulta)
+    const atualizarMovimentacoesFinanceiraAction = (idMovimentacoesFinanceira)=>{
+        setMovimentacoesFinanceiraChoice(idMovimentacoesFinanceira)
         setAcao('editar')
-        setAtualizarConsulta(true);
+        setAtualizarMovimentacoesFinanceira(true);
     }
-    const cancelarConsultaAction = (idConsulta)=>{
-        setConsultaChoice(idConsulta)
+    const cancelarMovimentacoesFinanceiraAction = (idMovimentacoesFinanceira)=>{
+        setMovimentacoesFinanceiraChoice(idMovimentacoesFinanceira)
         setAcao('cancelar')
-        setCancelarConsulta(true);
+        setCancelarMovimentacoesFinanceira(true);
     }
-    //cancelarConsulta, setCancelarConsulta
-    const novaConsulta = (idConsulta)=>{
-        setConsultaChoice(idConsulta)
+    //cancelarMovimentacoesFinanceira, setCancelarMovimentacoesFinanceira
+    const novaMovimentacoesFinanceira = (idMovimentacoesFinanceira)=>{
+        setMovimentacoesFinanceiraChoice(idMovimentacoesFinanceira)
         setAcao('consultar')
-        setAtualizarConsulta(true);
+        setAtualizarMovimentacoesFinanceira(true);
     }
 
-    const gerarTableConsulta = ()=>{
+    const gerarTableMovimentacoesFinanceira = ()=>{
        
         let data = [];
-        let dataConsulta = estado.mensagem
-        if(dataConsulta && Array.isArray(dataConsulta) && dataConsulta.length > 0){
-            for(let i=0; !(i == dataConsulta.length); i++){
-                let atual = dataConsulta[i];
+        let dataMovimentacoesFinanceira = estado.mensagem
+        if(dataMovimentacoesFinanceira && Array.isArray(dataMovimentacoesFinanceira) && dataMovimentacoesFinanceira.length > 0){
+            for(let i=0; !(i == dataMovimentacoesFinanceira.length); i++){
+                let atual = dataMovimentacoesFinanceira[i];
                 if(atual){
                     let line_style = {}
                     let acoesArr = [];
@@ -144,15 +144,15 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
 
 
                     if(btnGerarFinanceiro){
-                        acoesArr.push({acao:()=>atualizarConsultaAction(atual.id), label:'Gerar financeiro', propsOption:{}, propsLabel:{}})
+                        acoesArr.push({acao:()=>atualizarMovimentacoesFinanceiraAction(atual.id), label:'Gerar financeiro', propsOption:{}, propsLabel:{}})
                     }
 
                     if(btnEditar){
-                        acoesArr.push({acao:()=>atualizarConsultaAction(atual.id), label:'Editar', propsOption:{}, propsLabel:{}})
+                        acoesArr.push({acao:()=>atualizarMovimentacoesFinanceiraAction(atual.id), label:'Editar', propsOption:{}, propsLabel:{}})
                     }
 
                     if(btnCancelar){
-                        acoesArr.push({acao:()=>cancelarConsultaAction(atual.id), label:'Cancelar', propsOption:{}, propsLabel:{}})
+                        acoesArr.push({acao:()=>cancelarMovimentacoesFinanceiraAction(atual.id), label:'Cancelar', propsOption:{}, propsLabel:{}})
                     }
 
                     if(btnExames){
@@ -364,15 +364,15 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                     }
 
                     if(btnGerarFinanceiro){
-                        acoesArr.push({acao:()=>atualizarConsultaAction(atual.id), label:'Gerar financeiro', propsOption:{}, propsLabel:{}})
+                        acoesArr.push({acao:()=>atualizarMovimentacoesFinanceiraAction(atual.id), label:'Gerar financeiro', propsOption:{}, propsLabel:{}})
                     }
 
                     if(btnEditar){
-                        acoesArr.push({acao:()=>atualizarConsultaAction(atual.id), label:'Editar', propsOption:{}, propsLabel:{}})
+                        acoesArr.push({acao:()=>atualizarMovimentacoesFinanceiraAction(atual.id), label:'Editar', propsOption:{}, propsLabel:{}})
                     }
 
                     if(btnCancelar){
-                        acoesArr.push({acao:()=>cancelarConsultaAction(atual.id), label:'Cancelar', propsOption:{}, propsLabel:{}})
+                        acoesArr.push({acao:()=>cancelarMovimentacoesFinanceiraAction(atual.id), label:'Cancelar', propsOption:{}, propsLabel:{}})
                     }
 
                     if(btnExames){
@@ -464,7 +464,7 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
 
     //------------
 
-    const requestAllConsultas = async() =>{
+    const requestAllMovimentacoesFinanceiras = async() =>{
        
         const {url, options} = CONSULTA_ALL_POST({'name_pessoa':pessoa}, getToken());
 
@@ -474,18 +474,18 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
         console.log({'name_pessoa':pessoa})
         console.log(json)
         if(json){
-            setConsulta(json)
+            setMovimentacoesFinanceira(json)
         }
 
             
     }
 
     React.useEffect(()=>{
-        setConsulta(dataEstado)
+        setMovimentacoesFinanceira(dataEstado)
     }, [dataEstado])
     
 
-    const rowsTableArr = gerarTableConsulta();    
+    const rowsTableArr = gerarTableMovimentacoesFinanceira();    
     const titulosTableArr = gerarTitleTable();
     return(
         <>
@@ -517,17 +517,17 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
             </Row>
 
             {
-                cadastrarConsulta && <Cadastrar cadastrarConsulta={cadastrarConsulta} setCadastrarConsulta={setCadastrarConsulta} atualizarConsulta={atualizarConsulta} setAtualizarConsulta={setAtualizarConsulta}  idConsulta={consultaChoice} setIdConsulta={setConsultaChoice} callback={requestAllConsultas} />
+                cadastrarMovimentacoesFinanceira && <Cadastrar cadastrarMovimentacoesFinanceira={cadastrarMovimentacoesFinanceira} setCadastrarMovimentacoesFinanceira={setCadastrarMovimentacoesFinanceira} atualizarMovimentacoesFinanceira={atualizarMovimentacoesFinanceira} setAtualizarMovimentacoesFinanceira={setAtualizarMovimentacoesFinanceira}  idMovimentacoesFinanceira={consultaChoice} setIdMovimentacoesFinanceira={setMovimentacoesFinanceiraChoice} callback={requestAllMovimentacoesFinanceiras} />
             }
             
             {
-                atualizarConsulta &&
-                <Atualizar atualizarConsulta={atualizarConsulta} setAtualizarConsulta={setAtualizarConsulta}  idConsulta={consultaChoice} setIdConsulta={setConsultaChoice} callback={requestAllConsultas} />
+                atualizarMovimentacoesFinanceira &&
+                <Atualizar atualizarMovimentacoesFinanceira={atualizarMovimentacoesFinanceira} setAtualizarMovimentacoesFinanceira={setAtualizarMovimentacoesFinanceira}  idMovimentacoesFinanceira={consultaChoice} setIdMovimentacoesFinanceira={setMovimentacoesFinanceiraChoice} callback={requestAllMovimentacoesFinanceiras} />
             }
 
             {
-                cancelarConsulta &&
-                <Cancelar cancelarConsulta={cancelarConsulta} setCancelarConsulta={setCancelarConsulta}  idConsulta={consultaChoice} setIdConsulta={setConsultaChoice} callback={requestAllConsultas} />
+                cancelarMovimentacoesFinanceira &&
+                <Cancelar cancelarMovimentacoesFinanceira={cancelarMovimentacoesFinanceira} setCancelarMovimentacoesFinanceira={setCancelarMovimentacoesFinanceira}  idMovimentacoesFinanceira={consultaChoice} setIdMovimentacoesFinanceira={setMovimentacoesFinanceiraChoice} callback={requestAllMovimentacoesFinanceiras} />
             }
            
          </>

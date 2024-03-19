@@ -48,7 +48,7 @@ const Cancelar = ({idConsulta, setIdConsulta, callback, cancelarConsulta, setCan
 	return(
 		<>
 			{! dataConsulta &&
-				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={()=>null}  title={'Cancelar Consulta'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="" show={setShowModalCancelarConsulta} showHide={()=>{setShowModalCancelarConsulta();}}>
+				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={()=>null}  title={'Cancelar Consulta'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="" show={setShowModalCancelarConsulta} showHide={()=>{setShowModalCancelarConsulta();}}>
 					<Load/>
 				</Modal>
 			}

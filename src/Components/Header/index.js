@@ -70,6 +70,7 @@ const Header = (props)=>{
                         </NavDropdown>
                         <NavDropdown title="Financeiro" id="collasible-nav-dropdown">
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} onClick={handleLinkClick} to="/financeiro/contas_receber" >Contas a receber</Link></NavDropdown.Item>
+                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} onClick={handleLinkClick} to="/financeiro/movimentacoes/painel" >Movimentações financeiras</Link></NavDropdown.Item>
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} onClick={handleLinkClick} to="/financeiro/caixa" >Caixas</Link></NavDropdown.Item>
                            
                         </NavDropdown>
