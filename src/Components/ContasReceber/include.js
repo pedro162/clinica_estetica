@@ -22,6 +22,7 @@ import Atualizar from './Atualizar/index.js'
 import Baixar from './Baixar/index.js'
 import Estornar from './Estornar/index.js'
 import Card from '../Utils/Card/index.js'
+import MovimentacoesFinanceiras from '../MovimentacoesFinanceiras/index.js'
 import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../functions/index.js'
 
 
@@ -39,6 +40,9 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
     const [digitarContasReceber, setDigitarContasReceber] = React.useState(false)    
     const [cadastrarContasReceber, setCadastrarContasReceber] = React.useState(false)  
     const [incicarContasReceber, setIniciarContasReceber] = React.useState(false) 
+    const [visualizarMovimentacoes, setVisualizarMovimentacoes] = React.useState(false)  
+    const [defaultFiltersMovimentacoes, setDefaultFiltersMovimentacoes] = React.useState({})
+
     const [acao, setAcao] = React.useState(null)
     const [pessoa, setPessoa] = React.useState('')
 
@@ -167,11 +171,11 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                     setDigitarContasReceber(false);
                 }
                 break;  
-            case 'contas_receber':
+            case 'movimentacao_financeira':
                 if(consultaChoice > 0){
-                    setDigitarContasReceber(true);
+                    setVisualizarMovimentacoes(true);
                 }else{
-                    setDigitarContasReceber(false);
+                    setVisualizarMovimentacoes(false);
                 }
                 break;
             default://
@@ -209,6 +213,12 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
         setContasReceberChoice(idContasReceber)
         setAcao('estornar')
         setEstornarContasReceber(true);
+    }
+
+     const visualizarMovimentacoesActions = (idContasReceber)=>{
+        setContasReceberChoice(idContasReceber)
+        setAcao('movimentacao_financeira')
+        setVisualizarMovimentacoes(true);
     }
 
 
@@ -263,7 +273,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                     }
 
                     if(btnVisualizarMovimentacoes){
-                        acoesArr.push({acao:()=>atualizarContasReceberAction(atual.id), label:'Movimentações', propsOption:{}, propsLabel:{}})
+                        acoesArr.push({acao:()=>visualizarMovimentacoesActions(atual.id), label:'Movimentações', propsOption:{}, propsLabel:{}})
                     }
 
                     if(btnVisualizar){
@@ -514,7 +524,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                     }
 
                     if(btnVisualizarMovimentacoes){
-                        acoesArr.push({acao:()=>atualizarContasReceberAction(atual.id), label:'Movimentações', propsOption:{}, propsLabel:{}})
+                        acoesArr.push({acao:()=>visualizarMovimentacoesActions(atual.id), label:'Movimentações', propsOption:{}, propsLabel:{}})
                     }
 
                     if(btnVisualizar){
@@ -646,7 +656,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                     }
 
                     if(btnVisualizarMovimentacoes){
-                        acoesArr.push({acao:()=>atualizarContasReceberAction(atual.id), label:'Movimentações', propsOption:{}, propsLabel:{}})
+                        acoesArr.push({acao:()=>{visualizarMovimentacoesActions(atual.id); setDefaultFiltersMovimentacoes({...atual, referencia_id:atual?.id, referencia:'contas_receber'})}, label:'Movimentações', propsOption:{}, propsLabel:{}})
                     }
 
                     if(btnVisualizar){
@@ -824,6 +834,16 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                 <Estornar estornarContasReceber={estornarContasReceber} setEstornarContasReceber={setEstornarContasReceber}  idContasReceber={consultaChoice} setIdContasReceber={setContasReceberChoice} callback={callBack} />
             }
 
+
+
+            {
+                visualizarMovimentacoes &&
+                <Modal noBtnCancelar={false} noBtnConcluir={true} handleConcluir={()=>null}  title={'Contas a receber'} size="lg" propsConcluir={{}} labelConcluir={''} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={consultaChoice} showHide={()=>{setVisualizarMovimentacoes(false);}}>
+                    
+                    <MovimentacoesFinanceiras defaultFilters={defaultFiltersMovimentacoes} visualizarMovimentacoes={visualizarMovimentacoes} setVisualizarMovimentacoes={setVisualizarMovimentacoes} setAtualizarContasReceber={setAtualizarContasReceber} setAtualizarContasReceber={setAtualizarContasReceber} idReferencia={consultaChoice} referencia={'contas_receber'}  idCobrancaReceber={consultaChoice} setIdContasReceber={setContasReceberChoice} callback={callBack} />
+                
+                </Modal>
+            }
 
         </>
     )

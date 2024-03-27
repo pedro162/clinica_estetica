@@ -40,19 +40,20 @@ const MovimentacoesFinanceira = (props)=>{
     const [codigoProfissional, setCodigoProfissional] = React.useState(null)
     const [codigoMovimentacoesFinanceira, setCodigoMovimentacoesFinanceira] = React.useState(null)
     const [codigoFilial, setCodigoFilial] = React.useState(null)
-    const [status, setStatus] = React.useState(null)
-    const [prioridade, setPrioridade] = React.useState(null)
+    const [estornado, setEstornado] = React.useState(null)
+    const [conciliado, setConciliado] = React.useState(null)
     const [historico, setHistorico] = React.useState(null)
-    const [tipo, setTipo] = React.useState(null)
+    const [codigoOrigem, setCodigoOrigem] = React.useState(null)
+    const [origem, setOrigem] = React.useState(null)
     const [dtInicio, setDtInicio] = React.useState(null)
     const [dtFim, setDtFim] = React.useState(null)
     const [filtroMobile, setFiltroMobile] = React.useState(null)
     const [nadaEncontrado, setNadaEncontrado] = React.useState(false)
 
-    const [filtroAbertas, setFiltroAbertas] = React.useState(false)
-    const [filtroConcluidas, setFiltroConcluidas] = React.useState(false)
-    const [filtroCanceladas, setFiltroCanceladas] = React.useState(false)
-    const [filtroRemarcadas, setFiltroRemarcadas] = React.useState(false)
+    const [filtroEstornadas, setFiltroEstornadas] = React.useState(false)
+    const [filtroDebitos, setFiltroDebitos] = React.useState(false)
+    const [filtroCreditos, setFiltroCreditos] = React.useState(false)
+    const [filtroConciliadas, setFiltroConciliadas] = React.useState(false)
 
     const {getToken, dataUser, isMobile} = React.useContext(UserContex);
 
@@ -72,44 +73,8 @@ const MovimentacoesFinanceira = (props)=>{
         }
     }
 
-    const setNamePessoa = ({target})=>{
-        
-        setPessoa(target.value)
-    }
-
-    const handleCodPessoaFilter = ({target})=>{
-        setCodigoPessoa(target.value)
-    }
-
-    const handleNamePessoaFilter = ({target})=>{
-        setPessoa(target.value)
-    }
-
-    const handleCodProfissionalFilter = ({target})=>{
-        setCodigoProfissional(target.value)
-    }
-
-    const handleNameProfissionalFilter = ({target})=>{
-        setProfissional(target.value)
-    }
-
     const handleFiltroMobile = ({target})=>{
         setFiltroMobile(target.value)
-    }
-
-    const handleStatusFilter = ({target})=>{
-        setStatus(target.value)
-    }
-
-    const handleTipoFilter = ({target})=>{
-        setTipo(target.value)
-    }
-
-    const handlePrioridadeFilter = ({target})=>{
-        setPrioridade(target.value)
-    }
-    const handleHistoricoFilter = ({target})=>{
-        setHistorico(target.value)
     }
 
     const handleCodigoMovimentacoesFinanceiraFilter = ({target})=>{
@@ -122,6 +87,29 @@ const MovimentacoesFinanceira = (props)=>{
 
     const handleDtInicioFilter = ({target})=>{
         setDtInicio(target.value)
+    }
+
+    const handleCodigoOrigemFilter = ({target})=>{
+        setCodigoOrigem(target.value)
+    }
+
+    const handleOrigemFilter = ({target})=>{
+        setOrigem(target.value)
+    }
+
+    const handleEstornadoFilter = ({target})=>{
+        setEstornado(target.value)
+    }
+
+
+    const handleHistoricoFilter = ({target})=>{
+        setHistorico(target.value)
+    }
+
+    
+
+    const handleConciliadoFilter = ({target})=>{
+        setConciliado(target.value)
     }
 
 
@@ -152,92 +140,41 @@ const MovimentacoesFinanceira = (props)=>{
 
         },
         {
-            type:'text',
+            type:'select',
             options:[], 
             hasLabel: true,
-            contentLabel:'Cod pessoa',
+            contentLabel:'Caixa',
             atributsFormLabel:{},
             atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name':pessoa,onChange:handleCodPessoaFilter,    onBlur:handleCodPessoaFilter, onKeyUp:handleSearch},
-
-        },
-        {
-            type:'text',
-            options:[], 
-            hasLabel: true,
-            contentLabel:'Pessoa',
-            atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name_atendido':pessoa,onChange:handleNamePessoaFilter,    onBlur:handleNamePessoaFilter, onKeyUp:handleSearch},
-
-        },
-        {
-            type:'text',
-            options:[], 
-            hasLabel: true,
-            contentLabel:'Cod profissional',
-            atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'profissional_id':codigoProfissional,onChange:handleCodProfissionalFilter,    onBlur:handleCodProfissionalFilter, onKeyUp:handleSearch},
-
-        },
-        {
-            type:'text',
-            options:[], 
-            hasLabel: true,
-            contentLabel:'Profissional',
-            atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name_profissional':profissional,onChange:handleNameProfissionalFilter,    onBlur:handleNameProfissionalFilter, onKeyUp:handleSearch},
+            atributsFormControl:{'type':'text', size:"sm",'caixa_id':codigoFilial,onChange:handleCodigoFilialFilter,    onBlur:handleCodigoFilialFilter, onKeyUp:handleSearch},
 
         },
         {
             type:'select',
             options:[
                 {label:'Selecione...',valor:'',props:{selected:'selected'}},
-                {label:'Pendente',valor:'pendente',props:{}},
-                {label:'Remarcado',valor:'remarcado',props:{}},
-                {label:'Finalizado',valor:'finalizado',props:{}},
-                {label:'Cancelado',valor:'cancelado',props:{}},
+                {label:'Sim',valor:'yes',props:{}},
+                {label:'Não',valor:'no',props:{}},
             ], 
             hasLabel: true,
-            contentLabel:'Status',
+            contentLabel:'Estornadas',
             atributsFormLabel:{},
             atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'status':status,onChange:handleStatusFilter,    onBlur:handleStatusFilter, onKeyUp:handleSearch},
+            atributsFormControl:{'type':'text', size:"sm",'estornado':estornado,onChange:handleEstornadoFilter,    onBlur:handleEstornadoFilter, onKeyUp:handleSearch},
 
         },
         {
             type:'select',
             options:[
                 {label:'Selecione...',valor:'',props:{selected:'selected'}},
-                {label:'Serviço',valor:'servico',props:{}},
-                {label:'Avaliação',valor:'avaliacao',props:{}},
-                {label:'MovimentacoesFinanceira',valor:'consulta',props:{}},
-                {label:'Retorno',valor:'retorno',props:{}},
+                {label:'Sim',valor:'yes',props:{}},
+                {label:'Não',valor:'no',props:{}},
             ], 
             hasLabel: true,
-            contentLabel:'Tipo',
+            contentLabel:'Concilidadas',
             atributsFormLabel:{},
             atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'tipo':tipo,onChange:handleTipoFilter,    onBlur:handleTipoFilter, onKeyUp:handleSearch},
-
-        },
-        {
-            type:'select',
-            options:[
-                {label:'Selecione...',valor:'',props:{selected:'selected'}},
-                {label:'Baixa',valor:'baixa',props:{}},
-                {label:'Normal',valor:'normal',props:{}},
-                {label:'Média',valor:'media',props:{}},
-                {label:'Alta',valor:'altar',props:{}},
-                {label:'Urgente',valor:'urgente',props:{}},
-            ], 
-            hasLabel: true,
-            contentLabel:'Prioridade',
-            atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'prioridade':prioridade,onChange:handlePrioridadeFilter,    onBlur:handlePrioridadeFilter, onKeyUp:handleSearch},
+            atributsFormControl:{'type':'text', size:"sm",'conciliado':conciliado,onChange:handleConciliadoFilter,    onBlur:handleConciliadoFilter, onKeyUp:handleSearch},
 
         },
         {
@@ -248,6 +185,30 @@ const MovimentacoesFinanceira = (props)=>{
             atributsFormLabel:{},
             atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
             atributsFormControl:{'type':'text', size:"sm",'historico':historico,onChange:handleHistoricoFilter,    onBlur:handleHistoricoFilter, onKeyUp:handleSearch},
+
+        },
+        {
+            type:'text',
+            options:[], 
+            hasLabel: true,
+            contentLabel:'Cod. origem',
+            atributsFormLabel:{},
+            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'codigo_origem':codigoOrigem,onChange:handleCodigoOrigemFilter,    onBlur:handleCodigoOrigemFilter, onKeyUp:handleSearch},
+
+        },
+        {
+            type:'select',
+            options:[
+                {label:'Selecione...',valor:'',props:{selected:'selected'}},
+                {label:'Contas a receber',valor:'contas_receber',props:{}},
+                {label:'Contas a pagar',valor:'contas_pagar',props:{}},
+            ], 
+            hasLabel: true,
+            contentLabel:'Origem',
+            atributsFormLabel:{},
+            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'conciliado':conciliado,onChange:handleOrigemFilter,    onBlur:handleOrigemFilter, onKeyUp:handleSearch},
 
         },
         {
@@ -352,52 +313,16 @@ const MovimentacoesFinanceira = (props)=>{
         let detalhesFiltros = {}
 
 
+        /*
+            codigoMovimentacoesFinanceira, setCodigoMovimentacoesFinanceira
+codigoFilial, setCodigoFilial
+estornado, setEstornado
+conciliado, setConciliado
+historico, setHistorico
+codigoOrigem, setCodigoOrigem
+origem, setOrigem
+        */
         
-        if(codigoPessoa){
-            filtros['pessoa_id'] = codigoPessoa;
-            detalhesFiltros['pessoa_id'] = {
-                label:'pessoa_id',
-                value:codigoPessoa,
-                resetFilter:()=>setPessoa(''),
-            };
-        }
-
-        if(pessoa){
-            filtros['name'] = pessoa;
-            detalhesFiltros['name'] = {
-                label:'name',
-                value:pessoa,
-                resetFilter:()=>setPessoa(''),
-            };
-
-            filtros['name_pessoa'] = pessoa;
-            detalhesFiltros['name_pessoa'] = {
-                label:'name_pessoa',
-                value:pessoa,
-                resetFilter:()=>setPessoa(''),
-            };
-        }
-
-
-        if(codigoProfissional){
-            filtros['profissional_id'] = codigoProfissional;
-            detalhesFiltros['profissional_id'] = {
-                label:'profissional_id',
-                value:codigoProfissional,
-                resetFilter:()=>setCodigoProfissional(''),
-            };
-        }
-
-
-        if(profissional){
-            filtros['name_profissional'] = profissional;
-            detalhesFiltros['name_profissional'] = {
-                label:'name_profissional',
-                value:profissional,
-                resetFilter:()=>setProfissional(''),
-            };
-        }
-
 
         if(codigoMovimentacoesFinanceira){
             filtros['id'] = codigoMovimentacoesFinanceira;
@@ -418,23 +343,39 @@ const MovimentacoesFinanceira = (props)=>{
             };
         }
 
-
-        if(status){
-            filtros['status'] = status;
-            detalhesFiltros['status'] = {
-                label:'status',
-                value:status,
-                resetFilter:()=>setStatus(''),
+        if(estornado){
+            filtros['estornado'] = estornado;
+            detalhesFiltros['estornado'] = {
+                label:'estornado',
+                value:estornado,
+                resetFilter:()=>setEstornado(''),
             };
         }
 
+        if(conciliado){
+            filtros['conciliado'] = conciliado;
+            detalhesFiltros['conciliado'] = {
+                label:'conciliado',
+                value:conciliado,
+                resetFilter:()=>setEstornado(''),
+            };
+        }
 
-        if(prioridade){
-            filtros['prioridade'] = prioridade;
-            detalhesFiltros['prioridade'] = {
-                label:'prioridade',
-                value:prioridade,
-                resetFilter:()=>setPrioridade(''),
+        if(codigoOrigem){
+            filtros['origem_id'] = codigoOrigem;
+            detalhesFiltros['origem_id'] = {
+                label:'origem_id',
+                value:codigoOrigem,
+                resetFilter:()=>setCodigoOrigem(''),
+            };
+        }
+
+        if(origem){
+            filtros['origem'] = origem;
+            detalhesFiltros['origem'] = {
+                label:'origem',
+                value:origem,
+                resetFilter:()=>setOrigem(''),
             };
         }
 
@@ -445,16 +386,6 @@ const MovimentacoesFinanceira = (props)=>{
                 label:'historico',
                 value:historico,
                 resetFilter:()=>setHistorico(''),
-            };
-        }
-
-
-        if(tipo){
-            filtros['tipo'] = tipo;
-            detalhesFiltros['tipo'] = {
-                label:'tipo',
-                value:tipo,
-                resetFilter:()=>setTipo(''),
             };
         }
 
@@ -490,71 +421,72 @@ const MovimentacoesFinanceira = (props)=>{
         
 
         if(filtroMobile){
-            filtros['name'] = filtroMobile;
-            detalhesFiltros['name'] = {
+            filtros['historico'] = filtroMobile;
+            detalhesFiltros['historico'] = {
                 label:'Filtro',
                 value:filtroMobile,
                 resetFilter:()=>setFiltroMobile(''),
             };
         }
 
-        if(filtroAbertas){
-            if(filtros.hasOwnProperty('status')){
-                filtros['status'] += 'pendente,';
+        if(filtroEstornadas){
+            if(filtros.hasOwnProperty('estornado')){
+                filtros['estornado'] += 'yes';
             }else{
-                filtros['status'] = 'pendente,';
+                filtros['estornado'] = 'yes';
             }
 
-            detalhesFiltros['status'] = {
-                label:'Status',
-                value:filtroMobile,
-                resetFilter:()=>setFiltroAbertas(''),
+            detalhesFiltros['estornado'] = {
+                label:'estornados',
+                value:filtroEstornadas,
+                resetFilter:()=>setFiltroEstornadas(''),
             };
         }
 
-        if(filtroConcluidas){
-            if(filtros.hasOwnProperty('status')){
-                filtros['status'] += 'concluido,';
+         if(filtroConciliadas){
+            if(filtros.hasOwnProperty('conciliado')){
+                filtros['conciliado'] += 'yes';
             }else{
-                filtros['status'] = 'concluido,';
+                filtros['conciliado'] = 'yes';
             }
-            //filtros['status'] += 'concluido,';
-            detalhesFiltros['status'] = {
-                label:'Status',
-                value:filtroMobile,
-                resetFilter:()=>setFiltroConcluidas(''),
+
+            detalhesFiltros['conciliado'] = {
+                label:'conciliado',
+                value:filtroConciliadas,
+                resetFilter:()=>setFiltroConciliadas(''),
             };
         }
 
-        if(filtroCanceladas){
-            if(filtros.hasOwnProperty('status')){
-                filtros['status'] += 'cancelado,';
+        if(filtroDebitos){
+            if(filtros.hasOwnProperty('tp_movimentacao')){
+                filtros['tp_movimentacao'] += 'negativa,';
             }else{
-                filtros['status'] = 'cancelado,';
+                filtros['tp_movimentacao'] = 'negativa,';
             }
-            //filtros['status'] += 'cancelado,';
-            detalhesFiltros['status'] = {
-                label:'Status',
-                value:filtroMobile,
-                resetFilter:()=>setFiltroCanceladas(''),
+
+            detalhesFiltros['tp_movimentacao'] = {
+                label:'tp_movimentacao',
+                value:filtroDebitos,
+                resetFilter:()=>setFiltroDebitos(''),
             };
         }
 
-        if(filtroRemarcadas){
-            if(filtros.hasOwnProperty('status')){
-                filtros['status'] += 'remarcado,';
+        if(filtroCreditos){
+            if(filtros.hasOwnProperty('tp_movimentacao')){
+                filtros['tp_movimentacao'] += 'positiva,';
             }else{
-                filtros['status'] = 'remarcado,';
+                filtros['tp_movimentacao'] = 'positiva,';
             }
-            //filtros['status'] += 'cancelado,';
-            detalhesFiltros['status'] = {
-                label:'Status',
-                value:filtroMobile,
-                resetFilter:()=>setFiltroRemarcadas(''),
+
+            detalhesFiltros['tp_movimentacao'] = {
+                label:'tp_movimentacao',
+                value:filtroCreditos,
+                resetFilter:()=>setFiltroCreditos(''),
             };
         }
 
 
+        //
         return {filtros, detalhesFiltros};
     }
 
@@ -597,8 +529,9 @@ const MovimentacoesFinanceira = (props)=>{
         requestAllMovimentacoesFinanceirasEffect();
 
         
-    }, [filtroConcluidas, filtroCanceladas, filtroAbertas, filtroRemarcadas])
-
+    }, [filtroDebitos, filtroCreditos, filtroEstornadas, filtroConciliadas])
+//estornado
+//conciliado
 
    
     return(
@@ -673,10 +606,10 @@ const MovimentacoesFinanceira = (props)=>{
 
                                          <Row className={'mt-2'}>
                                             <div  style={{display:'flex', flexDirection:'collumn', flexWrap:'wrap'}}>
-                                               {(filtroAbertas ? <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroAbertas(false);}} ><FontAwesomeIcon icon={faTimes} /> Pendentes</Button> : '')}
-                                                {(filtroConcluidas ? <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroConcluidas(false);}} ><FontAwesomeIcon icon={faTimes} /> Concluídas</Button> : '')}
-                                                {(filtroCanceladas ? <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroCanceladas(false);}} ><FontAwesomeIcon icon={faTimes} /> Canceladas</Button> : '')}
-                                                {(filtroRemarcadas ? <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroRemarcadas(false);}} ><FontAwesomeIcon icon={faTimes} /> Canceladas</Button> : '')}
+                                               {(filtroEstornadas ? <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroEstornadas(false);}} ><FontAwesomeIcon icon={faTimes} /> Estornadas</Button> : '')}
+                                                {(filtroConciliadas ? <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroConciliadas(false);}} ><FontAwesomeIcon icon={faTimes} /> Concilidadas</Button> : '')}
+                                                {(filtroDebitos ? <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroDebitos(false);}} ><FontAwesomeIcon icon={faTimes} /> Debitos</Button> : '')}
+                                                {(filtroCreditos ? <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroCreditos(false);}} ><FontAwesomeIcon icon={faTimes} /> Créditos</Button> : '')}
                                                 
                                             </div>
                                         </Row>
@@ -698,10 +631,10 @@ const MovimentacoesFinanceira = (props)=>{
                                 </Row>
                                 <Row>
                                     <div style={{display:'flex', flexDirection:'collumn', flexWrap:'wrap'}}>
-                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroAbertas(true);}} ><FontAwesomeIcon icon={faSearch} /> Pendentes</Button>
-                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroConcluidas(true);}} ><FontAwesomeIcon icon={faSearch} /> Concluídas</Button>
-                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroCanceladas(true);}} ><FontAwesomeIcon icon={faSearch} /> Canceladas</Button>
-                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroRemarcadas(true);}} ><FontAwesomeIcon icon={faSearch} /> Remarcadas</Button>
+                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroEstornadas(true);}} ><FontAwesomeIcon icon={faSearch} /> Estornadas</Button>
+                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroConciliadas(true);}} ><FontAwesomeIcon icon={faSearch} /> Concilidadas</Button>
+                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroDebitos(true);}} ><FontAwesomeIcon icon={faSearch} /> Debitos</Button>
+                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroCreditos(true);}} ><FontAwesomeIcon icon={faSearch} /> Créditos</Button>
                                     </div>
                                     
                                 </Row>
@@ -719,7 +652,6 @@ const MovimentacoesFinanceira = (props)=>{
                                 </Row>
                                 <Row>
                                     <div style={{display:'flex', flexDirection:'collumn', flexWrap:'wrap'}}>
-                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setCadastrarMovimentacoesFinanceira(true);}} ><FontAwesomeIcon icon={faPlus} /> MovimentacoesFinanceira</Button>
                                     </div>
                                 </Row>
                             </Col> 

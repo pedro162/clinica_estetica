@@ -2,7 +2,7 @@ import React from 'react';
 import estilos from './MovimentacoesFinanceira.module.css'
 import useFetch from '../../Hooks/useFetch.js';
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CONSULTA_ALL_POST} from '../../api/endpoints/geral.js'
-import {FORMAT_DATA_PT_BR} from '../../functions/index.js'
+import {FORMAT_DATA_PT_BR, FORMAT_MONEY} from '../../functions/index.js'
 import {Col, Row } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
@@ -115,58 +115,16 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                     let btnDiagnostico      = true;
                     let btnFicha            = true;
                     let btnDetalhes         = true;
-                    let btnGerarFinanceiro  = true;
+                    let btnOrigem           = true;
 
-                    if(atual.status == 'cancelado'){
-                        btnCancelar         = false;
-                        btnEditar           = false;
-                        btnGerarFinanceiro  = false;
-                        line_style.color    = 'red';
-                    }
-
-                    if(atual.status == 'finalizado'){
-                        btnCancelar = false;
-                        btnEditar   = false;
-                        line_style.color = 'green';
-                    }
-
-                    if(type=='external'){
-                        btnGerarFinanceiro  = false;
-                        btnEditar           = false;
-                        
-                    }
-
-                    /*if(atual.status == 'cancelado'){
-                        line_style.color = 'red';
-                    }else if(atual.status == 'concluido'){
-                        line_style.color = 'green';
-                    } */
-
-
-                    if(btnGerarFinanceiro){
-                        acoesArr.push({acao:()=>atualizarMovimentacoesFinanceiraAction(atual.id), label:'Gerar financeiro', propsOption:{}, propsLabel:{}})
-                    }
-
-                    if(btnEditar){
-                        acoesArr.push({acao:()=>atualizarMovimentacoesFinanceiraAction(atual.id), label:'Editar', propsOption:{}, propsLabel:{}})
-                    }
-
-                    if(btnCancelar){
-                        acoesArr.push({acao:()=>cancelarMovimentacoesFinanceiraAction(atual.id), label:'Cancelar', propsOption:{}, propsLabel:{}})
-                    }
-
-                    if(btnExames){
-                        
-                    }
-
-                    if(btnDiagnostico){
-                        
-                    }
-                    if(btnFicha){
-                        
-                    }
 
                     if(btnDetalhes){
+                        acoesArr.push({acao:()=>atualizarMovimentacoesFinanceiraAction(atual.id), label:'Detalhes', propsOption:{}, propsLabel:{}})
+                    }
+
+
+                    if(btnOrigem){
+                        acoesArr.push({acao:()=>atualizarMovimentacoesFinanceiraAction(atual.id), label:'Origem', propsOption:{}, propsLabel:{}})
                     }
 
                     
@@ -191,61 +149,43 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                                 },
                                 {
 
-                                    label:atual.pessoa_id,
+                                    label:atual.caixa_id,
+                                    propsRow:{}
+                                },
+                                
+                                {
+
+                                    label:atual.historico,
                                     propsRow:{}
                                 },
                                 {
 
-                                    label:atual.name_pessoa,
+                                    label:atual.conciliado == 'yes' ? 'Sim' : 'Não',
                                     propsRow:{}
                                 },
                                 {
 
-                                    label:atual.status,
+                                    label:atual.estornado == 'yes' ? 'Sim' : 'Não',
                                     propsRow:{}
                                 },
                                 {
 
-                                    label:atual.prioridade,
+                                    label:FORMAT_DATA_PT_BR(atual.created_at),
                                     propsRow:{}
                                 },
                                 {
 
-                                    label:atual.profissional_id,
+                                    label: atual?.tp_movimentacao == 'negativa' ? ( atual.vr_movimentacao > 0 ? FORMAT_MONEY(atual.vr_movimentacao) : 0) : 0,
                                     propsRow:{}
                                 },
                                 {
 
-                                    label:atual.name_profissional,
+                                    label: atual?.tp_movimentacao == 'positiva' ? ( atual.vr_movimentacao > 0 ? FORMAT_MONEY(atual.vr_movimentacao) : 0) : 0,
                                     propsRow:{}
                                 },
                                 {
 
-                                    label:FORMAT_DATA_PT_BR(atual.dt_inicio),
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual.hr_inicio,
-                                    propsRow:{}
-                                },{
-
-                                    label:String(FORMAT_DATA_PT_BR(atual.dt_fim)).length > 0 && FORMAT_DATA_PT_BR(atual.dt_fim),
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual.hr_fim,
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:String(FORMAT_DATA_PT_BR(atual.dt_cancelamento)).length > 0 && FORMAT_DATA_PT_BR(atual.dt_cancelamento),
-                                    propsRow:{}
-                                },
-                                {
-
-                                    label:atual.ds_cancelamento,
+                                    label:FORMAT_MONEY(atual.vr_saldo),
                                     propsRow:{}
                                 },
                             ]
@@ -272,11 +212,7 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                 props:{}
             },
             {
-                label:'Cód. pessoa',
-                props:{}
-            },
-            {
-                label:'Pessoa',
+                label:'Cód. caixa',
                 props:{}
             },
             {
@@ -284,39 +220,27 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                 props:{}
             },
             {
-                label:'Prioridade',
+                label:'Conciliado',
                 props:{}
             },
             {
-                label:'Cód. profissional',
+                label:'Estornado',
                 props:{}
             },
             {
-                label:'Profissional',
+                label:'Data movimentação',
                 props:{}
             },
             {
-                label:'Data início',
+                label:'Debito',
                 props:{}
             },
             {
-                label:'Horário início',
+                label:'Crédito',
                 props:{}
             },
             {
-                label:'Data fim',
-                props:{}
-            },
-            {
-                label:'Horário fim',
-                props:{}
-            },
-            {
-                label:'Cancelado em',
-                props:{}
-            },
-            {
-                label:'Motivo cancelamento',
+                label:'Saldo',
                 props:{}
             },
         ]
@@ -342,52 +266,16 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                     let btnDiagnostico      = true;
                     let btnFicha            = true;
                     let btnDetalhes         = true;
-                    let btnGerarFinanceiro  = true;
+                    let btnOrigem           = true;
 
-                    if(atual.status == 'cancelado'){
-                        //btnCancelar         = false;
-                        btnEditar           = false;
-                        btnGerarFinanceiro  = false;
-                        line_style.color = 'red';
-                    }
-
-                    if(atual.status == 'finalizado'){
-                        btnCancelar         = false;
-                        btnEditar           = false;
-                        line_style.color    = 'green';
-                    }
-
-                    if(type=='external'){
-                        btnGerarFinanceiro  = false;
-                        btnEditar           = false;
-                        
-                    }
-
-                    if(btnGerarFinanceiro){
-                        acoesArr.push({acao:()=>atualizarMovimentacoesFinanceiraAction(atual.id), label:'Gerar financeiro', propsOption:{}, propsLabel:{}})
-                    }
-
-                    if(btnEditar){
-                        acoesArr.push({acao:()=>atualizarMovimentacoesFinanceiraAction(atual.id), label:'Editar', propsOption:{}, propsLabel:{}})
-                    }
-
-                    if(btnCancelar){
-                        acoesArr.push({acao:()=>cancelarMovimentacoesFinanceiraAction(atual.id), label:'Cancelar', propsOption:{}, propsLabel:{}})
-                    }
-
-                    if(btnExames){
-                        
-                    }
-
-                    if(btnDiagnostico){
-                        
-                    }
-                    if(btnFicha){
-                        
-                    }
 
                     if(btnDetalhes){
-                        
+                        acoesArr.push({acao:()=>atualizarMovimentacoesFinanceiraAction(atual.id), label:'Detalhes', propsOption:{}, propsLabel:{}})
+                    }
+
+
+                    if(btnOrigem){
+                        acoesArr.push({acao:()=>atualizarMovimentacoesFinanceiraAction(atual.id), label:'Origem', propsOption:{}, propsLabel:{}})
                     }
 
                     
@@ -403,7 +291,7 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                     data.push(
 
                         {
-                            propsRow:{id:(atual.id), titleRow: atual?.id+' - '+atual?.name_pessoa, style:{...line_style}},
+                            propsRow:{id:(atual.id), titleRow: atual?.id+' - '+atual?.historico, style:{...line_style}},
                             acoes:[
                                 ...acoesArr
                             ],
@@ -417,30 +305,30 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                                 [
                                     
                                     {
-                                        title:<span style={{fontWeight:'480'}}>Prioridade: </span>,
-                                        label:atual?.prioridade,
-                                        props:{style:{textAlign:'left', fontWeight:'bolder'}, md:'1', sm:'3', xs:'3'},
+                                        title:<span style={{fontWeight:'bolder'}}>Caixa: </span>,
+                                        label:atual?.caixa_id,
+                                        props:{style:{textAlign:'left'}, md:'3', sm:'3', xs:'3'},
                                         toSum:0,
                                         isCoin:0,
                                     },
                                     {
-                                        title:<span style={{fontWeight:'480'}}>Status: </span>,
-                                        label:atual?.status,
-                                        props:{style:{textAlign:'left', fontWeight:'bolder'}, md:'1', sm:'3', xs:'3'},
+                                        title:<span style={{fontWeight:'bolder'}}>Op: </span>,
+                                        label: atual?.tp_movimentacao == 'negativa' ? 'D' : 'C',
+                                        props:{style:{textAlign:'left', fontWeight:'bolder'}, md:'2', sm:'2', xs:'2'},
                                         toSum:0,
                                         isCoin:0,
                                     },
                                     {
-                                        title:<span style={{fontWeight:'480'}}>Profissional: </span>,
-                                        label:atual?.name_profissional,
-                                        props:{style:{textAlign:'left'}, md:'1', sm:'3', xs:'3'},
+                                        title:<span style={{fontWeight:'bolder'}}>Valor: </span>,
+                                        label:FORMAT_MONEY(atual?.vr_movimentacao),
+                                        props:{style:{textAlign:'left'}, md:'3', sm:'3', xs:'3'},
                                         toSum:0,
                                         isCoin:0,
                                     },
                                     {
-                                        title:<span style={{fontWeight:'480'}}>DT início: </span>,
-                                        label:(FORMAT_DATA_PT_BR(atual?.dt_inicio)+" "+atual.hr_inicio),
-                                        props:{style:{textAlign:'left'}, md:'1', sm:'3', xs:'3'},
+                                        title:<span style={{fontWeight:'bolder'}}>DT movimentação: </span>,
+                                        label:(FORMAT_DATA_PT_BR(atual?.created_at)),
+                                        props:{style:{textAlign:'left'}, md:'4', sm:'4', xs:'4'},
                                         toSum:0,
                                         isCoin:0,
                                     },
@@ -529,6 +417,7 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                 cancelarMovimentacoesFinanceira &&
                 <Cancelar cancelarMovimentacoesFinanceira={cancelarMovimentacoesFinanceira} setCancelarMovimentacoesFinanceira={setCancelarMovimentacoesFinanceira}  idMovimentacoesFinanceira={consultaChoice} setIdMovimentacoesFinanceira={setMovimentacoesFinanceiraChoice} callback={requestAllMovimentacoesFinanceiras} />
             }
+
            
          </>
 
