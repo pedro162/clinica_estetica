@@ -18,6 +18,7 @@ import Calendario  from '../Utils/Calendario/index.js'
 import Horario  from '../Utils/Calendario/Horario.js'
 import FormControlInput from '../FormControl/index.js'
 import Include from './include';
+import { Link } from 'react-router-dom/cjs/react-router-dom.min';
 
 
 const Home = (props)=>{
@@ -333,7 +334,7 @@ const Home = (props)=>{
                 items={[
                         {
                             props:{},
-                            label:'Início'
+                            label:<> <Link className={null}  to={'/home/painel'}>Início</Link></>
                         },
                         {
                             props:{},

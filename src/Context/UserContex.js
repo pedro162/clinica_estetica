@@ -154,7 +154,7 @@ export const UserStorange = ({children})=>{
 
 
     return(
-        <UserContex.Provider value={{isMobile, userLogin, getUser,userLogout, isAuthenticated, sandBox,loginUser, setLoginUser, loading, data, error, dataUser, setDataUser, getToken}} >
+        <UserContex.Provider value={{historyUser, isMobile, userLogin, getUser,userLogout, isAuthenticated, sandBox,loginUser, setLoginUser, loading, data, error, dataUser, setDataUser, getToken}} >
             {children}
         </UserContex.Provider>
     )

@@ -26,9 +26,11 @@ import Servico from '../Components/Servico/index.js'
 import OrdemServico from '../Components/OrdemServico/index.js'
 import ClientesFichas from '../Components/ClientesFichas/index.js'
 import MovimentacoesFinanceiras from '../Components/MovimentacoesFinanceiras/index.js'
+import MenuBotoes from '../Components/MenuBotoes/index.js'
+import CadastrarCliente from '../Components/Clientes/Cadastrar/index.js'
 
 
 export {Home, NotFound, Login, ProtectedRoute, PainelInicial,Clientes,Grupos, ContasReceber, Caixa, Filial, Parametro, User, Pais,
      Estado, Cidade, Agenda, AgendaEvento, CategoriaEvento, Especialidade, Profissionais, Consulta, ConstrutorFicha, ConstrutorFichaGrupo,
-     ConstrutorFichaItem,Servico,OrdemServico, ClientesFichas, MovimentacoesFinanceiras
+     ConstrutorFichaItem,Servico,OrdemServico, ClientesFichas, MovimentacoesFinanceiras,MenuBotoes,CadastrarCliente
 }

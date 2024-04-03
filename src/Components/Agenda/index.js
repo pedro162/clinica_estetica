@@ -16,6 +16,7 @@ import {UserContex} from '../../Context/UserContex.js'
 import FormAgenda from './FormAgenda/index.js'
 import Include from './include';
 import FormControlInput from '../FormControl/index.js'
+import { Link } from 'react-router-dom/cjs/react-router-dom.min';
 
 
 const Agenda = (props)=>{
@@ -386,7 +387,7 @@ const Agenda = (props)=>{
                 items={[
                         {
                             props:{},
-                            label:'Início'
+                            label:<> <Link className={null}  to={'/home/painel'}>Início</Link></>
                         },
                         {
                             props:{},
