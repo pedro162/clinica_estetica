@@ -20,6 +20,7 @@ import Atualizar from './Atualizar/index.js'
 import Cancelar from './Cancelar/index.js'
 import Include from './include';
 import FormControlInput from '../FormControl/index.js'
+import { Link } from 'react-router-dom/cjs/react-router-dom.min';
 
 
 const Consulta = (props)=>{
@@ -608,7 +609,7 @@ const Consulta = (props)=>{
                 items={[
                         {
                             props:{},
-                            label:'Início'
+                            label:<> <Link className={null}  to={'/home/painel'}>Início</Link></>
                         },
                         {
                             props:{},

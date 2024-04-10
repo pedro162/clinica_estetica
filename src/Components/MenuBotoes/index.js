@@ -129,7 +129,7 @@ const MenuBotoes = (props)=>{
                                         <Col sm='4' xs='4' md='4' key={'MenuBotoes_'+index}  className={'my-2'} >
                                              <Link className={null}  to={url} style={{width:'100%', height:'100%'}} >
                                                 <Button style={{alignItems: 'center', width: '100%', height: '80pt', color: '#FFF', backgroundColor: 'rgba(204, 204, 204, 0.2)', border: 'none', boxShadow:'2px 2px 4px #000', display: 'flex', flexDirection: 'column', alignItems: 'center', alignSelf: 'center' }}>
-                                                    <span style={{fontSize:'32pt', marginTop: 'auto', color:'#FFF', opacity: '1 !important', fontWeight:'bolder'}} >{iconLabel}</span>
+                                                    <span style={{fontSize:'32pt', marginTop: 'auto', color:'#07B201', opacity: '1 !important', fontWeight:'bolder'}} >{iconLabel}</span>
                                                     <span className={estilos.estilo_label_button}>{label}</span>
                                                 </Button>
 
