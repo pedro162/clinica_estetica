@@ -287,7 +287,7 @@ const Required = ({data, url_btn, callback_selected, props_btn_search, label_btn
                     />
             </Col>
             <Col  style={{'margin':'0px', 'padding':'0px'}}  xs="1" sm="1" md="1">
-                <Button style={{'margin':'0px'}} variant="primary" {...props_btn_search} className="botao_success btn btn-sm" onClick={searchBtn}>
+                <Button style={{'margin':'0px',width:'100%'}} variant="primary" {...props_btn_search} className="botao_success btn btn-sm" onClick={searchBtn}>
 		                {label_btn_search ? label_btn_search : (<FontAwesomeIcon icon={faSearch} />)}
 		        </Button>
             </Col>
@@ -311,7 +311,7 @@ const Required = ({data, url_btn, callback_selected, props_btn_search, label_btn
                                     value:description,
                                     className:'',
                                     size:"sm",
-                                    style:{'margin':'0px'}
+                                    style:{'margin':'0px', width:'100%'}
                                 },
                                 atributsContainer:{
                                     className:''
@@ -320,7 +320,7 @@ const Required = ({data, url_btn, callback_selected, props_btn_search, label_btn
                         }
                     />
             </Col>
-            <Col>
+            <Col xs="12" sm="12" md="12">
                 { 
                      (showSuggestions && description) 
                      ?

@@ -25,7 +25,7 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
     const [exemplos, setExemplos] = React.useState([])
     const [exemplosTitleTable, setExemplosTitleTable] = React.useState([])
     const [showModalCriarFilial, setShowModalCriarConstula] = React.useState(false)
-    const [consultaChoice, setFilialChoice] = React.useState(null);
+    const [filialChoice, setFilialChoice] = React.useState(null);
     const [atualizarFilial, setAtualizarFilial] = React.useState(false)   
     const [cancelarFilial, setCancelarFilial] = React.useState(false)    
     const [cadastrarFilial, setCadastrarFilial] = React.useState(false) 
@@ -49,7 +49,7 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
     React.useEffect(()=>{
         switch(acao){
             case 'editar':
-                if(consultaChoice > 0){
+                if(filialChoice > 0){
                     setAtualizarFilial(true);
                 }else{
                     setAtualizarFilial(false);
@@ -61,7 +61,7 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
 
         }
         
-    }, [consultaChoice, acao])
+    }, [filialChoice, acao])
 
     React.useEffect(()=>{
 
@@ -78,11 +78,6 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
         setFilialChoice(idFilial)
         setAcao('editar')
         setAtualizarFilial(true);
-    }
-    const cancelarFilialAction = (idFilial)=>{
-        setFilialChoice(idFilial)
-        setAcao('cancelar')
-        setCancelarFilial(true);
     }
     //cancelarFilial, setCancelarFilial
     const novaFilial = (idFilial)=>{
@@ -318,12 +313,12 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
             </Row>
 
             {
-                cadastrarFilial && <Cadastrar cadastrarFilial={cadastrarFilial} setCadastrarFilial={setCadastrarFilial} atualizarFilial={atualizarFilial} setAtualizarFilial={setAtualizarFilial}  idFilial={consultaChoice} setIdFilial={setFilialChoice} callback={requestAllFilials} />
+                cadastrarFilial && <Cadastrar cadastrarFilial={cadastrarFilial} setCadastrarFilial={setCadastrarFilial} atualizarFilial={atualizarFilial} setAtualizarFilial={setAtualizarFilial}  idFilial={filialChoice} setIdFilial={setFilialChoice} callback={requestAllFilials} />
             }
             
             {
                 atualizarFilial &&
-                <Atualizar atualizarFilial={atualizarFilial} setAtualizarFilial={setAtualizarFilial}  idFilial={consultaChoice} setIdFilial={setFilialChoice} callback={requestAllFilials} />
+                <Atualizar atualizarFilial={atualizarFilial} setAtualizarFilial={setAtualizarFilial}  idFilial={filialChoice} setIdFilial={setFilialChoice} callback={requestAllFilials} />
             }
          </>
 

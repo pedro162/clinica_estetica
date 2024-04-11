@@ -5,119 +5,194 @@ import FormControlSelect from '../../FormControl/Select.js'
 import {Col, Row} from 'react-bootstrap';
 import Button from '../../FormControl/Button.js';
 import estilos from './FormFilial.module.css'
+import Modal from '../../Utils/Modal/index.js'
+import useFetch from '../../../Hooks/useFetch.js';
+import {UserContex} from '../../../Context/UserContex.js'
+import Load from '../../Utils/Load/index.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET,FILIAIS_SAVE_POST, FILIAIS_UPDATE_POST, FILIAIS_ONE_GET, CLIENTES_ALL_POST} from '../../../api/endpoints/geral.js'
+import Atualizar from '../Atualizar/index.js'
+import Required from '../../FormControl/Required.js';
+import Swal from 'sweetalert2'
 
-const FormFilial = ({
-			nome,
-			setNome,
-			tipo,
-			setTipo,
-			vr_minimo,
-			setVrMinimo,
-			vr_maximo,
-			setVrMaximo,
-			bloquear,
-			setBloquear,
-			aceita_transferencia,
-			setAceitaTransferencia,
-			vr_saldo_inicial,
-			setVrSaldoInicial,
-			...props
-	})=>{
+const FormFilial = ({dataFilialChoice, dataEstado, setIdFilial, idFilial, showModalCriarFilial, setShowModalCriarFilial, callback, atualizarCadastro, setAtualizarCadastro, carregando})=>{
+    
+    const [carregandoDadosChoice, setCarregandoDadosChoice] = React.useState(false)
+    //dataEstado={dataEstado} setIdFilial={setIdFilial} idFilial={idFilial} carregando={false} dataFilialChoice={dataFilial} setAtualizarCadastro={setAtualizarCadastro} atualizarCadastro={atualizarCadastro} showModalCriarFilial={showModalAtualizarFilial} setShowModalCriarFilial={()=>{setShowModalAtualizarFilial();setCadastrarFilial()}} callback={callback} 
+	const {data, error, request, loading} = useFetch();
+	const fetchToFilial = useFetch();
+	const [idPessoa, setIdPessoa] = React.useState(null)
 
-	const userLogar = ()=>{
+	const {getToken, dataUser} = React.useContext(UserContex);
+	const userLogar =  ()=>{
         console.log('Aqui............')
     }
 
-    nome 					= nome 					? nome 					: '';
-    tipo 					= tipo 					? tipo 					: '';
-    vr_minimo 				= vr_minimo 			? vr_minimo 			: '';
-    vr_maximo 				= vr_maximo 			? vr_maximo 			: '';
-    bloquear 				= bloquear 				? bloquear 				: '';
-    aceita_transferencia  	= aceita_transferencia 	? aceita_transferencia 	: '';    
-    vr_saldo_inicial 		= vr_saldo_inicial 		? vr_saldo_inicial 		: '';
-	
+    const sendData = async ({
+			id,
+			pessoa_id
+		})=>{
+
+    	const data = {
+    		'id':id,
+            'pessoa_id':pessoa_id,
+
+    	}
+
+    	//alert('aqui')
+
+        if(atualizarCadastro == true){
+            const {url, options} = FILIAIS_UPDATE_POST(idFilial, data, getToken());
+
+
+            const {response, json} = await request(url, options);
+            console.log('Save clients here')
+            console.log(json)
+            if(json){
+                console.log('Response Save clients here')
+                console.log(json)
+                
+                callback();
+                setShowModalCriarFilial();
+                setAtualizarCadastro(false);
+                setIdFilial(null);
+
+                Swal.fire({
+                  icon: "success",
+                  title: "",
+                  text: 'Reigistrado com sucesso',
+                  footer: '',//'<a href="#">Why do I have this issue?</a>'
+                  confirmButtonColor: "#07B201",
+                });
+            }
+
+        }else{
+
+
+        	const {url, options} = FILIAIS_SAVE_POST(data, getToken());
+
+
+            const {response, json} = await request(url, options);
+            console.log('Save clients here')
+            console.log(json)
+            if(json){
+                console.log('Response Save clients here')
+            	console.log(json)
+            	
+            	callback();
+            	setShowModalCriarFilial();
+                setAtualizarCadastro(false);
+
+                Swal.fire({
+                  icon: "success",
+                  title: "",
+                  text: 'Reigistrado com sucesso',
+                  footer: '',//'<a href="#">Why do I have this issue?</a>'
+                  confirmButtonColor: "#07B201",
+                });
+            }
+
+        }
+
+    }
+
+
+    const dataToFormFilial = ()=>{
+    	let obj = {id:'', pessoa_id:''}
+    	if(dataFilialChoice && dataFilialChoice.hasOwnProperty('registro')){
+    		let data = dataFilialChoice.registro;
+           
+    		if(data.hasOwnProperty('pessoa_id')){
+    			obj.pessoa_id = data.pessoa_id;
+    		}
+
+    	}
+
+    	if(idPessoa > 0){
+    		obj.pessoa_id = idPessoa;
+    	}
+    	
+    	//console.log(obj)
+    	return obj;
+    }
+    
+   /* if(atualizarCadastro){
+        return(
+            <Modal  handleConcluir={()=>null}  title={'Cadastrar Cliente ..'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarFilial} showHide={()=>{setShowModalCriarFilial();}}>
+                {carregandoDadosChoice && <Load/>}
+                <Atualizar
+                    idFilial={idFilial} 
+                    setDataCliente={setDataFilialChoice}
+                    setCarregandoDadosCliente={setCarregandoDadosChoice}
+                />
+             </Modal>
+        )
+    }
+   */
+    const preparaFilialToForm = ()=>{
+        let grupoFormat = [{label:'Selecione...',valor:'',props:{selected:'selected', disabled:'disabled'}}]
+        if(dataEstado && dataEstado.hasOwnProperty('mensagem') ){
+            
+            if(Array.isArray(dataEstado.mensagem) && dataEstado.mensagem.length > 0){
+
+
+                for(let i=0; !(i==dataEstado.mensagem.length); i++){
+                    let atual = dataEstado.mensagem[i];
+                    let name    = atual.hasOwnProperty('nmEStado')      ? atual.nmEStado : '';
+                    let id      = atual.hasOwnProperty('id')        ? atual.id : '';
+                    grupoFormat.push(
+                        {label:name,valor:id,props:{}}
+                    )
+                }
+
+            }
+            
+        }
+
+        console.log('-------------grupo agui----------------------')
+        console.log(dataEstado)
+        console.log('-------------grupo agui aa----------------------')
+
+        return grupoFormat;
+    }
+    
+
+    if(error){
+        Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: error,
+            footer: '',//'<a href="#">Why do I have this issue?</a>'
+            confirmButtonColor: "#07B201",
+            //width:'20rem',
+        });
+    }
+
+
 	return(
 
 		<>
 			 <Formik 
 
-                initialValues={{nome, tipo, vr_minimo, vr_maximo, bloquear, aceita_transferencia, vr_saldo_inicial}}
+                initialValues={{... dataToFormFilial()}}
+				enableReinitialize={true}
+
                 validate={
                     values=>{
 
                         const errors = {}
 
-                        if(!values.nome){
-                            errors.nome="Obrigatório"
-                        }
-
-                        if(!values.tipo){
-                            errors.tipo="Obrigatório"
-                        }
-
-                        if(!values.vr_minimo){
-                            errors.vr_minimo="Obrigatório"
-                        }
-
-                        if(!values.vr_maximo){
-                            errors.vr_maximo="Obrigatório"
-                        }
-
-						if(!values.bloquear){
-                            errors.bloquear="Obrigatório"
-                        }
-
-                        if(!values.aceita_transferencia){
-                            errors.aceita_transferencia="Obrigatório"
-                        }
-
-                        if(!values.vr_saldo_inicial){
-                            errors.vr_saldo_inicial="Obrigatório"
-                        }
-
-                        if(!values.logradouro){
-                            errors.logradouro="Obrigatório"
-                        }
-
-                        if(!values.complemento){
-                            errors.complemento="Obrigatório"
-                        }
-
-                        if(!values.numero){
-                            errors.numero="Obrigatório"
-                        }
-
-
-                        if(!values.telefone){
-                            errors.telefone="Obrigatório"
-                        }
-
-                        if(!values.celular){
-                            errors.celular="Obrigatório"
-                        }
-
-                        if(!values.tp_telefone){
-                            errors.tp_telefone="Obrigatório"
-                        }
-
-                        if(!values.tp_celular){
-                            errors.tp_celular="Obrigatório"
-                        }
-
-                        if(!values.tp_email){
-                            errors.tp_email="Obrigatório"
+                        if(!values.pessoa_id){
+                            errors.pessoa_id="Obrigatório"
                         }
 
                         return errors;
                     }
                 }
 
-                onSubmit={(values, {setSubmitting})=>{
-                    /*setTimeout(() => {
-                        alert(JSON.stringify(values, null, 2));
-                        setSubmitting(false);
-                      }, 400);*/
-                      userLogar(values.nome, values.tipo)
+                onSubmit={async (values, {setSubmitting})=>{
+                    
+                    await sendData({...values});
+
                 }}
             >
                 {
@@ -133,244 +208,67 @@ const FormFilial = ({
                         }
                     )=>(
 
-                        <form onSubmit={handleSubmit}>
-                            <Row className="my-3">
-                        		<Col xs="12" sm="12" md="12">
-                        			<span className="label_title_grup_forms" >Dados básicos</span>
-                        		</Col>
-                        	</Row>
-                        	<Row className="mb-1">
-                        		<Col xs="12" sm="12" md="6">
-                        			 <Field
-			                                data={
-			                                    {
-			                                        hasLabel:true,
-			                                        contentLabel:'Nome *',
-			                                        atributsFormLabel:{
+                        <Modal  handleConcluir={()=>{handleSubmit(); }}  title={ (atualizarCadastro == true ? 'Atualizar' : 'Cadastrar')+' Filial'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarFilial} showHide={()=>{setShowModalCriarFilial();setAtualizarCadastro(false);setIdFilial(null);}}>
+                                {
+                                    carregando && carregando==true
+                                    ?
+                                        (<Load/>)
+                                    :
+                                        (                 
+	                        <form onSubmit={()=>handleSubmit()}>
+	                            <Row className="my-3">
+	                        		<Col xs="12" sm="12" md="12">
+	                        			<span className="label_title_grup_forms">Dados básicos</span>
+	                        		</Col>
+	                        	</Row>
+	                        	<Row className="mb-1">
+	                        		<Col xs="12" sm="12" md="12">
+                                            <Field
+                                                data={
+                                                    {
+                                                        hasLabel:true,
+                                                        contentLabel:'Pessoa *',
+                                                        atributsFormLabel:{
 
-			                                        },
-			                                        atributsFormControl:{
-			                                            type:'text',
-			                                            name:'nome',
-			                                            placeholder:'',
-			                                            id:'nome',
-			                                            onChange:handleChange,
-			                                            onBlur:handleBlur,
-			                                            value:values.nome,
-			                                            className:`${estilos.input}`,
-			                                            size:"sm"
-			                                        },
-			                                        atributsContainer:{
-			                                            className:''
-			                                        }
-			                                    }
-			                                }
-			                               
-			                                component={FormControlInput}
-			                            ></Field>
-			                            <ErrorMessage className="alerta_error_form_label" name="nome" component="div" />
-                        		</Col>
+                                                        },
+                                                        atributsFormControl:{
+                                                            type:'text',
+                                                            name:'pessoa_id',
+                                                            placeholder:'Ex: fulano de tal',
+                                                            id:'pessoa_id',
+                                                            name_cod:'pessoa_id',
+                                                            name_desacription:'pessoa_name',
+                                                            onChange:handleChange,
+                                                            onBlur:handleBlur,
+                                                            value:values.pessoa_id,
+                                                            className:`${estilos.input}`,
+                                                            size:"sm"
+                                                        },
+                                                        atributsContainer:{
+                                                            className:''
+                                                        },
+                                                        hookToLoadFromDescription:CLIENTES_ALL_POST,
+                                                        callbackDataItemChoice:(param)=>{
+															let {label, value} = param
+															/*handleChange(value)
+															handleBlur(value)*/
+															console.log('Handlechange')
+															console.log(handleChange)
+															setIdPessoa(value)
+														}
+                                                    }
+                                                }
+                                                component={Required}
+                                         >   </Field>    
+                                          <ErrorMessage className="alerta_error_form_label" name="pessoa_id" component="div" />
+	                        		</Col>
+	                        	</Row>
+	                        </form>
+                            )
+                            
+                            }       
 
-                        		<Col xs="12" sm="12" md="6">
-                        			<Field
-			                                data={
-			                                    {
-			                                        hasLabel:true,
-			                                        contentLabel:'Tipo *',
-			                                        atributsFormLabel:{
-
-			                                        },
-			                                        atributsFormControl:{
-			                                            type:'text',
-			                                            name:'tipo',
-			                                            placeholder:'',
-			                                            id:'tipo',
-			                                            onChange:handleChange,
-			                                            onBlur:handleBlur,
-			                                            value:values.tipo,
-			                                            className:estilos.input,
-			                                            size:"sm",
-			                                        },
-			                                        options:[{label:'Banco',valor:'banco',props:{selected:'selected'}},{label:'Balcão',valor:'convencional',props:{}}],
-			                                        atributsContainer:{
-			                                            className:''
-			                                        }
-			                                    }
-			                                }
-			                               
-			                                component={FormControlSelect}
-			                            ></Field>
-			                            <ErrorMessage className="alerta_error_form_label" name="tipo" component="div" />
-                        		</Col>
-                        	</Row>
-
-                        	<Row className="mb-1">
-                        		<Col xs="12" sm="12" md="6">
-                        			 <Field
-			                                data={
-			                                    {
-			                                        hasLabel:true,
-			                                        contentLabel:'Valor mínimo *',
-			                                        atributsFormLabel:{
-
-			                                        },
-			                                        atributsFormControl:{
-			                                            type:'text',
-			                                            name:'vr_minimo',
-			                                            placeholder:'',
-			                                            id:'vr_minimo',
-			                                            onChange:handleChange,
-			                                            onBlur:handleBlur,
-			                                            value:values.vr_minimo,
-			                                            className:estilos.input,
-			                                            size:"sm"
-			                                        },
-			                                        atributsContainer:{
-			                                            className:''
-			                                        }
-			                                    }
-			                                }
-			                               
-			                                component={FormControlInput}
-			                            ></Field>
-			                            <ErrorMessage className="alerta_error_form_label" name="vr_minimo" component="div" />
-                        		</Col>
-
-                        		<Col xs="12" sm="12" md="6">
-                        			<Field
-			                                data={
-			                                    {
-			                                        hasLabel:true,
-			                                        contentLabel:'Valor máximo *',
-			                                        atributsFormLabel:{
-
-			                                        },
-			                                        atributsFormControl:{
-			                                            type:'text',
-			                                            name:'vr_maximo',
-			                                            placeholder:'fulano de tal',
-			                                            id:'vr_maximo',
-			                                            onChange:handleChange,
-			                                            onBlur:handleBlur,
-			                                            value:values.vr_maximo,
-			                                            className:estilos.input,
-			                                            size:"sm"
-			                                        },
-			                                        atributsContainer:{
-			                                            className:''
-			                                        }
-			                                    }
-			                                }
-			                               
-			                                component={FormControlInput}
-			                            ></Field>
-			                            <ErrorMessage className="alerta_error_form_label" name="vr_maximo" component="div" />
-                        		</Col>
-                        	</Row>
-                        	<Row className="my-3">
-                        		<Col xs="12" sm="12" md="12">
-                        			<span className="label_title_grup_forms">Dados de complementares</span>
-                        		</Col>
-                        	</Row>
-                        	<Row className="mb-1">
-                        		<Col xs="12" sm="12" md="6">
-                        			 <Field
-			                                data={
-			                                    {
-			                                        hasLabel:true,
-			                                        contentLabel:'Bloquear *',
-			                                        atributsFormLabel:{
-
-			                                        },
-			                                        atributsFormControl:{
-			                                            type:'text',
-			                                            name:'bloquear',
-			                                            placeholder:'',
-			                                            id:'bloquear',
-			                                            onChange:handleChange,
-			                                            onBlur:handleBlur,
-			                                            value:values.bloquear,
-			                                            className:estilos.input,
-			                                            size:"sm"
-			                                        },
-			                                        atributsContainer:{
-			                                            className:''
-			                                        }
-			                                    }
-			                                }
-			                               
-			                                component={FormControlInput}
-			                            ></Field>
-			                            <ErrorMessage className="alerta_error_form_label" name="bloquear" component="div" />
-                        		</Col>
-
-                        		<Col xs="12" sm="12" md="6">
-                        			<Field
-			                                data={
-			                                    {
-			                                        hasLabel:true,
-			                                        contentLabel:'Aceita transferênica *',
-			                                        atributsFormLabel:{
-
-			                                        },
-			                                        atributsFormControl:{
-			                                            type:'text',
-			                                            name:'aceita_transferencia',
-			                                            placeholder:'',
-			                                            id:'aceita_transferencia',
-			                                            onChange:handleChange,
-			                                            onBlur:handleBlur,
-			                                            value:values.aceita_transferencia,
-			                                            className:estilos.input,
-			                                            size:"sm"
-			                                        },
-			                                        atributsContainer:{
-			                                            className:''
-			                                        }
-			                                    }
-			                                }
-			                               
-			                                component={FormControlInput}
-			                            ></Field>
-			                            <ErrorMessage className="alerta_error_form_label" name="aceita_transferencia" component="div" />
-                        		</Col>
-                        	</Row>
-                        	<Row className="mb-1">
-                        		<Col xs="12" sm="12" md="12">
-                        			 <Field
-			                                data={
-			                                    {
-			                                        hasLabel:true,
-			                                        contentLabel:'Saldo inicial *',
-			                                        atributsFormLabel:{
-
-			                                        },
-			                                        atributsFormControl:{
-			                                            type:'text',
-			                                            name:'vr_saldo_inicial',
-			                                            placeholder:'00,00',
-			                                            id:'vr_saldo_inicial',
-			                                            onChange:handleChange,
-			                                            onBlur:handleBlur,
-			                                            value:values.vr_saldo_inicial,
-			                                            className:estilos.input,
-			                                            size:"sm"
-			                                        },
-			                                        atributsContainer:{
-			                                            className:''
-			                                        }
-			                                    }
-			                                }
-			                               
-			                                component={FormControlInput}
-			                            ></Field>
-			                            <ErrorMessage className="alerta_error_form_label" name="vr_saldo_inicial" component="div" />
-                        		</Col>
-
-                        		
-                        	</Row>
-                        	
-                        </form>
+                        </Modal>
                     )
                 }
             </Formik>

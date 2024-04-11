@@ -124,7 +124,7 @@ const Filial = (props)=>{
     {
         label:'Cadastrar',
         icon:<FontAwesomeIcon icon={faPlus} />,
-        props:{onClick:()=>setShowModalCriarFilial(true), className:'btn btn-sm mx-2 btn-secondary'}
+        props:{onClick:()=>setCadastrarFilial(true), className:'btn btn-sm mx-2 btn-secondary'}
     }
     ];
 
@@ -450,8 +450,9 @@ const Filial = (props)=>{
                 </Col>
             </Row>
 
-            {
-                type !='external' && cadastrarFilial && <Cadastrar cadastrarFilial={cadastrarFilial} setCadastrarFilial={setCadastrarFilial} atualizarFilial={atualizarFilial} setAtualizarFilial={setAtualizarFilial}  idFilial={filialChoice} setIdFilial={setFilialChoice} callback={requestAllFilials} />
+
+             {
+                cadastrarFilial && <Cadastrar cadastrarFilial={cadastrarFilial} setCadastrarFilial={setCadastrarFilial} atualizarCadastro={null} setAtualizarCadastro={()=>null}  idFilial={filialChoice} setIdFilial={setFilialChoice} callback={requestAllFilials} />
             }
             
            

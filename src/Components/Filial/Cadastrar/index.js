@@ -1,68 +1,56 @@
 import React from 'react';
-import FormFilial from '../FormFilial/index.js'
-import { faHome, faSearch,faPlus } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {Col, Row, Button } from 'react-bootstrap';
-import Modal from '../../Utils/Modal/index.js'
 import useFetch from '../../../Hooks/useFetch.js';
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CLIENTES_ONE_GET, ESTADO_ALL_POST} from '../../../api/endpoints/geral.js'
+import {UserContex} from '../../../Context/UserContex.js'
+import FormFilial from '../FormFilial/index.js'
+import Pesquisar from '../Pesquisar/index.js'
+import Modal from '../../Utils/Modal/index.js'
+import Load from '../../Utils/Load/index.js'
 
-const Cadastrar = ({showModalCriarFilial, setShowModalCriarFilial})=>{
+const Cadastrar = ({idFilial, setIdFilial, callback, atualizarCadastro, setAtualizarCadastro, cadastrarFilial, setCadastrarFilial})=>{
 
-    //const [showModalCriarFilial, setShowModalCriarFilial] = React.useState(false);
-    const [nome, setNome] = React.useState('Balcão')
-    const [tipo, setTipo] = React.useState('Banco')
-    const [vr_minimo, setVrMinimo] = React.useState('12,10')
-    const [vr_maximo, setVrMaximo] = React.useState('600,30')
-    const [bloquear, setBloquear] = React.useState('Não')
-    const [aceita_transferencia, setAceitaTransferencia] = React.useState('Sim')
-    const [vr_saldo_inicial, setVrSaldoInicial] = React.useState('560,65')
+    
+    const [showModalAtualizarFilial, setShowModalAtualizarFilial] = React.useState(false)
+    const [carregando, setCarregando] = React.useState(false)
+    const [dataFilial, setDataFilial] = React.useState(null)
+    const [dataEstado, setDataEstado] = React.useState(null)
+	const {getToken, dataUser} = React.useContext(UserContex);
 
-    const data = {
-    	nome,
-    	setNome,
-		tipo,
-		setTipo,
-		vr_minimo,
-		setVrMinimo,
-		vr_maximo,
-		setVrMaximo,
-		bloquear,
-		setBloquear,
-		aceita_transferencia,
-		setAceitaTransferencia,
-		vr_saldo_inicial,
-		setVrSaldoInicial,
-	}
-	
-	const handleSubmit = ()=>{
+	const {data, error, request, loading} = useFetch();
+	React.useEffect(()=>{
+		
+		const getEstado = async ()=>{
+			const {url, options} = ESTADO_ALL_POST({}, getToken());
 
-		let formData = {
-	    	nome,
-			tipo,
-			vr_minimo,
-			vr_maximo,
-			bloquear,
-			aceita_transferencia,
-			vr_saldo_inicial,
+	        const {response, json} = await request(url, options);
+	        console.log('All estado here')
+	        console.log(json)
+	        if(json){
+	            setDataEstado(json)
+	            setShowModalAtualizarFilial(true)
+	        }else{
+	        	setDataEstado(null)
+	        }
 		}
+		if(cadastrarFilial == true){
+			//getEstado();
+		}
+		
+		setShowModalAtualizarFilial(true)
+		
+	}, [cadastrarFilial])
 
-		formData = JSON.stringify(formData);
-		alert(formData)
-	}
-
-	const FormModal = ()=>{
-		return(
-			<Row>
-				<Col>
-					<FormFilial  {...data}/>
-				</Col>
-			</Row>
-		)
-	}
+	/*
+		atualizarCadastro && 
+                <Atualizar setCarregandoDadosCliente={null} atualizarCadastro={setAtualizarCadastro} idFilial={clientChoice} setDataFilial={null} setShowModalCriarFilial={setShowModalAtualizarFilial} />
+	*/
+	//<Pesquisar idFilial={idFilial} setDataFilial={setDataFilial} setCarregandoDadosCliente={setCarregando} />
 	return(
 		<>
-			<Modal  handleConcluir={()=>{handleSubmit();setShowModalCriarFilial(); }} children={<FormModal/>} title={'Cadastrar Filial'} size="lg" labelConcluir="Concluir" dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarFilial} showHide={setShowModalCriarFilial}/>
 			
+			{
+				<FormFilial dataEstado={dataEstado} setIdFilial={setIdFilial} idFilial={idFilial} carregando={false} dataFilialChoice={dataFilial} setAtualizarCadastro={setAtualizarCadastro} atualizarCadastro={atualizarCadastro} showModalCriarFilial={showModalAtualizarFilial} setShowModalCriarFilial={()=>{setShowModalAtualizarFilial();setCadastrarFilial()}} callback={callback} />
+			}
 		</>
 	)
 }
