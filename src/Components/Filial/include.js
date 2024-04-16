@@ -1,7 +1,7 @@
 import React from 'react';
 import estilos from './Filial.module.css'
 import useFetch from '../../Hooks/useFetch.js';
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CONSULTA_ALL_POST} from '../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, FILIAIS_ALL_POST} from '../../api/endpoints/geral.js'
 import {FORMAT_DATA_PT_BR} from '../../functions/index.js'
 import {Col, Row } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
@@ -262,7 +262,7 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
 
     const requestAllFilials = async() =>{
        
-        const {url, options} = CONSULTA_ALL_POST({'name_filial':pessoa}, getToken());
+        const {url, options} = FILIAIS_ALL_POST({'name_filial':pessoa}, getToken());
 
 
         const {response, json} = await request(url, options);
@@ -313,12 +313,12 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
             </Row>
 
             {
-                cadastrarFilial && <Cadastrar cadastrarFilial={cadastrarFilial} setCadastrarFilial={setCadastrarFilial} atualizarFilial={atualizarFilial} setAtualizarFilial={setAtualizarFilial}  idFilial={filialChoice} setIdFilial={setFilialChoice} callback={requestAllFilials} />
+                cadastrarFilial && <Cadastrar cadastrarFilial={cadastrarFilial} setCadastrarFilial={setCadastrarFilial} atualizarFilial={atualizarFilial} setAtualizarFilial={setAtualizarFilial}  idFilial={filialChoice} setIdFilial={setFilialChoice} callback={callBack} />
             }
             
             {
                 atualizarFilial &&
-                <Atualizar atualizarFilial={atualizarFilial} setAtualizarFilial={setAtualizarFilial}  idFilial={filialChoice} setIdFilial={setFilialChoice} callback={requestAllFilials} />
+                <Atualizar atualizarFilial={atualizarFilial} setAtualizarFilial={setAtualizarFilial}  idFilial={filialChoice} setIdFilial={setFilialChoice} callback={callBack} />
             }
          </>
 

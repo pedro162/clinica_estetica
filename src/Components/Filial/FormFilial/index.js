@@ -97,12 +97,28 @@ const FormFilial = ({dataFilialChoice, dataEstado, setIdFilial, idFilial, showMo
 
 
     const dataToFormFilial = ()=>{
-    	let obj = {id:'', pessoa_id:''}
+    	let obj = {id:'', pessoa_id:'', pessoa_name:'', name_servico:''}
     	if(dataFilialChoice && dataFilialChoice.hasOwnProperty('registro')){
     		let data = dataFilialChoice.registro;
            
     		if(data.hasOwnProperty('pessoa_id')){
     			obj.pessoa_id = data.pessoa_id;
+    		}
+    		if(data.hasOwnProperty('pessoa')){
+    			obj.name_servico = obj.pessoa_name = data?.pessoa?.name;
+    		}
+
+    	}
+
+    	if(dataFilialChoice && dataFilialChoice.hasOwnProperty('mensagem')){
+    		let data = dataFilialChoice.mensagem;
+           
+    		if(data.hasOwnProperty('pessoa_id')){
+    			obj.pessoa_id = data.pessoa_id;
+    		}
+
+    		if(data.hasOwnProperty('pessoa')){
+    			obj.name_servico = obj.pessoa_name = data?.pessoa?.name;
     		}
 
     	}
@@ -241,6 +257,7 @@ const FormFilial = ({dataFilialChoice, dataEstado, setIdFilial, idFilial, showMo
                                                             onChange:handleChange,
                                                             onBlur:handleBlur,
                                                             value:values.pessoa_id,
+                                                            name_servico:values.pessoa_name,
                                                             className:`${estilos.input}`,
                                                             size:"sm"
                                                         },

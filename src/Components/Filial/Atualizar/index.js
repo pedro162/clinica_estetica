@@ -67,6 +67,7 @@ const Atualizar = ({idFilial, setIdFilial, callback, atualizarFilial, setAtualiz
 	}, [idFilial])
 
 	const validarEditar = (data)=>{
+		//alert('aqui')
 		let erros = [];
 
 		let {id} = data ? data : {};
@@ -92,7 +93,7 @@ const Atualizar = ({idFilial, setIdFilial, callback, atualizarFilial, setAtualiz
 			}
 
 			{dataFilial && 
-				<FormFilial setIdFilial={setIdFilial} idFilial={idFilial} carregando={false} dataFilialChoice={dataFilial} setAtualizarFilial={setAtualizarFilial} atualizarFilial={atualizarFilial} setAtualizarCadastro={setAtualizarFilial} showModalCriarFilial={showModalAtualizarFilial} setShowModalCriarFilial={setShowModalAtualizarFilial} callback={callback} />
+				<FormFilial setIdFilial={setIdFilial} idFilial={idFilial} carregando={false} dataFilialChoice={dataFilial} setAtualizarFilial={setAtualizarFilial} atualizarFilial={atualizarFilial} atualizarCadastro={atualizarFilial} setAtualizarCadastro={setAtualizarFilial} showModalCriarFilial={showModalAtualizarFilial} setShowModalCriarFilial={setShowModalAtualizarFilial} callback={callback} />
 			}
 		</>
 	)

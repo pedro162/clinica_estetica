@@ -101,7 +101,7 @@ const Filial = (props)=>{
             contentLabel:'Cod pessoa',
             atributsFormLabel:{},
             atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name':pessoa,onChange:handleCodPessoaFilter,    onBlur:handleCodPessoaFilter, onKeyUp:handleSearch},
+            atributsFormControl:{'type':'text', size:"sm",'name':codigoPessoa,onChange:handleCodPessoaFilter,    onBlur:handleCodPessoaFilter, onKeyUp:handleSearch},
 
         },
         {
@@ -376,10 +376,7 @@ const Filial = (props)=>{
 
                                          <Row className={'mt-2'}>
                                             <div  style={{display:'flex', flexDirection:'collumn', flexWrap:'wrap'}}>
-                                               {(filtroAbertas ? <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroAbertas(false);}} ><FontAwesomeIcon icon={faTimes} /> Pendentes</Button> : '')}
-                                                {(filtroConcluidas ? <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroConcluidas(false);}} ><FontAwesomeIcon icon={faTimes} /> Concluídas</Button> : '')}
-                                                {(filtroCanceladas ? <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroCanceladas(false);}} ><FontAwesomeIcon icon={faTimes} /> Canceladas</Button> : '')}
-                                                {(filtroRemarcadas ? <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroRemarcadas(false);}} ><FontAwesomeIcon icon={faTimes} /> Canceladas</Button> : '')}
+                                               
                                                 
                                             </div>
                                         </Row>
@@ -388,23 +385,20 @@ const Filial = (props)=>{
                                     
                                 </Row>
                                
-                                <Row className={'my-2'}>
-                                    <Col>
-                                        <Row>
-                                            <Col><span style={{fontWeight:'bolder', fontSize:'14pt'}} >Filtros</span></Col>
-                                        </Row>
-
-                                        <div>
-                                             <hr style={{margin:'0',padding:'0'}}/>  
-                                        </div>
-                                    </Col>
-                                </Row>
+                                {/*<Row className={'my-2'}>
+                                                                    <Col>
+                                                                        <Row>
+                                                                            <Col><span style={{fontWeight:'bolder', fontSize:'14pt'}} >Filtros</span></Col>
+                                                                        </Row>
+                                
+                                                                        <div>
+                                                                             <hr style={{margin:'0',padding:'0'}}/>  
+                                                                        </div>
+                                                                    </Col>
+                                                                </Row>*/}
                                 <Row>
                                     <div style={{display:'flex', flexDirection:'collumn', flexWrap:'wrap'}}>
-                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroAbertas(true);}} ><FontAwesomeIcon icon={faSearch} /> Pendentes</Button>
-                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroConcluidas(true);}} ><FontAwesomeIcon icon={faSearch} /> Concluídas</Button>
-                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroCanceladas(true);}} ><FontAwesomeIcon icon={faSearch} /> Canceladas</Button>
-                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroRemarcadas(true);}} ><FontAwesomeIcon icon={faSearch} /> Remarcadas</Button>
+                                        
                                     </div>
                                     
                                 </Row>
