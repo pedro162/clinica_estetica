@@ -344,7 +344,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
             
             {
                 atualizarPais &&
-                <Atualizar atualizarPais={atualizarPais} setAtualizarPais={setAtualizarPais} setAtualizarCadastro={setAtualizarPais}  idPais={consultaChoice} setIdPais={setPaisChoice} callback={callBack} />
+                <Atualizar atualizarPais={atualizarPais} atualizarCadastro={atualizarPais} setAtualizarPais={setAtualizarPais} setAtualizarCadastro={setAtualizarPais}  idPais={consultaChoice} setIdPais={setPaisChoice} callback={callBack} />
             }
 
         

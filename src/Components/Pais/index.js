@@ -15,6 +15,7 @@ import FormPais from './FormPais/index.js'
 import Include from './include';
 import FormControlInput from '../FormControl/index.js'
 import Cadastrar from './Cadastrar/index.js'
+import { Link } from 'react-router-dom/cjs/react-router-dom.min';
 
 
 const Pais = (props)=>{
@@ -24,7 +25,7 @@ const Pais = (props)=>{
     const [exemplos, setExemplos] = React.useState([])
     const [exemplosTitleTable, setExemplosTitleTable] = React.useState([])
     const [showModalCriarPais, setShowModalCriarPais] = React.useState(false)
-    const [mostarFiltros, setMostarFiltros] = React.useState(false) 
+    const [mostarFiltros, setMostarFiltros] = React.useState(true) 
     const [filtroMobile, setFiltroMobile] = React.useState(null)
     const [acao, setAcao] = React.useState(null)
     const [ordenacao, setOrdenacao] = React.useState('')
@@ -167,7 +168,7 @@ const Pais = (props)=>{
     {
         label:'Cadastrar país',
         icon:<FontAwesomeIcon icon={faPlus} />,
-        props:{onClick:()=>setShowModalCriarPais(true), className:'btn btn-sm mx-2 btn-secondary'}
+        props:{onClick:()=>setCadastrarPais(true), className:'btn btn-sm mx-2 btn-secondary'}
     }
     ];
     
@@ -227,7 +228,7 @@ const Pais = (props)=>{
                 items={[
                         {
                             props:{},
-                            label:'Início'
+                            label:<> <Link className={null}  to={'/home/painel'}>Início</Link></>
                         },
                         {
                             props:{},
@@ -345,7 +346,7 @@ const Pais = (props)=>{
             
             {
                 cadastrarPais &&
-                <Cadastrar cadastrarPais={cadastrarPais} setCadastrarPais={setCadastrarPais} atualizarPais={atualizarPais} setAtualizarPais={setAtualizarPais}  idPais={consultaChoice} setIdPais={setPaisChoice} callback={requestAllPaises} />
+                <Cadastrar cadastrarPais={cadastrarPais} setCadastrarPais={setCadastrarPais} atualizarPais={atualizarPais} setAtualizarPais={setAtualizarPais} setAtualizarCadastro={setCadastrarPais}  idPais={consultaChoice} setIdPais={setPaisChoice} callback={requestAllPaises} />
             }
          </>
 

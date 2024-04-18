@@ -91,16 +91,26 @@ const FormPais = ({dataPaisChoice, dataGrupo, setIdPais, idPais, showModalCriarP
 
 
     const dataToFormPais = ()=>{
-    	let obj = {namenome:'', cod_pais:'', padrao:''}
+    	let obj = {namenome:'', nome: '', cod_pais:'', padrao:''}
     	if(dataPaisChoice && dataPaisChoice.hasOwnProperty('mensagem')){
     		let data = dataPaisChoice.mensagem;
            
     		if(data.hasOwnProperty('name')){
-                obj.name = data.name;
+                obj.name = obj.namenome = obj.nome = data.name;
     		}
+
+    		if(data.hasOwnProperty('nmPais')){
+                obj.name = obj.namenome = obj.nome = data.nmPais;
+    		}
+
+
 
     		if(data.hasOwnProperty('cod_pais')){
                 obj.cod_pais = data.cod_pais;
+    		}
+
+    		if(data.hasOwnProperty('cdPais')){
+                obj.cod_pais = data.cdPais;
     		}
 
     		if(data.hasOwnProperty('padrao')){

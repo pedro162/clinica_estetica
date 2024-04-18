@@ -7,7 +7,7 @@ import Pesquisar from '../Pesquisar/index.js'
 import Modal from '../../Utils/Modal/index.js'
 import Load from '../../Utils/Load/index.js'
 
-const Cadastrar = ({idPais, setIdPais, callback, atualizarCadastro, setAtualizarCadastro, cadastrarPais, setCadastrarPais})=>{
+const Cadastrar = ({idPais, setIdPais, callback, atualizarCadastro, setAtualizarCadastro, setAtualizarPais, cadastrarPais, setCadastrarPais})=>{
 
     
     const [showModalAtualizarPais, setShowModalAtualizarPais] = React.useState(false)
@@ -38,7 +38,10 @@ const Cadastrar = ({idPais, setIdPais, callback, atualizarCadastro, setAtualizar
 		
 		
 	}, [cadastrarPais])
-
+	console.log('setAtualizarCadastro: ', setAtualizarCadastro)
+	console.log('setCadastrarPais: ', setCadastrarPais)
+	console.log('setAtualizarPais: ', setAtualizarPais)
+	
 	/*
 		atualizarCadastro && 
                 <Atualizar setCarregandoDadosPais={null} atualizarCadastro={setAtualizarCadastro} idPais={clientChoice} setDataPais={null} setShowModalCriarPais={setShowModalAtualizarPais} />

@@ -7,7 +7,7 @@ import {Col, Row, Button } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
 import Breadcrumbs from '../Helper/Breadcrumbs.js'
-import { faHome, faSearch, faPlus, faTimes, faHandHolding, faUser, faUsers, faFolderOpen, faClone, faFileAlt, faTasks, faUserMd, faList, faCalendarAlt,faCoins, faPuzzlePiece } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faSearch, faFlag, faBuilding, faGlobe, faPlus, faCity, faTimes, faHandHolding, faUser, faUsers, faFolderOpen, faClone, faFileAlt, faTasks, faUserMd, faList, faCalendarAlt,faCoins, faPuzzlePiece } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from '../Utils/Modal/index.js'
 import Load from '../Utils/Load/index.js'
@@ -80,6 +80,26 @@ const MenuBotoes = (props)=>{
             'label':'Con. fichas',
             'iconLabel':<FontAwesomeIcon icon={faPuzzlePiece} />,
             'url':'/configuracoes/construtor/ficha',
+        },
+        {
+            'label':'Conf. filiais',
+            'iconLabel':<FontAwesomeIcon icon={faBuilding} />,
+            'url':'/configuracoes/filial',
+        },
+        {
+            'label':'Conf. paises',
+            'iconLabel':<FontAwesomeIcon icon={faGlobe} />,
+            'url':'/configuracoes/pais',
+        },
+        {
+            'label':'Conf. uf',
+            'iconLabel':<FontAwesomeIcon icon={faFlag} />,
+            'url':'/configuracoes/estado',
+        },
+        {
+            'label':'Conf. cidade',
+            'iconLabel':<FontAwesomeIcon icon={faCity} />,
+            'url':'/configuracoes/cidade',
         },
         {
             'label':'Fichas',
