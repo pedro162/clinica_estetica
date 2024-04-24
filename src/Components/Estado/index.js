@@ -161,7 +161,7 @@ const Estado = (props)=>{
     {
         label:'Cadastrar',
         icon:<FontAwesomeIcon icon={faPlus} />,
-        props:{onClick:()=>setShowModalCriarEstado(true), className:'btn btn-sm mx-2 btn-secondary'}
+        props:{onClick:()=>setCadastrarEstado(true), className:'btn btn-sm mx-2 btn-secondary'}
     }
     ];
 
@@ -331,7 +331,7 @@ const Estado = (props)=>{
             
             {
                 cadastrarEstado &&
-                <Cadastrar cadastrarEstado={cadastrarEstado} setCadastrarEstado={setCadastrarEstado} atualizarEstado={atualizarEstado} setAtualizarEstado={setAtualizarEstado}  idPais={consultaChoice} setIdPais={setEstadoChoice} callback={requestAllEstados} />
+                <Cadastrar cadastrarEstado={cadastrarEstado} setIdEstado={setEstadoChoice} setCadastrarEstado={setCadastrarEstado} setAtualizarCadastro={setCadastrarEstado} atualizarEstado={atualizarEstado} setAtualizarEstado={setAtualizarEstado}  idPais={consultaChoice} setIdPais={setEstadoChoice} callback={requestAllEstados} />
             }
          </>
 

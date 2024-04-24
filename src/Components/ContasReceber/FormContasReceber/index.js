@@ -16,7 +16,7 @@ import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible.js'
 import Swal from 'sweetalert2'//https://sweetalert2.github.io/#examples
 
 
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, SERVICO_SAVE_POST, SERVICO_ALL_POST, ORDEM_SERVICO_FINALIZAR_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST, CONTAS_RECEBER_UPDATE_POST, CONTAS_RECEBER_SAVE_POST} from '../../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, FORMA_PAGAMENTOALL_POST, OPERADOR_FINANCEIROALL_POST, PLANO_PAGAMENTOALL_POST, SERVICO_SAVE_POST, FILIAIS_ALL_POST, ORDEM_SERVICO_FINALIZAR_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST, CONTAS_RECEBER_UPDATE_POST, CONTAS_RECEBER_SAVE_POST} from '../../../api/endpoints/geral.js'
 
 
 const FormContasReceber = ({dataContasReceberChoice, setDataContasReceber, setIdContasReceber, idContasReceber, showModalCriarContasReceber, setShowModalCriarContasReceber, callback, atualizarContasReceber, setAtualizarContasReceber, carregando})=>{
@@ -24,11 +24,22 @@ const FormContasReceber = ({dataContasReceberChoice, setDataContasReceber, setId
 	const {data, error, request, loading} = useFetch();
 	const dataRequest = useFetch();
 
-	const {getToken, dataUser} = React.useContext(UserContex);
-	const [dataFiliais, setDataFiliais] 	= React.useState([])
-	const [dataItens, setDataitens]		 	= React.useState([])
-	const [isOrcamento, setIsOramento]		 	= React.useState(false)
-	const [qtdAtualizaCobrancas, setQtdAtualizaCobrancas]		 	= React.useState(0)
+	const {getToken, dataUser} 												= React.useContext(UserContex);
+	const [dataFiliais, setDataFiliais] 									= React.useState([])
+	const [dataItens, setDataitens]		 									= React.useState([])
+	const [isOrcamento, setIsOramento]		 								= React.useState(false)
+	const [qtdAtualizaCobrancas, setQtdAtualizaCobrancas]					= React.useState(0)
+	const [dataFormaPagamento, setDataFormaPagamento] 						= React.useState([])
+	const [dataPlanoPagamento, setDataPlanoPagamento] 						= React.useState([])
+	const [dataOperadorFinanceiro, setDataOperadorFinanceiro] 				= React.useState([])
+	const [dataFormaPagamentoEscolhido, setDataFormaPagamentoEscolhido] 	= React.useState([])
+	const [idFormaPagamentoForm, setIdFormaPagamentoForm] 					= React.useState(0)				//--- Controla a quantidade do serviço
+	const [vrCobrancaForm, setVrCobrancaForm] 								= React.useState(0)					//--- Controla a quantidade do serviço
+	const [idPlanoPagamentoForm, setIdPlanoPagamentoForm] 					= React.useState(0)		//--- Controla a quantidade do serviço
+	const [idOperadorFinanceiroForm, setIdOperadorFinanceiroForm] 			= React.useState(0)
+	const [nrDocForm, setNrDocForm] 										= React.useState('')	
+	const [idPessoaForm, setIdPessoaForm] 			= React.useState(0)
+
 	
 
 	const userLogar =  ()=>{
@@ -38,43 +49,11 @@ const FormContasReceber = ({dataContasReceberChoice, setDataContasReceber, setId
     const sendData = async ({
 			...params
 		})=>{
-			
-		
-		/*const data = {
-			referencia_id,
-			referencia,
-			pessoa_id,
-			descricao,
-			documento,
-			dtVencimentoOriginal,
-			dtVencimento,
-			vrBruto,
-			vrLiquido,
-			vrDevolvido,
-			vrPago,
-			vrTaxa,
-			vrDesconto,
-			vrJuros,
-			user_id,
-			user_update_id,
-			active,
-			deleted_at,
-			created_at,
-			updated_at,
-			responsavel_id,
-			importacao_dados,
-			forma_pgto_orig_id,
-			conta_orig_id,
-			prazo_orig_id,
-			qtd_parcelas,
-			vrAberto,
-			vrSaldoAberto,
-			pessoa_autor_id 
-		}*/
 		
 
 		const data = {
-			...params
+			...params,
+			vrBruto:params?.vrLiquido
 		}
 
 		let data_config = {}
@@ -112,7 +91,7 @@ const FormContasReceber = ({dataContasReceberChoice, setDataContasReceber, setId
 
     const requestAllFiliais = async() =>{
        
-        const {url, options} = SERVICO_ALL_POST({}, getToken());
+        const {url, options} = FILIAIS_ALL_POST({}, getToken());
 
 
         const {response, json} = await dataRequest.request(url, options);
@@ -129,7 +108,7 @@ const FormContasReceber = ({dataContasReceberChoice, setDataContasReceber, setId
     }
 
 	const dataToFormContasReceber = ()=>{
-    	let obj = {filial_id:'', vrLiquido:'', descricao:'', dsArquivo:'', pessoa_id:'', pessoa_rca_id:'', filial_id:'', user_id:'', user_update_id:'', active:'', deleted_at:'', created_at:'', updated_at:''}
+    	let obj = {filial_id:'', vrLiquido:'', descricao:'', documento:'', dsArquivo:'', pessoa_id:'', pessoa_name:'', pessoa_rca_id:'', forma_pagamento_id:'', plano_pagamento_id:'', operador_financeiro_id:'', user_id:'', user_update_id:'', active:'', deleted_at:'', created_at:'', updated_at:''}
     	if(dataContasReceberChoice && dataContasReceberChoice.hasOwnProperty('mensagem')){
     		let data = dataContasReceberChoice.mensagem;
 			
@@ -149,6 +128,10 @@ const FormContasReceber = ({dataContasReceberChoice, setDataContasReceber, setId
     			obj.descricao = data.descricao;
     		}
 
+    		if(data.hasOwnProperty('documento')){
+    			obj.documento = data.documento;
+    		}
+
 			if(data.hasOwnProperty('dsArquivo')){
     			obj.dsArquivo = data.dsArquivo;
     		}
@@ -165,26 +148,24 @@ const FormContasReceber = ({dataContasReceberChoice, setDataContasReceber, setId
     			obj.vr_final = data.vr_final;
     		}
 
-			if(data.hasOwnProperty('vr_desconto')){
-    			obj.vr_desconto = data.vr_desconto;
+			if(data.hasOwnProperty('forma_pagamento_id')){
+    			obj.forma_pagamento_id = data.forma_pagamento_id;
     		}
 
-			if(data.hasOwnProperty('pct_acrescimo')){
-    			obj.pct_acrescimo = data.pct_acrescimo;
+			if(data.hasOwnProperty('operador_financeiro_id')){
+    			obj.operador_financeiro_id = data.operador_financeiro_id;
     		}
 
-			if(data.hasOwnProperty('vr_acrescimo')){
-    			obj.vr_acrescimo = data.vr_acrescimo;
+			if(data.hasOwnProperty('plano_pagamento_id')){
+    			obj.plano_pagamento_id = data.plano_pagamento_id;
     		}
 
-			if(data.hasOwnProperty('profissional_id')){
-    			obj.profissional_id = data.profissional_id;
-    		}
-
-			if(data.hasOwnProperty('pct_desconto')){
-    			obj.pct_desconto = data.pct_desconto;
-    		}
+			
     		
+    	}
+
+    	if(idPessoaForm > 0){
+    		obj.pessoa_id = idPessoaForm;
     	}
 
     	return obj;
@@ -194,13 +175,130 @@ const FormContasReceber = ({dataContasReceberChoice, setDataContasReceber, setId
 
     const preparaFilialToForm = ()=>{
     	if(dataFiliais.hasOwnProperty('mensagem') && Array.isArray(dataFiliais.mensagem) && dataFiliais.mensagem.length > 0){
-    		let filiais = dataFiliais.mensagem.map(({id, name}, index, arr)=>({label:name,valor:id,props:{}}))
+    		let filiais = dataFiliais.mensagem.map(({id, name_filial}, index, arr)=>({label:name_filial,valor:id,props:{}}))
     		filiais.unshift({label:'Selecione...',valor:'',props:{selected:'selected', disabled:'disabled'}})
     		
     		return filiais;
     	}
     	return []
     }
+
+
+	const getFormaPagamentoAll = async ()=>{
+		
+		const {url, options} = FORMA_PAGAMENTOALL_POST({}, getToken());
+		const {response, json} = await request(url, options);
+		
+		if(json){
+				
+			if(json && json.hasOwnProperty('mensagem')){
+				let data = json.mensagem;
+				//console.log("Formas de pagamento: ",data)
+				setDataFormaPagamento(data)
+			}else{
+				setDataFormaPagamento([])
+			}
+			 
+		}else{
+			setDataFormaPagamento([])
+		}
+	}
+
+	const getPlanoPagamentoAll = async ()=>{
+		if(!(idFormaPagamentoForm > 0)){
+			setDataPlanoPagamento([])
+			return false;
+		}
+
+		const {url, options} = PLANO_PAGAMENTOALL_POST({forma_pagamento_id:idFormaPagamentoForm}, getToken());
+		const {response, json} = await request(url, options);
+		
+		if(json){
+				
+			if(json && json.hasOwnProperty('mensagem')){
+				let data = json.mensagem;
+				//console.log("Planos de pagamento: ",data)
+				setDataPlanoPagamento(data)
+			}else{
+				setDataPlanoPagamento([])
+			}
+			 
+		}else{
+			setDataPlanoPagamento([])
+		}
+	}
+
+	const getOperadorFinanceiroAll = async ()=>{
+		if(!(idFormaPagamentoForm > 0)){
+			setDataOperadorFinanceiro([])
+			return false;
+		}
+
+		const {url, options} = OPERADOR_FINANCEIROALL_POST({forma_pagamento_id:idFormaPagamentoForm}, getToken());
+		const {response, json} = await request(url, options);
+		
+		if(json){
+				
+			if(json && json.hasOwnProperty('mensagem')){
+				let data = json.mensagem;
+				//console.log("Operadores financeiros: ",data)
+				setDataOperadorFinanceiro(data)
+			}else{
+				setDataOperadorFinanceiro([])
+			}
+			 
+		}else{
+			setDataOperadorFinanceiro([])
+		}
+	}
+
+
+
+	const preparaFormaPagamentoToForm = ()=>{
+    	if(dataFormaPagamento && Array.isArray(dataFormaPagamento) && dataFormaPagamento.length > 0){
+    		let formaPgto = dataFormaPagamento.map(({id, name}, index, arr)=>({label:name,valor:id,props:{}}))
+    		//formaPgto.unshift({label:'Teste',valor:'2',props:{selected:'selected'}})
+			formaPgto.unshift({label:'Selecione...',valor:'0',props:{selected:'selected', }})
+    		//console.table(formaPgto)
+    		return formaPgto;
+    	}
+    	return []
+    }
+
+	const preparaPlanoPagamentoToForm = ()=>{
+    	if(dataPlanoPagamento && Array.isArray(dataPlanoPagamento) && dataPlanoPagamento.length > 0){
+    		let formaPgto = dataPlanoPagamento.map(({id, name}, index, arr)=>({label:name,valor:id,props:{}}))
+    		formaPgto.unshift({label:'Selecione...',valor:'',props:{selected:'selected', }})
+    		//console.table(formaPgto)
+    		return formaPgto;
+    	}
+    	return []
+    }
+
+	const preparaOperadorFinanceiroToForm = ()=>{
+    	if(dataOperadorFinanceiro && Array.isArray(dataOperadorFinanceiro) && dataOperadorFinanceiro.length > 0){
+    		let formaPgto = dataOperadorFinanceiro.map(({id, name}, index, arr)=>({label:name,valor:id,props:{}}))
+    		formaPgto.unshift({label:'Selecione...',valor:'',props:{selected:'selected', }})
+    		//console.table(formaPgto)
+    		return formaPgto;
+    	}
+    	return []
+    }
+
+
+
+    React.useEffect(()=>{
+		getFormaPagamentoAll();
+	}, []);
+
+	React.useEffect(()=>{
+		getOperadorFinanceiroAll()
+		getPlanoPagamentoAll();
+		//idFormaPagamentoForm 
+		//alert(idFormaPagamentoForm)
+		setDataFormaPagamentoEscolhido({...dataFormaPagamentoEscolhido })
+	}, [idFormaPagamentoForm]);
+
 
 	React.useEffect(()=>{
 
@@ -244,7 +342,33 @@ const FormContasReceber = ({dataContasReceberChoice, setDataContasReceber, setId
 							errors.descricao="Obrigatório"    			
 						}
 
-						
+						if(!values.filial_id){
+							errors.filial_id="Obrigatório"    			
+						}
+
+						if(!values.pessoa_id){
+							errors.pessoa_id="Obrigatório"    			
+						}
+
+						if(!values.vrLiquido){
+							errors.vrLiquido="Obrigatório"    			
+						}
+
+						if(!values.forma_pagamento_id){
+							errors.forma_pagamento_id="Obrigatório"    			
+						}
+
+						if(!values.plano_pagamento_id){
+							errors.plano_pagamento_id="Obrigatório"    			
+						}
+
+						if(!values.operador_financeiro_id){
+							errors.operador_financeiro_id="Obrigatório"    			
+						}
+
+						if(!values.documento){
+							//errors.documento="Obrigatório"    			
+						}
 
                         return errors;
                     }
@@ -362,6 +486,8 @@ const FormContasReceber = ({dataContasReceberChoice, setDataContasReceber, setId
 																				name_desacription:'pessoa_name',
 																				onChange:handleChange,
 																				onBlur:handleBlur,
+																				//onChange:(ev)=>{ setIdPessoaForm(ev.target.value); handleChange(ev)},
+																				//onBlur:(ev)=>{ setIdPessoaForm(ev.target.value);handleBlur(ev)},
 																				value:values.pessoa_id,
 																				className:`${estilos.input}`,
 																				size:"sm"
@@ -370,22 +496,27 @@ const FormContasReceber = ({dataContasReceberChoice, setDataContasReceber, setId
 																				className:''
 																			},
 																			hookToLoadFromDescription:CLIENTES_ALL_POST,
+																			callbackDataItemChoice:(param)=>{
+																				let {label, value} = param
+																				
+																				setIdPessoaForm(value)
+																			}
 																		}
 																	}
 																	component={Required}
 															>   </Field>    
 															<ErrorMessage className="alerta_error_form_label" name="pessoa_id" component="div" />
 														</Col>
-														
-														
 													</Row>
+
 													<Row className="mb-3">
+														
 														<Col xs="12" sm="12" md="6">
 															<Field
 																	data={
 																		{
 																			hasLabel:true,
-																			contentLabel:'Caixa para baixa *',
+																			contentLabel:'Caixa para baixa',
 																			atributsFormLabel:{
 
 																			},
@@ -434,7 +565,6 @@ const FormContasReceber = ({dataContasReceberChoice, setDataContasReceber, setId
 																				value:values.vrLiquido,
 																				className:`${estilos.input}`,
 																				size:"sm",
-																				readonly:'readonly',
 																			},
 																			atributsContainer:{
 																				className:''
@@ -447,6 +577,215 @@ const FormContasReceber = ({dataContasReceberChoice, setDataContasReceber, setId
 														</Col>
 
 													</Row>
+
+													<Row className="mb-3">
+														<Col xs="12" sm="12" md="6">
+															<Field
+																data={
+																	{
+																		hasLabel:true,
+																		contentLabel:'Forma de pagamento *',
+																		atributsFormLabel:{
+
+																		},
+																		atributsFormControl:{
+																			type:'text',
+																			name:'forma_pagamento_id',
+																			placeholder:'Forma de pagament',
+																			id:'forma_pagamento_id',
+																			//onChange:handleChange,
+																			//onBlur:handleBlur,
+																			onChange:(ev)=>{ setIdFormaPagamentoForm(ev.target.value);handleChange(ev)},
+																			onBlur:(ev)=>{ setIdFormaPagamentoForm(ev.target.value);handleBlur(ev)},
+																			value:values.forma_pagamento_id,
+																			className:estilos.input,
+																			size:"sm",
+																		},
+																		options:preparaFormaPagamentoToForm(),
+																		atributsContainer:{
+																			className:''
+																		}
+																	}
+																}
+															
+																component={FormControlSelect}
+															></Field>
+															<ErrorMessage className="alerta_error_form_label" name="forma_pagamento_id" component="div" />														
+															
+														</Col>
+
+														<Col xs="12" sm="12" md="6">
+															<Field
+																data={
+																	{
+																		hasLabel:true,
+																		contentLabel:'Plano de pagamento *',
+																		atributsFormLabel:{
+
+																		},
+																		atributsFormControl:{
+																			type:'text',
+																			name:'plano_pagamento_id',
+																			placeholder:'Plano de pagament',
+																			id:'plano_pagamento_id',
+																			onChange:handleChange,
+																			onBlur:handleBlur,
+																			value:values.plano_pagamento_id,
+																			className:estilos.input,
+																			size:"sm"
+																		},
+																		options:preparaPlanoPagamentoToForm(),
+																		atributsContainer:{
+																			className:''
+																		}
+																	}
+																}
+															
+																component={FormControlSelect}
+															></Field>
+															<ErrorMessage className="alerta_error_form_label" name="plano_pagamento_id" component="div" />														
+															
+														</Col>
+													</Row>
+
+													<Row className="mb-3">
+												
+														<Col xs="12" sm="12" md="6">
+															<Field
+																data={
+																	{
+																		hasLabel:true,
+																		contentLabel:'Agente financeiro',
+																		atributsFormLabel:{
+
+																		},
+																		atributsFormControl:{
+																			type:'text',
+																			name:'operador_financeiro_id',
+																			placeholder:'Plano de pagament',
+																			id:'operador_financeiro_id',
+																			onChange:handleChange,
+																			onBlur:handleBlur,
+																			value:values.operador_financeiro_id,
+																			className:estilos.input,
+																			size:"sm"
+																		},
+																		options:preparaOperadorFinanceiroToForm(),
+																		atributsContainer:{
+																			className:''
+																		}
+																	}
+																}
+															
+																component={FormControlSelect}
+															></Field>
+															<ErrorMessage className="alerta_error_form_label" name="operador_financeiro_id" component="div" />														
+															
+														</Col>
+
+														<Col xs="12" sm="12" md="6">
+															<Field
+																	data={
+																		{
+																			hasLabel:true,
+																			contentLabel:'Nº documento',
+																			atributsFormLabel:{
+
+																			},
+																			atributsFormControl:{
+																				type:'text',
+																				name:'documento',
+																				placeholder:'Nº documento',
+																				id:'documento',
+																				name_cod:'documento',
+																				name_desacription:'documento',
+																				onChange:handleChange,
+																				onBlur:handleBlur,
+																				value:values.documento,
+																				className:`${estilos.input}`,
+																				size:"sm",
+																			},
+																			atributsContainer:{
+																				className:''
+																			},
+																		}
+																	}
+																	component={FormControlInput}
+															>   </Field>    
+															<ErrorMessage className="alerta_error_form_label" name="documento" component="div" />
+														</Col>
+
+													</Row>
+
+													<Row className="mb-3">												
+
+														<Col xs="12" sm="12" md="6">
+															<Field
+																	data={
+																		{
+																			hasLabel:true,
+																			contentLabel:'Data de competência *',
+																			atributsFormLabel:{
+
+																			},
+																			atributsFormControl:{
+																				type:'date',
+																				name:'dt_competencia',
+																				placeholder:'0,00',
+																				id:'dt_competencia',
+																				name_cod:'dt_competencia',
+																				name_desacription:'dt_competencia',
+																				onChange:handleChange,
+																				onBlur:handleBlur,
+																				value:values.dt_competencia,
+																				className:`${estilos.input}`,
+																				size:"sm",
+																			},
+																			atributsContainer:{
+																				className:''
+																			},
+																		}
+																	}
+																	component={FormControlInput}
+															>   </Field>    
+															<ErrorMessage className="alerta_error_form_label" name="dt_competencia" component="div" />
+														</Col>
+
+														<Col xs="12" sm="12" md="6">
+															<Field
+																	data={
+																		{
+																			hasLabel:true,
+																			contentLabel:'Data de pagamento',
+																			atributsFormLabel:{
+
+																			},
+																			atributsFormControl:{
+																				type:'date',
+																				name:'dt_pagamento',
+																				placeholder:'0,00',
+																				id:'dt_pagamento',
+																				name_cod:'dt_pagamento',
+																				name_desacription:'dt_pagamento',
+																				onChange:handleChange,
+																				onBlur:handleBlur,
+																				value:values.dt_pagamento,
+																				className:`${estilos.input}`,
+																				size:"sm",
+																			},
+																			atributsContainer:{
+																				className:''
+																			},
+																		}
+																	}
+																	component={FormControlInput}
+															>   </Field>    
+															<ErrorMessage className="alerta_error_form_label" name="dt_pagamento" component="div" />
+														</Col>
+
+													</Row>
+
+													
 												</>
 											)
 
@@ -467,7 +806,7 @@ const FormContasReceber = ({dataContasReceberChoice, setDataContasReceber, setId
 																	atributsFormControl:{
 																		type:'text',
 																		name:'descricao',
-																		placeholder:'0,00',
+																		placeholder:'Histórico',
 																		id:'descricao',
 																		name_cod:'descricao',
 																		name_desacription:'descricao',
