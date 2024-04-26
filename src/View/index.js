@@ -28,9 +28,11 @@ import ClientesFichas from '../Components/ClientesFichas/index.js'
 import MovimentacoesFinanceiras from '../Components/MovimentacoesFinanceiras/index.js'
 import MenuBotoes from '../Components/MenuBotoes/index.js'
 import CadastrarCliente from '../Components/Clientes/Cadastrar/index.js'
+import Widgets from '../Components/Widgets/index.js'
+import PainelHome from '../Components/Home/Painel.js'
 
 
 export {Home, NotFound, Login, ProtectedRoute, PainelInicial,Clientes,Grupos, ContasReceber, Caixa, Filial, Parametro, User, Pais,
      Estado, Cidade, Agenda, AgendaEvento, CategoriaEvento, Especialidade, Profissionais, Consulta, ConstrutorFicha, ConstrutorFichaGrupo,
-     ConstrutorFichaItem,Servico,OrdemServico, ClientesFichas, MovimentacoesFinanceiras,MenuBotoes,CadastrarCliente
+     ConstrutorFichaItem,Servico,OrdemServico, ClientesFichas, MovimentacoesFinanceiras,MenuBotoes,CadastrarCliente,Widgets,PainelHome
 }

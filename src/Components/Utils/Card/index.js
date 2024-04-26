@@ -2,13 +2,16 @@ import React from 'react';
 import { Container, Col, Row, Card as CartBootstrap, Button } from 'react-bootstrap';
 import estilos from './Card.module.css'
 
-const Card =({children, title, acoesBottomCard, propsContainerTitulo, propsContainerButtons, propsCard, botoesHeader,...props})=>{
+const Card =({children, title, acoesBottomCard, propsContainerTitulo, propsContainerButtons, propsCard, botoesHeader, propsHeader, noFooter,...props})=>{
 	//console.log('Acoes de relatorio')
 	//console.log(botoesHeader)
+	if(!propsHeader){
+		propsHeader = {}
+	}
 	return(
 		<>
 			<CartBootstrap {...propsCard} >
-				<CartBootstrap.Header className={[estilos.headerCard]}>
+				<CartBootstrap.Header className={[estilos.headerCard]} {...propsHeader}>
 					<Row style={{}}>
 						<Col  {...propsContainerTitulo} >
 							<CartBootstrap.Title>{title}</CartBootstrap.Title>
@@ -42,21 +45,25 @@ const Card =({children, title, acoesBottomCard, propsContainerTitulo, propsConta
 				<CartBootstrap.Body className={`${estilos.bodyCard}`}>
 				    {children}				
 				</CartBootstrap.Body>
-				<CartBootstrap.Footer bg="light" className={[{'text-muted':'text-muted'}, estilos.headerFooter]} >
-					{
-						acoesBottomCard && Array.isArray(acoesBottomCard) && acoesBottomCard.length > 0 ? (
-							acoesBottomCard.map((item, index, arr)=>{
-								let label = item.hasOwnProperty('label') ? item.label : '';
-								let icon = item.hasOwnProperty('icon') ? item.icon : '';
-								let propsItem = item.hasOwnProperty('props') ? item.props : {};
-								return(
-									<Button key={index} {... propsItem} >{icon} {label}</Button>
-								)
-							})
-						) : ('')
+				{!noFooter && (
 
-					}
-				</CartBootstrap.Footer>
+
+					<CartBootstrap.Footer bg="light" className={[{'text-muted':'text-muted'}, estilos.headerFooter]} >
+						{
+							acoesBottomCard && Array.isArray(acoesBottomCard) && acoesBottomCard.length > 0 ? (
+								acoesBottomCard.map((item, index, arr)=>{
+									let label = item.hasOwnProperty('label') ? item.label : '';
+									let icon = item.hasOwnProperty('icon') ? item.icon : '';
+									let propsItem = item.hasOwnProperty('props') ? item.props : {};
+									return(
+										<Button key={index} {... propsItem} >{icon} {label}</Button>
+									)
+								})
+							) : ('')
+
+						}
+					</CartBootstrap.Footer>
+				)}
 			</CartBootstrap>
 		</>
 	)
