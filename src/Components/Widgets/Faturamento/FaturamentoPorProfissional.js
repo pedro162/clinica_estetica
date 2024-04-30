@@ -39,18 +39,18 @@ const FaturamentoPorProfissional = (props)=>{
 
 
     let dataChart = [
-    	{ name: 'Filial 01', vendas: 4000 },
-		{ name: 'Filial 02', vendas: 3000 },
-		{ name: 'Filial 03', vendas: 2000 },
-		{ name: 'Filial 04', vendas: 1000 },
-		{ name: 'Filial 05', vendas: 500 },
+    	{ name: 'Profissional 01', vendas: 4000 },
+		{ name: 'Profissional 02', vendas: 3000 },
+		{ name: 'Profissional 03', vendas: 2000 },
+		{ name: 'Profissional 04', vendas: 1000 },
+		{ name: 'Profissional 05', vendas: 500 },
     ]
 
     let fill = ['#8884d8', '#82ca9d', '#ffc658']
 
     return(
         <>
-           <Card className={'mb-5'} title={'Faturamento por Mês'} propsHeader={{className: estilos.titulo_card}} noFooter={true} >
+           <Card className={'mb-5'} title={'Faturamento por profissional'} propsHeader={{className: estilos.titulo_card}} noFooter={true} >
            		{<SimpleBarChart widthChart={500} heightChart={300} dataChart={dataChart} titleChart={'Faturamento por mês'} fillChart={fill}  />}
            </Card>
            

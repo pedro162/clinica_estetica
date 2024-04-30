@@ -16,7 +16,7 @@ const data = [
   { name: 'Dezembro', vendasA: 409, vendasB: 530 },
 ];
 
-const SimpleLineChart = ({widthChart, heightChart, dataChart,titleChart}) => {
+const SimpleLineChart = ({widthChart, heightChart, dataChart,titleChart, dataLinhasChart}) => {
 	if(!widthChart){
 		widthChart = 600;
 
@@ -29,6 +29,29 @@ const SimpleLineChart = ({widthChart, heightChart, dataChart,titleChart}) => {
 	if(!dataChart){
 		dataChart = data
 	}
+
+  if(!dataLinhasChart){
+    dataLinhasChart = [
+      {
+        props:{
+          type:'monotone',
+          dataKey: 'vendasA',
+          stroke: '#8884d8',
+
+        }
+
+      },
+      {
+        props:{
+          type:'monotone',
+          dataKey: 'vendasB',
+          stroke: '#82ca9d',
+
+        }
+
+      },
+    ]
+  }
 	return(
 
 
@@ -41,8 +64,19 @@ const SimpleLineChart = ({widthChart, heightChart, dataChart,titleChart}) => {
     <Legend />
 	    {/*<Line type="monotone" dataKey="vendas" stroke="#8884d8" activeDot={{ r: 8 }} />
 	    	    <Label value="Gráfico de Linha" offset={0} position="top" />*/}
-	     <Line type="monotone" dataKey="vendasA" stroke="#8884d8" />
-    	<Line type="monotone" dataKey="vendasB" stroke="#82ca9d" />
+	     {/*<Line type="monotone" dataKey="vendasA" stroke="#8884d8" />
+             <Line type="monotone" dataKey="vendasB" stroke="#82ca9d"/>*/}
+
+      {
+        Array.isArray(dataLinhasChart) && dataLinhasChart.length > 0 && (
+          dataLinhasChart.map((item, index, arr)=>{
+
+            return(
+              <Line {...item?.props}/>
+            ) 
+          })
+        )
+      }
 
 	  </LineChart>
 
