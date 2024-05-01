@@ -3366,6 +3366,29 @@ export const WIDGET_FAT_LIQUIDEZ_MA_ALL_POST = (data, token)=>{
 
 }
 
+//--- Widget faturamento liquidez por filial  ----------------------------------
+export const WIDGET_FAT_LIQUIDEZ_FILIAL_ALL_POST = (data, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'POST',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        body:JSON.stringify(data)
+   };
+
+   return{
+        url:BASE_URL+'/api/widget/faturamento/liquidez/filial/json/&widget=faturamento_liquidez_filial',
+        options:myInit
+    }
+
+}
+
 
 
 //--- Movimentações ----------------------------------
