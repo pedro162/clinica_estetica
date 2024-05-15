@@ -8,7 +8,7 @@ const data = [
   { name: 'Grupo D', vendas: 500 },
 ];
 
-const SimpleBarChart = ({widthChart, heightChart,  dataChart,titleChart, dataLinhasChart, fillChart}) => {
+const SimpleBarChartCurrency = ({widthChart, heightChart,  dataChart,titleChart, dataLinhasChart, fillChart}) => {
 	if(!widthChart){
 		widthChart = 600;
 
@@ -41,12 +41,38 @@ const SimpleBarChart = ({widthChart, heightChart,  dataChart,titleChart, dataLin
 	}
 
 
+	const currencyFormatter = (value) => `$ ${value.toLocaleString()}`;
+
+	const CustomYAxisTick = (props) => {
+	  const { x, y, payload } = props;
+	  return (
+	    <g transform={`translate(${x},${y})`}>
+	      <text x={0} y={0} dy={16} textAnchor="end" fill="#666" transform="rotate(-45)">
+	        {currencyFormatter(payload.value)}
+	      </text>
+	    </g>
+	  );
+	};
+
+	const CustomTooltip = ({ active, payload, label }) => {
+	  if (active && payload && payload.length) {
+	    return (
+	      <div className="custom-tooltip">
+	        <p className="label">{`${label} : ${currencyFormatter(payload[0].value)}`}</p>
+	      </div>
+	    );
+	  }
+
+	  return null;
+	};
+
+
 	return(
 	  <BarChart width={widthChart} height={heightChart} data={dataChart} >
 	    <CartesianGrid strokeDasharray="3 3" />
-	    <XAxis dataKey="name" />
-	    <YAxis />
-	    <Tooltip />
+	    <XAxis dataKey="name" />	    
+	    <YAxis tick={<CustomYAxisTick />} />
+	    <Tooltip content={<CustomTooltip />} />
 	    <Legend />
 	    {/*<Bar dataKey="vendas" fill="#8884d8" />*/}
 
@@ -64,4 +90,4 @@ const SimpleBarChart = ({widthChart, heightChart,  dataChart,titleChart, dataLin
   )
 }
 
-export default SimpleBarChart;
+export default SimpleBarChartCurrency;
