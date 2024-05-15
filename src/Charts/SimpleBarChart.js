@@ -8,7 +8,7 @@ const data = [
   { name: 'Grupo D', vendas: 500 },
 ];
 
-const SimpleBarChart = ({widthChart, heightChart, dataChart,titleChart}) => {
+const SimpleBarChart = ({widthChart, heightChart,  dataChart,titleChart, dataLinhasChart, fillChart}) => {
 	if(!widthChart){
 		widthChart = 600;
 
@@ -21,6 +21,27 @@ const SimpleBarChart = ({widthChart, heightChart, dataChart,titleChart}) => {
 	if(!dataChart){
 		dataChart = data
 	}
+	if(!fillChart){
+		//fillChart = ['#8884d8']
+	}
+
+
+  	if(!dataLinhasChart){
+	    dataLinhasChart = [
+	      
+	      {
+	        props:{
+	          dataKey: 'vendas',
+	          fill: '#8884d8',
+
+	        }
+
+	      },
+	    ]
+	}
+
+	console.log('dataLinhasChart:  ', dataLinhasChart)
+
 	return(
 	  <BarChart width={widthChart} height={heightChart} data={dataChart} >
 	    <CartesianGrid strokeDasharray="3 3" />
@@ -28,7 +49,18 @@ const SimpleBarChart = ({widthChart, heightChart, dataChart,titleChart}) => {
 	    <YAxis />
 	    <Tooltip />
 	    <Legend />
-	    <Bar dataKey="vendas" fill="#8884d8" />
+	    {/*<Bar dataKey="vendas" fill="#8884d8" />*/}
+
+	    {
+	        Array.isArray(dataLinhasChart) && dataLinhasChart.length > 0 && (
+	          dataLinhasChart.map((item, index, arr)=>{
+
+	            return(
+	              <Bar {...item?.props}/>
+	            ) 
+	          })
+	       	)
+	    }
 	  </BarChart>
   )
 }

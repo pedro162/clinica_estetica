@@ -82,7 +82,6 @@ const Widgets = (props)=>{
                 <Col  xs="12" sm="12" md={"4"} style={{marginTop:'20px'}} >
                 	<Row>
                 		<Col  xs="12" sm="12" md={"12"} style={{width:'100%',margin:'auto'}}>
-
                 			<FaturamentoPorProfissional/>
                 		</Col>
                 	</Row>
