@@ -10,6 +10,7 @@ import Modal from '../../../Utils/Modal/index.js'
 import useFetch from '../../../../Hooks/useFetch.js';
 import {UserContex} from '../../../../Context/UserContex.js'
 import Load from '../../../Utils/Load/index.js'
+import "./print.css";
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CLIENTES_SAVE_POST, CLIENTES_UPDATE_POST, CLIENTES_ONE_GET, CLIENTES_FICHA_MAIS_RECENTE_ONE_GET} from '../../../../api/endpoints/geral.js'
 
 
@@ -282,6 +283,16 @@ const FormCliente = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, sho
 	const dataFormAnswerFields = dataUltimaFichaCliente?.formulario?.resposta
     const dataFicha = dataToFormCliente();
 
+    const handlePrint = () => {
+        const content = document.getElementById('content-to-print');
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(content.innerHTML);
+        printWindow.document.title='FICHA DE ATENDIMENTO'
+        printWindow.document.close();
+        printWindow.print();
+  };
+
+
 	return(
 
 		<>
@@ -293,7 +304,8 @@ const FormCliente = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, sho
                     (<Load/>)
                 :
                     (   
-                        <>      
+                        <div id="content-to-print" > 
+                            <button className="btn btn-sm no-print" type='button' onClick={handlePrint} >Print</button>     
                             <Row>
 								<Col xs="12" sm="12" md="12"  className="py-4" style={{fontSize:40, textAlign:'center'}}>
                                     <b >FICHA DE ATENDIMENTO</b>
@@ -402,8 +414,9 @@ const FormCliente = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, sho
 										
                                     </Row>
                                
-                            
-                        </>
+                            {/* Link para a folha de estilo de impressão */}
+                            <link rel="stylesheet" type="text/css" href="./print.css" media="print" />
+                        </div>
                                                 
                     )
             }

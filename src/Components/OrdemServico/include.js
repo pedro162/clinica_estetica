@@ -26,7 +26,7 @@ import { Button } from 'bootstrap';
 import reactDom from 'react-dom';
 //
 
-const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncontrado, idOrdemCriada, ...props})=>{
+const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncontrado, idOrdemCriada, nextPage, setNextPage, usePagination, setUsePagination, ...props})=>{
     const {data, error, request, loading} = useFetch();
     const [estado, setOrdemServico] = React.useState([])
     const [exemplos, setExemplos] = React.useState([])
@@ -44,9 +44,62 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
     const [acao, setAcao] = React.useState(null)
     const [pessoa, setPessoa] = React.useState('')
     const [defaultFiltersCobReceber, setDefaultFiltersCobReceber] = React.useState({})
+    const [isScrollAtBottom, setIsScrollAtBottom] = React.useState(false)
+    const [nrPageAtual, setNrPageAtual] = React.useState(null)
+
 
 
     const {getToken} = React.useContext(UserContex);
+
+    const divRef = React.useRef(null)
+
+    const nextPageRout = ()=>{
+       
+        /*const div = divRef.current;
+        if(!div){
+            return false;
+        }
+
+        const isBottom = div.scrollHeight - div.scrollTop === div.clientHeight
+        if(isScrollAtBottom){
+            setNextPage(dataEstado?.mensagem?.next_page_url)
+        }
+        setIsScrollAtBottom(isScrollAtBottom)*/
+        if(dataEstado?.mensagem?.next_page_url){
+            setNextPage(dataEstado?.mensagem?.next_page_url)
+        }
+    }
+
+    const previousPageRout = ()=>{
+       
+        /*const div = divRef.current;
+        if(!div){
+            return false;
+        }
+
+        const isBottom = div.scrollHeight - div.scrollTop === div.clientHeight
+        if(isScrollAtBottom){
+            setNextPage(dataEstado?.mensagem?.next_page_url)
+        }
+        setIsScrollAtBottom(isScrollAtBottom)*/
+        if(dataEstado?.mensagem?.prev_page_url){
+            setNextPage(dataEstado?.mensagem?.prev_page_url)
+        }
+    }
+
+    const firstPageRout = ()=>{
+       
+        if(dataEstado?.mensagem?.first_page_url){
+            setNextPage(dataEstado?.mensagem?.first_page_url)
+        }
+    }
+
+    const lastPageRout = ()=>{
+       
+        if(dataEstado?.mensagem?.last_page_url){
+            setNextPage(dataEstado?.mensagem?.last_page_url)
+        }
+    }
 
     const alerta = (target)=>{
         console.log(target)
@@ -293,7 +346,15 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
     const gerarTableOrdemServico = ()=>{
        
         let data = [];
-        let dataOrdemServico = estado.mensagem
+        let dataOrdemServico = estado
+
+        if(dataOrdemServico?.mensagem){
+            dataOrdemServico = dataOrdemServico?.mensagem;
+        }
+
+        if(dataOrdemServico?.data){
+            dataOrdemServico = dataOrdemServico?.data;
+        }
         if(dataOrdemServico && Array.isArray(dataOrdemServico) && dataOrdemServico.length > 0){
             for(let i=0; !(i == dataOrdemServico.length); i++){
                 let atual = dataOrdemServico[i];
@@ -710,7 +771,16 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
 
     React.useEffect(()=>{
         setOrdemServico(dataEstado)
+        setNrPageAtual(dataEstado?.mensagem?.current_page)
+        /*if(dataEstado?.mensagem?.data){
+            setOrdemServico([...estado, ...dataEstado?.mensagem?.data])
+        }else{
+            setOrdemServico([...estado])
+        }*/
+        
+    
     }, [dataEstado])
+
     
 
     const rowsTableArr = gerarTableOrdemServico();    
@@ -744,13 +814,25 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                     }
                 </Col>
 
-                <Col  xs="12" sm="12" md="12"  className={'default_card_report'}>
+                <Col  xs="12" sm="12" md="12"  className={'default_card_report'}  >
                     <Table
                         titulosTableArr={titulosTableArr}
                         rowsTableArr={rowsTableArr}
                         loading={loadingData}
                         nadaEncontrado={nadaEncontrado}
                         botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
+                        refScrollTable={divRef}
+                        nextPage={nextPage}
+                        setNextPage={setNextPage}
+                        usePagination={usePagination}
+                        setUsePagination={setUsePagination}
+                        nextPageRout={nextPageRout}
+                        previousPageRout={previousPageRout}
+                        firstPageRout = {firstPageRout}
+                        nrPageAtual = {nrPageAtual}
+                        lastPageRout = {lastPageRout}
+                        
+                        
 
                     />
                 </Col>

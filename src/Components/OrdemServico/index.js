@@ -45,6 +45,8 @@ const OrdemServico = (props)=>{
     const [filtroAbertas, setFiltroAbertas] = React.useState(false)
     const [filtroConcluidas, setFiltroConcluidas] = React.useState(false)
     const [filtroCanceladas, setFiltroCanceladas] = React.useState(false)
+    const [nextPage, setNextPage] = React.useState(null)
+    const [usePagination, setUsePagination] = React.useState(true)
 
 
     const {getToken} = React.useContext(UserContex);
@@ -278,8 +280,10 @@ const OrdemServico = (props)=>{
         setOrdemServico([])
 
         let {filtros, detalhesFiltros} = montarFiltro();
-        const {url, options} = ORDEM_SERVICO_ALL_POST({...filtros}, getToken());
-
+        let {url, options} = ORDEM_SERVICO_ALL_POST({...filtros}, getToken());
+        if(nextPage){
+            url = nextPage;
+        }
 
         const {response, json} = await request(url, options);
         console.log('All serviços here')
@@ -313,7 +317,7 @@ const OrdemServico = (props)=>{
         requestAllOrdemServicosEffect();
 
         
-    }, [filtroConcluidas, filtroCanceladas, filtroAbertas])
+    }, [filtroConcluidas, filtroCanceladas, filtroAbertas, nextPage, setNextPage])
 
 
 
@@ -454,6 +458,11 @@ const OrdemServico = (props)=>{
                         setMostarFiltros={setMostarFiltros}
                         idOrdemCriada={consultaChoice}
                         nadaEncontrado={nadaEncontrado}
+                        nextPage={nextPage}
+                        setNextPage={setNextPage}
+                        usePagination={usePagination}
+                        setUsePagination={setUsePagination}
+
                     />
                 </Col>
             </Row>

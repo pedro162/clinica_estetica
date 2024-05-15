@@ -5,8 +5,9 @@ import Checkbox from '../../FormControl/Checkbox.js'
 import Load from '../../Utils/Load/index.js'
 import MenuOpcoes from '../MenuOpcoes/index.js'
 import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../../functions/index.js'
+import Pagination from 'react-bootstrap/Pagination';
 
-const Table = ({children, titulosTableArr, rowsTableArr,loading, nadaEncontrado, botoesHeader, ... props})=>{
+const Table = ({children, titulosTableArr, rowsTableArr,loading, nadaEncontrado, botoesHeader, usePagination, nrPageAtual, previousPageRout, nextPageRout, firstPageRout, lastPageRout, ... props})=>{
 	const titulosTable = titulosTableArr ? titulosTableArr : []
 	const bodyTable =  rowsTableArr ? rowsTableArr : []
 	const [selecionados, setSelecionados] = React.useState([])
@@ -94,132 +95,148 @@ const Table = ({children, titulosTableArr, rowsTableArr,loading, nadaEncontrado,
 					?
 						<Load/>
 					:
+						<>
+							<TableBootstrap striped bordered hover size="sm">				 
+							  	{
+							  		titulosTable && Array.isArray(titulosTable) && titulosTable.length > 0 ? (
+							  			<thead>
+							  				<tr  >
+							  					<th>
+							  						<Checkbox type="checkbox" checked={selecionaTodos} setValue={selecionarTodos} label="" />
+							  					</th>
+								  				{
 
-						<TableBootstrap striped bordered hover size="sm">				 
-						  	{
-						  		titulosTable && Array.isArray(titulosTable) && titulosTable.length > 0 ? (
-						  			<thead>
-						  				<tr  >
-						  					<th>
-						  						<Checkbox type="checkbox" checked={selecionaTodos} setValue={selecionarTodos} label="" />
-						  					</th>
-							  				{
-
-							  					titulosTable.map((item, index, arr)=>{
-							  						let labelCelHeadrTable 		= item.hasOwnProperty('label') ? item.label : '';
-							  						let propsLabelHeaderTable 	= item.hasOwnProperty('props') ? item.props: {};
-							  						let rand = Math.floor(Math.random()*999999);
-										  			console.log(labelCelHeadrTable)
+								  					titulosTable.map((item, index, arr)=>{
+								  						let labelCelHeadrTable 		= item.hasOwnProperty('label') ? item.label : '';
+								  						let propsLabelHeaderTable 	= item.hasOwnProperty('props') ? item.props: {};
+								  						let rand = Math.floor(Math.random()*999999);
+											  			console.log(labelCelHeadrTable)
 
 
-										  			return <th key={index+arr.length+labelCelHeadrTable+rand} { ...propsLabelHeaderTable} >{labelCelHeadrTable}</th>
+											  			return <th key={index+arr.length+labelCelHeadrTable+rand} { ...propsLabelHeaderTable} >{labelCelHeadrTable}</th>
 
-										  		})
-							  				}
-						  				</tr>
-						  			</thead>
-						  			
-
-						  	) : ('')
-
-						  	}
-						  <tbody>
-						  	{	
-								
-						  		bodyTable && Array.isArray(bodyTable) && bodyTable.length > 0 ? (
-
-						  			bodyTable.map((item, index, arr)=>{
-				  						let celBodyTableArr 		= item.hasOwnProperty('celBodyTableArr') ? item.celBodyTableArr : [];
-				  						let propsRowBodyTable 	= item.hasOwnProperty('propsRow') ? item.propsRow: {};
-				  						let id = propsRowBodyTable.hasOwnProperty('id') ? propsRowBodyTable.id: 0;
-				  						id = Number(id);
-
-				  						let acoesRowBodyTable 	= item.hasOwnProperty('acoes') ? item.acoes: {};
-				  						let rand = Math.floor(Math.random()*999999);
-							  			
-							  			return (
-							  				<tr onClick={()=>{setDataMenu(acoesRowBodyTable);setShowModalOptions(true)}}  key={index+arr.length+id+'body'+rand} { ...propsRowBodyTable}>
-							  					<td><Checkbox type="checkbox" value={id} checked={id > 0 ? selecionados.includes(id) : false} label="" setValue={handleChange} /></td>
-							  					{
-							  						celBodyTableArr && Array.isArray(celBodyTableArr) && celBodyTableArr.length > 0 ? (
-														celBodyTableArr.map((itemCel, indexCel, arrCel)=>{
-
-															let rand = Math.floor(Math.random()*999999);
-
-															let labelCel = itemCel.hasOwnProperty('label') ? itemCel.label :'';
-															let toSum = itemCel.hasOwnProperty('toSum') ? itemCel.toSum :0;
-															//, 
-															let isCoin              = itemCel.hasOwnProperty('isCoin') ? itemCel.isCoin :0;
-															if(arraySum[indexCel] && arraySum[indexCel].hasOwnProperty("isCoin")){
-																if(isCoin){
-																	arraySum[indexCel]['isCoin'] = isCoin;
-																}
-																if(toSum){
-																	//arraySum[indexCel]['valor'] += Number(FORMAT_CALC_COD(labelCel))
-																	arraySum[indexCel]['valor'] = Number(FORMAT_CALC_COD(labelCel)) + Number(FORMAT_CALC_COD(arraySum[indexCel]['valor']))
-																}else{
-																	arraySum[indexCel]['valor'] = ''
-																}
-															}else{
-																arraySum[indexCel] = {'isCoin':'','valor':''}
-																if(isCoin){
-																	arraySum[indexCel]['isCoin'] = isCoin;
-																}
-																if(toSum){
-																	//arraySum[indexCel]['valor'] += Number(FORMAT_CALC_COD(labelCel))
-																	arraySum[indexCel]['valor'] = Number(FORMAT_CALC_COD(labelCel)) + Number(FORMAT_CALC_COD(arraySum[indexCel]['valor']))
-																}else{
-																	arraySum[indexCel]['valor'] = ''
-																}
-
-															}
-															
-
-															let propsCelBodyTable 	= itemCel.hasOwnProperty('props') ? itemCel.props : {};
-															return <td key={indexCel+id+arrCel.length+'td'+rand} {...propsCelBodyTable}>{labelCel}</td>
-														})
-
-													) : ('')
-							  					}
+											  		})
+								  				}
 							  				</tr>
-							  			)
+							  			</thead>
 							  			
 
-							  		})
+							  	) : ('')
 
-						  		) : ('')
-			  					
-			  				}				    
-						  </tbody>
-						  <tfoot>
-							{arraySum && (
-								<tr>
-									<td></td>
-									{Object.keys(arraySum).map((ojKey, index, arr)=>{
-										let {valor,isCoin} = arraySum[ojKey]
-										let rand = Math.floor(Math.random()*999999);
-										
-										if(! (String(valor).trim().length > 0)){
-											return <td></td>
-										}
-			
-										let valorAtual = '';
-										if(isCoin){
-											valorAtual = FORMAT_MONEY(valor);
-										}else{
-											valorAtual = valor;
-										}
-										return <td key={rand+index+'tfooter'} >{valorAtual}</td>
-									})}
-
+							  	}
+							  <tbody>
+							  	{	
 									
-								</tr>
+							  		bodyTable && Array.isArray(bodyTable) && bodyTable.length > 0 ? (
 
-							)}
-							
-						  </tfoot>
-						</TableBootstrap>
+							  			bodyTable.map((item, index, arr)=>{
+					  						let celBodyTableArr 		= item.hasOwnProperty('celBodyTableArr') ? item.celBodyTableArr : [];
+					  						let propsRowBodyTable 	= item.hasOwnProperty('propsRow') ? item.propsRow: {};
+					  						let id = propsRowBodyTable.hasOwnProperty('id') ? propsRowBodyTable.id: 0;
+					  						id = Number(id);
 
+					  						let acoesRowBodyTable 	= item.hasOwnProperty('acoes') ? item.acoes: {};
+					  						let rand = Math.floor(Math.random()*999999);
+								  			
+								  			return (
+								  				<tr onClick={()=>{setDataMenu(acoesRowBodyTable);setShowModalOptions(true)}}  key={index+arr.length+id+'body'+rand} { ...propsRowBodyTable}>
+								  					<td><Checkbox type="checkbox" value={id} checked={id > 0 ? selecionados.includes(id) : false} label="" setValue={handleChange} /></td>
+								  					{
+								  						celBodyTableArr && Array.isArray(celBodyTableArr) && celBodyTableArr.length > 0 ? (
+															celBodyTableArr.map((itemCel, indexCel, arrCel)=>{
+
+																let rand = Math.floor(Math.random()*999999);
+
+																let labelCel = itemCel.hasOwnProperty('label') ? itemCel.label :'';
+																let toSum = itemCel.hasOwnProperty('toSum') ? itemCel.toSum :0;
+																//, 
+																let isCoin              = itemCel.hasOwnProperty('isCoin') ? itemCel.isCoin :0;
+																if(arraySum[indexCel] && arraySum[indexCel].hasOwnProperty("isCoin")){
+																	if(isCoin){
+																		arraySum[indexCel]['isCoin'] = isCoin;
+																	}
+																	if(toSum){
+																		//arraySum[indexCel]['valor'] += Number(FORMAT_CALC_COD(labelCel))
+																		arraySum[indexCel]['valor'] = Number(FORMAT_CALC_COD(labelCel)) + Number(FORMAT_CALC_COD(arraySum[indexCel]['valor']))
+																	}else{
+																		arraySum[indexCel]['valor'] = ''
+																	}
+																}else{
+																	arraySum[indexCel] = {'isCoin':'','valor':''}
+																	if(isCoin){
+																		arraySum[indexCel]['isCoin'] = isCoin;
+																	}
+																	if(toSum){
+																		//arraySum[indexCel]['valor'] += Number(FORMAT_CALC_COD(labelCel))
+																		arraySum[indexCel]['valor'] = Number(FORMAT_CALC_COD(labelCel)) + Number(FORMAT_CALC_COD(arraySum[indexCel]['valor']))
+																	}else{
+																		arraySum[indexCel]['valor'] = ''
+																	}
+
+																}
+																
+
+																let propsCelBodyTable 	= itemCel.hasOwnProperty('props') ? itemCel.props : {};
+																return <td key={indexCel+id+arrCel.length+'td'+rand} {...propsCelBodyTable}>{labelCel}</td>
+															})
+
+														) : ('')
+								  					}
+								  				</tr>
+								  			)
+								  			
+
+								  		})
+
+							  		) : ('')
+				  					
+				  				}				    
+							  </tbody>
+							  <tfoot>
+								{arraySum && (
+									<tr>
+										<td></td>
+										{Object.keys(arraySum).map((ojKey, index, arr)=>{
+											let {valor,isCoin} = arraySum[ojKey]
+											let rand = Math.floor(Math.random()*999999);
+											
+											if(! (String(valor).trim().length > 0)){
+												return <td></td>
+											}
+				
+											let valorAtual = '';
+											if(isCoin){
+												valorAtual = FORMAT_MONEY(valor);
+											}else{
+												valorAtual = valor;
+											}
+											return <td key={rand+index+'tfooter'} >{valorAtual}</td>
+										})}
+
+										
+									</tr>
+
+								)}
+								
+							  </tfoot>
+							</TableBootstrap>
+							{
+								usePagination && (
+																					
+										<Pagination>
+												<Pagination.First onClick={()=>firstPageRout()} />
+												<Pagination.Prev onClick={()=>previousPageRout()} />
+												<Pagination.Item>{nrPageAtual ? nrPageAtual : 1}</Pagination.Item>
+												<Pagination.Next onClick={()=>nextPageRout()}  />
+												<Pagination.Last onClick={()=>lastPageRout()}  />
+										</Pagination>
+										
+									)
+
+
+
+							}
+						</>
 					
 				}
 				
