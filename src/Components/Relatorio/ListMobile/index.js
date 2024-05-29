@@ -7,8 +7,9 @@ import MenuOpcoes from '../MenuOpcoes/index.js'
 import { faHome, faSearch, faPlus, faPen, faHandHoldingUsd, faList, faFile, faTrash, faHandHolding, faUser, faUserCircle, faEllipsisH, faChartLine } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../../functions/index.js'
+import Pagination from 'react-bootstrap/Pagination';
 
-const ListMobile = ({children, titulosTableArr, rowsTableArr,loading, nadaEncontrado, botoesHeader, title, withoutFirstCol, ... props})=>{
+const ListMobile = ({children, titulosTableArr, rowsTableArr,loading, nadaEncontrado, botoesHeader, title, withoutFirstCol, usePagination, nrPageAtual, previousPageRout, nextPageRout, firstPageRout, lastPageRout,  ... props})=>{
 	const titulosTable = titulosTableArr ? titulosTableArr : []
 	const bodyTable =  rowsTableArr ? rowsTableArr : []
 	const [selecionados, setSelecionados] = React.useState([])
@@ -32,7 +33,7 @@ const ListMobile = ({children, titulosTableArr, rowsTableArr,loading, nadaEncont
 		
 		
 	}
-    //nadaEncontrado={nadaEncontrado}
+    //nadaEncontrado={nadaEncontrado}           
 	//
 	console.log(selecionados)
 
@@ -126,6 +127,7 @@ const ListMobile = ({children, titulosTableArr, rowsTableArr,loading, nadaEncont
 				  				let acoesRowBodyTable 	= item.hasOwnProperty('acoes') ? item.acoes: {};
 
                                 return(
+                                	
                                      <Col  key={id+index+arr.length}>
 
                                      		<Row className={'pb-2 px-1'}  onClick={()=>{setDataMenu(acoesRowBodyTable);setShowModalOptions(true)}} style={{...style}} > 
@@ -210,6 +212,8 @@ const ListMobile = ({children, titulosTableArr, rowsTableArr,loading, nadaEncont
                                      </Col>
                                 )
                             })
+
+
                         ) : (
                         	nadaEncontrado && <Row>
                         		<Col style={{textAlign:'center'}} ><span>Ops...</span><br/><span style={{textAlign:'center'}}>Nenhum registro encontrado!</span></Col>
@@ -217,8 +221,25 @@ const ListMobile = ({children, titulosTableArr, rowsTableArr,loading, nadaEncont
                         )
                     
                     }
-                </Col>
 
+                     {
+						bodyTable && Array.isArray(bodyTable) && bodyTable.length > 0 && usePagination && (
+																			
+								<Pagination className='mt-3'>
+										<Pagination.First onClick={()=>firstPageRout()} />
+										<Pagination.Prev onClick={()=>previousPageRout()} />
+										<Pagination.Item>{nrPageAtual ? nrPageAtual : 1}</Pagination.Item>
+										<Pagination.Next onClick={()=>nextPageRout()}  />
+										<Pagination.Last onClick={()=>lastPageRout()}  />
+								</Pagination>
+								
+							)
+
+
+
+					}
+                </Col>
+               
              </Row>
 			
 			<MenuOpcoes showModal={showModalOptions} setShowModal={setShowModalOptions} opcoes={dataMenu} />

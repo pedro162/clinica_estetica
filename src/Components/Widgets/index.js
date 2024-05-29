@@ -15,6 +15,7 @@ import ReceberAbertosPagos from './ContasReceber/ReceberAbertosPagos.js';
 import FaturamentoPorMes from './Faturamento/FaturamentoPorMes.js';
 import FaturamentoPorFilial from './Faturamento/FaturamentoPorFilial.js';
 import FaturamentoPorProfissional from './Faturamento/FaturamentoPorProfissional.js';
+import ConsultaTipos from './Consulta/ConsultaTipos.js';
 
 const Widgets = (props)=>{
 
@@ -52,7 +53,7 @@ const Widgets = (props)=>{
                         }
                     ]}
 
-                buttonFiltroMobile={true}
+                buttonFiltroMobile={false}
                 setMostarFiltros={()=>null}
                 mostarFiltros={false}
             />
@@ -92,7 +93,7 @@ const Widgets = (props)=>{
                 	<Row>
                 		<Col  xs="12" sm="12" md={"12"} style={{width:'100%',margin:'auto'}}>
 
-                			<ReceberAbertosPagos/>
+                			<ConsultaTipos/>
                 		</Col>
                 	</Row>
                     

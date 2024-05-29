@@ -528,7 +528,17 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
     const gerarListMobileRelatorio = ()=>{
        
         let data = [];
-        let dataOrdemServico = estado.mensagem
+
+        let dataOrdemServico = estado
+
+        if(dataOrdemServico?.mensagem){
+            dataOrdemServico = dataOrdemServico?.mensagem;
+        }
+
+        if(dataOrdemServico?.data){
+            dataOrdemServico = dataOrdemServico?.data;
+        }
+
         if(dataOrdemServico && Array.isArray(dataOrdemServico) && dataOrdemServico.length > 0){
             for(let i=0; !(i == dataOrdemServico.length); i++){
                 let atual = dataOrdemServico[i];
@@ -800,6 +810,16 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                         nadaEncontrado={nadaEncontrado}
                         withoutFirstCol={true}
                         botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
+                        
+                        nextPage={nextPage}
+                        setNextPage={setNextPage}
+                        usePagination={usePagination}
+                        setUsePagination={setUsePagination}
+                        nextPageRout={nextPageRout}
+                        previousPageRout={previousPageRout}
+                        firstPageRout = {firstPageRout}
+                        nrPageAtual = {nrPageAtual}
+                        lastPageRout = {lastPageRout}
                     />
 
                     {

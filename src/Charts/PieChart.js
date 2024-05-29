@@ -10,7 +10,7 @@ const data = [
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
-const SimplePieChart = ({widthChart, heightChart, dataChart,titleChart}) => {
+const SimplePieChart = ({widthChart, heightChart, dataChart, dataKey,dataChartColors, titleChart}) => {
 	if(!widthChart){
 		widthChart = 400;
 
@@ -23,6 +23,15 @@ const SimplePieChart = ({widthChart, heightChart, dataChart,titleChart}) => {
 	if(!dataChart){
 		dataChart = data
 	}
+
+	if(!dataKey){
+		dataKey = 'value'
+	}
+
+	if(!dataChartColors){
+		dataChartColors = COLORS
+	}
+	
 	return(
 	  <PieChart width={widthChart} height={heightChart}>
 	    <Pie
@@ -33,11 +42,11 @@ const SimplePieChart = ({widthChart, heightChart, dataChart,titleChart}) => {
 	      outerRadius={80}
 	      fill="#8884d8"
 	      paddingAngle={5}
-	      dataKey="value"
+	      dataKey={dataKey}
 	    >
 	      {
 	        data.map((entry, index) => (
-	          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+	          <Cell key={`cell-${index}`} fill={dataChartColors[index % dataChartColors.length]} />
 	        ))
 	      }
 	    </Pie>

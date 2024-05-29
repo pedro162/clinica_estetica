@@ -19,26 +19,12 @@ import estilos from '../estilos.module.css'
 const FaturamentoPorFilial = (props)=>{
 
     const {data, error, request, loading} = useFetch();
-    const [estado, setPais] = React.useState([])
-    const [exemplos, setExemplos] = React.useState([])
-    const [exemplosTitleTable, setExemplosTitleTable] = React.useState([])
-    const [showModalCriarPais, setShowModalCriarPais] = React.useState(false)
-    const [mostarFiltros, setMostarFiltros] = React.useState(true) 
-    const [filtroMobile, setFiltroMobile] = React.useState(null)
-    const [acao, setAcao] = React.useState(null)
-    const [ordenacao, setOrdenacao] = React.useState('')
-    const [nadaEncontrado, setNadaEncontrado] = React.useState(false)
-    const [consultaChoice, setPaisChoice] = React.useState(null);
-    const [cadastrarPais, setCadastrarPais] = React.useState(false) 
-    const [atualizarPais, setAtualizarPais] = React.useState(false) 
-    const [nomePais, setNomePais] = React.useState(null) 
-    const [codidoSistemaPais, setCodigoSistemaPais] = React.useState(null) 
+    const [nadaEncontrado, setNadaEncontrado] = React.useState(false) 
     const [dataFaturamentoFilial, setFaturamentoFilial] = React.useState([])
     const [dataLinhasFaturamentoFilial, setLinhasFaturamentoFilial] = React.useState([]) 
 
 
     const {getToken} = React.useContext(UserContex);
-
 
     let dataChart = [
     	{ name: 'Filial 01', vendas: 4000 },
@@ -168,19 +154,13 @@ const FaturamentoPorFilial = (props)=>{
     const getDataFaturamentoMesAno = async ()=>{
       setFaturamentoFilial([])
       setLinhasFaturamentoFilial([])
+
       let filtros ={};
       const {url, options} = WIDGET_FAT_LIQUIDEZ_FILIAL_ALL_POST({...filtros}, getToken());
-
-
       const {response, json} = await request(url, options);
-      console.log('All dados here')
-      console.log(json)
-      if(json){
-          //setFaturamentoFilial(json?.mensagem)
-          console.log('=========================== Starte dados para grafico ===================')
-          console.log(montaDataFilial(json?.mensagem))
-          console.log('=========================== Starte dados para grafico ===================')
 
+      if(json){
+          console.log(montaDataFilial(json?.mensagem))
           if( json?.mensagem && json?.mensagem.length > 0){
               setNadaEncontrado(false)
           }else{
