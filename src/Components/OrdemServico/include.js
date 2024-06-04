@@ -48,23 +48,12 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
     const [nrPageAtual, setNrPageAtual] = React.useState(null)
 
 
-
     const {getToken} = React.useContext(UserContex);
 
     const divRef = React.useRef(null)
 
     const nextPageRout = ()=>{
        
-        /*const div = divRef.current;
-        if(!div){
-            return false;
-        }
-
-        const isBottom = div.scrollHeight - div.scrollTop === div.clientHeight
-        if(isScrollAtBottom){
-            setNextPage(dataEstado?.mensagem?.next_page_url)
-        }
-        setIsScrollAtBottom(isScrollAtBottom)*/
         if(dataEstado?.mensagem?.next_page_url){
             setNextPage(dataEstado?.mensagem?.next_page_url)
         }
@@ -72,16 +61,6 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
 
     const previousPageRout = ()=>{
        
-        /*const div = divRef.current;
-        if(!div){
-            return false;
-        }
-
-        const isBottom = div.scrollHeight - div.scrollTop === div.clientHeight
-        if(isScrollAtBottom){
-            setNextPage(dataEstado?.mensagem?.next_page_url)
-        }
-        setIsScrollAtBottom(isScrollAtBottom)*/
         if(dataEstado?.mensagem?.prev_page_url){
             setNextPage(dataEstado?.mensagem?.prev_page_url)
         }

@@ -23,13 +23,9 @@ import { Link } from 'react-router-dom/cjs/react-router-dom.min';
 const Filial = (props)=>{
 	const {data, error, request, loading} = useFetch();
     const [estado, setFilial] = React.useState([])
-    const [exemplos, setExemplos] = React.useState([])
-    const [exemplosTitleTable, setExemplosTitleTable] = React.useState([])
     const [showModalCriarFilial, setShowModalCriarFilial] = React.useState(false)
-
     const [filialChoice, setFilialChoice] = React.useState(null);
-    const [atualizarFilial, setAtualizarFilial] = React.useState(false)   
-
+    const [atualizarFilial, setAtualizarFilial] = React.useState(false)  
     const [cadastrarFilial, setCadastrarFilial] = React.useState(false) 
     const [mostarFiltros, setMostarFiltros] = React.useState(true) 
     const [acao, setAcao] = React.useState(null)
@@ -38,12 +34,13 @@ const Filial = (props)=>{
     const [codigoFilial, setCodigoFilial] = React.useState(null)
     const [filtroMobile, setFiltroMobile] = React.useState(null)
     const [nadaEncontrado, setNadaEncontrado] = React.useState(false)
-
     const [filtroAbertas, setFiltroAbertas] = React.useState(false)
     const [filtroConcluidas, setFiltroConcluidas] = React.useState(false)
     const [filtroCanceladas, setFiltroCanceladas] = React.useState(false)
     const [filtroRemarcadas, setFiltroRemarcadas] = React.useState(false)
-
+    const [nextPage, setNextPage] = React.useState(null)
+    const [usePagination, setUsePagination] = React.useState(true)
+    const [qtdItemsPerPage, setQtdItemsPerPage] = React.useState(10)
     const {getToken, dataUser, isMobile} = React.useContext(UserContex);
 
     const {type, is_system, tenant_id} = dataUser ? dataUser : {};
@@ -180,7 +177,7 @@ const Filial = (props)=>{
 
     //------------
     const montarFiltro = ()=>{
-        let filtros = {}
+        let filtros = {nr_itens_per_page:qtdItemsPerPage, usePaginate:1}
         let detalhesFiltros = {}
 
 
@@ -262,13 +259,12 @@ const Filial = (props)=>{
         setFilial([])
 
         let {filtros, detalhesFiltros} = montarFiltro();
-        const {url, options} = FILIAIS_ALL_POST({...filtros}, getToken());
-
+        let {url, options} = FILIAIS_ALL_POST({...filtros}, getToken());
+        if(nextPage){
+            url = nextPage;
+        }
 
         const {response, json} = await request(url, options);
-        console.log('All clients here')
-        console.log({'name_pessoa':pessoa})
-        console.log(json)
         if(json){
             setFilial(json)
 
@@ -297,7 +293,7 @@ const Filial = (props)=>{
         requestAllFilialsEffect();
 
         
-    }, [filtroConcluidas, filtroCanceladas, filtroAbertas, filtroRemarcadas])
+    }, [filtroConcluidas, filtroCanceladas, filtroAbertas, filtroRemarcadas, nextPage, setNextPage])
 
 
 
@@ -440,6 +436,10 @@ const Filial = (props)=>{
                         setMostarFiltros={setMostarFiltros}
                         idFilialCriada={filialChoice}
                         nadaEncontrado={nadaEncontrado}
+                        nextPage={nextPage}
+                        setNextPage={setNextPage}
+                        usePagination={usePagination}
+                        setUsePagination={setUsePagination}
                     />
                 </Col>
             </Row>

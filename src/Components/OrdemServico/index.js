@@ -47,7 +47,7 @@ const OrdemServico = (props)=>{
     const [filtroCanceladas, setFiltroCanceladas] = React.useState(false)
     const [nextPage, setNextPage] = React.useState(null)
     const [usePagination, setUsePagination] = React.useState(true)
-
+    const [qtdItemsPerPage, setQtdItemsPerPage] = React.useState(10)
 
     const {getToken} = React.useContext(UserContex);
 
@@ -198,7 +198,7 @@ const OrdemServico = (props)=>{
     }
     //------------
     const montarFiltro = ()=>{
-        let filtros = {}
+        let filtros = {nr_itens_per_page:qtdItemsPerPage, usePaginate:1}
         let detalhesFiltros = {}
         
         if(pessoa){

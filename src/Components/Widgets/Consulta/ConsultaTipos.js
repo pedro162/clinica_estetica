@@ -145,9 +145,6 @@ const ConsultaTipos = (props)=>{
       let filtros ={};
       const {url, options} = WIDGET_ATENDIMENTOS_TIPOS_ALL_POST({...filtros}, getToken());
       const {response, json} = await request(url, options);
-      console.log('All dados here==============================')
-      console.log(json)
-      console.log('All dados here==============================')
       if(json){
           montaDataFilial(json?.mensagem)
           if( json?.mensagem && json?.mensagem.length > 0){

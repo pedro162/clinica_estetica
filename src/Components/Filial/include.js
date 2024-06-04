@@ -18,7 +18,7 @@ import Atualizar from './Atualizar/index.js'
 import ListMobile from '../Relatorio/ListMobile/index.js'
 
 
-const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFiltros, idFilialCriada, ...props})=>{
+const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFiltros, idFilialCriada, nextPage, setNextPage, usePagination, setUsePagination, ...props})=>{
 
     const {data, error, request, loading} = useFetch();
     const [estado, setFilial] = React.useState([])
@@ -31,10 +31,39 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
     const [cadastrarFilial, setCadastrarFilial] = React.useState(false) 
     const [acao, setAcao] = React.useState(null)
     const [pessoa, setPessoa] = React.useState('')
-
+    const [nrPageAtual, setNrPageAtual] = React.useState(null)
 
     const {getToken, dataUser} = React.useContext(UserContex);
     const {type, is_system, tenant_id} = dataUser ? dataUser : {};
+
+    const nextPageRout = ()=>{
+       
+        if(dataEstado?.mensagem?.next_page_url){
+            setNextPage(dataEstado?.mensagem?.next_page_url)
+        }
+    }
+
+    const previousPageRout = ()=>{
+       
+        if(dataEstado?.mensagem?.prev_page_url){
+            setNextPage(dataEstado?.mensagem?.prev_page_url)
+        }
+    }
+
+    const firstPageRout = ()=>{
+       
+        if(dataEstado?.mensagem?.first_page_url){
+            setNextPage(dataEstado?.mensagem?.first_page_url)
+        }
+    }
+
+    const lastPageRout = ()=>{
+       
+        if(dataEstado?.mensagem?.last_page_url){
+            setNextPage(dataEstado?.mensagem?.last_page_url)
+        }
+    }
+
 
     const alerta = (target)=>{
         console.log(target)
@@ -89,7 +118,17 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
     const gerarTableFilial = ()=>{
        
         let data = [];
-        let dataFilial = estado.mensagem
+        //let dataFilial = estado.mensagem
+        let dataFilial = estado
+
+        if(dataFilial?.mensagem){
+            dataFilial = dataFilial?.mensagem;
+        }
+
+        if(dataFilial?.data){
+            dataFilial = dataFilial?.data;
+        }
+
         if(dataFilial && Array.isArray(dataFilial) && dataFilial.length > 0){
             for(let i=0; !(i == dataFilial.length); i++){
                 let atual = dataFilial[i];
@@ -278,8 +317,9 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
 
     React.useEffect(()=>{
         setFilial(dataEstado)
+        setNrPageAtual(dataEstado?.mensagem?.current_page)
     }, [dataEstado])
-    
+  
 
     const rowsTableArr = gerarTableFilial();    
     const titulosTableArr = gerarTitleTable();
@@ -297,6 +337,16 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                         nadaEncontrado={nadaEncontrado}
                         withoutFirstCol={true}
                         botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
+                        nextPage={nextPage}
+                        setNextPage={setNextPage}
+                        usePagination={usePagination}
+                        setUsePagination={setUsePagination}
+                        nextPageRout={nextPageRout}
+                        previousPageRout={previousPageRout}
+                        firstPageRout = {firstPageRout}
+                        nrPageAtual = {nrPageAtual}
+                        lastPageRout = {lastPageRout}
+
                     />
 
                 </Col>
@@ -307,7 +357,15 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                         rowsTableArr={rowsTableArr}
                         loading={loadingData}
                         botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
-
+                        nextPage={nextPage}
+                        setNextPage={setNextPage}
+                        usePagination={usePagination}
+                        setUsePagination={setUsePagination}
+                        nextPageRout={nextPageRout}
+                        previousPageRout={previousPageRout}
+                        firstPageRout = {firstPageRout}
+                        nrPageAtual = {nrPageAtual}
+                        lastPageRout = {lastPageRout}
                     />
                 </Col>
             </Row>
