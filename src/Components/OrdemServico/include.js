@@ -26,7 +26,7 @@ import { Button } from 'bootstrap';
 import reactDom from 'react-dom';
 //
 
-const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncontrado, idOrdemCriada, nextPage, setNextPage, usePagination, setUsePagination, ...props})=>{
+const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncontrado, idOrdemCriada, nextPage, setNextPage, usePagination, setUsePagination, totalPageCount, setTotalPageCount, ...props})=>{
     const {data, error, request, loading} = useFetch();
     const [estado, setOrdemServico] = React.useState([])
     const [exemplos, setExemplos] = React.useState([])
@@ -52,6 +52,13 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
 
     const divRef = React.useRef(null)
 
+
+    const handleTotalPages=()=>{
+        if(Number(dataEstado?.mensagem?.last_page > 0)){
+            setTotalPageCount(dataEstado?.mensagem?.last_page)
+        }
+    }
+
     const nextPageRout = ()=>{
        
         if(dataEstado?.mensagem?.next_page_url){
@@ -59,22 +66,19 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
         }
     }
 
-    const previousPageRout = ()=>{
-       
+    const previousPageRout = ()=>{       
         if(dataEstado?.mensagem?.prev_page_url){
             setNextPage(dataEstado?.mensagem?.prev_page_url)
         }
     }
 
-    const firstPageRout = ()=>{
-       
+    const firstPageRout = ()=>{       
         if(dataEstado?.mensagem?.first_page_url){
             setNextPage(dataEstado?.mensagem?.first_page_url)
         }
     }
 
     const lastPageRout = ()=>{
-       
         if(dataEstado?.mensagem?.last_page_url){
             setNextPage(dataEstado?.mensagem?.last_page_url)
         }
@@ -84,8 +88,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
         console.log(target)
     }
 
-    const setNamePessoa = ({target})=>{
-        
+    const setNamePessoa = ({target})=>{        
         setPessoa(target.value)
     }
 
@@ -761,6 +764,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
     React.useEffect(()=>{
         setOrdemServico(dataEstado)
         setNrPageAtual(dataEstado?.mensagem?.current_page)
+        handleTotalPages();
         /*if(dataEstado?.mensagem?.data){
             setOrdemServico([...estado, ...dataEstado?.mensagem?.data])
         }else{
@@ -799,6 +803,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                         firstPageRout = {firstPageRout}
                         nrPageAtual = {nrPageAtual}
                         lastPageRout = {lastPageRout}
+                        totalPageCount={totalPageCount}
                     />
 
                     {
@@ -830,7 +835,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                         firstPageRout = {firstPageRout}
                         nrPageAtual = {nrPageAtual}
                         lastPageRout = {lastPageRout}
-                        
+                        totalPageCount={totalPageCount}
                         
 
                     />

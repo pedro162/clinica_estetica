@@ -5,6 +5,7 @@ import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, FORMULARIO_PESSOA_ALL_POST} from '.
 import {FORMAT_DATA_PT_BR} from '../../functions/index.js'
 import {Col, Row, Button } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
+import { Link } from 'react-router-dom/cjs/react-router-dom.min';
 import Filter from '../Relatorio/Filter/index.js'
 import Breadcrumbs from '../Helper/Breadcrumbs.js'
 import { faHome, faSearch, faPlus } from "@fortawesome/free-solid-svg-icons";
@@ -32,7 +33,7 @@ const ClientesFichas = (props)=>{
     const [cancelarClientesFichas, setCancelarClientesFichas] = React.useState(false)   
     const [digitarClientesFichas, setDigitarClientesFichas] = React.useState(false)    
     const [cadastrarClientesFichas, setCadastrarClientesFichas] = React.useState(false)  
-    const [mostarFiltros, setMostarFiltros] = React.useState(false) 
+    const [mostarFiltros, setMostarFiltros] = React.useState(true) 
     const [filtroMobile, setFiltroMobile] = React.useState(null)
     const [acao, setAcao] = React.useState(null)
     const [pessoa, setPessoa] = React.useState('')
@@ -41,7 +42,10 @@ const ClientesFichas = (props)=>{
     const [sigiloso, setSigiloso] = React.useState('')
     const [status, setStatus] = React.useState('')
     const [nadaEncontrado, setNadaEncontrado] = React.useState(false)
-
+    const [nextPage, setNextPage] = React.useState(null)
+    const [totalPageCount, setTotalPageCount] = React.useState(null)
+    const [usePagination, setUsePagination] = React.useState(true)
+    const [qtdItemsPerPage, setQtdItemsPerPage] = React.useState(10)
     
     const {getToken} = React.useContext(UserContex);
 
@@ -219,7 +223,12 @@ const ClientesFichas = (props)=>{
     const montarFiltro = ()=>{
         let filtros = {}
         let detalhesFiltros = {}
-        
+            
+        if(usePagination){
+            filtros['usePaginate'] = 1;
+            filtros['nr_itens_per_page'] = qtdItemsPerPage;
+        }
+
         if(pessoa){
             filtros['name_pessoa'] = pessoa;
             detalhesFiltros['name_pessoa'] = {
@@ -288,13 +297,12 @@ const ClientesFichas = (props)=>{
     const requestAllClientesFichass = async() =>{
         setClientesFichas([])
         let {filtros, detalhesFiltros} = montarFiltro();
-        const {url, options} = FORMULARIO_PESSOA_ALL_POST({...filtros}, getToken());
-
-
+        let {url, options} = FORMULARIO_PESSOA_ALL_POST({...filtros}, getToken());
+        if(nextPage){
+            url = nextPage;
+        }
         const {response, json} = await request(url, options);
-        console.log('All serviços here==================================')
-        console.log({'name_servico':pessoa})
-        console.log(json)
+        
         if(json){
             setClientesFichas(json)
         }
@@ -314,7 +322,7 @@ const ClientesFichas = (props)=>{
         requestAllClientesFichassEffect();
 
         
-    }, [])
+    }, [nextPage, setNextPage])
 
     /**
      * Deve ter a opção de cadastrar salas de consulta
@@ -335,7 +343,7 @@ const ClientesFichas = (props)=>{
                 items={[
                         {
                             props:{},
-                            label:'Início'
+                            label:<> <Link className={null}  to={'/'}>Início</Link></>
                         },
                         {
                             props:{},
@@ -449,6 +457,13 @@ const ClientesFichas = (props)=>{
                         callBack={requestAllClientesFichass}
                         setMostarFiltros={setMostarFiltros}
                         idClienteFichaCriada={consultaChoice}
+                        nadaEncontrado={nadaEncontrado}
+                        nextPage={nextPage}
+                        setNextPage={setNextPage}
+                        usePagination={usePagination}
+                        setUsePagination={setUsePagination}
+                        totalPageCount={totalPageCount}
+                        setTotalPageCount={setTotalPageCount}
                     />
                 </Col>
             </Row>

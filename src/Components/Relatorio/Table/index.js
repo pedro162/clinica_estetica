@@ -7,7 +7,7 @@ import MenuOpcoes from '../MenuOpcoes/index.js'
 import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../../functions/index.js'
 import Pagination from 'react-bootstrap/Pagination';
 
-const Table = ({children, titulosTableArr, rowsTableArr,loading, nadaEncontrado, botoesHeader, usePagination, nrPageAtual, previousPageRout, nextPageRout, firstPageRout, lastPageRout, ... props})=>{
+const Table = ({children, titulosTableArr, rowsTableArr,loading, nadaEncontrado, botoesHeader, usePagination, nrPageAtual, previousPageRout, nextPageRout, firstPageRout, lastPageRout, totalPageCount, qtdItemsTo, qtdItemsTotal, ... props})=>{
 	const titulosTable = titulosTableArr ? titulosTableArr : []
 	const bodyTable =  rowsTableArr ? rowsTableArr : []
 	const [selecionados, setSelecionados] = React.useState([])
@@ -86,7 +86,7 @@ const Table = ({children, titulosTableArr, rowsTableArr,loading, nadaEncontrado,
 				propsCard={{className:'cardFilter'}}
 				botoesHeader={botoesHeader}
 			>
-				<div  style={{maxHeight:'36rem', overflow:'auto'}} className={'mx-2'}  >
+				<div>
 				
 				{
 
@@ -96,7 +96,7 @@ const Table = ({children, titulosTableArr, rowsTableArr,loading, nadaEncontrado,
 						<Load/>
 					:
 						<>
-							<TableBootstrap striped bordered hover size="sm">				 
+							<TableBootstrap striped bordered hover size="sm" style={{width:'100%',maxHeight:'36rem', overflow:'auto'}} className={'mx-2'} >				 
 							  	{
 							  		titulosTable && Array.isArray(titulosTable) && titulosTable.length > 0 ? (
 							  			<thead>
@@ -222,15 +222,16 @@ const Table = ({children, titulosTableArr, rowsTableArr,loading, nadaEncontrado,
 							</TableBootstrap>
 							{
 								usePagination && (
-																					
-										<Pagination>
-												<Pagination.First onClick={()=>firstPageRout()} />
-												<Pagination.Prev onClick={()=>previousPageRout()} />
-												<Pagination.Item>{nrPageAtual ? nrPageAtual : 1}</Pagination.Item>
-												<Pagination.Next onClick={()=>nextPageRout()}  />
-												<Pagination.Last onClick={()=>lastPageRout()}  />
-										</Pagination>
-										
+										<>	
+											{(qtdItemsTo > 0 && qtdItemsTotal > 0) && <div>Mostrando: {qtdItemsTo} de {qtdItemsTotal} registros</div>}									
+											<Pagination>
+													<Pagination.First onClick={()=>firstPageRout()} />
+													<Pagination.Prev onClick={()=>previousPageRout()} />
+													<Pagination.Item>Página {nrPageAtual ? nrPageAtual : 1} de { totalPageCount ? totalPageCount : 1}</Pagination.Item>
+													<Pagination.Next onClick={()=>nextPageRout()}  />
+													<Pagination.Last onClick={()=>lastPageRout()}  />
+											</Pagination>
+										</>
 									)
 
 

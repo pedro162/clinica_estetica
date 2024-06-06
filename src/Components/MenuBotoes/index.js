@@ -43,8 +43,8 @@ const MenuBotoes = (props)=>{
     const {getToken, dataUser, isMobile, historyUser} = React.useContext(UserContex);
 
     const {type, is_system, tenant_id} = dataUser ? dataUser : {};
-
-    const botoesRotas = [//financeiro/caixa
+    
+    let botoesRotas = [//financeiro/caixa
         
         {
             'label':'Agenda',
@@ -72,7 +72,12 @@ const MenuBotoes = (props)=>{
             'url':'/financeiro/contas_receber',
         },
         {
-            'label':'Consultas',
+            'label':'Consulta',
+            'iconLabel':<FontAwesomeIcon icon={faPlus} />,
+            'url':'/consulta/index',
+        },
+        {
+            'label':'Cons. realizadas',
             'iconLabel':<FontAwesomeIcon icon={faClone} />,
             'url':'/consulta/index',
         },
@@ -133,6 +138,38 @@ const MenuBotoes = (props)=>{
         },
 
     ]
+
+    if(type=='external'){
+        botoesRotas = [//financeiro/caixa
+        
+            {
+                'label':'Agenda',
+                'iconLabel':<FontAwesomeIcon icon={faCalendarAlt} />,
+                'url':'/agenda/calendario',
+            },
+            {
+                'label':'Agenda',
+                'iconLabel':<FontAwesomeIcon icon={faList} />,
+                'url':'/agenda/painel',
+            },
+            {
+                'label':'Consulta',
+                'iconLabel':<FontAwesomeIcon icon={faPlus} />,
+                'url':'/consulta/index',
+            },
+            {
+                'label':'Cons. realizadas',
+                'iconLabel':<FontAwesomeIcon icon={faClone} />,
+                'url':'/consulta/index',
+            },
+            {
+                'label':'Fichas',
+                'iconLabel':<FontAwesomeIcon icon={faFolderOpen} />,
+                'url':'/fichas/index',
+            },
+
+        ]
+    }
 
     return(
         <>

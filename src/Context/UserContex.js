@@ -100,7 +100,7 @@ export const UserStorange = ({children})=>{
                     if(token){
                         login(token)
                         await getUser();
-                        historyUser.push('/home/painel');
+                        historyUser.push('/');
                     }
                     
                 }

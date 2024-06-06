@@ -39,6 +39,7 @@ const Filial = (props)=>{
     const [filtroCanceladas, setFiltroCanceladas] = React.useState(false)
     const [filtroRemarcadas, setFiltroRemarcadas] = React.useState(false)
     const [nextPage, setNextPage] = React.useState(null)
+    const [totalPageCount, setTotalPageCount] = React.useState(null)
     const [usePagination, setUsePagination] = React.useState(true)
     const [qtdItemsPerPage, setQtdItemsPerPage] = React.useState(10)
     const {getToken, dataUser, isMobile} = React.useContext(UserContex);
@@ -177,10 +178,13 @@ const Filial = (props)=>{
 
     //------------
     const montarFiltro = ()=>{
-        let filtros = {nr_itens_per_page:qtdItemsPerPage, usePaginate:1}
+        let filtros = {}
         let detalhesFiltros = {}
 
-
+        if(usePagination){
+            filtros['usePaginate'] = 1;
+            filtros['nr_itens_per_page'] = qtdItemsPerPage;
+        }
         
         if(codigoPessoa){
             filtros['pessoa_id'] = codigoPessoa;
@@ -440,6 +444,8 @@ const Filial = (props)=>{
                         setNextPage={setNextPage}
                         usePagination={usePagination}
                         setUsePagination={setUsePagination}
+                        totalPageCount={totalPageCount}
+                        setTotalPageCount={setTotalPageCount}
                     />
                 </Col>
             </Row>

@@ -30,7 +30,7 @@ function App() {
                       />
                       <ProtectedRoute
                         exact path="/" 
-                        component={PainelInicial}
+                        component={PainelHome}
                       />
                       <ProtectedRoute
                         exact path="/agenda/painel" 

@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../../functions/index.js'
 import Pagination from 'react-bootstrap/Pagination';
 
-const ListMobile = ({children, titulosTableArr, rowsTableArr,loading, nadaEncontrado, botoesHeader, title, withoutFirstCol, usePagination, nrPageAtual, previousPageRout, nextPageRout, firstPageRout, lastPageRout,  ... props})=>{
+const ListMobile = ({children, titulosTableArr, rowsTableArr,loading, nadaEncontrado, botoesHeader, title, withoutFirstCol, usePagination, nrPageAtual, previousPageRout, nextPageRout, firstPageRout, lastPageRout, totalPageCount, qtdItemsTo, qtdItemsTotal, ... props})=>{
 	const titulosTable = titulosTableArr ? titulosTableArr : []
 	const bodyTable =  rowsTableArr ? rowsTableArr : []
 	const [selecionados, setSelecionados] = React.useState([])
@@ -224,14 +224,16 @@ const ListMobile = ({children, titulosTableArr, rowsTableArr,loading, nadaEncont
 
                      {
 						bodyTable && Array.isArray(bodyTable) && bodyTable.length > 0 && usePagination && (
-																			
+								<>		
+								{(qtdItemsTo > 0 && qtdItemsTotal > 0) && <div>Mostrando: {qtdItemsTo} de {qtdItemsTotal} registros</div>}							
 								<Pagination className='mt-3'>
 										<Pagination.First onClick={()=>firstPageRout()} />
 										<Pagination.Prev onClick={()=>previousPageRout()} />
-										<Pagination.Item>{nrPageAtual ? nrPageAtual : 1}</Pagination.Item>
+										<Pagination.Item>Página {nrPageAtual ? nrPageAtual : 1} de { totalPageCount ? totalPageCount : 1}</Pagination.Item>
 										<Pagination.Next onClick={()=>nextPageRout()}  />
 										<Pagination.Last onClick={()=>lastPageRout()}  />
 								</Pagination>
+								</>
 								
 							)
 

@@ -18,7 +18,7 @@ import Atualizar from './Atualizar/index.js'
 import ListMobile from '../Relatorio/ListMobile/index.js'
 
 
-const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFiltros, idFilialCriada, nextPage, setNextPage, usePagination, setUsePagination, ...props})=>{
+const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFiltros, idFilialCriada, nextPage, setNextPage, usePagination, setUsePagination, totalPageCount, setTotalPageCount, ...props})=>{
 
     const {data, error, request, loading} = useFetch();
     const [estado, setFilial] = React.useState([])
@@ -32,33 +32,48 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
     const [acao, setAcao] = React.useState(null)
     const [pessoa, setPessoa] = React.useState('')
     const [nrPageAtual, setNrPageAtual] = React.useState(null)
+    const [qtdItemsTo, setQtdItemsTo] = React.useState(null)
+    const [qtdItemsTotal, setQtdItemsTotal] = React.useState(null)
 
     const {getToken, dataUser} = React.useContext(UserContex);
     const {type, is_system, tenant_id} = dataUser ? dataUser : {};
 
-    const nextPageRout = ()=>{
-       
+
+    const handleTotalPages=()=>{
+        if(Number(dataEstado?.mensagem?.last_page > 0)){
+            setTotalPageCount(dataEstado?.mensagem?.last_page)
+        }
+    }
+
+    const handleTotalItems=()=>{
+        if(Number(dataEstado?.mensagem?.to > 0)){
+            setQtdItemsTo(dataEstado?.mensagem?.to)
+        }
+
+        if(Number(dataEstado?.mensagem?.total > 0)){
+            setQtdItemsTotal(dataEstado?.mensagem?.total)
+        }
+    }
+
+    const nextPageRout = ()=>{       
         if(dataEstado?.mensagem?.next_page_url){
             setNextPage(dataEstado?.mensagem?.next_page_url)
         }
     }
 
-    const previousPageRout = ()=>{
-       
+    const previousPageRout = ()=>{       
         if(dataEstado?.mensagem?.prev_page_url){
             setNextPage(dataEstado?.mensagem?.prev_page_url)
         }
     }
 
-    const firstPageRout = ()=>{
-       
+    const firstPageRout = ()=>{       
         if(dataEstado?.mensagem?.first_page_url){
             setNextPage(dataEstado?.mensagem?.first_page_url)
         }
     }
 
-    const lastPageRout = ()=>{
-       
+    const lastPageRout = ()=>{       
         if(dataEstado?.mensagem?.last_page_url){
             setNextPage(dataEstado?.mensagem?.last_page_url)
         }
@@ -318,6 +333,8 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
     React.useEffect(()=>{
         setFilial(dataEstado)
         setNrPageAtual(dataEstado?.mensagem?.current_page)
+        handleTotalPages();
+        handleTotalItems();
     }, [dataEstado])
   
 
@@ -346,6 +363,9 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                         firstPageRout = {firstPageRout}
                         nrPageAtual = {nrPageAtual}
                         lastPageRout = {lastPageRout}
+                        totalPageCount={totalPageCount}
+                        qtdItemsTo={qtdItemsTo}
+                        qtdItemsTotal={qtdItemsTotal}
 
                     />
 
@@ -366,6 +386,9 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                         firstPageRout = {firstPageRout}
                         nrPageAtual = {nrPageAtual}
                         lastPageRout = {lastPageRout}
+                        totalPageCount={totalPageCount}
+                        qtdItemsTo={qtdItemsTo}
+                        qtdItemsTotal={qtdItemsTotal}
                     />
                 </Col>
             </Row>

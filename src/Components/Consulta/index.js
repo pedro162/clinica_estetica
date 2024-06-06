@@ -50,11 +50,14 @@ const Consulta = (props)=>{
     const [dtFim, setDtFim] = React.useState(null)
     const [filtroMobile, setFiltroMobile] = React.useState(null)
     const [nadaEncontrado, setNadaEncontrado] = React.useState(false)
-
     const [filtroAbertas, setFiltroAbertas] = React.useState(false)
     const [filtroConcluidas, setFiltroConcluidas] = React.useState(false)
     const [filtroCanceladas, setFiltroCanceladas] = React.useState(false)
     const [filtroRemarcadas, setFiltroRemarcadas] = React.useState(false)
+    const [nextPage, setNextPage] = React.useState(null)
+    const [totalPageCount, setTotalPageCount] = React.useState(null)
+    const [usePagination, setUsePagination] = React.useState(true)
+    const [qtdItemsPerPage, setQtdItemsPerPage] = React.useState(10)
 
     const {getToken, dataUser, isMobile} = React.useContext(UserContex);
 
@@ -353,7 +356,10 @@ const Consulta = (props)=>{
         let filtros = {}
         let detalhesFiltros = {}
 
-
+        if(usePagination){
+            filtros['usePaginate'] = 1;
+            filtros['nr_itens_per_page'] = qtdItemsPerPage;
+        }
         
         if(codigoPessoa){
             filtros['pessoa_id'] = codigoPessoa;
@@ -564,13 +570,11 @@ const Consulta = (props)=>{
         setConsulta([])
 
         let {filtros, detalhesFiltros} = montarFiltro();
-        const {url, options} = CONSULTA_ALL_POST({...filtros}, getToken());
-
-
+        let {url, options} = CONSULTA_ALL_POST({...filtros}, getToken());
+        if(nextPage){
+            url = nextPage;
+        }
         const {response, json} = await request(url, options);
-        console.log('All clients here')
-        console.log({'name_pessoa':pessoa})
-        console.log(json)
         if(json){
             setConsulta(json)
 
@@ -589,17 +593,14 @@ const Consulta = (props)=>{
 
     React.useEffect(()=>{
 
-        const requestAllConsultasEffect = async() =>{
-       
-           await requestAllConsultas();
-
-            
+        const requestAllConsultasEffect = async() =>{       
+           await requestAllConsultas();            
         }
 
         requestAllConsultasEffect();
 
         
-    }, [filtroConcluidas, filtroCanceladas, filtroAbertas, filtroRemarcadas])
+    }, [filtroConcluidas, filtroCanceladas, filtroAbertas, filtroRemarcadas,nextPage, setNextPage])
 
 
    
@@ -745,6 +746,12 @@ const Consulta = (props)=>{
                         setMostarFiltros={setMostarFiltros}
                         idConsultaCriada={consultaChoice}
                         nadaEncontrado={nadaEncontrado}
+                        nextPage={nextPage}
+                        setNextPage={setNextPage}
+                        usePagination={usePagination}
+                        setUsePagination={setUsePagination}
+                        totalPageCount={totalPageCount}
+                        setTotalPageCount={setTotalPageCount}
                     />
                 </Col>
             </Row>

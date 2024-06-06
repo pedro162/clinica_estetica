@@ -7,6 +7,7 @@ import {Col, Row, Button } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
 import Breadcrumbs from '../Helper/Breadcrumbs.js'
+import { Link } from 'react-router-dom/cjs/react-router-dom.min';
 import { faHome, faSearch, faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from '../Utils/Modal/index.js'
@@ -48,7 +49,7 @@ const OrdemServico = (props)=>{
     const [nextPage, setNextPage] = React.useState(null)
     const [usePagination, setUsePagination] = React.useState(true)
     const [qtdItemsPerPage, setQtdItemsPerPage] = React.useState(10)
-
+    const [totalPageCount, setTotalPageCount] = React.useState(null)
     const {getToken} = React.useContext(UserContex);
 
     const alerta = (target)=>{
@@ -340,14 +341,13 @@ const OrdemServico = (props)=>{
                 items={[
                         {
                             props:{},
-                            label:'Início'
+                            label:<> <Link className={null}  to={'/'}>Início</Link></>
                         },
                         {
                             props:{},
                             label:'Ordem de servico'
                         }
                     ]}
-
                 buttonFiltroMobile={true}
                 setMostarFiltros={setMostarFiltros}
                 mostarFiltros={mostarFiltros}
@@ -462,7 +462,8 @@ const OrdemServico = (props)=>{
                         setNextPage={setNextPage}
                         usePagination={usePagination}
                         setUsePagination={setUsePagination}
-
+                        totalPageCount={totalPageCount}
+                        setTotalPageCount={setTotalPageCount}
                     />
                 </Col>
             </Row>

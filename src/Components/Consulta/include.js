@@ -19,7 +19,7 @@ import Cancelar from './Cancelar/index.js'
 import ListMobile from '../Relatorio/ListMobile/index.js'
 
 
-const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFiltros, idConsultaCriada, ...props})=>{
+const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFiltros, idConsultaCriada,nextPage, setNextPage, usePagination, setUsePagination, totalPageCount,setTotalPageCount, ...props})=>{
 
     const {data, error, request, loading} = useFetch();
     const [estado, setConsulta] = React.useState([])
@@ -32,17 +32,58 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
     const [cadastrarConsulta, setCadastrarConsulta] = React.useState(false) 
     const [acao, setAcao] = React.useState(null)
     const [pessoa, setPessoa] = React.useState('')
-
+    const [nrPageAtual, setNrPageAtual] = React.useState(null)
+    const [qtdItemsTo, setQtdItemsTo] = React.useState(null)
+    const [qtdItemsTotal, setQtdItemsTotal] = React.useState(null)
 
     const {getToken, dataUser} = React.useContext(UserContex);
     const {type, is_system, tenant_id} = dataUser ? dataUser : {};
-
+    
     const alerta = (target)=>{
         console.log(target)
     }
+    
+    const handleTotalPages=()=>{
+        if(Number(dataEstado?.mensagem?.last_page > 0)){
+            setTotalPageCount(dataEstado?.mensagem?.last_page)
+        }
+    }
 
-    const setNamePessoa = ({target})=>{
-        
+    const handleTotalItems=()=>{
+        if(Number(dataEstado?.mensagem?.to > 0)){
+            setQtdItemsTo(dataEstado?.mensagem?.to)
+        }
+
+        if(Number(dataEstado?.mensagem?.total > 0)){
+            setQtdItemsTotal(dataEstado?.mensagem?.total)
+        }
+    }
+
+    const nextPageRout = ()=>{       
+        if(dataEstado?.mensagem?.next_page_url){
+            setNextPage(dataEstado?.mensagem?.next_page_url)
+        }
+    }
+
+    const previousPageRout = ()=>{       
+        if(dataEstado?.mensagem?.prev_page_url){
+            setNextPage(dataEstado?.mensagem?.prev_page_url)
+        }
+    }
+
+    const firstPageRout = ()=>{       
+        if(dataEstado?.mensagem?.first_page_url){
+            setNextPage(dataEstado?.mensagem?.first_page_url)
+        }
+    }
+
+    const lastPageRout = ()=>{       
+        if(dataEstado?.mensagem?.last_page_url){
+            setNextPage(dataEstado?.mensagem?.last_page_url)
+        }
+    }
+
+    const setNamePessoa = ({target})=>{        
         setPessoa(target.value)
     }
 
@@ -102,7 +143,16 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
     const gerarTableConsulta = ()=>{
        
         let data = [];
-        let dataConsulta = estado.mensagem
+        let dataConsulta = estado
+
+        if(dataConsulta?.mensagem){
+            dataConsulta = dataConsulta?.mensagem;
+        }
+
+        if(dataConsulta?.data){
+            dataConsulta = dataConsulta?.data;
+        }
+
         if(dataConsulta && Array.isArray(dataConsulta) && dataConsulta.length > 0){
             for(let i=0; !(i == dataConsulta.length); i++){
                 let atual = dataConsulta[i];
@@ -265,31 +315,31 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
         let tableTitle = [
             {
                 label:'Código',
-                props:{}
+                props:{width:'30px !important'}
             },
             {
                 label:'Cód. filial',
-                props:{}
+                props:{width:''}
             },
             {
                 label:'Cód. pessoa',
-                props:{}
+                props:{width:''}
             },
             {
                 label:'Pessoa',
-                props:{}
+                props:{width:'355px'}
             },
             {
                 label:'Status',
-                props:{}
+                props:{width:''}
             },
             {
                 label:'Prioridade',
-                props:{}
+                props:{width:''}
             },
             {
                 label:'Cód. profissional',
-                props:{}
+                props:{width:''}
             },
             {
                 label:'Profissional',
@@ -328,7 +378,17 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
     const gerarListMobileRelatorio = ()=>{
        
         let data = [];
-        let dataClientes = estado.mensagem
+        //let dataClientes = estado.mensagem
+        let dataClientes = estado
+
+        if(dataClientes?.mensagem){
+            dataClientes = dataClientes?.mensagem;
+        }
+
+        if(dataClientes?.data){
+            dataClientes = dataClientes?.data;
+        }
+
         if(dataClientes && Array.isArray(dataClientes) && dataClientes.length > 0){
             for(let i=0; !(i == dataClientes.length); i++){
                 let atual = dataClientes[i];
@@ -482,6 +542,9 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
 
     React.useEffect(()=>{
         setConsulta(dataEstado)
+        setNrPageAtual(dataEstado?.mensagem?.current_page)
+        handleTotalPages()
+        handleTotalItems()
     }, [dataEstado])
     
 
@@ -501,6 +564,18 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                         nadaEncontrado={nadaEncontrado}
                         withoutFirstCol={true}
                         botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
+                        nextPage={nextPage}
+                        setNextPage={setNextPage}
+                        usePagination={usePagination}
+                        setUsePagination={setUsePagination}
+                        nextPageRout={nextPageRout}
+                        previousPageRout={previousPageRout}
+                        firstPageRout = {firstPageRout}
+                        nrPageAtual = {nrPageAtual}
+                        lastPageRout = {lastPageRout}
+                        totalPageCount={totalPageCount}
+                        qtdItemsTo={qtdItemsTo}
+                        qtdItemsTotal={qtdItemsTotal}
                     />
 
                 </Col>
@@ -511,7 +586,18 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                         rowsTableArr={rowsTableArr}
                         loading={loadingData}
                         botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
-
+                        nextPage={nextPage}
+                        setNextPage={setNextPage}
+                        usePagination={usePagination}
+                        setUsePagination={setUsePagination}
+                        nextPageRout={nextPageRout}
+                        previousPageRout={previousPageRout}
+                        firstPageRout = {firstPageRout}
+                        nrPageAtual = {nrPageAtual}
+                        lastPageRout = {lastPageRout}
+                        totalPageCount={totalPageCount}
+                        qtdItemsTo={qtdItemsTo}
+                        qtdItemsTotal={qtdItemsTotal}
                     />
                 </Col>
             </Row>

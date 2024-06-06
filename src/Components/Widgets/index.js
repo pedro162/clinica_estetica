@@ -45,7 +45,7 @@ const Widgets = (props)=>{
                 items={[
                         {
                             props:{},
-                            label:<> <Link className={null}  to={'/home/painel'}>Início</Link></>
+                            label:<> <Link className={null}  to={'/'}>Início</Link></>
                         },
                         {
                             props:{},

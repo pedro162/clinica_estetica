@@ -19,6 +19,20 @@ body{
     
 }
 
+* ::-webkit-scrollbar{
+	width: 18px;
+}
+
+* ::-webkit-scrollbar-thumb{
+	background: #07B201;
+	border-left: 4px solid #faf6ed;
+	border-right: 4px solid #faf6ed;
+}
+
+* ::-webkit-scrollbar-track{
+	background: #f1faed;
+}
+
 .back_container{
     background: #FFF;
     padding: 20px 50px !important;
