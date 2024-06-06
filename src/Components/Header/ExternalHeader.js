@@ -27,7 +27,7 @@ const ExternalHeader = (props)=>{
     return(
         <Navbar collapseOnSelect expand="lg" className={[estilos.containerHeader]} fixed="top" >
             <Container fluid>
-                <Navbar.Brand  ><Link className={[estilos.link,estilos.logo]} to="/" >Stúdio beleza</Link></Navbar.Brand>
+                <Navbar.Brand  ><Link className={[estilos.link,estilos.logo]} to="/home/painel" >Stúdio beleza</Link></Navbar.Brand>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="me-auto">

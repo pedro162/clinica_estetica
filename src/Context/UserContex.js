@@ -54,7 +54,7 @@ export const UserStorange = ({children})=>{
        
         try{
 
-            console.log(getToken())
+            //console.log(getToken())
             setLoginUser(isAuthenticated)
 
             if(isAuthenticated){
@@ -94,7 +94,7 @@ export const UserStorange = ({children})=>{
 
                 if(json){          
 
-                    token = json.access_token;
+                    token = json?.access_token;
                     dtaToken = json;
 
                     if(token){

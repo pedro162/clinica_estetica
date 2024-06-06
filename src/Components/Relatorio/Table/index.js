@@ -139,7 +139,7 @@ const Table = ({children, titulosTableArr, rowsTableArr,loading, nadaEncontrado,
 					  						let rand = Math.floor(Math.random()*999999);
 								  			
 								  			return (
-								  				<tr onClick={()=>{setDataMenu(acoesRowBodyTable);setShowModalOptions(true)}}  key={index+arr.length+id+'body'+rand} { ...propsRowBodyTable}>
+								  				<tr key={index+arr.length+id+'body'+rand} { ...propsRowBodyTable}>
 								  					<td><Checkbox type="checkbox" value={id} checked={id > 0 ? selecionados.includes(id) : false} label="" setValue={handleChange} /></td>
 								  					{
 								  						celBodyTableArr && Array.isArray(celBodyTableArr) && celBodyTableArr.length > 0 ? (
@@ -177,7 +177,7 @@ const Table = ({children, titulosTableArr, rowsTableArr,loading, nadaEncontrado,
 																
 
 																let propsCelBodyTable 	= itemCel.hasOwnProperty('props') ? itemCel.props : {};
-																return <td key={indexCel+id+arrCel.length+'td'+rand} {...propsCelBodyTable}>{labelCel}</td>
+																return <td key={indexCel+id+arrCel.length+'td'+rand} {...propsCelBodyTable} onClick={()=>{setDataMenu(acoesRowBodyTable);setShowModalOptions(true)}}  >{labelCel}</td>
 															})
 
 														) : ('')

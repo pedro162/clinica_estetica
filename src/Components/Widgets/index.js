@@ -49,7 +49,7 @@ const Widgets = (props)=>{
                         },
                         {
                             props:{},
-                            label:'Pais'
+                            label:'Widgets'
                         }
                     ]}
 
