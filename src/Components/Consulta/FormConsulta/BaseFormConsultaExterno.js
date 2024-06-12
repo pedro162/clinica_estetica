@@ -1,7 +1,7 @@
 import React from 'react'
 import { Row, Col } from 'react-bootstrap';
 
-const BaseFormConsultaExterno = ({carregando, atualizarConsulta, handleSubmit, setAbaAtual, abaAtual, benfeficiario, faChevronCircleLeft, atualizarConsulta, faChevronCircleRight, carregando, gerarListEspecializacao, dateConsultaAtendimento, ...props})=>{
+const BaseFormConsultaExterno = ({carregando, atualizarConsulta, handleSubmit, setAbaAtual, abaAtual, benfeficiario, faChevronCircleLeft, atualizarConsulta, faChevronCircleRight, carregando, gerarListEspecializacao, dateConsultaAtendimento, especializacao, ...props})=>{
 
     return(
         <Row>
