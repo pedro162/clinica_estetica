@@ -19,7 +19,7 @@ import Cancelar from './Cancelar/index.js'
 import ListMobile from '../Relatorio/ListMobile/index.js'
 
 
-const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFiltros, idConsultaCriada,nextPage, setNextPage, usePagination, setUsePagination, totalPageCount,setTotalPageCount, ...props})=>{
+const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFiltros, idConsultaCriada,nextPage, setNextPage, usePagination, setUsePagination, totalPageCount,setTotalPageCount, requestAllConsultas, ...props})=>{
 
     const {data, error, request, loading} = useFetch();
     const [estado, setConsulta] = React.useState([])
@@ -523,7 +523,7 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
     }
 
     //------------
-
+/* 
     const requestAllConsultas = async() =>{
        
         const {url, options} = CONSULTA_ALL_POST({'name_pessoa':pessoa}, getToken());
@@ -538,7 +538,7 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
         }
 
             
-    }
+    } */
 
     React.useEffect(()=>{
         setConsulta(dataEstado)

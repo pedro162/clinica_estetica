@@ -2,7 +2,7 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import {Home, NotFound, Login, ProtectedRoute, PainelInicial, Clientes, Grupos, ContasReceber, Caixa, Filial, Parametro, Pais, Estado, Cidade, Agenda, AgendaEvento, CategoriaEvento, Especialidade, Profissionais, Consulta, ConstrutorFicha, ConstrutorFichaItem, Servico,
-  OrdemServico, ClientesFichas,MovimentacoesFinanceiras,MenuBotoes,PainelHome
+  OrdemServico, ClientesFichas,MovimentacoesFinanceiras,MenuBotoes,PainelHome,CadastrarExternoSimples
 } from './View/index.js'
 import {Router, Route, Switch} from 'react-router'
 import {history} from './history.js'
@@ -129,6 +129,11 @@ function App() {
                       <ProtectedRoute
                         path="/consulta/index" 
                         component={Consulta}
+                      />
+
+                      <ProtectedRoute
+                        path="/consulta/criar" 
+                        component={CadastrarExternoSimples}
                       />
 
                       <ProtectedRoute

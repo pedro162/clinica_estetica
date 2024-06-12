@@ -155,7 +155,7 @@ const MenuBotoes = (props)=>{
             {
                 'label':'Consulta',
                 'iconLabel':<FontAwesomeIcon icon={faPlus} />,
-                'url':'/consulta/index',
+                'url':'/consulta/criar',
             },
             {
                 'label':'Cons. realizadas',

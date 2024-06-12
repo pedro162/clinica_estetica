@@ -6,8 +6,11 @@ import FormConsultaExterno from '../FormConsulta/FormConsultaExterno.js'
 import Pesquisar from '../Pesquisar/index.js'
 import Modal from '../../Utils/Modal/index.js'
 import Load from '../../Utils/Load/index.js'
+import {Col, Row, Button } from 'react-bootstrap';
+import Breadcrumbs from '../../Helper/Breadcrumbs.js'
+import { Link } from 'react-router-dom/cjs/react-router-dom.min';
 
-const CadastroExterno = ({idConsulta, setIdConsulta, callback, atualizarConsulta, setAtualizarConsulta, cadastrarConsulta, setCadastrarConsulta})=>{
+const CadastrarExternoSimples = ({idConsulta, setIdConsulta, callback, atualizarConsulta, setAtualizarConsulta, cadastrarConsulta, setCadastrarConsulta})=>{
 
     
     const [showModalAtualizarConsulta, setShowModalAtualizarConsulta] = React.useState(false)
@@ -18,7 +21,7 @@ const CadastroExterno = ({idConsulta, setIdConsulta, callback, atualizarConsulta
     const [dataEspecializacoes, setEspecializacoes] = React.useState(null)
     const [dataProfissionalHorarios, setDataProfissionalHorarios] = React.useState(null)
     const [dataProfissionalDiasExprediente, setDataProfissionalDiasExprediente] = React.useState(null)
-	const {getToken, dataUser} = React.useContext(UserContex);
+	const {getToken, dataUser, historyUser} = React.useContext(UserContex);
 
 	const {data, error, request, loading} = useFetch();
 	React.useEffect(()=>{
@@ -103,11 +106,35 @@ const CadastroExterno = ({idConsulta, setIdConsulta, callback, atualizarConsulta
 		
 	}, [cadastrarConsulta])
 
+	const loadConsultas = ()=>{
+		historyUser.push('/consulta/index');		
+	}
+
 	return(
 		<>
-            <FormConsultaExterno dataProfissionalDiasExprediente={dataProfissionalDiasExprediente} dataProfissionalHorarios={dataProfissionalHorarios} dataProfissionais={dataProfissionais} dataEspecializacoes={dataEspecializacoes} dataGrupo={dataGrupo} setIdConsulta={setIdConsulta} idConsulta={idConsulta} carregando={false} dataConsultaChoice={dataConsulta} setAtualizarConsulta={setAtualizarConsulta} atualizarConsulta={atualizarConsulta} showModalCriarConsulta={showModalAtualizarConsulta} setShowModalCriarConsulta={()=>{setShowModalAtualizarConsulta();setCadastrarConsulta()}} callback={callback} />
+            <Breadcrumbs
+                items={[
+                        {
+                            props:{},
+                            label:<> <Link className={null}  to={'/'}>Início</Link></>
+                        },
+                        {
+                            props:{},
+                            label:'Consulta'
+                        }
+                    ]}
+                buttonFiltroMobile={true}
+                setMostarFiltros={()=>null}
+                mostarFiltros={false}
+            />
+            <Row className={'mobile_card_report pb-4'}  style={{backgroundColor:'#FFF', minHeight:'100vh'}}>
+                
+                 <Col  xs="12" sm="12" md={12}>
+				    <FormConsultaExterno noUseModal={true} dataProfissionalDiasExprediente={dataProfissionalDiasExprediente} dataProfissionalHorarios={dataProfissionalHorarios} dataProfissionais={dataProfissionais} dataEspecializacoes={dataEspecializacoes} dataGrupo={dataGrupo} setIdConsulta={setIdConsulta} idConsulta={idConsulta} carregando={false} dataConsultaChoice={dataConsulta} setAtualizarConsulta={setAtualizarConsulta} atualizarConsulta={atualizarConsulta} showModalCriarConsulta={showModalAtualizarConsulta} setShowModalCriarConsulta={()=>{setShowModalAtualizarConsulta();setCadastrarConsulta()}} callback={loadConsultas} />
+                </Col>
+            </Row>
 		</>
 	)
 }
 
-export default CadastroExterno;
+export default CadastrarExternoSimples;

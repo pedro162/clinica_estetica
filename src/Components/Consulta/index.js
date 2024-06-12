@@ -743,6 +743,7 @@ const Consulta = (props)=>{
                         dataEstado={estado}
                         loadingData={loading}
                         callBack={requestAllConsultas}
+                        requestAllConsultas={requestAllConsultas}
                         setMostarFiltros={setMostarFiltros}
                         idConsultaCriada={consultaChoice}
                         nadaEncontrado={nadaEncontrado}

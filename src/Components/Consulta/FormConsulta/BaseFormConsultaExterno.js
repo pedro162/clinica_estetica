@@ -1,7 +1,19 @@
 import React from 'react'
-import { Row, Col } from 'react-bootstrap';
+import {Formik, ErrorMessage, Field} from 'formik';
+import FormControlInput from '../../FormControl/index.js'
+import FormControlRadio from '../../FormControl/Radio.js'
+import FormControlSelect from '../../FormControl/Select.js'
+import {Col, Row, Tabs, Tab, Button} from 'react-bootstrap';
+import Load from '../../Utils/Load/index.js'
+import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible'
+import { faHome, faSearch, faPlus, faTimes, faChevronCircleRight, faChevronCircleLeft } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import estilos from './FormConsulta.module.css'
+import CalendarioSimplesConsultaExterno  from '../../Utils/Calendario/CalendarioSimplesConsultaExterno.js'
 
-const BaseFormConsultaExterno = ({carregando, atualizarConsulta, handleSubmit, setAbaAtual, abaAtual, benfeficiario, faChevronCircleLeft, atualizarConsulta, faChevronCircleRight, carregando, gerarListEspecializacao, dateConsultaAtendimento, especializacao, ...props})=>{
+const BaseFormConsultaExterno = ({carregando, error, handleSubmit, setAbaAtual, abaAtual, benfeficiario, atualizarConsulta, gerarListEspecializacao, dateConsultaAtendimento, especializacao,
+    loading,dataProfissionalDiasExprediente,titulosTableArr,rowsTableArr,gerarListHorario,horario, handleChange ,
+    handleBlur,values, setBeneficiario, setEspecializacoes, ...props})=>{
 
     return(
         <Row>
@@ -446,3 +458,4 @@ const BaseFormConsultaExterno = ({carregando, atualizarConsulta, handleSubmit, s
 }
 
 
+export default BaseFormConsultaExterno;
