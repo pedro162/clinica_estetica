@@ -7,7 +7,7 @@ import {Col, Row, Button } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
 import Breadcrumbs from '../Helper/Breadcrumbs.js'
-import { faHome, faSearch, faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faSearch, faPlus, faTimes, faChevronUp, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from '../Utils/Modal/index.js'
 import Load from '../Utils/Load/index.js'
@@ -93,7 +93,7 @@ const ContasReceber = ({defaultFilters ,...props})=>{
             hasLabel: true,
             contentLabel:'Pessoa',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
             atributsFormControl:{'type':'text', size:"sm",'name':pessoa, value:pessoa, onChange:setNamePessoa,    onBlur:setNamePessoa},
 
         },
@@ -103,7 +103,7 @@ const ContasReceber = ({defaultFilters ,...props})=>{
             hasLabel: true,
             contentLabel:'Contato',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
             atributsFormControl:{'type':'text', size:"sm",'name_atendido':pessoa, value:pessoa, onChange:setNamePessoa,    onBlur:setNamePessoa},
 
         },
@@ -113,7 +113,7 @@ const ContasReceber = ({defaultFilters ,...props})=>{
             hasLabel: true,
             contentLabel:'Status',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
             atributsFormControl:{'type':'text', size:"sm",'status':pessoa, value:pessoa, onChange:setNamePessoa,    onBlur:setNamePessoa},
 
         },
@@ -123,7 +123,7 @@ const ContasReceber = ({defaultFilters ,...props})=>{
             hasLabel: true,
             contentLabel:'Tipo',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
             atributsFormControl:{'type':'text', size:"sm",'tipo':pessoa, value:pessoa, onChange:setNamePessoa,    onBlur:setNamePessoa},
 
         },
@@ -133,7 +133,7 @@ const ContasReceber = ({defaultFilters ,...props})=>{
             hasLabel: true,
             contentLabel:'Cód. ref',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
             atributsFormControl:{'type':'text', size:"sm",'referencia_id':idReferenciaContasReceber,value:idReferenciaContasReceber ,onChange:setIdReferencia, onBlur:setIdReferencia},
 
         },/*
@@ -146,7 +146,7 @@ const ContasReceber = ({defaultFilters ,...props})=>{
             hasLabel: true,
             contentLabel:'Referência',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
             atributsFormControl:{'type':'text', size:"sm",'referencia':referenciaContasReceber, value:referenciaContasReceber, onChange:setDsReferencia,    onBlur:setDsReferencia},
 
         },
@@ -156,7 +156,7 @@ const ContasReceber = ({defaultFilters ,...props})=>{
             hasLabel: true,
             contentLabel:'Dt. inicio',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
             atributsFormControl:{'type':'date', size:"sm",'dt_inico':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
 
         },
@@ -166,7 +166,7 @@ const ContasReceber = ({defaultFilters ,...props})=>{
             hasLabel: true,
             contentLabel:'Dt. fim',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
             atributsFormControl:{'type':'date', size:"sm",'dt_fim':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
 
         },
@@ -174,7 +174,7 @@ const ContasReceber = ({defaultFilters ,...props})=>{
 
     const acoesBottomCard=[{
             label:'Pesquisar',
-            icon:<FontAwesomeIcon icon={faSearch} />,
+            icon:<FontAwesomeIcon icon={faChevronUp} />,
             props:{onClick:()=>requestAllContasRecebers(), className:'btn btn-sm botao_success'}
         },
         {
@@ -182,6 +182,12 @@ const ContasReceber = ({defaultFilters ,...props})=>{
             icon:<FontAwesomeIcon icon={faPlus} />,
             props:{onClick:()=>setCadastrarContasReceber(true), className:'btn btn-sm mx-2 btn-secondary'}
         }
+    ];
+    const acoesHeaderCard=[{
+            label:'',
+            icon:<FontAwesomeIcon icon={(mostarFiltros ? faChevronDown : faChevronUp)} />,
+            props:{onClick:()=>{setMostarFiltros(!mostarFiltros);}, className:'btn btn-sm btn-secondary'},
+        },
     ];
     
 
@@ -395,28 +401,6 @@ const ContasReceber = ({defaultFilters ,...props})=>{
         
     }, [filtroAvencer, filtroVencidas, filtroPagas, filtroAbertas])
 
-    /*
-        {mostarFiltros && 
-                    (
-                        <Col  xs="12" sm="12" md="3">
-                            <Filter
-                                filtersArr={filtersArr}
-                                actionsArr={acoesBottomCard}
-                            />
-                        </Col>
-                    )
-                }
-                
-                <Col  xs="12" sm="12" md={mostarFiltros ? "9":"12"}>
-                    <Include
-                        dataEstado={estado}
-                        loadingData={loading}
-                        callBack={requestAllOrdemServicos}
-                        setMostarFiltros={setMostarFiltros}
-                    />
-                </Col>
-    */
-    
     return(
         <>
             <Breadcrumbs
@@ -437,13 +421,16 @@ const ContasReceber = ({defaultFilters ,...props})=>{
 
             />
             <Row>
-                {mostarFiltros && 
+                {
                     (
                         <>
-                            <Col  xs="12" sm="12" md="3" className={'default_card_report'}>
+                            <Col  xs="12" sm="12" md="13" className={'default_card_report'}>
                                 <Filter
                                     filtersArr={filtersArr}
                                     actionsArr={acoesBottomCard}
+                                    mostarFiltros={mostarFiltros}
+                                    setMostarFiltros={setMostarFiltros}
+                                    botoesHeader={acoesHeaderCard}
                                 />
                             </Col>
 
@@ -534,7 +521,7 @@ const ContasReceber = ({defaultFilters ,...props})=>{
                     </div>
                 </Col>
 
-                <Col  xs="12" sm="12" md={mostarFiltros ? "9":"12"} >
+                <Col  xs="12" sm="12" md={'12'} >
                     <Include
                         dataEstado={estado}
                         loadingData={loading}

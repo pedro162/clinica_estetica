@@ -76,8 +76,9 @@ a{
     margin-top: 2rem;
 }
 .cardFilter{
-    height: 750px !important;
+    height: auto !important;
     box-shadow: 0 2px 5px #CCC;
+    margin-bottom: 20px !important;
 }
 
 .botao_success{

@@ -11,7 +11,7 @@ import estilos from './Filter.module.css';
 import { faHome, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const Filter = ({filtersArr, actionsArr,... props})=>{
+const Filter = ({filtersArr, actionsArr, botoesHeader, mostarFiltros,	setMostarFiltros,... props})=>{
 	const alerta = (target)=>{
 		console.log(target)
 	}
@@ -21,9 +21,12 @@ const Filter = ({filtersArr, actionsArr,... props})=>{
 	return(
 			<>
 				<Card
-					title="Filtros"
+					title={<span onClick={()=>setMostarFiltros(!mostarFiltros)} >Filtros</span>}
 					propsCard={{className:'cardFilter'}}
 					acoesBottomCard={acoesBottomCard}
+					noBody={!mostarFiltros}
+					noFooter={!mostarFiltros}
+					botoesHeader={botoesHeader}
 				>
 					<Row>
 						{

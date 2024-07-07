@@ -315,59 +315,59 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
         let tableTitle = [
             {
                 label:'Código',
-                props:{width:'30px !important'}
+                props:{ style:{minWidth:'50px'}}
             },
             {
                 label:'Cód. filial',
-                props:{width:''}
+                props:{ style:{minWidth:'50px'}}
             },
             {
                 label:'Cód. pessoa',
-                props:{width:''}
+                props:{ style:{minWidth:'50px'}}
             },
             {
                 label:'Pessoa',
-                props:{width:'355px'}
+                props:{ style:{minWidth:'220px'}}
             },
             {
                 label:'Status',
-                props:{width:''}
+                props:{ style:{minWidth:'100px'}}
             },
             {
                 label:'Prioridade',
-                props:{width:''}
+                props:{ style:{minWidth:'100px'}}
             },
             {
                 label:'Cód. profissional',
-                props:{width:''}
+                props:{ style:{minWidth:'50px'}}
             },
             {
                 label:'Profissional',
-                props:{}
+                props:{ style:{minWidth:'220px'}}
             },
             {
                 label:'Data início',
-                props:{}
+                props:{ style:{minWidth:'100px'}}
             },
             {
                 label:'Horário início',
-                props:{}
+                props:{ style:{minWidth:'100px'}}
             },
             {
                 label:'Data fim',
-                props:{}
+                props:{ style:{minWidth:'100px'}}
             },
             {
                 label:'Horário fim',
-                props:{}
+                props:{ style:{minWidth:'100px'}}
             },
             {
                 label:'Cancelado em',
-                props:{}
+                props:{ style:{minWidth:'100px'}}
             },
             {
                 label:'Motivo cancelamento',
-                props:{}
+                props:{ style:{minWidth:'100px'}}
             },
         ]
 

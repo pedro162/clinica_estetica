@@ -2,7 +2,7 @@ import React from 'react';
 import { Container, Col, Row, Card as CartBootstrap, Button } from 'react-bootstrap';
 import estilos from './Card.module.css'
 
-const Card =({children, title, acoesBottomCard, propsContainerTitulo, propsContainerButtons, propsCard, botoesHeader, propsHeader, noFooter,...props})=>{
+const Card =({children, title, acoesBottomCard, propsContainerTitulo, propsContainerButtons, propsCard, botoesHeader, propsHeader, noFooter, noBody,...props})=>{
 	//console.log('Acoes de relatorio')
 	//console.log(botoesHeader)
 	if(!propsHeader){
@@ -24,7 +24,10 @@ const Card =({children, title, acoesBottomCard, propsContainerTitulo, propsConta
 									<Col style={{display:'flex',flexCirection:'collumn',justifyContent: 'flex-end'}} {...propsContainerButtons} >
 										
 										{Array.isArray(botoesHeader) && botoesHeader.length > 0 && botoesHeader.map((item, index, arr)=>{
-											let {acao, label, propsAcoes, icon} = item;
+											let {acao, label, propsAcoes, props, icon} = item;
+											if(!propsAcoes){
+												propsAcoes = props;
+											}
 											if(label || icon){
 												return (
 													<Button key={index+'-'+arr.length} onClick={acao} {...propsAcoes} >{icon?icon:''} {label?label:''}</Button>
@@ -42,9 +45,9 @@ const Card =({children, title, acoesBottomCard, propsContainerTitulo, propsConta
 
 					</Row>
 				</CartBootstrap.Header>
-				<CartBootstrap.Body className={`${estilos.bodyCard}`}>
+				{!noBody && <CartBootstrap.Body className={`${estilos.bodyCard}`}>
 				    {children}				
-				</CartBootstrap.Body>
+				</CartBootstrap.Body>}
 				{!noFooter && (
 
 
