@@ -403,7 +403,7 @@ const Agenda = (props)=>{
                 {mostarFiltros && 
                     (
                         <>
-                            <Col  xs="12" sm="12" md="3" className={'default_card_report'}>
+                            <Col  xs="12" sm="12" md="12" className={'default_card_report'}>
                                 <Filter
                                     filtersArr={filtersArr}
                                     actionsArr={acoesBottomCard}
@@ -517,7 +517,7 @@ const Agenda = (props)=>{
                     </div>
                 </Col>
                 
-                <Col  xs="12" sm="12" md={isMobile ==true ? '12' : mostarFiltros ? "9":"12"}>
+                <Col  xs="12" sm="12" md={12}>
                     <Include
                         dataEstado={cidade}
                         loadingData={loading}

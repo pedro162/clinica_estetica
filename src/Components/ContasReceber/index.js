@@ -174,7 +174,7 @@ const ContasReceber = ({defaultFilters ,...props})=>{
 
     const acoesBottomCard=[{
             label:'Pesquisar',
-            icon:<FontAwesomeIcon icon={faChevronUp} />,
+            icon:<FontAwesomeIcon icon={faSearch} />,
             props:{onClick:()=>requestAllContasRecebers(), className:'btn btn-sm botao_success'}
         },
         {
