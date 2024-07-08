@@ -8,7 +8,7 @@ import {Col, Row, Button } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
 import Breadcrumbs from '../Helper/Breadcrumbs.js'
-import { faHome, faSearch, faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faSearch, faPlus, faTimes, faChevronDown, faChevronUp, faBroom } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from '../Utils/Modal/index.js'
 import Load from '../Utils/Load/index.js'
@@ -19,6 +19,7 @@ import Atualizar from './Atualizar/index.js'
 import Cancelar from './Cancelar/index.js'
 import Include from './include';
 import FormControlInput from '../FormControl/index.js'
+import { Link } from 'react-router-dom/cjs/react-router-dom.min.js';
 
 
 const MovimentacoesFinanceira = (props)=>{
@@ -49,11 +50,15 @@ const MovimentacoesFinanceira = (props)=>{
     const [dtFim, setDtFim] = React.useState(null)
     const [filtroMobile, setFiltroMobile] = React.useState(null)
     const [nadaEncontrado, setNadaEncontrado] = React.useState(false)
-
+    const [nextPage, setNextPage] = React.useState(null)
+    const [totalPageCount, setTotalPageCount] = React.useState(null)
+    const [usePagination, setUsePagination] = React.useState(true)
+    const [qtdItemsPerPage, setQtdItemsPerPage] = React.useState(10)
     const [filtroEstornadas, setFiltroEstornadas] = React.useState(false)
     const [filtroDebitos, setFiltroDebitos] = React.useState(false)
     const [filtroCreditos, setFiltroCreditos] = React.useState(false)
     const [filtroConciliadas, setFiltroConciliadas] = React.useState(false)
+    const [ordenacao, setOrdenacao] = React.useState('')
 
     const {getToken, dataUser, isMobile} = React.useContext(UserContex);
 
@@ -118,6 +123,11 @@ const MovimentacoesFinanceira = (props)=>{
     }
 
 
+    const setOrdenacaoFiltro = ({target})=>{
+        
+        setOrdenacao(target.value)
+    }
+
     const filtersArr = [
         {
             type:'text',
@@ -125,8 +135,8 @@ const MovimentacoesFinanceira = (props)=>{
             hasLabel: true,
             contentLabel:'Código',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'id':codigoMovimentacoesFinanceira,onChange:handleCodigoMovimentacoesFinanceiraFilter,    onBlur:handleCodigoMovimentacoesFinanceiraFilter, onKeyUp:handleSearch},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'id':codigoMovimentacoesFinanceira, value:codigoMovimentacoesFinanceira,onChange:handleCodigoMovimentacoesFinanceiraFilter,    onBlur:handleCodigoMovimentacoesFinanceiraFilter, onKeyUp:handleSearch},
 
         },
         {
@@ -135,8 +145,8 @@ const MovimentacoesFinanceira = (props)=>{
             hasLabel: true,
             contentLabel:'Filial',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'id':codigoFilial,onChange:handleCodigoFilialFilter,    onBlur:handleCodigoFilialFilter, onKeyUp:handleSearch},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'id':codigoFilial, value:codigoFilial,onChange:handleCodigoFilialFilter,    onBlur:handleCodigoFilialFilter, onKeyUp:handleSearch},
 
         },
         {
@@ -145,8 +155,8 @@ const MovimentacoesFinanceira = (props)=>{
             hasLabel: true,
             contentLabel:'Caixa',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'caixa_id':codigoFilial,onChange:handleCodigoFilialFilter,    onBlur:handleCodigoFilialFilter, onKeyUp:handleSearch},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'caixa_id':codigoFilial, value:codigoFilial,onChange:handleCodigoFilialFilter,    onBlur:handleCodigoFilialFilter, onKeyUp:handleSearch},
 
         },
         {
@@ -159,8 +169,8 @@ const MovimentacoesFinanceira = (props)=>{
             hasLabel: true,
             contentLabel:'Estornadas',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'estornado':estornado,onChange:handleEstornadoFilter,    onBlur:handleEstornadoFilter, onKeyUp:handleSearch},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'estornado':estornado, value:estornado,onChange:handleEstornadoFilter,    onBlur:handleEstornadoFilter, onKeyUp:handleSearch},
 
         },
         {
@@ -173,8 +183,8 @@ const MovimentacoesFinanceira = (props)=>{
             hasLabel: true,
             contentLabel:'Concilidadas',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'conciliado':conciliado,onChange:handleConciliadoFilter,    onBlur:handleConciliadoFilter, onKeyUp:handleSearch},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'conciliado':conciliado, value:conciliado, onChange:handleConciliadoFilter,    onBlur:handleConciliadoFilter, onKeyUp:handleSearch},
 
         },
         {
@@ -183,8 +193,8 @@ const MovimentacoesFinanceira = (props)=>{
             hasLabel: true,
             contentLabel:'Histórico',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'historico':historico,onChange:handleHistoricoFilter,    onBlur:handleHistoricoFilter, onKeyUp:handleSearch},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'historico':historico, value:historico ,onChange:handleHistoricoFilter,    onBlur:handleHistoricoFilter, onKeyUp:handleSearch},
 
         },
         {
@@ -193,8 +203,8 @@ const MovimentacoesFinanceira = (props)=>{
             hasLabel: true,
             contentLabel:'Cod. origem',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'codigo_origem':codigoOrigem,onChange:handleCodigoOrigemFilter,    onBlur:handleCodigoOrigemFilter, onKeyUp:handleSearch},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'codigo_origem':codigoOrigem, value:codigoOrigem,onChange:handleCodigoOrigemFilter,    onBlur:handleCodigoOrigemFilter, onKeyUp:handleSearch},
 
         },
         {
@@ -207,8 +217,8 @@ const MovimentacoesFinanceira = (props)=>{
             hasLabel: true,
             contentLabel:'Origem',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'conciliado':conciliado,onChange:handleOrigemFilter,    onBlur:handleOrigemFilter, onKeyUp:handleSearch},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'conciliado':conciliado, value:conciliado, onChange:handleConciliadoFilter,    onBlur:handleConciliadoFilter, onKeyUp:handleSearch},
 
         },
         {
@@ -217,8 +227,8 @@ const MovimentacoesFinanceira = (props)=>{
             hasLabel: true,
             contentLabel:'Dt. inicio',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'date', size:"sm",'dt_inico':dtInicio,onChange:handleDtInicioFilter,    onBlur:handleDtInicioFilter, onKeyUp:handleSearch},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'date', size:"sm",'dt_inico':dtInicio, value:dtInicio, onChange:handleDtInicioFilter,    onBlur:handleDtInicioFilter, onKeyUp:handleSearch},
 
         },
         {
@@ -227,8 +237,19 @@ const MovimentacoesFinanceira = (props)=>{
             hasLabel: true,
             contentLabel:'Dt. fim',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'date', size:"sm",'dt_fim':dtFim,onChange:handleDtFimFilter,    onBlur:handleDtFimFilter, onKeyUp:handleSearch},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'date', size:"sm",'dt_fim':dtFim, value:dtFim,onChange:handleDtFimFilter,    onBlur:handleDtFimFilter, onKeyUp:handleSearch},
+
+        },    
+        {
+            type:'select',
+            options:[{'label':'Selecione...', 'value':''},{'label':'Código A-Z', 'value':'id-asc'},{'label':'Código Z-A', 'value':'id-desc'},
+            {'label':'Histórico A-Z', 'value':'name-asc'},{'label':'Histórico Z-A', 'value':'name-desc'},], 
+            hasLabel: true,
+            contentLabel:'Classificar',
+            atributsFormLabel:{},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'select', size:"sm",'ordem':ordenacao, value:ordenacao, onChange:setOrdenacaoFiltro, onBlur:setOrdenacaoFiltro, onKeyUp:handleSearch},
 
         },
     ]
@@ -239,12 +260,23 @@ const MovimentacoesFinanceira = (props)=>{
         props:{onClick:()=>requestAllMovimentacoesFinanceiras(), className:'btn btn-sm botao_success'}
     },
     {
+        label:'Limpar',
+        icon:<FontAwesomeIcon icon={faBroom} />,
+        props:{onClick:()=>limparFiltros(), className:'btn btn-sm btn-secondary mx-2'}
+    },
+    {
         label:'Cadastrar',
         icon:<FontAwesomeIcon icon={faPlus} />,
-        props:{onClick:()=>setCadastrarMovimentacoesFinanceira(true), className:'btn btn-sm mx-2 btn-secondary'}
+        props:{onClick:()=>setCadastrarMovimentacoesFinanceira(true), className:'btn btn-sm btn-secondary'}
     }
     ];
 
+    const acoesHeaderCard=[{
+            label:'',
+            icon:<FontAwesomeIcon icon={(mostarFiltros ? faChevronDown : faChevronUp)} />,
+            props:{onClick:()=>{setMostarFiltros(!mostarFiltros);}, className:'btn btn-sm btn-secondary'},
+        },
+    ];    
 
     React.useEffect(()=>{
         switch(acao){
@@ -298,31 +330,25 @@ const MovimentacoesFinanceira = (props)=>{
         setAtualizarMovimentacoesFinanceira(true);
     }
 
-   //name_profissional
+    const limparFiltros = ()=>{
+        setCodigoMovimentacoesFinanceira('');
+        setCodigoFilial('');
+        setEstornado('');
+        setCodigoOrigem('')
+        setOrigem('');
+        setDtInicio('');
+        setDtFim('');
+        setFiltroMobile('');
+        setFiltroEstornadas('');
+        setFiltroConciliadas('');
+        setHistorico('')
+        setOrdenacao('')
 
-    //------------
-/*
-    React.useEffect(()=>{
-        setIsMobile(isMobileYet())
-    }, [IS_MOBILE, isMobileYet, WINDOW_WIDTH])
-*/
-
+    }
     //------------
     const montarFiltro = ()=>{
         let filtros = {}
         let detalhesFiltros = {}
-
-
-        /*
-            codigoMovimentacoesFinanceira, setCodigoMovimentacoesFinanceira
-codigoFilial, setCodigoFilial
-estornado, setEstornado
-conciliado, setConciliado
-historico, setHistorico
-codigoOrigem, setCodigoOrigem
-origem, setOrigem
-        */
-        
 
         if(codigoMovimentacoesFinanceira){
             filtros['id'] = codigoMovimentacoesFinanceira;
@@ -494,13 +520,11 @@ origem, setOrigem
         setMovimentacoesFinanceira([])
 
         let {filtros, detalhesFiltros} = montarFiltro();
-        const {url, options} = CONTAS_MOVIMENTACOES_FINANCEIRAS_ALL_POST({...filtros}, getToken());
-
-
+        let {url, options} = CONTAS_MOVIMENTACOES_FINANCEIRAS_ALL_POST({...filtros}, getToken());
+        if(nextPage){
+            url = nextPage;
+        }
         const {response, json} = await request(url, options);
-        console.log('All clients here')
-        console.log({'name_pessoa':pessoa})
-        console.log(json)
         if(json){
             setMovimentacoesFinanceira(json)
 
@@ -529,10 +553,7 @@ origem, setOrigem
         requestAllMovimentacoesFinanceirasEffect();
 
         
-    }, [filtroDebitos, filtroCreditos, filtroEstornadas, filtroConciliadas])
-//estornado
-//conciliado
-
+    }, [filtroDebitos, filtroCreditos, filtroEstornadas, filtroConciliadas, nextPage, setNextPage])
    
     return(
         <>
@@ -540,7 +561,7 @@ origem, setOrigem
                 items={[
                         {
                             props:{},
-                            label:'Início'
+                            label:<> <Link className={null}  to={'/'}>Início</Link></>
                         },
                         {
                             props:{},
@@ -552,14 +573,17 @@ origem, setOrigem
                 mostarFiltros={mostarFiltros}
             />
             <Row>
-                {mostarFiltros && 
+                { 
                     (
                         <>
 
-                            <Col  xs="12" sm="12" md="3" className={'default_card_report'} >
+                            <Col  xs="12" sm="12" md="12" className={'default_card_report'} >
                                 <Filter
                                     filtersArr={filtersArr}
                                     actionsArr={acoesBottomCard}
+                                    mostarFiltros={mostarFiltros}
+                                    setMostarFiltros={setMostarFiltros}
+                                    botoesHeader={acoesHeaderCard}
                                 />
                             </Col>
                             <Col  xs="12" sm="12" md="12" className={'mobile_card_report pt-4'}  style={{backgroundColor:'#FFF'}}>
@@ -667,7 +691,7 @@ origem, setOrigem
                     </div>
                 </Col>
 
-                 <Col  xs="12" sm="12" md={isMobile ==true ? '12' : mostarFiltros ? "9":"12"}>
+                 <Col  xs="12" sm="12" md={"12"}>
                     <Include
                         dataEstado={estado}
                         loadingData={loading}
@@ -675,6 +699,12 @@ origem, setOrigem
                         setMostarFiltros={setMostarFiltros}
                         idMovimentacoesFinanceiraCriada={consultaChoice}
                         nadaEncontrado={nadaEncontrado}
+                        nextPage={nextPage}
+                        setNextPage={setNextPage}
+                        usePagination={usePagination}
+                        setUsePagination={setUsePagination}
+                        totalPageCount={totalPageCount}
+                        setTotalPageCount={setTotalPageCount}
                     />
                 </Col>
             </Row>

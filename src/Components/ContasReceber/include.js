@@ -26,7 +26,7 @@ import MovimentacoesFinanceiras from '../MovimentacoesFinanceiras/index.js'
 import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../functions/index.js'
 
 
-const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncontrado, ...props})=>{
+const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncontrado, nextPage, setNextPage, usePagination, setUsePagination, totalPageCount, setTotalPageCount, ...props})=>{
     const {data, error, request, loading} = useFetch();
     const [estado, setContasReceber] = React.useState([])
     const [exemplos, setExemplos] = React.useState([])
@@ -42,6 +42,9 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
     const [incicarContasReceber, setIniciarContasReceber] = React.useState(false) 
     const [visualizarMovimentacoes, setVisualizarMovimentacoes] = React.useState(false)  
     const [defaultFiltersMovimentacoes, setDefaultFiltersMovimentacoes] = React.useState({})
+    const [nrPageAtual, setNrPageAtual] = React.useState(null)
+    const [qtdItemsTo, setQtdItemsTo] = React.useState(null)
+    const [qtdItemsTotal, setQtdItemsTotal] = React.useState(null)
 
     const [acao, setAcao] = React.useState(null)
     const [pessoa, setPessoa] = React.useState('')
@@ -51,6 +54,46 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
 
     const alerta = (target)=>{
         console.log(target)
+    }
+
+    const handleTotalPages=()=>{
+        if(Number(dataEstado?.mensagem?.last_page > 0)){
+            setTotalPageCount(dataEstado?.mensagem?.last_page)
+        }
+    }
+
+    const handleTotalItems=()=>{
+        if(Number(dataEstado?.mensagem?.to > 0)){
+            setQtdItemsTo(dataEstado?.mensagem?.to)
+        }
+
+        if(Number(dataEstado?.mensagem?.total > 0)){
+            setQtdItemsTotal(dataEstado?.mensagem?.total)
+        }
+    }
+
+    const nextPageRout = ()=>{       
+        if(dataEstado?.mensagem?.next_page_url){
+            setNextPage(dataEstado?.mensagem?.next_page_url)
+        }
+    }
+
+    const previousPageRout = ()=>{       
+        if(dataEstado?.mensagem?.prev_page_url){
+            setNextPage(dataEstado?.mensagem?.prev_page_url)
+        }
+    }
+
+    const firstPageRout = ()=>{       
+        if(dataEstado?.mensagem?.first_page_url){
+            setNextPage(dataEstado?.mensagem?.first_page_url)
+        }
+    }
+
+    const lastPageRout = ()=>{       
+        if(dataEstado?.mensagem?.last_page_url){
+            setNextPage(dataEstado?.mensagem?.last_page_url)
+        }
     }
 
     const setNamePessoa = ({target})=>{
@@ -120,20 +163,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
 
         },
     ]
-
-    const acoesBottomCard=[{
-        label:'Pesquisar',
-        icon:<FontAwesomeIcon icon={faSearch} />,
-        props:{onClick:()=>requestAllContasRecebers(), className:'btn btn-sm botao_success'}
-    },
-    {
-        label:'Cadastrar',
-        icon:<FontAwesomeIcon icon={faPlus} />,
-        props:{onClick:()=>setIniciarContasReceber(true), className:'btn btn-sm mx-2 btn-secondary'}
-    }
-    ];
-
-
+    
     React.useEffect(()=>{
         switch(acao){
             case 'editar':
@@ -226,7 +256,15 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
     const gerarTableContasReceber = ()=>{
        
         let data = [];
-        let dataContasReceber = estado.mensagem
+        let dataContasReceber = estado
+
+        if(dataContasReceber?.mensagem){
+            dataContasReceber = dataContasReceber?.mensagem;
+        }
+
+        if(dataContasReceber?.data){
+            dataContasReceber = dataContasReceber?.data;
+        }
         if(dataContasReceber && Array.isArray(dataContasReceber) && dataContasReceber.length > 0){
             for(let i=0; !(i == dataContasReceber.length); i++){
                 let atual = dataContasReceber[i];
@@ -399,7 +437,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
             {
                 label:'Filial',
                 props:{
-                    style:{minWidth:'50px'}
+                    style:{minWidth:'255px'}
                 }
             },
             {
@@ -477,7 +515,15 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
     const gerarCardContasReceber = ()=>{
        
         let data = [];
-        let dataContasReceber = estado.mensagem
+        let dataContasReceber = estado
+
+        if(dataContasReceber?.mensagem){
+            dataContasReceber = dataContasReceber?.mensagem;
+        }
+
+        if(dataContasReceber?.data){
+            dataContasReceber = dataContasReceber?.data;
+        }
         if(dataContasReceber && Array.isArray(dataContasReceber) && dataContasReceber.length > 0){
             for(let i=0; !(i == dataContasReceber.length); i++){
                 let atual = dataContasReceber[i];
@@ -609,7 +655,16 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
     const gerarListMobileContasReceber = ()=>{
        
         let data = [];
-        let dataContasReceber = estado.mensagem
+        let dataContasReceber = estado
+
+        if(dataContasReceber?.mensagem){
+            dataContasReceber = dataContasReceber?.mensagem;
+        }
+
+        if(dataContasReceber?.data){
+            dataContasReceber = dataContasReceber?.data;
+        }
+
         if(dataContasReceber && Array.isArray(dataContasReceber) && dataContasReceber.length > 0){
             for(let i=0; !(i == dataContasReceber.length); i++){
                 let atual = dataContasReceber[i];
@@ -762,28 +817,17 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
             
     }
 
-    React.useEffect(()=>{
-
-        const requestAllContasRecebersEffect = async() =>{
-       
-           await requestAllContasRecebers();
-
-            
-        }
-
-       /// requestAllContasRecebersEffect();
-
-        
-    }, [])
 
     React.useEffect(()=>{
         setContasReceber(dataEstado)
+        setNrPageAtual(dataEstado?.mensagem?.current_page)
+        handleTotalPages();
+        handleTotalItems();
     }, [dataEstado])
     
 
     const rowsTableArr = gerarTableContasReceber();    
     const titulosTableArr = gerarTitleTable();
-    const dataContasReceberRelatorio = estado.mensagem;
     //
     return(
         <>
@@ -799,6 +843,18 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                         nadaEncontrado={nadaEncontrado}
                         withoutFirstCol={true}
                         botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
+                        nextPage={nextPage}
+                        setNextPage={setNextPage}
+                        usePagination={usePagination}
+                        setUsePagination={setUsePagination}
+                        nextPageRout={nextPageRout}
+                        previousPageRout={previousPageRout}
+                        firstPageRout = {firstPageRout}
+                        nrPageAtual = {nrPageAtual}
+                        lastPageRout = {lastPageRout}
+                        totalPageCount={totalPageCount}
+                        qtdItemsTo={qtdItemsTo}
+                        qtdItemsTotal={qtdItemsTotal}
                     />
 
                     
@@ -811,6 +867,18 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                         loading={loadingData}
                         nadaEncontrado={nadaEncontrado}
                         botoesHeader={[/* {acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> } */]}
+                        nextPage={nextPage}
+                        setNextPage={setNextPage}
+                        usePagination={usePagination}
+                        setUsePagination={setUsePagination}
+                        nextPageRout={nextPageRout}
+                        previousPageRout={previousPageRout}
+                        firstPageRout = {firstPageRout}
+                        nrPageAtual = {nrPageAtual}
+                        lastPageRout = {lastPageRout}
+                        totalPageCount={totalPageCount}
+                        qtdItemsTo={qtdItemsTo}
+                        qtdItemsTotal={qtdItemsTotal}
                     />
                 </Col>
             </Row>

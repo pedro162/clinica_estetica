@@ -19,7 +19,7 @@ import Cancelar from './Cancelar/index.js'
 import ListMobile from '../Relatorio/ListMobile/index.js'
 
 
-const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFiltros, idMovimentacoesFinanceiraCriada, ...props})=>{
+const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFiltros, idMovimentacoesFinanceiraCriada, nextPage, setNextPage, usePagination, setUsePagination, totalPageCount, setTotalPageCount,  ...props})=>{
 
     const {data, error, request, loading} = useFetch();
     const [estado, setMovimentacoesFinanceira] = React.useState([])
@@ -32,6 +32,9 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
     const [cadastrarMovimentacoesFinanceira, setCadastrarMovimentacoesFinanceira] = React.useState(false) 
     const [acao, setAcao] = React.useState(null)
     const [pessoa, setPessoa] = React.useState('')
+    const [nrPageAtual, setNrPageAtual] = React.useState(null)
+    const [qtdItemsTo, setQtdItemsTo] = React.useState(null)
+    const [qtdItemsTotal, setQtdItemsTotal] = React.useState(null)
 
 
     const {getToken, dataUser} = React.useContext(UserContex);
@@ -41,6 +44,45 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
         console.log(target)
     }
 
+    const handleTotalPages=()=>{
+        if(Number(dataEstado?.mensagem?.last_page > 0)){
+            setTotalPageCount(dataEstado?.mensagem?.last_page)
+        }
+    }
+
+    const handleTotalItems=()=>{
+        if(Number(dataEstado?.mensagem?.to > 0)){
+            setQtdItemsTo(dataEstado?.mensagem?.to)
+        }
+
+        if(Number(dataEstado?.mensagem?.total > 0)){
+            setQtdItemsTotal(dataEstado?.mensagem?.total)
+        }
+    }
+
+    const nextPageRout = ()=>{       
+        if(dataEstado?.mensagem?.next_page_url){
+            setNextPage(dataEstado?.mensagem?.next_page_url)
+        }
+    }
+
+    const previousPageRout = ()=>{       
+        if(dataEstado?.mensagem?.prev_page_url){
+            setNextPage(dataEstado?.mensagem?.prev_page_url)
+        }
+    }
+
+    const firstPageRout = ()=>{       
+        if(dataEstado?.mensagem?.first_page_url){
+            setNextPage(dataEstado?.mensagem?.first_page_url)
+        }
+    }
+
+    const lastPageRout = ()=>{       
+        if(dataEstado?.mensagem?.last_page_url){
+            setNextPage(dataEstado?.mensagem?.last_page_url)
+        }
+    }
     const setNamePessoa = ({target})=>{
         
         setPessoa(target.value)
@@ -102,7 +144,14 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
     const gerarTableMovimentacoesFinanceira = ()=>{
        
         let data = [];
-        let dataMovimentacoesFinanceira = estado.mensagem
+        let dataMovimentacoesFinanceira = estado
+        if(dataMovimentacoesFinanceira?.mensagem){
+            dataMovimentacoesFinanceira = dataMovimentacoesFinanceira?.mensagem;
+        }
+
+        if(dataMovimentacoesFinanceira?.data){
+            dataMovimentacoesFinanceira = dataMovimentacoesFinanceira?.data;
+        }
         if(dataMovimentacoesFinanceira && Array.isArray(dataMovimentacoesFinanceira) && dataMovimentacoesFinanceira.length > 0){
             for(let i=0; !(i == dataMovimentacoesFinanceira.length); i++){
                 let atual = dataMovimentacoesFinanceira[i];
@@ -252,7 +301,14 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
     const gerarListMobileRelatorio = ()=>{
        
         let data = [];
-        let dataClientes = estado.mensagem
+        let dataClientes = estado
+        if(dataClientes?.mensagem){
+            dataClientes = dataClientes?.mensagem;
+        }
+
+        if(dataClientes?.data){
+            dataClientes = dataClientes?.data;
+        }
         if(dataClientes && Array.isArray(dataClientes) && dataClientes.length > 0){
             for(let i=0; !(i == dataClientes.length); i++){
                 let atual = dataClientes[i];
@@ -278,16 +334,6 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                         acoesArr.push({acao:()=>atualizarMovimentacoesFinanceiraAction(atual.id), label:'Origem', propsOption:{}, propsLabel:{}})
                     }
 
-                    
-
-                    
-                   /* if(atual.status == 'cancelado'){
-                        line_style.color = 'red';
-                    }else if(atual.status == 'concluido'){
-                        line_style.color = 'green';
-                    } */
-
-                    //propsContainerTitulo, propsContainerButtons
                     data.push(
 
                         {
@@ -358,11 +404,8 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
 
 
         const {response, json} = await request(url, options);
-        console.log('All clients here')
-        console.log({'name_pessoa':pessoa})
-        console.log(json)
         if(json){
-            setMovimentacoesFinanceira(json)
+            //setMovimentacoesFinanceira(json)
         }
 
             
@@ -370,6 +413,9 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
 
     React.useEffect(()=>{
         setMovimentacoesFinanceira(dataEstado)
+        setNrPageAtual(dataEstado?.mensagem?.current_page)
+        handleTotalPages();
+        handleTotalItems();
     }, [dataEstado])
     
 
@@ -389,6 +435,18 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                         nadaEncontrado={nadaEncontrado}
                         withoutFirstCol={true}
                         botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
+                        nextPage={nextPage}
+                        setNextPage={setNextPage}
+                        usePagination={usePagination}
+                        setUsePagination={setUsePagination}
+                        nextPageRout={nextPageRout}
+                        previousPageRout={previousPageRout}
+                        firstPageRout = {firstPageRout}
+                        nrPageAtual = {nrPageAtual}
+                        lastPageRout = {lastPageRout}
+                        totalPageCount={totalPageCount}
+                        qtdItemsTo={qtdItemsTo}
+                        qtdItemsTotal={qtdItemsTotal}
                     />
 
                 </Col>
@@ -398,7 +456,18 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                         titulosTableArr={titulosTableArr}
                         rowsTableArr={rowsTableArr}
                         loading={loadingData}
-                        botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
+                        botoesHeader={[]}nextPage={nextPage}
+                        setNextPage={setNextPage}
+                        usePagination={usePagination}
+                        setUsePagination={setUsePagination}
+                        nextPageRout={nextPageRout}
+                        previousPageRout={previousPageRout}
+                        firstPageRout = {firstPageRout}
+                        nrPageAtual = {nrPageAtual}
+                        lastPageRout = {lastPageRout}
+                        totalPageCount={totalPageCount}
+                        qtdItemsTo={qtdItemsTo}
+                        qtdItemsTotal={qtdItemsTotal}
 
                     />
                 </Col>

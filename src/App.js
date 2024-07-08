@@ -17,7 +17,7 @@ import ConstrutorFichaGrupo from './Components/ConstrutorFichaItem';
 function App() {
  
   return (
-    <div className="" style={{with:'100%', padding:'0', margin:0,}}   >
+    <div className="px-2"    >
        <Router history={history}>
           <UserStorange>
               <Header/>

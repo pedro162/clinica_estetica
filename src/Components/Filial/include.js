@@ -22,8 +22,6 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
 
     const {data, error, request, loading} = useFetch();
     const [estado, setFilial] = React.useState([])
-    const [exemplos, setExemplos] = React.useState([])
-    const [exemplosTitleTable, setExemplosTitleTable] = React.useState([])
     const [showModalCriarFilial, setShowModalCriarConstula] = React.useState(false)
     const [filialChoice, setFilialChoice] = React.useState(null);
     const [atualizarFilial, setAtualizarFilial] = React.useState(false)   
@@ -232,10 +230,17 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
     const gerarListMobileRelatorio = ()=>{
        
         let data = [];
-        let dataClientes = estado.mensagem
-        if(dataClientes && Array.isArray(dataClientes) && dataClientes.length > 0){
-            for(let i=0; !(i == dataClientes.length); i++){
-                let atual = dataClientes[i];
+        let dataFilial = estado
+        if(dataFilial?.mensagem){
+            dataFilial = dataFilial?.mensagem;
+        }
+
+        if(dataFilial?.data){
+            dataFilial = dataFilial?.data;
+        }
+        if(dataFilial && Array.isArray(dataFilial) && dataFilial.length > 0){
+            for(let i=0; !(i == dataFilial.length); i++){
+                let atual = dataFilial[i];
                 if(atual){
 
                     let line_style = {}
@@ -252,17 +257,6 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                         acoesArr.push({acao:()=>atualizarFilialAction(atual.id), label:'Editar', propsOption:{}, propsLabel:{}})
                     }
 
-
-                    
-
-                    
-                   /* if(atual.status == 'cancelado'){
-                        line_style.color = 'red';
-                    }else if(atual.status == 'concluido'){
-                        line_style.color = 'green';
-                    } */
-
-                    //propsContainerTitulo, propsContainerButtons
                     data.push(
 
                         {
@@ -376,7 +370,7 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                         titulosTableArr={titulosTableArr}
                         rowsTableArr={rowsTableArr}
                         loading={loadingData}
-                        botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
+                        botoesHeader={[/* {acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> } */]}
                         nextPage={nextPage}
                         setNextPage={setNextPage}
                         usePagination={usePagination}

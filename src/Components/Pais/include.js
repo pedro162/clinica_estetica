@@ -332,7 +332,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                         rowsTableArr={rowsTableArr}
                         loading={loadingData}
                         nadaEncontrado={nadaEncontrado}
-                        botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
+                        botoesHeader={[]}
 
                     />
                 </Col>

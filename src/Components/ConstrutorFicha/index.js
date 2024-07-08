@@ -6,7 +6,7 @@ import {Col, Row } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
 import Breadcrumbs from '../Helper/Breadcrumbs.js'
-import { faHome, faSearch, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faSearch, faPlus, faChevronDown, faChevronUp, faBroom } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from '../Utils/Modal/index.js'
 import Load from '../Utils/Load/index.js'
@@ -36,6 +36,12 @@ const ConstrutorFicha = (props)=>{
     const [marcarConsulta, setMarcarConsulta] = React.useState(false)    
     const [dataGrupo, setDataGrupo] = React.useState(null)
     const [acao, setAcao] = React.useState(null)
+    const [mostarFiltros, setMostarFiltros] = React.useState(true) 
+    const [nadaEncontrado, setNadaEncontrado] = React.useState(false)
+    const [construtor, setConstrutor] = React.useState('')
+    const [nameConstrutor, setNameConstrutor] = React.useState('')
+    const [filtroMobile, setFiltroMobile] = React.useState('')
+    const [ordenacao, setOrdenacao] = React.useState('')
 
 
     const {getToken} = React.useContext(UserContex);
@@ -43,17 +49,46 @@ const ConstrutorFicha = (props)=>{
     const alerta = (target)=>{
         console.log(target)
     }
+
+    const handleSearch = (ev)=>{
+        if (ev.key === "Enter") {
+            requestAllRegistros();
+        }
+    }
+
+    const handleFiltroMobile = ({target})=>{
+        setFiltroMobile(target.value)
+    }
+
+    const setCodConstrutor = ({target})=>{        
+        setConstrutor(target.value)
+    }
+    const handleNameConstrutor = ({target})=>{        
+        setNameConstrutor(target.value)
+    }
+
     const filtersArr = [
+        
         {
             type:'text',
             options:[], 
             hasLabel: true,
-            contentLabel:'Nome',
+            contentLabel:'Código construtor',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"12",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name':'nome',onChange:alerta,    onBlur:alerta},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'construtor_id':construtor, value:construtor, onChange:setCodConstrutor, onBlur:setCodConstrutor, onKeyUp:handleSearch},
 
-        }
+        },
+        {
+            type:'text',
+            options:[], 
+            hasLabel: true,
+            contentLabel:'Contato',
+            atributsFormLabel:{},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'name_construtor':nameConstrutor, value:nameConstrutor, onChange:handleNameConstrutor, onBlur:handleNameConstrutor, onKeyUp:handleSearch},
+
+        },
     ]
 
     const acoesBottomCard=[{
@@ -62,11 +97,33 @@ const ConstrutorFicha = (props)=>{
             props:{onClick:()=>requestAllRegistros(), className:'btn btn-sm botao_success'}
         },
         {
+            label:'Limpar',
+            icon:<FontAwesomeIcon icon={faBroom} />,
+            props:{onClick:()=>limparFiltros(), className:'btn btn-sm btn-secondary mx-2'}
+        },
+        {
             label:'Cadastrar',
             icon:<FontAwesomeIcon icon={faPlus} />,
-            props:{onClick:()=>setCadastrarRegistro(true), className:'btn btn-sm mx-2 btn-secondary'}
+            props:{onClick:()=>setCadastrarRegistro(true), className:'btn btn-sm btn-secondary'}
         }
     ];
+
+
+    const acoesHeaderCard=[{
+            label:'',
+            icon:<FontAwesomeIcon icon={(mostarFiltros ? faChevronDown : faChevronUp)} />,
+            props:{onClick:()=>{setMostarFiltros(!mostarFiltros);}, className:'btn btn-sm btn-secondary'},
+        },
+    ];    
+
+
+    const limparFiltros = ()=>{
+        setNameConstrutor('');
+        setConstrutor('');
+        setFiltroMobile('');
+        setOrdenacao('');
+    }
+    
     const gerarExemplos = ()=>{
          let exemplos = [];
         for(let i=0; !(i == 10); i++){
@@ -281,13 +338,16 @@ const ConstrutorFicha = (props)=>{
                     ]}
             />
             <Row>
-                <Col  xs="12" sm="12" md="3">
+                <Col  xs="12" sm="12" md="12">
                     <Filter
                         filtersArr={filtersArr}
                         actionsArr={acoesBottomCard}
+                        mostarFiltros={mostarFiltros}
+                        setMostarFiltros={setMostarFiltros}
+                        botoesHeader={acoesHeaderCard}
                     />
                 </Col>
-                <Col  xs="12" sm="12" md="9">
+                <Col  xs="12" sm="12" md="12">
                     <Table
                         titulosTableArr={titulosTableArr}
                         rowsTableArr={rowsTableArr}

@@ -6,7 +6,7 @@ import {Col, Row, Button } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
 import Breadcrumbs from '../Helper/Breadcrumbs.js'
-import { faHome, faSearch, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faSearch, faPlus,faChevronUp, faChevronDown, faBroom } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from '../Utils/Modal/index.js'
 import Load from '../Utils/Load/index.js'
@@ -52,8 +52,7 @@ const Cidade = (props)=>{
         setFiltroMobile(target.value)
     }
 
-    const setNameCidadeFiltro = ({target})=>{
-        
+    const setNameCidadeFiltro = ({target})=>{        
         setNomeCidade(target.value)
     }
 
@@ -62,8 +61,7 @@ const Cidade = (props)=>{
         setCodigoSistemaCidade(target.value)
     }
 
-    const setOrdenacaoFiltro = ({target})=>{
-        
+    const setOrdenacaoFiltro = ({target})=>{        
         setOrdenacao(target.value)
     }
 
@@ -73,12 +71,9 @@ const Cidade = (props)=>{
         }
     }
 
-
     const montarFiltro = ()=>{
         let filtros = {}
         let detalhesFiltros = {}
-
-
         
         if(codidoSistemaCidade){
             filtros['id'] = codidoSistemaCidade;
@@ -123,11 +118,17 @@ const Cidade = (props)=>{
             };
         }
 
-
-
         return {filtros, detalhesFiltros};
     }
 
+
+
+    const limparFiltros = ()=>{
+        setNomeCidade('');
+        setCodigoSistemaCidade('');
+        setFiltroMobile('');
+        setOrdenacao('');
+    }
 
     const filtersArr = [
         {
@@ -136,7 +137,7 @@ const Cidade = (props)=>{
             hasLabel: true,
             contentLabel:'Código',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
             atributsFormControl:{'type':'text', size:"sm",'name':codidoSistemaCidade, value:codidoSistemaCidade, onChange:setCodigoSistemaCidadeFiltro, onBlur:setCodigoSistemaCidadeFiltro, onKeyUp:handleSearch},
 
         },   {
@@ -145,7 +146,7 @@ const Cidade = (props)=>{
             hasLabel: true,
             contentLabel:'Cidade',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
             atributsFormControl:{'type':'text', size:"sm",'name':nomeCidade, value:nomeCidade, onChange:setNameCidadeFiltro, onBlur:setNameCidadeFiltro, onKeyUp:handleSearch},
 
         },     
@@ -156,7 +157,7 @@ const Cidade = (props)=>{
             hasLabel: true,
             contentLabel:'Classificar',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
             atributsFormControl:{'type':'select', size:"sm",'ordem':ordenacao, value:ordenacao, onChange:setOrdenacaoFiltro, onBlur:setOrdenacaoFiltro, onKeyUp:handleSearch},
 
         },
@@ -168,6 +169,11 @@ const Cidade = (props)=>{
             props:{onClick:()=>requestAllCidade(), className:'btn btn-sm botao_success'}
         },
         {
+            label:'Limpar',
+            icon:<FontAwesomeIcon icon={faBroom} />,
+            props:{onClick:()=>limparFiltros(), className:'btn btn-sm btn-secondary mx-2'}
+        },
+        {
             label:'Cadastrar',
             icon:<FontAwesomeIcon icon={faPlus} />,
             props:{onClick:()=>setCadastrarCidade(true), className:'btn btn-sm mx-2 btn-secondary'}
@@ -175,35 +181,12 @@ const Cidade = (props)=>{
     ];
     
 
-    //------------
-   /* React.useEffect( ()=>{
-        const requestToken = async() =>{
-       
-           const {url, options} = TOKEN_POST({
-                'grant_type':'password',
-                'client_id': CLIENT_ID,
-                'client_secret':CLIENT_SECRET,
-                'username':'admin@gmail.com',
-                'password':'123456'
-             });
-
-
-            const {response, json} = await request(url, options);
-
-            
-        }
-
-        requestToken();
-        
-    }, []);*/
-
-    //----
-	/*React.useEffect(()=>{
-
-        setExemplos(gerarExemplos());
-        setExemplosTitleTable(gerarTitleTable());
-
-    }, [])*/
+    const acoesHeaderCard=[{
+            label:'',
+            icon:<FontAwesomeIcon icon={(mostarFiltros ? faChevronDown : faChevronUp)} />,
+            props:{onClick:()=>{setMostarFiltros(!mostarFiltros);}, className:'btn btn-sm btn-secondary'},
+        },
+    ];
 
     const requestAllCidade = async() =>{
         setCidade([]);
@@ -214,8 +197,6 @@ const Cidade = (props)=>{
 
 
         const {response, json} = await request(url, options);
-        console.log('All clients here')
-        console.log(json)
         if(json){
              setCidade(json)
 
@@ -228,22 +209,16 @@ const Cidade = (props)=>{
 
         }else{
             setNadaEncontrado(true)
-        }
-
-            
+        }            
     }
 
     React.useEffect(()=>{
 
         const requestAllCidadeEffect = async() =>{
-       
-           await requestAllCidade();
-
-            
+           await requestAllCidade();            
         }
 
         requestAllCidadeEffect();
-
         
     }, [])
 
@@ -288,13 +263,16 @@ const Cidade = (props)=>{
                 mostarFiltros={mostarFiltros}
             />
             <Row>
-                {mostarFiltros && 
+                {
                     (
                         <>
-                            <Col  xs="12" sm="12" md="3" className={'default_card_report'}>
+                            <Col  xs="12" sm="12" md="12" className={'default_card_report'}>
                                 <Filter
                                     filtersArr={filtersArr}
                                     actionsArr={acoesBottomCard}
+                                    mostarFiltros={mostarFiltros}
+                                    setMostarFiltros={setMostarFiltros}
+                                    botoesHeader={acoesHeaderCard}
                                 />
                             </Col>
 
@@ -379,7 +357,7 @@ const Cidade = (props)=>{
                     </div>
                 </Col>
                 
-                <Col  xs="12" sm="12" md={mostarFiltros ? "9":"12"}>
+                <Col  xs="12" sm="12" md={"12"}>
                     <Include
                         dataEstado={estado}
                         loadingData={loading}

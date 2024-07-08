@@ -6,7 +6,7 @@ import {Col, Row, Button } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
 import Breadcrumbs from '../Helper/Breadcrumbs.js'
-import { faHome, faSearch, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faSearch, faPlus,faChevronDown, faChevronUp, faBroom } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from '../Utils/Modal/index.js'
 import Load from '../Utils/Load/index.js'
@@ -63,13 +63,18 @@ const Pais = (props)=>{
         setOrdenacao(target.value)
     }
 
-
     const handleSearch = (ev)=>{
         if (ev.key === "Enter") {
             requestAllPaises();
         }
     }
 
+    const limparFiltros = ()=>{
+        setCodigoSistemaPais('');
+        setNomePais('');
+        setFiltroMobile('');
+        setOrdenacao('');
+    }
 
     const montarFiltro = ()=>{
         let filtros = {}
@@ -125,8 +130,6 @@ const Pais = (props)=>{
         return {filtros, detalhesFiltros};
     }
 
-    
-
     const filtersArr = [
         {
             type:'text',
@@ -134,7 +137,7 @@ const Pais = (props)=>{
             hasLabel: true,
             contentLabel:'Código',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
             atributsFormControl:{'type':'text', size:"sm",'name':codidoSistemaPais, value:codidoSistemaPais, onChange:setCodigoSistemaPaisFiltro, onBlur:setCodigoSistemaPaisFiltro, onKeyUp:handleSearch},
 
         },   {
@@ -143,7 +146,7 @@ const Pais = (props)=>{
             hasLabel: true,
             contentLabel:'Pais',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
             atributsFormControl:{'type':'text', size:"sm",'name':nomePais, value:nomePais, onChange:setNamePaisFiltro, onBlur:setNamePaisFiltro, onKeyUp:handleSearch},
 
         },     
@@ -154,7 +157,7 @@ const Pais = (props)=>{
             hasLabel: true,
             contentLabel:'Classificar',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
             atributsFormControl:{'type':'select', size:"sm",'ordem':ordenacao, value:ordenacao, onChange:setOrdenacaoFiltro, onBlur:setOrdenacaoFiltro, onKeyUp:handleSearch},
 
         },
@@ -166,12 +169,23 @@ const Pais = (props)=>{
         props:{onClick:()=>requestAllPaises(), className:'btn btn-sm botao_success'}
     },
     {
+        label:'Limpar',
+        icon:<FontAwesomeIcon icon={faBroom} />,
+        props:{onClick:()=>limparFiltros(), className:'btn btn-sm btn-secondary mx-2'}
+    },
+    {
         label:'Cadastrar país',
         icon:<FontAwesomeIcon icon={faPlus} />,
-        props:{onClick:()=>setCadastrarPais(true), className:'btn btn-sm mx-2 btn-secondary'}
+        props:{onClick:()=>setCadastrarPais(true), className:'btn btn-sm btn-secondary'}
     }
     ];
     
+    const acoesHeaderCard=[{
+            label:'',
+            icon:<FontAwesomeIcon icon={(mostarFiltros ? faChevronDown : faChevronUp)} />,
+            props:{onClick:()=>{setMostarFiltros(!mostarFiltros);}, className:'btn btn-sm btn-secondary'},
+        },
+    ];
 
 
     const iniciarOrdemServico = (idPais)=>{
@@ -202,23 +216,17 @@ const Pais = (props)=>{
         }else{
             setNadaEncontrado(true)
         }
-        
-
             
     }
 
     React.useEffect(()=>{
 
         const requestAllPaisesEffect = async() =>{
-       
-           await requestAllPaises();
-
-            
+            await requestAllPaises();            
         }
 
         requestAllPaisesEffect();
 
-        
     }, [])
 
 
@@ -241,13 +249,16 @@ const Pais = (props)=>{
                 mostarFiltros={mostarFiltros}
             />
             <Row>
-                {mostarFiltros && 
+                { 
                     (
                         <>
-                            <Col  xs="12" sm="12" md="3" className={'default_card_report'}>
+                            <Col  xs="12" sm="12" md="12" className={'default_card_report'}>
                                 <Filter
                                     filtersArr={filtersArr}
                                     actionsArr={acoesBottomCard}
+                                    mostarFiltros={mostarFiltros}
+                                    setMostarFiltros={setMostarFiltros}
+                                    botoesHeader={acoesHeaderCard}
                                 />
                             </Col>
 
@@ -332,7 +343,7 @@ const Pais = (props)=>{
                     </div>
                 </Col>
                 
-                <Col  xs="12" sm="12" md={mostarFiltros ? "9":"12"}>
+                <Col  xs="12" sm="12" md={"12"}>
                     <Include
                         dataEstado={estado}
                         loadingData={loading}

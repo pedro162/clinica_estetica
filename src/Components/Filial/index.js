@@ -9,7 +9,7 @@ import {Col, Row, Button } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
 import Breadcrumbs from '../Helper/Breadcrumbs.js';
-import { faHome, faSearch, faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faSearch, faPlus, faTimes, faChevronDown, faChevronUp, faBroom } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from '../Utils/Modal/index.js'
 import Load from '../Utils/Load/index.js'
@@ -88,8 +88,8 @@ const Filial = (props)=>{
             hasLabel: true,
             contentLabel:'Código',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'id':codigoFilial,onChange:handleCodigoFilialFilter,    onBlur:handleCodigoFilialFilter, onKeyUp:handleSearch},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'id':codigoFilial, value:codigoFilial,onChange:handleCodigoFilialFilter,    onBlur:handleCodigoFilialFilter, onKeyUp:handleSearch},
 
         },
         {
@@ -98,8 +98,8 @@ const Filial = (props)=>{
             hasLabel: true,
             contentLabel:'Cod pessoa',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name':codigoPessoa,onChange:handleCodPessoaFilter,    onBlur:handleCodPessoaFilter, onKeyUp:handleSearch},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'name':codigoPessoa, value:codigoPessoa,onChange:handleCodPessoaFilter,    onBlur:handleCodPessoaFilter, onKeyUp:handleSearch},
 
         },
         {
@@ -108,8 +108,8 @@ const Filial = (props)=>{
             hasLabel: true,
             contentLabel:'Pessoa',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name_atendido':pessoa,onChange:handleNamePessoaFilter,    onBlur:handleNamePessoaFilter, onKeyUp:handleSearch},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'name_atendido':pessoa, value:pessoa,onChange:handleNamePessoaFilter,    onBlur:handleNamePessoaFilter, onKeyUp:handleSearch},
 
         },
     ]
@@ -120,12 +120,23 @@ const Filial = (props)=>{
         props:{onClick:()=>requestAllFilials(), className:'btn btn-sm botao_success'}
     },
     {
+        label:'Limpar',
+        icon:<FontAwesomeIcon icon={faBroom} />,
+        props:{onClick:()=>limparFiltros(), className:'btn btn-sm btn-secondary mx-2'}
+    },
+    {
         label:'Cadastrar',
         icon:<FontAwesomeIcon icon={faPlus} />,
-        props:{onClick:()=>setCadastrarFilial(true), className:'btn btn-sm mx-2 btn-secondary'}
+        props:{onClick:()=>setCadastrarFilial(true), className:'btn btn-sm btn-secondary'}
     }
     ];
-
+    
+    const acoesHeaderCard=[{
+            label:'',
+            icon:<FontAwesomeIcon icon={(mostarFiltros ? faChevronDown : faChevronUp)} />,
+            props:{onClick:()=>{setMostarFiltros(!mostarFiltros);}, className:'btn btn-sm btn-secondary'},
+        },
+    ];
 
     React.useEffect(()=>{
         switch(acao){
@@ -167,15 +178,13 @@ const Filial = (props)=>{
         setAtualizarFilial(true);
     }
 
-   //name_profissional
-
-    //------------
-/*
-    React.useEffect(()=>{
-        setIsMobile(isMobileYet())
-    }, [IS_MOBILE, isMobileYet, WINDOW_WIDTH])
-*/
-
+    const limparFiltros = ()=>{
+        setPessoa('');
+        setCodigoPessoa('')
+        setCodigoFilial('')
+        setFiltroMobile('')
+        setFiltroAbertas('')
+    }
     //------------
     const montarFiltro = ()=>{
         let filtros = {}
@@ -322,14 +331,17 @@ const Filial = (props)=>{
                 mostarFiltros={mostarFiltros}
             />
             <Row>
-                {mostarFiltros && 
+                {
                     (
                         <>
 
-                            <Col  xs="12" sm="12" md="3" className={'default_card_report'} >
+                            <Col  xs="12" sm="12" md="12" className={'default_card_report'} >
                                 <Filter
                                     filtersArr={filtersArr}
                                     actionsArr={acoesBottomCard}
+                                    mostarFiltros={mostarFiltros}
+                                    setMostarFiltros={setMostarFiltros}
+                                    botoesHeader={acoesHeaderCard}
                                 />
                             </Col>
                             <Col  xs="12" sm="12" md="12" className={'mobile_card_report pt-4'}  style={{backgroundColor:'#FFF'}}>
@@ -384,18 +396,7 @@ const Filial = (props)=>{
                                     
                                     
                                 </Row>
-                               
-                                {/*<Row className={'my-2'}>
-                                                                    <Col>
-                                                                        <Row>
-                                                                            <Col><span style={{fontWeight:'bolder', fontSize:'14pt'}} >Filtros</span></Col>
-                                                                        </Row>
-                                
-                                                                        <div>
-                                                                             <hr style={{margin:'0',padding:'0'}}/>  
-                                                                        </div>
-                                                                    </Col>
-                                                                </Row>*/}
+
                                 <Row>
                                     <div style={{display:'flex', flexDirection:'collumn', flexWrap:'wrap'}}>
                                         
@@ -432,7 +433,7 @@ const Filial = (props)=>{
                     </div>
                 </Col>
 
-                 <Col  xs="12" sm="12" md={isMobile ==true ? '12' : mostarFiltros ? "9":"12"}>
+                 <Col  xs="12" sm="12" md={12}>
                     <Include
                         dataEstado={estado}
                         loadingData={loading}

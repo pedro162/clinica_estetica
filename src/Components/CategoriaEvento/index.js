@@ -6,7 +6,7 @@ import {Col, Row, Button } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
 import Breadcrumbs from '../Helper/Breadcrumbs.js'
-import { faHome, faSearch, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faSearch, faPlus, faChevronUp, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from '../Utils/Modal/index.js'
 import Load from '../Utils/Load/index.js'
@@ -58,12 +58,10 @@ const CategoriaEvento = (props)=>{
         setCategoriaEventoCodigo(target.value)
     }
 
-
     const setOrdenacaoFiltro = ({target})=>{
         
         setOrdenacao(target.value)
     }
-
 
     const handleSearch = (ev)=>{
         if (ev.key === "Enter") {
@@ -88,7 +86,7 @@ const CategoriaEvento = (props)=>{
             hasLabel: true,
             contentLabel:'Categoria',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
             atributsFormControl:{'type':'text', size:"sm",'name':'name',value:categoriaEventoName , onChange:handleFiltroNomeCategoriaEvento,    onBlur:handleFiltroNomeCategoriaEvento, onKeyUp:handleSearch},
 
         },
@@ -99,7 +97,7 @@ const CategoriaEvento = (props)=>{
             hasLabel: true,
             contentLabel:'Classificar',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
             atributsFormControl:{'type':'select', size:"sm",'ordem':ordenacao, value:ordenacao, onChange:setOrdenacaoFiltro, onBlur:setOrdenacaoFiltro, onKeyUp:handleSearch},
 
         },
@@ -118,6 +116,12 @@ const CategoriaEvento = (props)=>{
     ];
 
 
+    const acoesHeaderCard=[{
+            label:'',
+            icon:<FontAwesomeIcon icon={(mostarFiltros ? faChevronDown : faChevronUp)} />,
+            props:{onClick:()=>{setMostarFiltros(!mostarFiltros);}, className:'btn btn-sm btn-secondary'},
+        },
+    ];
 
     //------------
     const montarFiltro = ()=>{
@@ -194,27 +198,12 @@ const CategoriaEvento = (props)=>{
     React.useEffect(()=>{
 
         const requestAllCategoriaEventoEffect = async() =>{
-       
-           await requestAllCategoriaEvento();
-
-            
+           await requestAllCategoriaEvento();            
         }
 
         requestAllCategoriaEventoEffect();
-
         
     }, [])
-
-    /*React.useEffect(()=>{
-
-        if(CategoriaEventoChoice > 0){
-            setAtualizarCadastro(true);
-        }else{
-            setAtualizarCadastro(false);
-        }
-
-        
-    }, [CategoriaEventoChoice])*/
 
     React.useEffect(()=>{
 
@@ -245,13 +234,16 @@ const CategoriaEvento = (props)=>{
                 mostarFiltros={mostarFiltros}
             />
             <Row>
-                {mostarFiltros && 
+                { 
                     (
                         <>
-                            <Col  xs="12" sm="12" md="3" className={'default_card_report'}>
+                            <Col  xs="12" sm="12" md="12" className={'default_card_report'}>
                                 <Filter
                                     filtersArr={filtersArr}
                                     actionsArr={acoesBottomCard}
+                                    mostarFiltros={mostarFiltros}
+                                    setMostarFiltros={setMostarFiltros}
+                                    botoesHeader={acoesHeaderCard}
                                 />
                             </Col>
 
@@ -336,7 +328,7 @@ const CategoriaEvento = (props)=>{
                     </div>
                 </Col>
                 
-                <Col  xs="12" sm="12" md={mostarFiltros ? "9":"12"}>
+                <Col  xs="12" sm="12" md={12}>
                     <Include
                         dataEstado={estado}
                         loadingData={loading}

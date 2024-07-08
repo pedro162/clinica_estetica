@@ -7,7 +7,7 @@ import {Col, Row, Button } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
 import Breadcrumbs from '../Helper/Breadcrumbs.js'
-import { faHome, faSearch, faPlus, faTimes, faChevronUp, faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faSearch, faPlus, faTimes, faChevronUp, faChevronDown, faBroom } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from '../Utils/Modal/index.js'
 import Load from '../Utils/Load/index.js'
@@ -18,6 +18,7 @@ import Atualizar from './Atualizar/index.js'
 import Include from './include';
 import FormControlInput from '../FormControl/index.js'
 import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../functions/index.js'
+import { Link } from 'react-router-dom/cjs/react-router-dom.min.js';
 
 
 const ContasReceber = ({defaultFilters ,...props})=>{
@@ -32,15 +33,19 @@ const ContasReceber = ({defaultFilters ,...props})=>{
     const [cancelarContasReceber, setCancelarContasReceber] = React.useState(false)   
     const [digitarContasReceber, setDigitarContasReceber] = React.useState(false)    
     const [cadastrarContasReceber, setCadastrarContasReceber] = React.useState(false)
-    const [mostarFiltros, setMostarFiltros] = React.useState(false) 
+    const [mostarFiltros, setMostarFiltros] = React.useState(true) 
     const [acao, setAcao] = React.useState(null)
     const [filtroMobile, setFiltroMobile] = React.useState(null)
     const [filtroAbertas, setFiltroAbertas] = React.useState(false)
     const [filtroPagas, setFiltroPagas] = React.useState(false)
     const [filtroVencidas, setFiltroVencidas] = React.useState(false)
     const [filtroAvencer, setFiltroAvencer] = React.useState(false)
+    const [nextPage, setNextPage] = React.useState(null)
+    const [totalPageCount, setTotalPageCount] = React.useState(null)
+    const [usePagination, setUsePagination] = React.useState(true)
+    const [qtdItemsPerPage, setQtdItemsPerPage] = React.useState(10)
     const [nadaEncontrado, setNadaEncontrado] = React.useState(false)
-
+    const [ordenacao, setOrdenacao] = React.useState('')
 
     const [referenciaContasReceber, setReferenciaContasReceber] = React.useState(()=>{
         return defaultFilters?.referencia
@@ -51,12 +56,6 @@ const ContasReceber = ({defaultFilters ,...props})=>{
     const [pessoa, setPessoa] = React.useState(()=>{
         return defaultFilters?.name_pessoa
     })
-    /**
-     * 
-     * let idRef   = defaultFilters?.referencia_id;
-        let ref     = defaultFilters?.referencia;
-        let name_pessoa     = defaultFilters?.name_pessoa;
-     */
 
     const {getToken} = React.useContext(UserContex);
 
@@ -64,6 +63,11 @@ const ContasReceber = ({defaultFilters ,...props})=>{
         console.log(target)
     }
 
+    const handleSearch = (ev)=>{
+        if (ev.key === "Enter") {
+            requestAllContasRecebers();
+        }
+    }
     const handleFiltroMobile = ({target})=>{
         setFiltroMobile(target.value)
     }
@@ -78,12 +82,12 @@ const ContasReceber = ({defaultFilters ,...props})=>{
     }
 
     const setIdReferencia = ({target})=>{
-        
-        /* console.log("=============== Id fef change ======================")//
-        console.log(target)
-        console.log("=============== Id fef change ============================= ") */
-        
         setIdReferenciaContasReceber(target.value)
+    }
+
+    const setOrdenacaoFiltro = ({target})=>{
+        
+        setOrdenacao(target.value)
     }
 
     const filtersArr = [
@@ -94,7 +98,7 @@ const ContasReceber = ({defaultFilters ,...props})=>{
             contentLabel:'Pessoa',
             atributsFormLabel:{},
             atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name':pessoa, value:pessoa, onChange:setNamePessoa,    onBlur:setNamePessoa},
+            atributsFormControl:{'type':'text', size:"sm",'name':pessoa, value:pessoa, onChange:setNamePessoa, onBlur:setNamePessoa, onKeyUp:handleSearch},
 
         },
         {
@@ -104,7 +108,7 @@ const ContasReceber = ({defaultFilters ,...props})=>{
             contentLabel:'Contato',
             atributsFormLabel:{},
             atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name_atendido':pessoa, value:pessoa, onChange:setNamePessoa,    onBlur:setNamePessoa},
+            atributsFormControl:{'type':'text', size:"sm",'name_atendido':pessoa, value:pessoa, onChange:setNamePessoa, onBlur:setNamePessoa, onKeyUp:handleSearch},
 
         },
         {
@@ -136,10 +140,7 @@ const ContasReceber = ({defaultFilters ,...props})=>{
             atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
             atributsFormControl:{'type':'text', size:"sm",'referencia_id':idReferenciaContasReceber,value:idReferenciaContasReceber ,onChange:setIdReferencia, onBlur:setIdReferencia},
 
-        },/*
-            
-
-         */
+        },
         {
             type:'text',
             options:[], 
@@ -169,6 +170,17 @@ const ContasReceber = ({defaultFilters ,...props})=>{
             atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
             atributsFormControl:{'type':'date', size:"sm",'dt_fim':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
 
+        },     
+        {
+            type:'select',
+            options:[{'label':'Selecione...', 'value':''},{'label':'Código A-Z', 'value':'id-asc'},{'label':'Código Z-A', 'value':'id-desc'},
+            {'label':'Cobrança A-Z', 'value':'name-asc'},{'label':'Cobrança Z-A', 'value':'name-desc'},], 
+            hasLabel: true,
+            contentLabel:'Classificar',
+            atributsFormLabel:{},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'select', size:"sm",'ordem':ordenacao, value:ordenacao, onChange:setOrdenacaoFiltro, onBlur:setOrdenacaoFiltro, onKeyUp:handleSearch},
+
         },
     ]
 
@@ -178,18 +190,23 @@ const ContasReceber = ({defaultFilters ,...props})=>{
             props:{onClick:()=>requestAllContasRecebers(), className:'btn btn-sm botao_success'}
         },
         {
+            label:'Limpar',
+            icon:<FontAwesomeIcon icon={faBroom} />,
+            props:{onClick:()=>limparFiltros(), className:'btn btn-sm btn-secondary mx-2'}
+        },
+        {
             label:'Cadastrar',
             icon:<FontAwesomeIcon icon={faPlus} />,
             props:{onClick:()=>setCadastrarContasReceber(true), className:'btn btn-sm mx-2 btn-secondary'}
         }
     ];
+
     const acoesHeaderCard=[{
             label:'',
             icon:<FontAwesomeIcon icon={(mostarFiltros ? faChevronDown : faChevronUp)} />,
             props:{onClick:()=>{setMostarFiltros(!mostarFiltros);}, className:'btn btn-sm btn-secondary'},
         },
-    ];
-    
+    ];    
 
     React.useEffect(()=>{
 
@@ -197,9 +214,7 @@ const ContasReceber = ({defaultFilters ,...props})=>{
             setShowModalCriarConstula(true);
         }else{
             setShowModalCriarConstula(false);
-        }
-
-        
+        }        
     }, [cadastrarContasReceber])
 
     const atualizarContasReceberAction = (idContasReceber)=>{
@@ -231,10 +246,29 @@ const ContasReceber = ({defaultFilters ,...props})=>{
         setAcao('iniciar')
         setCadastrarContasReceber(true);
     }
+
+    const limparFiltros = ()=>{
+        setReferenciaContasReceber('');
+        setPessoa('');
+        setFiltroMobile('');
+        setFiltroAbertas(false);
+        setFiltroPagas(false)
+        setFiltroVencidas(false)
+        setFiltroAvencer(false)
+        setOrdenacao('');
+    }
+    
+
     //------------
     const montarFiltro = ()=>{
         let filtros = {}
         let detalhesFiltros = {}
+
+        if(usePagination){
+            filtros['usePaginate'] = 1;
+            filtros['nr_itens_per_page'] = qtdItemsPerPage;
+        }
+        
         if(referenciaContasReceber){
             filtros['referencia'] = referenciaContasReceber;
             detalhesFiltros['referencia'] = {
@@ -304,11 +338,6 @@ const ContasReceber = ({defaultFilters ,...props})=>{
 
         
             if(filtroVencidas){
-                /*if(filtros.hasOwnProperty('status')){
-                    filtros['vencido'] += 'yes,';
-                }else{
-                    filtros['vencido'] = 'yes,';
-                }*/
                 filtros['vencido'] = 'yes';
                 detalhesFiltros['vencido'] = {
                     label:'Vencidos',
@@ -318,12 +347,6 @@ const ContasReceber = ({defaultFilters ,...props})=>{
             }
 
             if(filtroAvencer){
-               /* if(filtros.hasOwnProperty('status')){
-                    filtros['vencido'] += 'no,';
-                }else{
-                    filtros['vencido'] = 'no,';
-                }*/
-
                 filtros['vencido'] = 'no';
                 detalhesFiltros['vencido'] = {
                     label:'Vencidos',
@@ -340,13 +363,13 @@ const ContasReceber = ({defaultFilters ,...props})=>{
         setNadaEncontrado(false)
 
         let {filtros, detalhesFiltros} = montarFiltro();
-        const {url, options} = CONTAS_RECEBER_ALL_POST({...filtros}, getToken());
+        let {url, options} = CONTAS_RECEBER_ALL_POST({...filtros}, getToken());
 
+        if(nextPage){
+            url = nextPage;
+        }
 
         const {response, json} = await request(url, options);
-        console.log('All contas receber here')
-        console.log({'name_pessoa':pessoa})
-        console.log(json)
         if(json){
             setContasReceber(json)
             if( json?.mensagem && json?.mensagem.length > 0){
@@ -357,49 +380,34 @@ const ContasReceber = ({defaultFilters ,...props})=>{
 
         }else{
             setNadaEncontrado(true)
-        }
-        //setMostarFiltros(false)
-        //nadaEncontrado, setNadaEncontrado
-
-            
+        }            
     }
 
     const requestAbertas = async ()=>{
         setContasReceber([])
 
         let {filtros, detalhesFiltros} = montarFiltro();
-       // filtros['status'] += 'aberto';
-       filtros.status = 'aberto';
-        const {url, options} = CONTAS_RECEBER_ALL_POST({...filtros}, getToken());
-
-
+        filtros.status = 'aberto';
+        let {url, options} = CONTAS_RECEBER_ALL_POST({...filtros}, getToken());
+        if(nextPage){
+            url = nextPage;
+        }
         const {response, json} = await request(url, options);
-        console.log('All contas receber here')
-        console.log({'name_pessoa':pessoa})
-        console.log(json)
         if(json){
             setContasReceber(json)
         }
-        //setMostarFiltros(false)
     }
-
-
-
-
 
     React.useEffect(()=>{
 
         const requestAllContasRecebersEffect = async() =>{
-       
-           await requestAllContasRecebers();
-
-            
+           await requestAllContasRecebers();            
         }
 
         requestAllContasRecebersEffect();
 
         
-    }, [filtroAvencer, filtroVencidas, filtroPagas, filtroAbertas])
+    }, [filtroAvencer, filtroVencidas, filtroPagas, filtroAbertas,nextPage, setNextPage])
 
     return(
         <>
@@ -407,7 +415,7 @@ const ContasReceber = ({defaultFilters ,...props})=>{
                 items={[
                         {
                             props:{},
-                            label:'Início'
+                            label:<> <Link className={null}  to={'/'}>Início</Link></>
                         },
                         {
                             props:{},
@@ -528,6 +536,12 @@ const ContasReceber = ({defaultFilters ,...props})=>{
                         callBack={requestAllContasRecebers}
                         setMostarFiltros={setMostarFiltros}
                         nadaEncontrado={nadaEncontrado}
+                        nextPage={nextPage}
+                        setNextPage={setNextPage}
+                        usePagination={usePagination}
+                        setUsePagination={setUsePagination}
+                        totalPageCount={totalPageCount}
+                        setTotalPageCount={setTotalPageCount}
                     />
                 </Col>
             </Row>
