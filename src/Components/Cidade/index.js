@@ -40,6 +40,7 @@ const Cidade = (props)=>{
     const [nadaEncontrado, setNadaEncontrado] = React.useState(false)
     const [nomeCidade, setNomeCidade] = React.useState(null) 
     const [codidoSistemaCidade, setCodigoSistemaCidade] = React.useState(null) 
+    const [appliedFilters, setAppliedFilters] = React.useState([])
 
 
     const {getToken} = React.useContext(UserContex);
@@ -80,7 +81,7 @@ const Cidade = (props)=>{
             detalhesFiltros['id'] = {
                 label:'id',
                 value:codidoSistemaCidade,
-                resetFilter:()=>setCodigoSistemaCidade(''),
+                resetFilter:()=>{setCodigoSistemaCidade('');removeFilter('id')},
             };
         }
 
@@ -89,15 +90,11 @@ const Cidade = (props)=>{
             detalhesFiltros['name'] = {
                 label:'name',
                 value:nomeCidade,
-                resetFilter:()=>setNomeCidade(''),
+                resetFilter:()=>{setNomeCidade('');removeFilter('name')},
             };
 
             filtros['name_nome_cidade'] = nomeCidade;
-            detalhesFiltros['name_nome_cidade'] = {
-                label:'name_nome_cidade',
-                value:nomeCidade,
-                resetFilter:()=>setNomeCidade(''),
-            };
+           
         }
 
         if(filtroMobile){
@@ -105,7 +102,7 @@ const Cidade = (props)=>{
             detalhesFiltros['name'] = {
                 label:'Filtro',
                 value:filtroMobile,
-                resetFilter:()=>setFiltroMobile(''),
+                resetFilter:()=>{setFiltroMobile('');removeFilter('name')},
             };
         }
 
@@ -114,7 +111,7 @@ const Cidade = (props)=>{
             detalhesFiltros['ordem'] = {
                 label:'Ordem',
                 value:ordenacao,
-                resetFilter:()=>setOrdenacao(''),
+                resetFilter:()=>{setOrdenacao('');removeFilter('ordem')},
             };
         }
 
@@ -128,7 +125,16 @@ const Cidade = (props)=>{
         setCodigoSistemaCidade('');
         setFiltroMobile('');
         setOrdenacao('');
+        setAppliedFilters([]);
     }
+    const removeFilter = (key)=>{
+         setAppliedFilters(prevFilters => {
+            const updatedFilters = { ...prevFilters };
+            delete updatedFilters[key];
+            return updatedFilters;
+        });
+    }
+
 
     const filtersArr = [
         {
@@ -192,10 +198,8 @@ const Cidade = (props)=>{
         setCidade([]);
 
         let {filtros, detalhesFiltros} = montarFiltro();
-
+        setAppliedFilters(detalhesFiltros)
         const {url, options} = CIDADE_ALL_POST({...filtros}, getToken());
-
-
         const {response, json} = await request(url, options);
         if(json){
              setCidade(json)
@@ -244,6 +248,12 @@ const Cidade = (props)=>{
         
     }, [cadastrarCidade])
 
+    React.useEffect(()=>{
+        let {filtros, detalhesFiltros} = montarFiltro();
+        setAppliedFilters(detalhesFiltros)
+    }, [])
+
+
     
 	return(
 		<>
@@ -273,6 +283,7 @@ const Cidade = (props)=>{
                                     mostarFiltros={mostarFiltros}
                                     setMostarFiltros={setMostarFiltros}
                                     botoesHeader={acoesHeaderCard}
+                                    activeFilters={appliedFilters}
                                 />
                             </Col>
 

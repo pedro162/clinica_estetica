@@ -35,6 +35,7 @@ const Estado = (props)=>{
     const [atualizarEstado, setAtualizarEstado] = React.useState(false) 
     const [nomeEstado, setNomeEstado] = React.useState(null) 
     const [codidoSistemaEstado, setCodigoSistemaEstado] = React.useState(null) 
+    const [appliedFilters, setAppliedFilters] = React.useState([])
 
 
     const {getToken} = React.useContext(UserContex);
@@ -70,6 +71,15 @@ const Estado = (props)=>{
         setNomeEstado('');
         setFiltroMobile('');
         setOrdenacao('');
+        setAppliedFilters([]);
+    }
+    
+    const removeFilter = (key)=>{
+         setAppliedFilters(prevFilters => {
+            const updatedFilters = { ...prevFilters };
+            delete updatedFilters[key];
+            return updatedFilters;
+        });
     }
 
     const montarFiltro = ()=>{
@@ -83,7 +93,7 @@ const Estado = (props)=>{
             detalhesFiltros['id'] = {
                 label:'id',
                 value:codidoSistemaEstado,
-                resetFilter:()=>setCodigoSistemaEstado(''),
+                resetFilter:()=>{setCodigoSistemaEstado('');removeFilter('id');},
             };
         }
 
@@ -92,15 +102,11 @@ const Estado = (props)=>{
             detalhesFiltros['name'] = {
                 label:'name',
                 value:nomeEstado,
-                resetFilter:()=>setNomeEstado(''),
+                resetFilter:()=>{setNomeEstado('');removeFilter('name');},
             };
 
             filtros['name_nomestado'] = nomeEstado;
-            detalhesFiltros['name_nomestado'] = {
-                label:'name_nomestado',
-                value:nomeEstado,
-                resetFilter:()=>setNomeEstado(''),
-            };
+            
         }
 
         if(filtroMobile){
@@ -108,7 +114,7 @@ const Estado = (props)=>{
             detalhesFiltros['name'] = {
                 label:'Filtro',
                 value:filtroMobile,
-                resetFilter:()=>setFiltroMobile(''),
+                resetFilter:()=>{setFiltroMobile('');removeFilter('name');},
             };
         }
 
@@ -117,7 +123,7 @@ const Estado = (props)=>{
             detalhesFiltros['ordem'] = {
                 label:'Ordem',
                 value:ordenacao,
-                resetFilter:()=>setOrdenacao(''),
+                resetFilter:()=>{setOrdenacao('');removeFilter('ordem');},
             };
         }
 
@@ -189,12 +195,9 @@ const Estado = (props)=>{
         setEstado([])
 
         let {filtros, detalhesFiltros} = montarFiltro();
+        setAppliedFilters(detalhesFiltros)
         const {url, options} = ESTADO_ALL_POST({...filtros}, getToken());
-
-
         const {response, json} = await request(url, options);
-        console.log('All estados here')
-        console.log(json)
         if(json){
             setEstado(json)
 
@@ -222,6 +225,12 @@ const Estado = (props)=>{
 
         
     }, [])
+
+    React.useEffect(()=>{
+        let {filtros, detalhesFiltros} = montarFiltro();
+        setAppliedFilters(detalhesFiltros)
+    }, [])
+
 
 
     return(
@@ -253,6 +262,7 @@ const Estado = (props)=>{
                                     mostarFiltros={mostarFiltros}
                                     setMostarFiltros={setMostarFiltros}
                                     botoesHeader={acoesHeaderCard}
+                                    activeFilters={appliedFilters}
                                 />
                             </Col>
 

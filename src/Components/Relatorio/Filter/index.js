@@ -1,5 +1,5 @@
 import React from 'react';
-import {Col, Row } from 'react-bootstrap';
+import {Col, Row, Button } from 'react-bootstrap';
 import Card from '../../Utils/Card/index.js'
 import {Formik, ErrorMessage, Field} from 'formik';
 import FormControlInput from '../../FormControl/index'
@@ -8,20 +8,37 @@ import Radio from '../../FormControl/Radio.js'
 import FormControlSelect from '../../FormControl/Select.js'
 
 import estilos from './Filter.module.css';
-import { faHome, faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faSearch, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const Filter = ({filtersArr, actionsArr, botoesHeader, mostarFiltros,	setMostarFiltros,... props})=>{
+const Filter = ({filtersArr, actionsArr, botoesHeader, mostarFiltros,setMostarFiltros, activeFilters ,... props})=>{
 	const alerta = (target)=>{
 		console.log(target)
 	}
 	const data = filtersArr
 
 	const acoesBottomCard=actionsArr
+
+	const buildActiveFilter = ()=>{
+		let componentArr = []
+		if(activeFilters){
+			for( let prop in activeFilters){
+				let {label, value,resetFilter} = activeFilters[prop]
+				componentArr.push(<Button style={{fontSize:'14px', borderRadius:'8%', padding:'2px 8px', marginRight:'5px'}} className="btn btn-sm mx-2 btn-secondary" key={value+'_'+label} onClick={resetFilter} ><FontAwesomeIcon icon={faTimes} /> {label}: {value}</Button>)
+			}
+		}
+
+		return componentArr;
+	}
+
 	return(
 			<>
 				<Card
-					title={<span onClick={()=>setMostarFiltros(!mostarFiltros)} >Filtros</span>}
+					title={<span ><b onClick={()=>setMostarFiltros(!mostarFiltros)}  >Filtros: </b>
+						{buildActiveFilter().length > 0 ? buildActiveFilter().map((item, index, arr)=>{
+							return(item)
+						}):(null)}
+					</span>}
 					propsCard={{className:'cardFilter'}}
 					acoesBottomCard={acoesBottomCard}
 					noBody={!mostarFiltros}

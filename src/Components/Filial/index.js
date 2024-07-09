@@ -43,6 +43,7 @@ const Filial = (props)=>{
     const [usePagination, setUsePagination] = React.useState(true)
     const [qtdItemsPerPage, setQtdItemsPerPage] = React.useState(10)
     const {getToken, dataUser, isMobile} = React.useContext(UserContex);
+    const [appliedFilters, setAppliedFilters] = React.useState([])
 
     const {type, is_system, tenant_id} = dataUser ? dataUser : {};
 
@@ -184,6 +185,14 @@ const Filial = (props)=>{
         setCodigoFilial('')
         setFiltroMobile('')
         setFiltroAbertas('')
+        setAppliedFilters([]);
+    }
+    const removeFilter = (key)=>{
+         setAppliedFilters(prevFilters => {
+            const updatedFilters = { ...prevFilters };
+            delete updatedFilters[key];
+            return updatedFilters;
+        });
     }
     //------------
     const montarFiltro = ()=>{
@@ -200,7 +209,7 @@ const Filial = (props)=>{
             detalhesFiltros['pessoa_id'] = {
                 label:'pessoa_id',
                 value:codigoPessoa,
-                resetFilter:()=>setPessoa(''),
+                resetFilter:()=>{setCodigoPessoa('');removeFilter('pessoa_id');},
             };
         }
 
@@ -209,15 +218,10 @@ const Filial = (props)=>{
             detalhesFiltros['name'] = {
                 label:'name',
                 value:pessoa,
-                resetFilter:()=>setPessoa(''),
+                resetFilter:()=>{setPessoa('');removeFilter('name');},
             };
 
             filtros['name_pessoa'] = pessoa;
-            detalhesFiltros['name_pessoa'] = {
-                label:'name_pessoa',
-                value:pessoa,
-                resetFilter:()=>setPessoa(''),
-            };
         }
 
 
@@ -226,18 +230,13 @@ const Filial = (props)=>{
             detalhesFiltros['id'] = {
                 label:'id',
                 value:codigoFilial,
-                resetFilter:()=>setCodigoFilial(''),
+                resetFilter:()=>{setCodigoFilial('');removeFilter('id');},
             };
         }
 
 
         if(codigoFilial){
             filtros['filial_id'] = codigoFilial;
-            detalhesFiltros['filial_id'] = {
-                label:'filial_id',
-                value:codigoFilial,
-                resetFilter:()=>setCodigoFilial(''),
-            };
         }
         
 
@@ -246,21 +245,7 @@ const Filial = (props)=>{
             detalhesFiltros['name'] = {
                 label:'Filtro',
                 value:filtroMobile,
-                resetFilter:()=>setFiltroMobile(''),
-            };
-        }
-
-        if(filtroAbertas){
-            if(filtros.hasOwnProperty('status')){
-                filtros['status'] += 'pendente,';
-            }else{
-                filtros['status'] = 'pendente,';
-            }
-
-            detalhesFiltros['status'] = {
-                label:'Status',
-                value:filtroMobile,
-                resetFilter:()=>setFiltroAbertas(''),
+                resetFilter:()=>{setFiltroMobile('');removeFilter('name');},
             };
         }
 
@@ -272,6 +257,7 @@ const Filial = (props)=>{
         setFilial([])
 
         let {filtros, detalhesFiltros} = montarFiltro();
+        setAppliedFilters(detalhesFiltros)
         let {url, options} = FILIAIS_ALL_POST({...filtros}, getToken());
         if(nextPage){
             url = nextPage;
@@ -297,10 +283,7 @@ const Filial = (props)=>{
     React.useEffect(()=>{
 
         const requestAllFilialsEffect = async() =>{
-       
-           await requestAllFilials();
-
-            
+           await requestAllFilials();            
         }
 
         requestAllFilialsEffect();
@@ -310,6 +293,11 @@ const Filial = (props)=>{
 
 
 
+
+    React.useEffect(()=>{
+        let {filtros, detalhesFiltros} = montarFiltro();
+        setAppliedFilters(detalhesFiltros)
+    }, [])
 
     
    
@@ -342,6 +330,7 @@ const Filial = (props)=>{
                                     mostarFiltros={mostarFiltros}
                                     setMostarFiltros={setMostarFiltros}
                                     botoesHeader={acoesHeaderCard}
+                                    activeFilters={appliedFilters}
                                 />
                             </Col>
                             <Col  xs="12" sm="12" md="12" className={'mobile_card_report pt-4'}  style={{backgroundColor:'#FFF'}}>

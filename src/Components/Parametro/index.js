@@ -41,6 +41,7 @@ const Parametro = ({defaultFilters ,...props})=>{
     const [filtroVencidas, setFiltroVencidas] = React.useState(false)
     const [filtroAvencer, setFiltroAvencer] = React.useState(false)
     const [nadaEncontrado, setNadaEncontrado] = React.useState(false)
+    const [appliedFilters, setAppliedFilters] = React.useState([])
 
 
     const [idParametro, setIdParametro] = React.useState(()=>{
@@ -163,6 +164,15 @@ const Parametro = ({defaultFilters ,...props})=>{
     const limparFiltros = ()=>{
         setIdParametro('');
         setParametroName('');
+        setAppliedFilters([]);
+    }
+
+    const removeFilter = (key)=>{
+         setAppliedFilters(prevFilters => {
+            const updatedFilters = { ...prevFilters };
+            delete updatedFilters[key];
+            return updatedFilters;
+        });
     }
 
     //------------
@@ -175,7 +185,7 @@ const Parametro = ({defaultFilters ,...props})=>{
             detalhesFiltros['id'] = {
                 label:'Cód. referência',
                 value:idParametro,
-                resetFilter:()=>setIdParametro(''),
+                resetFilter:()=>{setIdParametro('');removeFilter('id')},
             };
         }
 
@@ -184,7 +194,7 @@ const Parametro = ({defaultFilters ,...props})=>{
             detalhesFiltros['name_parametro'] = {
                 label:'Parâmetro',
                 value:parametroName,
-                resetFilter:()=>setParametroName(''),
+                resetFilter:()=>{setParametroName('');removeFilter('name_parametro')},
             };
         }
 
@@ -193,7 +203,7 @@ const Parametro = ({defaultFilters ,...props})=>{
             detalhesFiltros['parametro_name'] = {
                 label:'Filtro',
                 value:filtroMobile,
-                resetFilter:()=>setFiltroMobile(''),
+                resetFilter:()=>{setFiltroMobile('');removeFilter('parametro_name')},
             };
         }
 
@@ -204,6 +214,7 @@ const Parametro = ({defaultFilters ,...props})=>{
         setNadaEncontrado(false)
 
         let {filtros, detalhesFiltros} = montarFiltro();
+        setAppliedFilters(detalhesFiltros)
         const {url, options} = CONTAS_RECEBER_ALL_POST({...filtros}, getToken());
         const {response, json} = await request(url, options);
         if(json){
@@ -240,6 +251,12 @@ const Parametro = ({defaultFilters ,...props})=>{
 
     }, [filtroAvencer, filtroVencidas, filtroPagas, filtroAbertas])
 
+
+    React.useEffect(()=>{
+        let {filtros, detalhesFiltros} = montarFiltro();
+        setAppliedFilters(detalhesFiltros)
+    }, [])
+
     return(
         <>
             <Breadcrumbs
@@ -270,6 +287,7 @@ const Parametro = ({defaultFilters ,...props})=>{
                                     mostarFiltros={mostarFiltros}
                                     setMostarFiltros={setMostarFiltros}
                                     botoesHeader={acoesHeaderCard}
+                                    activeFilters={appliedFilters}
                                 />
                             </Col>
 

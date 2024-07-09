@@ -37,6 +37,7 @@ const Caixa = ({defaultFilters ,...props})=>{
     const [qtdItemsPerPage, setQtdItemsPerPage] = React.useState(10)
     const [nadaEncontrado, setNadaEncontrado] = React.useState(false)
     const [ordenacao, setOrdenacao] = React.useState('')
+    const [appliedFilters, setAppliedFilters] = React.useState([])
     const [idCaixa, setIdCaixa] = React.useState(()=>{
         return defaultFilters?.caixa_id
     })  
@@ -141,8 +142,16 @@ const Caixa = ({defaultFilters ,...props})=>{
         setIdCaixa('');
         setFiltroMobile('');
         setOrdenacao('');
+        setAppliedFilters([]);
     }
     
+    const removeFilter = (key)=>{
+         setAppliedFilters(prevFilters => {
+            const updatedFilters = { ...prevFilters };
+            delete updatedFilters[key];
+            return updatedFilters;
+        });
+    }
 
     //------------
     const montarFiltro = ()=>{
@@ -159,7 +168,7 @@ const Caixa = ({defaultFilters ,...props})=>{
             detalhesFiltros['caixa_id'] = {
                 label:'Cód. referência',
                 value:idCaixa,
-                resetFilter:()=>setIdCaixa(''),
+                resetFilter:()=>{setIdCaixa('');removeFilter('caixa_id')},
             };
         }
 
@@ -168,7 +177,7 @@ const Caixa = ({defaultFilters ,...props})=>{
             detalhesFiltros['name_caixa'] = {
                 label:'Caixa',
                 value:caixaName,
-                resetFilter:()=>setCaixaName(''),
+                resetFilter:()=>{setCaixaName('');removeFilter('name_caixa')},
             };
         }
 
@@ -177,7 +186,7 @@ const Caixa = ({defaultFilters ,...props})=>{
             detalhesFiltros['caixa_name'] = {
                 label:'Filtro',
                 value:filtroMobile,
-                resetFilter:()=>setFiltroMobile(''),
+                resetFilter:()=>{setFiltroMobile('');removeFilter('caixa_name')},
             };
         }
 
@@ -186,17 +195,17 @@ const Caixa = ({defaultFilters ,...props})=>{
             detalhesFiltros['ordem'] = {
                 label:'Ordem',
                 value:ordenacao,
-                resetFilter:()=>setOrdenacao(''),
+                resetFilter:()=>{setOrdenacao('');removeFilter('ordem')},
             };
         }
-
         return {filtros, detalhesFiltros};
     }
     const requestAllCaixas = async() =>{
         setCaixa([])
         setNadaEncontrado(false)
 
-        let {filtros, detalhesFiltros} = montarFiltro();
+        let {filtros, detalhesFiltros} = await montarFiltro();
+        setAppliedFilters(detalhesFiltros)
         let {url, options} = CAIXA_ALL_POST({...filtros}, getToken());
 
         if(nextPage){
@@ -243,6 +252,12 @@ const Caixa = ({defaultFilters ,...props})=>{
         
     }, [nextPage, setNextPage])
 
+
+    React.useEffect(()=>{
+        let {filtros, detalhesFiltros} = montarFiltro();
+        setAppliedFilters(detalhesFiltros)
+    }, [])
+
     return(
         <>
             <Breadcrumbs
@@ -273,6 +288,7 @@ const Caixa = ({defaultFilters ,...props})=>{
                                     mostarFiltros={mostarFiltros}
                                     setMostarFiltros={setMostarFiltros}
                                     botoesHeader={acoesHeaderCard}
+                                    activeFilters={appliedFilters}
                                 />
                             </Col>
 

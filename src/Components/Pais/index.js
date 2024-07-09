@@ -35,6 +35,7 @@ const Pais = (props)=>{
     const [atualizarPais, setAtualizarPais] = React.useState(false) 
     const [nomePais, setNomePais] = React.useState(null) 
     const [codidoSistemaPais, setCodigoSistemaPais] = React.useState(null) 
+    const [appliedFilters, setAppliedFilters] = React.useState([])
 
 
     const {getToken} = React.useContext(UserContex);
@@ -74,6 +75,15 @@ const Pais = (props)=>{
         setNomePais('');
         setFiltroMobile('');
         setOrdenacao('');
+        setAppliedFilters([]);
+    }
+    
+    const removeFilter = (key)=>{
+         setAppliedFilters(prevFilters => {
+            const updatedFilters = { ...prevFilters };
+            delete updatedFilters[key];
+            return updatedFilters;
+        });
     }
 
     const montarFiltro = ()=>{
@@ -87,7 +97,7 @@ const Pais = (props)=>{
             detalhesFiltros['id'] = {
                 label:'id',
                 value:codidoSistemaPais,
-                resetFilter:()=>setCodigoSistemaPais(''),
+                resetFilter:()=>{setCodigoSistemaPais('');removeFilter('id')},
             };
         }
 
@@ -96,15 +106,10 @@ const Pais = (props)=>{
             detalhesFiltros['name'] = {
                 label:'name',
                 value:nomePais,
-                resetFilter:()=>setNomePais(''),
+                resetFilter:()=>{setNomePais('');removeFilter('name')},
             };
 
             filtros['name_nomepais'] = nomePais;
-            detalhesFiltros['name_nomepais'] = {
-                label:'name_nomepais',
-                value:nomePais,
-                resetFilter:()=>setNomePais(''),
-            };
         }
 
         if(filtroMobile){
@@ -112,7 +117,7 @@ const Pais = (props)=>{
             detalhesFiltros['name'] = {
                 label:'Filtro',
                 value:filtroMobile,
-                resetFilter:()=>setFiltroMobile(''),
+                resetFilter:()=>{setFiltroMobile('');removeFilter('name')},
             };
         }
 
@@ -121,7 +126,7 @@ const Pais = (props)=>{
             detalhesFiltros['ordem'] = {
                 label:'Ordem',
                 value:ordenacao,
-                resetFilter:()=>setOrdenacao(''),
+                resetFilter:()=>{setOrdenacao('');removeFilter('ordem')},
             };
         }
 
@@ -198,12 +203,9 @@ const Pais = (props)=>{
        
         setPais([])
         let {filtros, detalhesFiltros} = montarFiltro();
+        setAppliedFilters(detalhesFiltros)
         const {url, options} = PAIS_ALL_POST({...filtros}, getToken());
-
-
         const {response, json} = await request(url, options);
-        console.log('All Paises here')
-        console.log(json)
         if(json){
             setPais(json)
 
@@ -229,6 +231,10 @@ const Pais = (props)=>{
 
     }, [])
 
+    React.useEffect(()=>{
+        let {filtros, detalhesFiltros} = montarFiltro();
+        setAppliedFilters(detalhesFiltros)
+    }, [])
 
     return(
         <>
@@ -259,6 +265,7 @@ const Pais = (props)=>{
                                     mostarFiltros={mostarFiltros}
                                     setMostarFiltros={setMostarFiltros}
                                     botoesHeader={acoesHeaderCard}
+                                    activeFilters={appliedFilters}
                                 />
                             </Col>
 

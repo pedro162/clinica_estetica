@@ -85,6 +85,7 @@ const Table = ({children, titulosTableArr, rowsTableArr,loading, nadaEncontrado,
 				title="Relatório"
 				propsCard={{className:'cardFilter'}}
 				botoesHeader={botoesHeader}
+
 			>
 				<div>
 				

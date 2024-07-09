@@ -42,6 +42,11 @@ const ConstrutorFicha = (props)=>{
     const [nameConstrutor, setNameConstrutor] = React.useState('')
     const [filtroMobile, setFiltroMobile] = React.useState('')
     const [ordenacao, setOrdenacao] = React.useState('')
+    const [appliedFilters, setAppliedFilters] = React.useState([])
+    const [nextPage, setNextPage] = React.useState(null)
+    const [totalPageCount, setTotalPageCount] = React.useState(null)
+    const [usePagination, setUsePagination] = React.useState(true)
+    const [qtdItemsPerPage, setQtdItemsPerPage] = React.useState(10)
 
 
     const {getToken} = React.useContext(UserContex);
@@ -66,6 +71,11 @@ const ConstrutorFicha = (props)=>{
     const handleNameConstrutor = ({target})=>{        
         setNameConstrutor(target.value)
     }
+    const setOrdenacaoFiltro = ({target})=>{
+        
+        setOrdenacao(target.value)
+    }
+
 
     const filtersArr = [
         
@@ -89,6 +99,18 @@ const ConstrutorFicha = (props)=>{
             atributsFormControl:{'type':'text', size:"sm",'name_construtor':nameConstrutor, value:nameConstrutor, onChange:handleNameConstrutor, onBlur:handleNameConstrutor, onKeyUp:handleSearch},
 
         },
+        {
+            type:'select',
+            options:[{'label':'Selecione...', 'value':''},{'label':'Código A-Z', 'value':'id-asc'},{'label':'Código Z-A', 'value':'id-desc'},
+            {'label':'Construtor A-Z', 'value':'name-asc'},{'label':'Construtor Z-A', 'value':'name-desc'},], 
+            hasLabel: true,
+            contentLabel:'Classificar',
+            atributsFormLabel:{},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'select', size:"sm",'ordem':ordenacao, value:ordenacao, onChange:setOrdenacaoFiltro, onBlur:setOrdenacaoFiltro, onKeyUp:handleSearch},
+
+        },
+
     ]
 
     const acoesBottomCard=[{
@@ -122,7 +144,67 @@ const ConstrutorFicha = (props)=>{
         setConstrutor('');
         setFiltroMobile('');
         setOrdenacao('');
+        setAppliedFilters([]);
+        
+
     }
+    
+    const removeFilter = (key)=>{
+         setAppliedFilters(prevFilters => {
+            const updatedFilters = { ...prevFilters };
+            delete updatedFilters[key];
+            return updatedFilters;
+        });
+    }
+    //------------
+    const montarFiltro = ()=>{
+        let filtros = {}
+        let detalhesFiltros = {}
+
+        if(usePagination){
+            filtros['usePaginate'] = 1;
+            filtros['nr_itens_per_page'] = qtdItemsPerPage;
+        }
+
+                
+        if(construtor){
+            filtros['id'] = construtor;   
+            detalhesFiltros['id'] = {
+                label:'Cód. referência',
+                value:construtor,
+                resetFilter:()=>{setConstrutor('');removeFilter('id')},
+            };
+        }
+
+        if(nameConstrutor){
+            filtros['name'] = nameConstrutor;
+            detalhesFiltros['name'] = {
+                label:'Construtor',
+                value:nameConstrutor,
+                resetFilter:()=>{setNameConstrutor('');removeFilter('name')},
+            };
+        }
+
+        if(filtroMobile){
+            filtros['name'] = filtroMobile;
+            detalhesFiltros['name'] = {
+                label:'Filtro',
+                value:filtroMobile,
+                resetFilter:()=>{setFiltroMobile('');removeFilter('name')},
+            };
+        }
+
+        if(ordenacao){
+            filtros['ordem'] = ordenacao;
+            detalhesFiltros['ordem'] = {
+                label:'Ordem',
+                value:ordenacao,
+                resetFilter:()=>{setOrdenacao('');removeFilter('ordem')},
+            };
+        }
+        return {filtros, detalhesFiltros};
+    }
+
     
     const gerarExemplos = ()=>{
          let exemplos = [];
@@ -223,17 +305,14 @@ const ConstrutorFicha = (props)=>{
     //------------
 
     const requestAllRegistros = async() =>{
-       
+
+        let {filtros, detalhesFiltros} = await montarFiltro();
+        setAppliedFilters(detalhesFiltros)
         const {url, options} = FORMULARIO_ALL_POST({}, getToken());
-
-
         const {response, json} = await request(url, options);
-        console.log('All clients here')
-        console.log(json)
         if(json){
-               setRegistro(json)
+            setRegistro(json)
         }
-
             
     }
 
@@ -296,6 +375,15 @@ const ConstrutorFicha = (props)=>{
         
     }, [cadastrarRegistro])
 
+
+
+
+    React.useEffect(()=>{
+        let {filtros, detalhesFiltros} = montarFiltro();
+        setAppliedFilters(detalhesFiltros)
+    }, [])
+    
+
     const atualizarRegistro = (idRegistro)=>{
         setRegistroChoice(idRegistro)
         setAcao('editar')
@@ -345,6 +433,7 @@ const ConstrutorFicha = (props)=>{
                         mostarFiltros={mostarFiltros}
                         setMostarFiltros={setMostarFiltros}
                         botoesHeader={acoesHeaderCard}
+                        activeFilters={appliedFilters}
                     />
                 </Col>
                 <Col  xs="12" sm="12" md="12">
