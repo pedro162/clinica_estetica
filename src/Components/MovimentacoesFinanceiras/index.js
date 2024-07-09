@@ -244,7 +244,7 @@ const MovimentacoesFinanceira = (props)=>{
         {
             type:'select',
             options:[{'label':'Selecione...', 'value':''},{'label':'Código A-Z', 'value':'id-asc'},{'label':'Código Z-A', 'value':'id-desc'},
-            {'label':'Histórico A-Z', 'value':'name-asc'},{'label':'Histórico Z-A', 'value':'name-desc'},], 
+            {'label':'Histórico A-Z', 'value':'historico-asc'},{'label':'Histórico Z-A', 'value':'historico-desc'},], 
             hasLabel: true,
             contentLabel:'Classificar',
             atributsFormLabel:{},
@@ -511,8 +511,15 @@ const MovimentacoesFinanceira = (props)=>{
             };
         }
 
+        if(ordenacao){
+            filtros['ordem'] = ordenacao;
+            detalhesFiltros['ordem'] = {
+                label:'Ordem',
+                value:ordenacao,
+                resetFilter:()=>setOrdenacao(''),
+            };
+        }
 
-        //
         return {filtros, detalhesFiltros};
     }
 

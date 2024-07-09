@@ -174,7 +174,7 @@ const ContasReceber = ({defaultFilters ,...props})=>{
         {
             type:'select',
             options:[{'label':'Selecione...', 'value':''},{'label':'Código A-Z', 'value':'id-asc'},{'label':'Código Z-A', 'value':'id-desc'},
-            {'label':'Cobrança A-Z', 'value':'name-asc'},{'label':'Cobrança Z-A', 'value':'name-desc'},], 
+            {'label':'Status A-Z', 'value':'status-asc'},{'label':'Status Z-A', 'value':'status-desc'},], 
             hasLabel: true,
             contentLabel:'Classificar',
             atributsFormLabel:{},
@@ -354,6 +354,15 @@ const ContasReceber = ({defaultFilters ,...props})=>{
                     resetFilter:()=>setFiltroAvencer(false),
                 };
             }
+        }
+
+        if(ordenacao){
+            filtros['ordem'] = ordenacao;
+            detalhesFiltros['ordem'] = {
+                label:'Ordem',
+                value:ordenacao,
+                resetFilter:()=>setOrdenacao(''),
+            };
         }
 
         return {filtros, detalhesFiltros};

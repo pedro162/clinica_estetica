@@ -306,10 +306,6 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                         acoesArr.push({acao:()=>estornarContasReceberAction(atual.id), label:'Estornar', propsOption:{}, propsLabel:{}})
                     }
 
-                    if(baixar){
-                        //acoesArr.push({acao:()=>atualizarContasReceberAction(atual.id), label:'Devolver', propsOption:{}, propsLabel:{}})
-                    }
-
                     if(btnVisualizarMovimentacoes){
                         acoesArr.push({acao:()=>visualizarMovimentacoesActions(atual.id), label:'Movimentações', propsOption:{}, propsLabel:{}})
                     }
@@ -331,7 +327,6 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                         //line_style.color = 'green';
                     } 
 
-                    //'remarcado','finalizado','cancelado','pendente'
                     data.push(
 
                         {
@@ -804,12 +799,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
     const requestAllContasRecebers = async() =>{
        
         const {url, options} = ORDEM_SERVICO_ALL_POST({'name_servico':pessoa}, getToken());
-
-
         const {response, json} = await request(url, options);
-        console.log('All serviços here')
-        console.log({'name_servico':pessoa})
-        console.log(json)
         if(json){
             setContasReceber(json)
         }

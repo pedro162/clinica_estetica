@@ -1,221 +1,383 @@
 import React from 'react';
-import estilos from './Caixa.module.css';
+import estilos from './Caixa.module.css'
 import useFetch from '../../Hooks/useFetch.js';
-import useModal from '../../Hooks/useModal.js';
-import {TESTE_API_GET, CLIENT_ID,CLIENT_SECRET} from '../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CAIXA_ALL_POST} from '../../api/endpoints/geral.js'
+import {FORMAT_DATA_PT_BR} from '../../functions/index.js'
 import {Col, Row, Button } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
-import Head from '../Header/Head.js'
-import Modal from '../Utils/Modal/index.js'
 import Breadcrumbs from '../Helper/Breadcrumbs.js'
-import Create from './Cadastrar/index.js'
-import { faHome, faSearch,faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faSearch, faPlus, faTimes, faChevronUp, faChevronDown, faBroom } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Modal from '../Utils/Modal/index.js'
+import Load from '../Utils/Load/index.js'
+import {UserContex} from '../../Context/UserContex.js'
+import FormCaixa from './FormCaixa/index.js'
+import Cadastrar from './Cadastrar/index.js'
+import Atualizar from './Atualizar/index.js'
+import Include from './include';
+import FormControlInput from '../FormControl/index.js'
+import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../functions/index.js'
+import { Link } from 'react-router-dom/cjs/react-router-dom.min.js';
 
-const Caixa = (props)=>{
-	const {data, error, request, loading} = useFetch();
-    const [exemplos, setExemplos] = React.useState([])
-    const [exemplosTitleTable, setExemplosTitleTable] = React.useState([])
-    const [showModalCriarCaixa, setShowModalCriarCaixa] = React.useState(false)
 
+const Caixa = ({defaultFilters ,...props})=>{
+
+    const {data, error, request, loading} = useFetch();
+    const [estado, setCaixa] = React.useState([])
+    const [consultaChoice, setCaixaChoice] = React.useState(null);
+    const [atualizarCaixa, setAtualizarCaixa] = React.useState(false)
+    const [cadastrarCaixa, setCadastrarCaixa] = React.useState(false)
+    const [mostarFiltros, setMostarFiltros] = React.useState(true) 
+    const [acao, setAcao] = React.useState(null)
+    const [filtroMobile, setFiltroMobile] = React.useState(null)
+    const [nextPage, setNextPage] = React.useState(null)
+    const [totalPageCount, setTotalPageCount] = React.useState(null)
+    const [usePagination, setUsePagination] = React.useState(true)
+    const [qtdItemsPerPage, setQtdItemsPerPage] = React.useState(10)
+    const [nadaEncontrado, setNadaEncontrado] = React.useState(false)
+    const [ordenacao, setOrdenacao] = React.useState('')
+    const [idCaixa, setIdCaixa] = React.useState(()=>{
+        return defaultFilters?.caixa_id
+    })  
+    const [caixaName, setCaixaName] = React.useState(()=>{
+        return defaultFilters?.name_caixa
+    })
+
+    const {getToken} = React.useContext(UserContex);
 
     const alerta = (target)=>{
         console.log(target)
     }
-    const gerarExemplos = ()=>{
-        let exemplos = [];
-        for(let i=0; !(i == 10); i++){
-            exemplos.push(
 
-                    {
-                        propsRow:{id:(i+1), onClick:()=>alert('aqui:'+(i+1))},
-                        celBodyTableArr:[
-                            {
-
-                                label:'1',
-                                propsRow:{}
-                            },
-                            {
-
-                                label:'Peddro',
-                                propsRow:{}
-                            },
-                            {
-
-                                label:'(98) 98425-7623',
-                                propsRow:{}
-                            },
-                            {
-
-                                label:'phedroclooney@gmail.com',
-                                propsRow:{}
-                            }
-                        ]
-                    }
-
-                )
-
+    const handleSearch = (ev)=>{
+        if (ev.key === "Enter") {
+            requestAllCaixas();
         }
-
-        return exemplos;
+    }
+    const handleFiltroMobile = ({target})=>{
+        setFiltroMobile(target.value)
     }
 
-    const gerarTitleTable = ()=>{
-        let exemplos = [
-            {
-                label:'Coluna exemplo 1',
-                props:{}
-            },
-            {
-                label:'Coluna exemplo 2',
-                props:{}
-            },
-            {
-                label:'Coluna exemplo 3',
-                props:{}
-            },
-            {
-                label:'Coluna exemplo 4',
-                props:{}
-            },
-        ]
-
-        return exemplos;
+    const setNameCaixa = ({target})=>{        
+        setCaixaName(target.value)
     }
-    
-     const filtersArr = [
+
+    const handleCaixaId = ({target})=>{
+        setIdCaixa(target.value)
+    }
+
+    const setOrdenacaoFiltro = ({target})=>{
+        
+        setOrdenacao(target.value)
+    }
+
+    const filtersArr = [
         {
             type:'text',
             options:[], 
             hasLabel: true,
-            contentLabel:'Teste afafaf',
+            contentLabel:'Código caixa',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"12",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name':'nome',onChange:alerta,    onBlur:alerta},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'name':idCaixa, value:idCaixa, onChange:handleCaixaId, onBlur:handleCaixaId, onKeyUp:handleSearch},
 
         },
         {
-            type:'radio',
-            options:[
-                {
-                    hasLabel: true,
-                    contentLabel:'Teste Radio 01',
-                    atributsFormLabel:{},
-                    atributsFormControl:{'type':'radio', value:'12', size:"sm",'checked':true,'name':'nome',onChange:alerta,    onBlur:alerta},
-                },
-                {
-                    hasLabel: true,
-                    contentLabel:'Teste Radio',
-                    atributsFormLabel:{},
-                    atributsFormControl:{'type':'radio', value:'12', size:"sm",'checked':true,'name':'nome',onChange:alerta,    onBlur:alerta},
-                }
-            ],  
-            hasLabel: true,
-            contentLabel:'Teste',
-            atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"12",className:'mb-2',},
-            atributsFormControl:{},
-
-        }
-        ,{
-            type:'checkbox',
+            type:'text',
             options:[], 
             hasLabel: true,
-            contentLabel:'Teste',
+            contentLabel:'Caixa',
             atributsFormLabel:{},
-            atributsContainer:{ xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'checkbox', value:'12',size:"sm",'checked':false,'name':'nome',onChange:alerta, onBlur:alerta},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'name_caixa':caixaName, value:caixaName, onChange:setNameCaixa, onBlur:setNameCaixa, onKeyUp:handleSearch},
 
-        }
-    ];
+        },
+        {
+            type:'select',
+            options:[{'label':'Selecione...', 'value':''},{'label':'Código A-Z', 'value':'id-asc'},{'label':'Código Z-A', 'value':'id-desc'},
+            {'label':'Caixa A-Z', 'value':'name-asc'},{'label':'Caixa Z-A', 'value':'name-desc'},], 
+            hasLabel: true,
+            contentLabel:'Classificar',
+            atributsFormLabel:{},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'select', size:"sm",'ordem':ordenacao, value:ordenacao, onChange:setOrdenacaoFiltro, onBlur:setOrdenacaoFiltro, onKeyUp:handleSearch},
+
+        },
+    ]
 
     const acoesBottomCard=[{
-        	label:'Pesquisar',
-        	icon:<FontAwesomeIcon icon={faSearch} />,
-        	props:{onClick:()=>alert('cliclou aq'), className:'btn btn-sm botao_success'}
-    	},
-    	{
-
-    		label:'Novo caixa',
-	        icon:<FontAwesomeIcon icon={faPlus} />,
-	        props:{onClick:()=>setShowModalCriarCaixa(true), className:'mx-2 btn btn-sm btn-secondary'}
-    	},
+            label:'Pesquisar',
+            icon:<FontAwesomeIcon icon={faSearch} />,
+            props:{onClick:()=>requestAllCaixas(), className:'btn btn-sm botao_success'}
+        },
+        {
+            label:'Limpar',
+            icon:<FontAwesomeIcon icon={faBroom} />,
+            props:{onClick:()=>limparFiltros(), className:'btn btn-sm btn-secondary mx-2'}
+        },
+        {
+            label:'Cadastrar',
+            icon:<FontAwesomeIcon icon={faPlus} />,
+            props:{onClick:()=>setCadastrarCaixa(true), className:'btn btn-sm mx-2 btn-secondary'}
+        }
     ];
 
+    const acoesHeaderCard=[{
+            label:'',
+            icon:<FontAwesomeIcon icon={(mostarFiltros ? faChevronDown : faChevronUp)} />,
+            props:{onClick:()=>{setMostarFiltros(!mostarFiltros);}, className:'btn btn-sm btn-secondary'},
+        },
+    ];    
 
-    React.useEffect( ()=>{
-        const response = async() =>{
-            /*const body = TOKEN_POST({
-                'grant_type':'password',
-                'client_id': CLIENT_ID,
-                'client_secret':CLIENT_SECRET,
-                'username':'admin@gmail.com',
-                'password':'123654',
-                'scope':'',
-            })*/
+    const atualizarCaixaAction = (idCaixa)=>{
+        setCaixaChoice(idCaixa)
+        setAcao('editar')
+        setAtualizarCaixa(true);
+    }
 
-            const {url, options} = TESTE_API_GET({});
-            const {response, json} = await request(url, options);
-           //console.log('data ------------')
-            console.log(json)
-           // console.log('data ------------')//
+    const limparFiltros = ()=>{
+        setCaixaName('');
+        setIdCaixa('');
+        setFiltroMobile('');
+        setOrdenacao('');
+    }
+    
+
+    //------------
+    const montarFiltro = ()=>{
+        let filtros = {}
+        let detalhesFiltros = {}
+
+        if(usePagination){
+            filtros['usePaginate'] = 1;
+            filtros['nr_itens_per_page'] = qtdItemsPerPage;
+        }
+                
+        if(idCaixa){
+            filtros['caixa_id'] = idCaixa;   
+            detalhesFiltros['caixa_id'] = {
+                label:'Cód. referência',
+                value:idCaixa,
+                resetFilter:()=>setIdCaixa(''),
+            };
         }
 
-        response();
-        
-    }, []);
+        if(caixaName){
+            filtros['name_caixa'] = caixaName;
+            detalhesFiltros['name_caixa'] = {
+                label:'Caixa',
+                value:caixaName,
+                resetFilter:()=>setCaixaName(''),
+            };
+        }
+
+        if(filtroMobile){
+            filtros['caixa_name'] = filtroMobile;
+            detalhesFiltros['caixa_name'] = {
+                label:'Filtro',
+                value:filtroMobile,
+                resetFilter:()=>setFiltroMobile(''),
+            };
+        }
+
+        if(ordenacao){
+            filtros['ordem'] = ordenacao;
+            detalhesFiltros['ordem'] = {
+                label:'Ordem',
+                value:ordenacao,
+                resetFilter:()=>setOrdenacao(''),
+            };
+        }
+
+        return {filtros, detalhesFiltros};
+    }
+    const requestAllCaixas = async() =>{
+        setCaixa([])
+        setNadaEncontrado(false)
+
+        let {filtros, detalhesFiltros} = montarFiltro();
+        let {url, options} = CAIXA_ALL_POST({...filtros}, getToken());
+
+        if(nextPage){
+            url = nextPage;
+        }
+
+        const {response, json} = await request(url, options);
+        if(json){
+            setCaixa(json)
+            if( json?.mensagem && json?.mensagem.length > 0){
+                setNadaEncontrado(false)
+            }else{
+                setNadaEncontrado(true)
+            }
+
+        }else{
+            setNadaEncontrado(true)
+        }            
+    }
+
+    const requestAbertas = async ()=>{
+        setCaixa([])
+
+        let {filtros, detalhesFiltros} = montarFiltro();
+        filtros.status = 'aberto';
+        let {url, options} = CAIXA_ALL_POST({...filtros}, getToken());
+        if(nextPage){
+            url = nextPage;
+        }
+        const {response, json} = await request(url, options);
+        if(json){
+            setCaixa(json)
+        }
+    }
 
     React.useEffect(()=>{
 
-        setExemplos(gerarExemplos());
-        setExemplosTitleTable(gerarTitleTable());
+        const requestAllCaixasEffect = async() =>{
+           await requestAllCaixas();            
+        }
 
-    }, [])
+        requestAllCaixasEffect();
 
+        
+    }, [nextPage, setNextPage])
 
-
-    const rowsTableArr = exemplos;    
-    const titulosTableArr = exemplosTitleTable;
-
-    return (
+    return(
         <>
-        	<Head
-        		title="Caixa"
-        		content="Estúdio beleza, caixa "
-        	/>
             <Breadcrumbs
                 items={[
                         {
-                            to:'/',
                             props:{},
-                            label:'Início'
+                            label:<> <Link className={null}  to={'/'}>Início</Link></>
                         },
                         {
                             props:{},
-                            label:'Caixa'
+                            label:'Caixas'
                         }
                     ]}
+
+                buttonFiltroMobile={true}
+                setMostarFiltros={setMostarFiltros}
+                mostarFiltros={mostarFiltros}
+
             />
             <Row>
-                <Col  xs="12" sm="12" md="3">
-                    <Filter
-                        
-                        filtersArr={filtersArr}
-                        actionsArr={acoesBottomCard}
-                    />
+                {
+                    (
+                        <>
+                            <Col  xs="12" sm="12" md="13" className={'default_card_report'}>
+                                <Filter
+                                    filtersArr={filtersArr}
+                                    actionsArr={acoesBottomCard}
+                                    mostarFiltros={mostarFiltros}
+                                    setMostarFiltros={setMostarFiltros}
+                                    botoesHeader={acoesHeaderCard}
+                                />
+                            </Col>
+
+                            <Col  xs="12" sm="12" md="12" className={'mobile_card_report pt-4'}  style={{backgroundColor:'#FFF'}}>
+                                <Row className={'mb-3'} >
+                                    <Col className={'mx-2'}  >
+                                       <Row style={{borderRadius:'24px 24px 24px 24px', border:'1px solid #000'}}>
+                                            <Col xs="11" sm="11" md="11" >
+                                                <FormControlInput
+                                                    data={
+                                                        {
+                                                            atributsFormControl:{
+                                                                type:'input',
+                                                                placeholder:'Search...',
+                                                                style:{
+                                                                    border:'none',
+                                                                    outline:'0',
+                                                                    'box-shadow':'0 0 0 0',
+                                                                    height:'50px',
+                                                                    borderRadius:'24px 24px 24px 24px'
+                                                                    
+                                                                },
+                                                                onChange:(ev)=>{handleFiltroMobile(ev);},
+                                                                onBlur:(ev)=>{handleFiltroMobile(ev);},
+                                                                onKeyUp:(ev)=>{
+
+                                                                    if (ev.key === "Enter") {
+                                                                        requestAllCaixas();
+                                                                    }
+                                                                }, 
+                                                                value:filtroMobile,
+
+                                                            }
+                                                        }
+                                                    }
+                                                 />
+                                            </Col>
+
+                                            <Col xs="1" sm="1" md="1" style={{textAlign:'left', alignItems:'center', justifyContent:'center', margin:'auto',padding:'0'}} >
+                                                <FontAwesomeIcon onClick={()=>{requestAllCaixas();}} size={'lg'} icon={faSearch}/>
+                                            </Col>
+                                        
+                                            
+                                         </Row>
+                                        <Row className={'mt-2'}>
+                                            <div  style={{display:'flex', flexDirection:'collumn', flexWrap:'wrap'}}>
+                                            </div>
+                                        </Row>
+                                    </Col>
+                                    
+                                    
+                                </Row>
+                                <Row className={'my-2'}>
+                                    <Col>
+                                        <Row>
+                                            <Col><span style={{fontWeight:'bolder', fontSize:'14pt'}} >Ações</span></Col>
+                                        </Row>
+
+                                        <div>
+                                             <hr style={{margin:'0',padding:'0'}}/>  
+                                        </div>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <div style={{display:'flex', flexDirection:'collumn', flexWrap:'wrap'}}>
+                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setCadastrarCaixa(true);}} ><FontAwesomeIcon icon={faPlus} /> Novo caixa</Button>
+                                    </div>
+                                </Row>
+                            </Col>
+                        </>
+                    )
+                }
+                
+                <Col style={{backgroundColor:'#FFF'}} className={'pt-3 mobile_card_report'} >
+                    <Row>
+                        <Col><span style={{fontWeight:'bolder', fontSize:'14pt'}} >Resultado</span></Col>
+                    </Row>
+                    <div>
+                         <hr style={{margin:'0',padding:'0'}}/>  
+                    </div>
                 </Col>
-                <Col  xs="12" sm="12" md="9">
 
-                    <Table
-                        titulosTableArr={titulosTableArr}
-                        rowsTableArr={rowsTableArr}
-
+                <Col  xs="12" sm="12" md={'12'} >
+                    <Include
+                        dataEstado={estado}
+                        loadingData={loading}
+                        callBack={requestAllCaixas}
+                        setMostarFiltros={setMostarFiltros}
+                        nadaEncontrado={nadaEncontrado}
+                        nextPage={nextPage}
+                        setNextPage={setNextPage}
+                        usePagination={usePagination}
+                        setUsePagination={setUsePagination}
+                        totalPageCount={totalPageCount}
+                        setTotalPageCount={setTotalPageCount}
                     />
                 </Col>
             </Row>
-            <Create showModalCriarCaixa={showModalCriarCaixa} setShowModalCriarCaixa={setShowModalCriarCaixa} />
-        </>
+            {
+                cadastrarCaixa &&
+                <Cadastrar cadastrarCaixa={cadastrarCaixa} setCadastrarCaixa={setCadastrarCaixa} atualizarCaixa={atualizarCaixa} setAtualizarCaixa={setAtualizarCaixa}  idCaixa={consultaChoice} setIdCaixa={setCaixaChoice} callback={requestAllCaixas} />
+            }
+           
+         </>
+
     )
 }
 
