@@ -2,7 +2,7 @@ import React from 'react';
 import useFetch from '../../../Hooks/useFetch.js';
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, FORMULARIO_ONE_GET, GRUPOS_ALL_POST} from '../../../api/endpoints/geral.js'
 import {UserContex} from '../../../Context/UserContex.js'
-import FormCliente from '../FormCliente/index.js'
+import FormConstrutorFicha from '../FormConstrutorFicha/index.js'
 import Pesquisar from '../Pesquisar/index.js'
 import Modal from '../../Utils/Modal/index.js'
 import Load from '../../Utils/Load/index.js'
@@ -56,9 +56,9 @@ const Atualizar = ({idRegistro, setIdRegistro, callback, atualizarCadastro, setA
 
 	/*
 		atualizarCadastro && 
-                <Atualizar setCarregandoDadosCliente={null} atualizarCadastro={setAtualizarCadastro} idRegistro={clientChoice} setDataRegistro={null} setShowModalCriarRegistro={setShowModalAtualizarRegistro} />
+                <Atualizar setCarregandoDadosConstrutorFicha={null} atualizarCadastro={setAtualizarCadastro} idRegistro={clientChoice} setDataRegistro={null} setShowModalCriarRegistro={setShowModalAtualizarRegistro} />
 	*/
-	//<Pesquisar idRegistro={idRegistro} setDataRegistro={setDataRegistro} setCarregandoDadosCliente={setCarregando} />
+	//<Pesquisar idRegistro={idRegistro} setDataRegistro={setDataRegistro} setCarregandoDadosConstrutorFicha={setCarregando} />
 	return(
 		<>
 			{! dataRegistro &&
@@ -67,7 +67,7 @@ const Atualizar = ({idRegistro, setIdRegistro, callback, atualizarCadastro, setA
 				</Modal>
 			}
 			{dataRegistro &&
-				<FormCliente dataGrupo={dataGrupo} setIdRegistro={setIdRegistro} idRegistro={idRegistro} carregando={false} dataRegistroChoice={dataRegistro} setAtualizarCadastro={setAtualizarCadastro} atualizarCadastro={atualizarCadastro} showModalCriarRegistro={showModalAtualizarRegistro} setShowModalCriarRegistro={setShowModalAtualizarRegistro} callback={callback} />
+				<FormConstrutorFicha dataGrupo={dataGrupo} setIdRegistro={setIdRegistro} idRegistro={idRegistro} carregando={false} dataRegistroChoice={dataRegistro} setAtualizarCadastro={setAtualizarCadastro} atualizarCadastro={atualizarCadastro} showModalCriarRegistro={showModalAtualizarRegistro} setShowModalCriarRegistro={setShowModalAtualizarRegistro} callback={callback} />
 			}
 		</>
 	)

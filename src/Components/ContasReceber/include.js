@@ -397,7 +397,12 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                                 },
                                 {
 
-                                    label:FORMAT_DATA_PT_BR(atual.dtVencimento),
+                                    label:FORMAT_DATA_PT_BR(atual?.created_at),
+                                    propsRow:{}
+                                },
+                                {
+
+                                    label:FORMAT_DATA_PT_BR(atual?.dtVencimento),
                                     propsRow:{}
                                 },
                                 {
@@ -479,6 +484,12 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
             },
             {
                 label:'Valor aberto',
+                props:{
+                    style:{minWidth:'150px'}
+                }
+            },
+            {
+                label:'Criação',
                 props:{
                     style:{minWidth:'150px'}
                 }

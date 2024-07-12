@@ -1,8 +1,8 @@
 import React from 'react';
-import estilos from './ConstrutorFichas.module.css'
+import estilos from './Clientes.module.css'
 import useFetch from '../../Hooks/useFetch.js';
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, FORMULARIO_ALL_POST} from '../../api/endpoints/geral.js'
-import {Col, Row, Button } from 'react-bootstrap';
+import {Col, Row } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
 import Breadcrumbs from '../Helper/Breadcrumbs.js'
@@ -13,13 +13,9 @@ import Load from '../Utils/Load/index.js'
 import Cadastrar from './Cadastrar/index.js'
 import Atualizar from './Atualizar/index.js'
 import {UserContex} from '../../Context/UserContex.js'
-import FormConstrutorFicha from './FormConstrutorFicha/index.js'
+import FormCliente from './FormCliente/index.js'
 import ConstrutorFichaGrupo from '../ConstrutorFichaGrupo/index.js'
 import ConstrutorFichaItem from '../ConstrutorFichaItem/index.js'
-import Include from './include';
-import FormControlInput from '../FormControl/index.js'
-import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../functions/index.js'
-import { Link } from 'react-router-dom/cjs/react-router-dom.min.js';
 
 
 const ConstrutorFicha = (props)=>{
@@ -97,7 +93,7 @@ const ConstrutorFicha = (props)=>{
             type:'text',
             options:[], 
             hasLabel: true,
-            contentLabel:'Template',
+            contentLabel:'Descrição',
             atributsFormLabel:{},
             atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
             atributsFormControl:{'type':'text', size:"sm",'name_construtor':nameConstrutor, value:nameConstrutor, onChange:handleNameConstrutor, onBlur:handleNameConstrutor, onKeyUp:handleSearch},
@@ -209,17 +205,110 @@ const ConstrutorFicha = (props)=>{
         return {filtros, detalhesFiltros};
     }
 
+    
+    const gerarExemplos = ()=>{
+         let exemplos = [];
+        for(let i=0; !(i == 10); i++){
+            exemplos.push(
+
+                    {
+                        propsRow:{id:(i+1)},
+                        celBodyTableArr:[
+                            {
+
+                                label:'1',
+                                propsRow:{}
+                            },
+                            {
+
+                                label:'Peddro',
+                                propsRow:{}
+                            },
+                            {
+
+                                label:'(98) 98425-7623',
+                                propsRow:{}
+                            },
+                            {
+
+                                label:'phedroclooney@gmail.com',
+                                propsRow:{}
+                            }
+                        ]
+                    }
+
+                )
+
+        }
+
+        return exemplos;
+    }
+
+    const gerarTableRegistro = ()=>{
+       
+        let data = [];
+        let dataRegistro = registro.mensagem
+        if(dataRegistro && Array.isArray(dataRegistro) && dataRegistro.length > 0){
+            for(let i=0; !(i == dataRegistro.length); i++){
+                let atual = dataRegistro[i];
+                if(atual){
+
+
+                    data.push(
+
+                        {
+                            propsRow:{id:(atual.id)},
+                            acoes:[
+                                {acao:()=>atualizarRegistro(atual.id), label:'Editar', propsOption:{}, propsLabel:{}},
+                                {acao:()=>novoAtendimento(atual.id), label:'Excluir', propsOption:{}, propsLabel:{}},
+                                {acao:()=>exbirListaGrupo(atual.id), label:'Grupos', propsOption:{}, propsLabel:{}},
+                                {acao:()=>exbirListaItem(atual.id), label:'Itens', propsOption:{}, propsLabel:{}},
+                            ],
+                            celBodyTableArr:[
+                                {
+
+                                    label:atual.id,
+                                    propsRow:{}
+                                },
+                                {
+
+                                    label:atual.name,
+                                    propsRow:{}
+                                },
+                            ]
+                        }
+
+                    )
+
+                }
+
+            }
+        }
+
+        return data;
+    }
+
+    const gerarTitleTable = ()=>{
+        let tableTitle = [
+            {
+                label:'Código',
+                props:{}
+            },
+            {
+                label:'Nome',
+                props:{}
+            },
+        ]
+
+        return tableTitle;
+    }
     //------------
 
     const requestAllRegistros = async() =>{
 
         let {filtros, detalhesFiltros} = await montarFiltro();
         setAppliedFilters(detalhesFiltros)
-        let {url, options} = FORMULARIO_ALL_POST({...filtros}, getToken());
-        if(nextPage){
-            url = nextPage;
-        }
-
+        const {url, options} = FORMULARIO_ALL_POST({}, getToken());
         const {response, json} = await request(url, options);
         if(json){
             setRegistro(json)
@@ -229,15 +318,50 @@ const ConstrutorFicha = (props)=>{
 
     React.useEffect(()=>{
 
-        const requestAllRegistrosEffect = async() =>{       
-           await requestAllRegistros();            
+        const requestAllRegistrosEffect = async() =>{
+       
+           await requestAllRegistros();
+
+            
         }
 
         requestAllRegistrosEffect();
 
         
-    }, [nextPage, setNextPage])
+    }, [])
 
+    React.useEffect(()=>{
+        switch(acao){
+            case 'editar':
+                if(registroChoice > 0){
+                    setAtualizarCadastro(true);
+                }else{
+                    setAtualizarCadastro(false);
+                }
+                break;
+            
+            case 'listar_grupo':
+                if(registroChoice > 0){
+                    setListarGrupo(true);
+                }else{
+                    setListarGrupo(false);
+                }
+                break;             
+            
+            case 'listar_item':
+                if(registroChoice > 0){
+                    setListarItem(true);
+                }else{
+                    setListarItem(false);
+                }
+                break;   
+            default:
+                setAtualizarCadastro(false);
+                break;
+
+        }
+        
+    }, [registroChoice, acao])
     
     
     React.useEffect(()=>{
@@ -260,131 +384,64 @@ const ConstrutorFicha = (props)=>{
     }, [])
     
 
+    const atualizarRegistro = (idRegistro)=>{
+        setRegistroChoice(idRegistro)
+        setAcao('editar')
+        setAtualizarCadastro(true);
+    }
+
+    const novoAtendimento = (idRegistro)=>{
+        setRegistroChoice(idRegistro)
+        setAcao('consultar')
+        setAtualizarCadastro(true);
+    }
+
+    const exbirListaGrupo = (idRegistro)=>{
+        setRegistroChoice(idRegistro)
+        setAcao('listar_grupo')
+        setListarGrupo(true);
+    }
+
+
+    const exbirListaItem = (idRegistro)=>{
+        setRegistroChoice(idRegistro)
+        setAcao('listar_item')
+        setListarItem(true);
+    }
+    //listarGrupo, setListarGrupo
+    const rowsTableArr = gerarTableRegistro();    
+    const titulosTableArr = gerarTitleTable();
 	return(
 		<>
-            <Row>
-             <Breadcrumbs
+            <Breadcrumbs
                 items={[
                         {
                             props:{},
-                            label:<> <Link className={null}  to={'/'}>Início</Link></>
+                            label:'Início'
                         },
                         {
                             props:{},
-                            label:'Templates de fichas'
+                            label:'Fichas'
                         }
                     ]}
-                buttonFiltroMobile={true}
-                setMostarFiltros={setMostarFiltros}
-                mostarFiltros={mostarFiltros}
             />
-                {
-                    (
-                        <>
-                            <Col  xs="12" sm="12" md="13" className={'default_card_report'}>
-                                <Filter
-                                    filtersArr={filtersArr}
-                                    actionsArr={acoesBottomCard}
-                                    mostarFiltros={mostarFiltros}
-                                    setMostarFiltros={setMostarFiltros}
-                                    botoesHeader={acoesHeaderCard}
-                                    activeFilters={appliedFilters}
-                                />
-                            </Col>
-
-                            <Col  xs="12" sm="12" md="12" className={'mobile_card_report pt-4'}  style={{backgroundColor:'#FFF'}}>
-                                <Row className={'mb-3'} >
-                                    <Col className={'mx-2'}  >
-                                       <Row style={{borderRadius:'24px 24px 24px 24px', border:'1px solid #000'}}>
-                                            <Col xs="11" sm="11" md="11" >
-                                                <FormControlInput
-                                                    data={
-                                                        {
-                                                            atributsFormControl:{
-                                                                type:'input',
-                                                                placeholder:'Search...',
-                                                                style:{
-                                                                    border:'none',
-                                                                    outline:'0',
-                                                                    'box-shadow':'0 0 0 0',
-                                                                    height:'50px',
-                                                                    borderRadius:'24px 24px 24px 24px'
-                                                                    
-                                                                },
-                                                                onChange:(ev)=>{handleFiltroMobile(ev);},
-                                                                onBlur:(ev)=>{handleFiltroMobile(ev);},
-                                                                onKeyUp:(ev)=>{
-
-                                                                    if (ev.key === "Enter") {
-                                                                        requestAllRegistros();
-                                                                    }
-                                                                }, 
-                                                                value:filtroMobile,
-
-                                                            }
-                                                        }
-                                                    }
-                                                 />
-                                            </Col>
-
-                                            <Col xs="1" sm="1" md="1" style={{textAlign:'left', alignItems:'center', justifyContent:'center', margin:'auto',padding:'0'}} >
-                                                <FontAwesomeIcon onClick={()=>{requestAllRegistros();}} size={'lg'} icon={faSearch}/>
-                                            </Col>
-                                        
-                                            
-                                         </Row>
-                                        <Row className={'mt-2'}>
-                                            <div  style={{display:'flex', flexDirection:'collumn', flexWrap:'wrap'}}>
-                                            </div>
-                                        </Row>
-                                    </Col>
-                                    
-                                    
-                                </Row>
-                                <Row className={'my-2'}>
-                                    <Col>
-                                        <Row>
-                                            <Col><span style={{fontWeight:'bolder', fontSize:'14pt'}} >Ações</span></Col>
-                                        </Row>
-
-                                        <div>
-                                             <hr style={{margin:'0',padding:'0'}}/>  
-                                        </div>
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <div style={{display:'flex', flexDirection:'collumn', flexWrap:'wrap'}}>
-                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setCadastrarRegistro(true);}} ><FontAwesomeIcon icon={faPlus} /> Template de ficha</Button>
-                                    </div>
-                                </Row>
-                            </Col>
-                        </>
-                    )
-                }
-                
-                <Col style={{backgroundColor:'#FFF'}} className={'pt-3 mobile_card_report'} >
-                    <Row>
-                        <Col><span style={{fontWeight:'bolder', fontSize:'14pt'}} >Resultado</span></Col>
-                    </Row>
-                    <div>
-                         <hr style={{margin:'0',padding:'0'}}/>  
-                    </div>
-                </Col>
-
-                <Col  xs="12" sm="12" md={'12'} >
-                    <Include
-                        dataEstado={registro}
-                        loadingData={loading}
-                        callBack={requestAllRegistros}
-                        requestAllRegistros={requestAllRegistros}
+            <Row>
+                <Col  xs="12" sm="12" md="12">
+                    <Filter
+                        filtersArr={filtersArr}
+                        actionsArr={acoesBottomCard}
+                        mostarFiltros={mostarFiltros}
                         setMostarFiltros={setMostarFiltros}
-                        nadaEncontrado={nadaEncontrado}
-                        nextPage={nextPage}
-                        setNextPage={setNextPage}
-                        usePagination={usePagination}
-                        setUsePagination={setUsePagination}
-                        totalPageCount={totalPageCount}
-                        setTotalPageCount={setTotalPageCount}
+                        botoesHeader={acoesHeaderCard}
+                        activeFilters={appliedFilters}
+                    />
+                </Col>
+                <Col  xs="12" sm="12" md="12">
+                    <Table
+                        titulosTableArr={titulosTableArr}
+                        rowsTableArr={rowsTableArr}
+                        loading={loading}
+
                     />
                 </Col>
             </Row>
@@ -392,6 +449,29 @@ const ConstrutorFicha = (props)=>{
                 cadastrarRegistro && <Cadastrar cadastrarRegistro={cadastrarRegistro} setCadastrarRegistro={setCadastrarRegistro} atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro}  idRegistro={registroChoice} setIdRegistro={setRegistroChoice} callback={requestAllRegistros} />
             }
             
+            {
+                atualizarCadastro &&
+                <Atualizar atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro}  idRegistro={registroChoice} setIdRegistro={setRegistroChoice} callback={requestAllRegistros} />
+            }
+
+            {
+                listarGrupo &&
+                <Modal  noBtnConcluir={true} handleConcluir={()=>null}  title={'Grupos'} size="xl" propsConcluir={{'disabled':loading}} labelConcluir={null} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={listarGrupo} showHide={()=>{setShowModalGrupo();setListarGrupo(false);setRegistroChoice(null);}}>
+                                
+                    <ConstrutorFichaGrupo listarGrupo={listarGrupo} setListarGrupo={setListarGrupo}  idRegistro={registroChoice} idFormulario={registroChoice} setIdRegistro={setRegistroChoice} callback={requestAllRegistros} />
+                
+                </Modal>
+            }
+
+            {
+                listarItems &&
+                <Modal  noBtnConcluir={true} handleConcluir={()=>null}  title={'Items'} size="xl" propsConcluir={{'disabled':loading}} labelConcluir={null}  dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={listarItems} showHide={()=>{setShowModalItem();setListarItem(false);setRegistroChoice(null);}}>
+                                
+                    <ConstrutorFichaItem listarItems={listarItems} setListarItem={setListarItem}  idRegistro={registroChoice} setIdRegistro={setRegistroChoice} callback={requestAllRegistros} />
+                
+                </Modal>
+            }
+ 
          </>
 
 	)
@@ -399,4 +479,4 @@ const ConstrutorFicha = (props)=>{
 
 export default ConstrutorFicha;
 
-//<FormConstrutorFicha dataGrupo={dataGrupo} dataConstrutorFichaChoice={[]}  atualizarCadastro={false} setAtualizarCadastro={setAtualizarCadastro}  idRegistro={null} setIdRegistro={setRegistroChoice}  showModalCriarRegistro={showModalCriarRegistro} setShowModalCriarRegistro={setShowModalCriarRegistro} callback={requestAllRegistros} />
+//<FormCliente dataGrupo={dataGrupo} dataClienteChoice={[]}  atualizarCadastro={false} setAtualizarCadastro={setAtualizarCadastro}  idRegistro={null} setIdRegistro={setRegistroChoice}  showModalCriarRegistro={showModalCriarRegistro} setShowModalCriarRegistro={setShowModalCriarRegistro} callback={requestAllRegistros} />

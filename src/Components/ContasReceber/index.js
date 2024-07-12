@@ -1,7 +1,7 @@
 import React from 'react';
 import estilos from './ContasReceber.module.css'
 import useFetch from '../../Hooks/useFetch.js';
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CONTAS_RECEBER_ALL_POST} from '../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CONTAS_RECEBER_ALL_POST, FILIAIS_ALL_POST} from '../../api/endpoints/geral.js'
 import {FORMAT_DATA_PT_BR} from '../../functions/index.js'
 import {Col, Row, Button } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
@@ -46,6 +46,16 @@ const ContasReceber = ({defaultFilters ,...props})=>{
     const [qtdItemsPerPage, setQtdItemsPerPage] = React.useState(10)
     const [nadaEncontrado, setNadaEncontrado] = React.useState(false)
     const [ordenacao, setOrdenacao] = React.useState('')
+    const [codCobReceber, setCodCobReceber] = React.useState('')
+    const [dataFiliais, setDataFiliais] = React.useState([])
+    const [codFilial, setCodFilial] = React.useState('')
+    const [codPessoa, setCodPessoa] = React.useState('')
+    const [historico, setHistorico] = React.useState('')
+    const [status, setStatus] = React.useState('')
+    const [dtInicio, setDtInico] = React.useState('')
+    const [dtFim, setDtFim] = React.useState('')
+    const [tpExercicio, setTpExercicio] = React.useState('')
+    const [appliedFilters, setAppliedFilters] = React.useState([])
 
     const [referenciaContasReceber, setReferenciaContasReceber] = React.useState(()=>{
         return defaultFilters?.referencia
@@ -68,6 +78,39 @@ const ContasReceber = ({defaultFilters ,...props})=>{
             requestAllContasRecebers();
         }
     }
+
+    const handleFiltroTpExercicio = ({target})=>{
+        setTpExercicio(target.value)
+    }
+    const handleFiltroInicio = ({target})=>{
+        setDtInico(target.value)
+    }
+
+    const handleFiltroFim = ({target})=>{
+        setDtFim(target.value)
+    }
+
+
+    const handleFiltroStatus = ({target})=>{
+        setStatus(target.value)
+    }
+
+    const handleFiltroHistorico = ({target})=>{
+        setHistorico(target.value)
+    }
+
+    const handleFiltroCodPessoa = ({target})=>{
+        setCodPessoa(target.value)
+    }
+    
+    const handleFiltroCodFilial = ({target})=>{
+        setCodFilial(target.value)
+    }
+    
+    const handleFiltroCodCobReceber = ({target})=>{
+        setCodCobReceber(target.value)
+    }
+
     const handleFiltroMobile = ({target})=>{
         setFiltroMobile(target.value)
     }
@@ -89,8 +132,48 @@ const ContasReceber = ({defaultFilters ,...props})=>{
         
         setOrdenacao(target.value)
     }
+    
+    const preparaFilialToForm = ()=>{
+        if(dataFiliais.hasOwnProperty('mensagem') && Array.isArray(dataFiliais.mensagem) && dataFiliais.mensagem.length > 0){
+            let filiais = dataFiliais.mensagem.map(({id, name_filial}, index, arr)=>({label:name_filial,value:id,props:{}}))
+            filiais.unshift({label:'Selecione...',value:'',props:{selected:'selected', disabled:'disabled'}})
+            
+            return filiais;
+        }
+        return []
+    }
 
     const filtersArr = [
+        {
+            type:'text',
+            options:[], 
+            hasLabel: true,
+            contentLabel:'Código',
+            atributsFormLabel:{},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'name':'id', value:codCobReceber, onChange:handleFiltroCodCobReceber, onBlur:handleFiltroCodCobReceber, onKeyUp:handleSearch},
+
+        },
+        {
+            type:'select',
+            options:[...preparaFilialToForm()], 
+            hasLabel: true,
+            contentLabel:'Filial',
+            atributsFormLabel:{},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'select', size:"sm",'name':'filial_id', value:codFilial, onChange:handleFiltroCodFilial, onBlur:handleFiltroCodFilial, onKeyUp:handleSearch},
+
+        },
+        {
+            type:'text',
+            options:[], 
+            hasLabel: true,
+            contentLabel:'Código pessoa',
+            atributsFormLabel:{},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'name':codPessoa, value:codPessoa, onChange:handleFiltroCodPessoa, onBlur:handleFiltroCodPessoa, onKeyUp:handleSearch},
+
+        },
         {
             type:'text',
             options:[], 
@@ -105,30 +188,20 @@ const ContasReceber = ({defaultFilters ,...props})=>{
             type:'text',
             options:[], 
             hasLabel: true,
-            contentLabel:'Contato',
+            contentLabel:'Histórico',
             atributsFormLabel:{},
             atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name_atendido':pessoa, value:pessoa, onChange:setNamePessoa, onBlur:setNamePessoa, onKeyUp:handleSearch},
+            atributsFormControl:{'type':'text', size:"sm",'name':"descricao", value:historico, onChange:handleFiltroHistorico, onBlur:handleFiltroHistorico, onKeyUp:handleSearch},
 
         },
         {
-            type:'text',
-            options:[], 
+            type:'select',
+            options:[{'label':'Selecione...', 'value':''},{'label':'Aberto', 'value':'aberto'},{'label':'Pago', 'value':'pago'}], 
             hasLabel: true,
             contentLabel:'Status',
             atributsFormLabel:{},
             atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'status':pessoa, value:pessoa, onChange:setNamePessoa,    onBlur:setNamePessoa},
-
-        },
-        {
-            type:'text',
-            options:[], 
-            hasLabel: true,
-            contentLabel:'Tipo',
-            atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'tipo':pessoa, value:pessoa, onChange:setNamePessoa,    onBlur:setNamePessoa},
+            atributsFormControl:{'type':'select', size:"sm",'name':'status', value:status, onChange:handleFiltroStatus, onBlur:handleFiltroStatus, onKeyUp:handleSearch},
 
         },
         {
@@ -138,7 +211,7 @@ const ContasReceber = ({defaultFilters ,...props})=>{
             contentLabel:'Cód. ref',
             atributsFormLabel:{},
             atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'referencia_id':idReferenciaContasReceber,value:idReferenciaContasReceber ,onChange:setIdReferencia, onBlur:setIdReferencia},
+            atributsFormControl:{'type':'text', size:"sm",'referencia_id':idReferenciaContasReceber,value:idReferenciaContasReceber ,onChange:setIdReferencia, onBlur:setIdReferencia , onKeyUp:handleSearch},
 
         },
         {
@@ -148,7 +221,17 @@ const ContasReceber = ({defaultFilters ,...props})=>{
             contentLabel:'Referência',
             atributsFormLabel:{},
             atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'referencia':referenciaContasReceber, value:referenciaContasReceber, onChange:setDsReferencia,    onBlur:setDsReferencia},
+            atributsFormControl:{'type':'text', size:"sm",'referencia':referenciaContasReceber, value:referenciaContasReceber, onChange:setDsReferencia,    onBlur:setDsReferencia , onKeyUp:handleSearch},
+
+        },    
+        {
+            type:'select',
+            options:[{'label':'Selecione...', 'value':''},{'label':'Criação', 'value':'criacao'},{'label':'Vencimento', 'value':'vencimento'}], 
+            hasLabel: true,
+            contentLabel:'Tipo exercício',
+            atributsFormLabel:{},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'select', size:"sm",'name':'tp_exercicio', value:tpExercicio, onChange:handleFiltroTpExercicio, onBlur:handleFiltroTpExercicio, onKeyUp:handleSearch},
 
         },
         {
@@ -158,7 +241,7 @@ const ContasReceber = ({defaultFilters ,...props})=>{
             contentLabel:'Dt. inicio',
             atributsFormLabel:{},
             atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
-            atributsFormControl:{'type':'date', size:"sm",'dt_inico':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
+            atributsFormControl:{'type':'date', size:"sm",'name':dtInicio,onChange:handleFiltroInicio, onBlur:handleFiltroInicio , onKeyUp:handleSearch},
 
         },
         {
@@ -168,7 +251,7 @@ const ContasReceber = ({defaultFilters ,...props})=>{
             contentLabel:'Dt. fim',
             atributsFormLabel:{},
             atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
-            atributsFormControl:{'type':'date', size:"sm",'dt_fim':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
+            atributsFormControl:{'type':'date', size:"sm",'name':dtFim,onChange:handleFiltroFim, onBlur:handleFiltroFim, onKeyUp:handleSearch},
 
         },     
         {
@@ -256,8 +339,24 @@ const ContasReceber = ({defaultFilters ,...props})=>{
         setFiltroVencidas(false)
         setFiltroAvencer(false)
         setOrdenacao('');
+        setCodCobReceber('');
+        setCodFilial('');
+        setHistorico('');
+        setCodPessoa('');
+        setStatus('');
+        setDtInico('');
+        setDtFim('');
+        setTpExercicio('');
+        setAppliedFilters([]);
     }
-    
+
+    const removeFilter = (key)=>{
+         setAppliedFilters(prevFilters => {
+            const updatedFilters = { ...prevFilters };
+            delete updatedFilters[key];
+            return updatedFilters;
+        });
+    }
 
     //------------
     const montarFiltro = ()=>{
@@ -269,12 +368,57 @@ const ContasReceber = ({defaultFilters ,...props})=>{
             filtros['nr_itens_per_page'] = qtdItemsPerPage;
         }
         
-        if(referenciaContasReceber){
-            filtros['referencia'] = referenciaContasReceber;
-            detalhesFiltros['referencia'] = {
-                label:'Referência',
-                value:referenciaContasReceber,
-                resetFilter:()=>setReferenciaContasReceber(''),
+        if(codCobReceber){
+            filtros['id'] = codCobReceber;
+            detalhesFiltros['id'] = {
+                label:'Código',
+                value:codCobReceber,
+                resetFilter:()=>{setCodCobReceber('');removeFilter('id')},
+            };
+        }
+
+        if(codFilial){
+            filtros['filial_id'] = codFilial;
+            detalhesFiltros['filial_id'] = {
+                label:'Código filial',
+                value:codFilial,
+                resetFilter:()=>{setCodFilial('');removeFilter('filial_id')},
+            };
+        }
+        
+        if(codPessoa){
+            filtros['pessoa_id'] = codPessoa;
+            detalhesFiltros['pessoa_id'] = {
+                label:'Código pessoa',
+                value:codPessoa,
+                resetFilter:()=>{setCodPessoa('');removeFilter('pessoa_id')},
+            };
+        }
+
+        if(pessoa){
+            filtros['name_pessoa'] = pessoa;
+            detalhesFiltros['name_pessoa'] = {
+                label:'Pessoa',
+                value:pessoa,
+                resetFilter:()=>{setPessoa('');removeFilter('name_pessoa');},
+            };
+        }
+
+        if(historico){
+            filtros['historico'] = historico;
+            detalhesFiltros['historico'] = {
+                label:'Histórico',
+                value:historico,
+                resetFilter:()=>{setHistorico('');removeFilter('historico')},
+            };
+        }
+        
+        if(status){
+            filtros['status'] = status;
+            detalhesFiltros['status'] = {
+                label:'Status',
+                value:status,
+                resetFilter:()=>{setStatus('');removeFilter('status')},
             };
         }
         
@@ -284,16 +428,16 @@ const ContasReceber = ({defaultFilters ,...props})=>{
             detalhesFiltros['referencia_id'] = {
                 label:'Cód. referência',
                 value:idReferenciaContasReceber,
-                resetFilter:()=>setIdReferenciaContasReceber(''),
+                resetFilter:()=>{setIdReferenciaContasReceber('');removeFilter('referencia_id');},
             };
         }
 
-        if(pessoa){
-            filtros['name_pessoa'] = pessoa;
-            detalhesFiltros['name_pessoa'] = {
-                label:'Pessoa',
-                value:pessoa,
-                resetFilter:()=>setPessoa(''),
+        if(referenciaContasReceber){
+            filtros['referencia'] = referenciaContasReceber;
+            detalhesFiltros['referencia'] = {
+                label:'Referência',
+                value:referenciaContasReceber,
+                resetFilter:()=>{setReferenciaContasReceber('');removeFilter('referencia')},
             };
         }
 
@@ -302,7 +446,7 @@ const ContasReceber = ({defaultFilters ,...props})=>{
             detalhesFiltros['pessoa_name'] = {
                 label:'Filtro',
                 value:filtroMobile,
-                resetFilter:()=>setFiltroMobile(''),
+                resetFilter:()=>{setFiltroMobile('');removeFilter('pessoa_name')},
             };
         }
 
@@ -316,7 +460,7 @@ const ContasReceber = ({defaultFilters ,...props})=>{
             detalhesFiltros['status'] = {
                 label:'Status',
                 value:pessoa,
-                resetFilter:()=>setFiltroAbertas(false),
+                resetFilter:()=>{setFiltroAbertas(false);},
             };
         }
 
@@ -355,16 +499,35 @@ const ContasReceber = ({defaultFilters ,...props})=>{
                 };
             }
         }
-
+        
+        if(tpExercicio){
+            filtros['tp_exercicio'] = tpExercicio;
+            detalhesFiltros['tp_exercicio'] = {
+                label:'Tipo exercício',
+                value:tpExercicio,
+                resetFilter:()=>{setTpExercicio('');removeFilter('tp_exercicio')},
+            };
+        }
+        
+        if(dtInicio || dtFim){
+            filtros['dt_exercicio'] = dtInicio+','+dtFim;
+            detalhesFiltros['dt_exercicio'] = {
+                label:'Exercíco',
+                value:dtInicio+','+dtFim,
+                resetFilter:()=>{setDtInico('');setDtFim('');removeFilter('dt_exercicio')},
+            };
+        }
+        
         if(ordenacao){
             filtros['ordem'] = ordenacao;
             detalhesFiltros['ordem'] = {
                 label:'Ordem',
                 value:ordenacao,
-                resetFilter:()=>setOrdenacao(''),
+                resetFilter:()=>{setOrdenacao('');removeFilter('ordem');},
             };
         }
 
+        
         return {filtros, detalhesFiltros};
     }
     const requestAllContasRecebers = async() =>{
@@ -372,6 +535,7 @@ const ContasReceber = ({defaultFilters ,...props})=>{
         setNadaEncontrado(false)
 
         let {filtros, detalhesFiltros} = montarFiltro();
+        setAppliedFilters(detalhesFiltros)
         let {url, options} = CONTAS_RECEBER_ALL_POST({...filtros}, getToken());
 
         if(nextPage){
@@ -397,6 +561,7 @@ const ContasReceber = ({defaultFilters ,...props})=>{
 
         let {filtros, detalhesFiltros} = montarFiltro();
         filtros.status = 'aberto';
+        setAppliedFilters(detalhesFiltros)
         let {url, options} = CONTAS_RECEBER_ALL_POST({...filtros}, getToken());
         if(nextPage){
             url = nextPage;
@@ -407,16 +572,37 @@ const ContasReceber = ({defaultFilters ,...props})=>{
         }
     }
 
-    React.useEffect(()=>{
+    const requestAllFilials = async() =>{
+        setDataFiliais([])
 
-        const requestAllContasRecebersEffect = async() =>{
-           await requestAllContasRecebers();            
+        let {url, options} = FILIAIS_ALL_POST({}, getToken());
+        const {response, json} = await request(url, options);
+        if(json){            
+            setDataFiliais(json)
         }
 
+            
+    }
+
+    React.useEffect(()=>{
+
+        const requestDataConfigEffect = async() =>{
+            await requestAllFilials()
+        }
+        const requestAllContasRecebersEffect = async() =>{
+            await requestAllContasRecebers();            
+        }
+
+        requestDataConfigEffect();
         requestAllContasRecebersEffect();
 
         
     }, [filtroAvencer, filtroVencidas, filtroPagas, filtroAbertas,nextPage, setNextPage])
+
+    React.useEffect(()=>{
+        let {filtros, detalhesFiltros} = montarFiltro();
+        setAppliedFilters(detalhesFiltros)
+    }, [])
 
     return(
         <>
@@ -448,6 +634,7 @@ const ContasReceber = ({defaultFilters ,...props})=>{
                                     mostarFiltros={mostarFiltros}
                                     setMostarFiltros={setMostarFiltros}
                                     botoesHeader={acoesHeaderCard}
+                                    activeFilters={appliedFilters}
                                 />
                             </Col>
 

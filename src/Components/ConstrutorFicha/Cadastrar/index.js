@@ -2,7 +2,7 @@ import React from 'react';
 import useFetch from '../../../Hooks/useFetch.js';
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CLIENTES_ONE_GET, GRUPOS_ALL_POST} from '../../../api/endpoints/geral.js'
 import {UserContex} from '../../../Context/UserContex.js'
-import FormCliente from '../FormCliente/index.js'
+import FormConstrutorFicha from '../FormConstrutorFicha/index.js'
 import Pesquisar from '../Pesquisar/index.js'
 import Modal from '../../Utils/Modal/index.js'
 import Load from '../../Utils/Load/index.js'
@@ -52,7 +52,7 @@ const Cadastrar = ({idRegistro, setIdRegistro, callback, atualizarCadastro, setA
 				</Modal>
 			}
 			{dataGrupo &&
-				<FormCliente dataGrupo={dataGrupo} setIdRegistro={setIdRegistro} idRegistro={idRegistro} carregando={false} dataRegistroChoice={dataRegistro} setAtualizarCadastro={setAtualizarCadastro} atualizarCadastro={atualizarCadastro} showModalCriarRegistro={showModalAtualizarRegistro} setShowModalCriarRegistro={()=>{setShowModalAtualizarRegistro();setCadastrarRegistro()}} callback={callback} />
+				<FormConstrutorFicha dataGrupo={dataGrupo} setIdRegistro={setIdRegistro} idRegistro={idRegistro} carregando={false} dataRegistroChoice={dataRegistro} setAtualizarCadastro={setAtualizarCadastro} atualizarCadastro={atualizarCadastro} showModalCriarRegistro={showModalAtualizarRegistro} setShowModalCriarRegistro={()=>{setShowModalAtualizarRegistro();setCadastrarRegistro()}} callback={callback} />
 			}
 		</>
 	)

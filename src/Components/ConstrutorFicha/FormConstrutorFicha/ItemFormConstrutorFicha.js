@@ -1,8 +1,8 @@
 import React from 'react';
 import {Col, Row, Button} from 'react-bootstrap';
-import estilos from './FormCliente.module.css'
+import estilos from './FormConstrutorFicha.module.css'
 
-const ItemFormCliente = ({ name, setName, type, setType, options, setOptions, defaultValue, setDefaultValue, posicao, setPosicao, adicionarItem, ...props})=>{
+const ItemFormConstrutorFicha = ({ name, setName, type, setType, options, setOptions, defaultValue, setDefaultValue, posicao, setPosicao, adicionarItem, ...props})=>{
 
     return(
         <Row className="mb-1"  >
@@ -95,4 +95,4 @@ const ItemFormCliente = ({ name, setName, type, setType, options, setOptions, de
     )
 }
 
-export default ItemFormCliente;
+export default ItemFormConstrutorFicha;

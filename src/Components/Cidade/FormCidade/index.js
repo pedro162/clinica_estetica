@@ -43,15 +43,8 @@ const FormCidade = ({dataCidadeChoice, dataEstado, setIdCidade, idCidade, showMo
 
         if(atualizarCadastro == true){
             const {url, options} = CIDADE_UPDATE_POST(idCidade, data, getToken());
-
-
             const {response, json} = await request(url, options);
-            console.log('Save clients here')
-            console.log(json)
-            if(json){
-                console.log('Response Save clients here')
-                console.log(json)
-                
+            if(json){                
                 callback();
                 setShowModalCriarCidade();
                 setAtualizarCadastro(false);
@@ -60,7 +53,7 @@ const FormCidade = ({dataCidadeChoice, dataEstado, setIdCidade, idCidade, showMo
                 Swal.fire({
                   icon: "success",
                   title: "",
-                  text: 'Reigistrado com sucesso',
+                  text: 'Registrado com sucesso',
                   footer: '',//'<a href="#">Why do I have this issue?</a>'
                   confirmButtonColor: "#07B201",
                 });
@@ -86,7 +79,7 @@ const FormCidade = ({dataCidadeChoice, dataEstado, setIdCidade, idCidade, showMo
                 Swal.fire({
                   icon: "success",
                   title: "",
-                  text: 'Reigistrado com sucesso',
+                  text: 'Registrado com sucesso',
                   footer: '',//'<a href="#">Why do I have this issue?</a>'
                   confirmButtonColor: "#07B201",
                 });
@@ -122,19 +115,6 @@ const FormCidade = ({dataCidadeChoice, dataEstado, setIdCidade, idCidade, showMo
     	return obj;
     }
     
-   /* if(atualizarCadastro){
-        return(
-            <Modal  handleConcluir={()=>null}  title={'Cadastrar Cliente ..'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarCidade} showHide={()=>{setShowModalCriarCidade();}}>
-                {carregandoDadosChoice && <Load/>}
-                <Atualizar
-                    idCidade={idCidade} 
-                    setDataCliente={setDataCidadeChoice}
-                    setCarregandoDadosCliente={setCarregandoDadosChoice}
-                />
-             </Modal>
-        )
-    }
-   */
     const preparaCidadeToForm = ()=>{
         let grupoFormat = [{label:'Selecione...',valor:'',props:{selected:'selected', disabled:'disabled'}}]
         if(dataEstado && dataEstado.hasOwnProperty('mensagem') ){
@@ -154,10 +134,6 @@ const FormCidade = ({dataCidadeChoice, dataEstado, setIdCidade, idCidade, showMo
             }
             
         }
-
-        console.log('-------------grupo agui----------------------')
-        console.log(dataEstado)
-        console.log('-------------grupo agui aa----------------------')
 
         return grupoFormat;
     }

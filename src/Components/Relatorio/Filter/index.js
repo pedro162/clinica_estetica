@@ -34,11 +34,11 @@ const Filter = ({filtersArr, actionsArr, botoesHeader, mostarFiltros,setMostarFi
 	return(
 			<>
 				<Card
-					title={<span ><b onClick={()=>setMostarFiltros(!mostarFiltros)}  >Filtros: </b>
+					title={<span style={{width:'100%'}}  ><b onClick={()=>setMostarFiltros(!mostarFiltros)}  >Filtros: </b><span style={{width:'300px', overflow:'auto'}}  >
 						{buildActiveFilter().length > 0 ? buildActiveFilter().map((item, index, arr)=>{
 							return(item)
 						}):(null)}
-					</span>}
+					</span></span>}
 					propsCard={{className:'cardFilter'}}
 					acoesBottomCard={acoesBottomCard}
 					noBody={!mostarFiltros}

@@ -75,12 +75,9 @@ const Filial = (props)=>{
         setFiltroMobile(target.value)
     }
 
-
     const handleCodigoFilialFilter = ({target})=>{
         setCodigoFilial(target.value)
     }
-
-
 
     const filtersArr = [
         {

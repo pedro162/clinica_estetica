@@ -4,7 +4,7 @@ import FormControlInput from '../../FormControl/index.js'
 import FormControlSelect from '../../FormControl/Select.js'
 import {Col, Row, Button} from 'react-bootstrap';
 //import Button from '../../FormControl/Button.js';
-import estilos from './FormCliente.module.css'
+import estilos from './FormConstrutorFicha.module.css'
 import Modal from '../../Utils/Modal/index.js'
 import useFetch from '../../../Hooks/useFetch.js';
 import {UserContex} from '../../../Context/UserContex.js'
@@ -12,12 +12,13 @@ import Load from '../../Utils/Load/index.js'
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, FORMULARIO_SAVE_POST, FORMULARIO_UPDATE_POST, FORMULARIO_ONE_GET} from '../../../api/endpoints/geral.js'
 import Atualizar from '../Atualizar/index.js'
 import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible'
-import ItemFormCliente from './ItemFormCliente.js'
+import ItemFormConstrutorFicha from './ItemFormConstrutorFicha.js'
 import { DragDropContext } from 'react-beautiful-dnd';
 import TableForm from '../../Relatorio/TableForm/index.js';
+import Swal from 'sweetalert2'
 
 
-const FormCliente = ({dataRegistroChoice, dataGrupo, setIdRegistro, idRegistro, showModalCriarRegistro, setShowModalCriarRegistro, callback, atualizarCadastro, setAtualizarCadastro, carregando})=>{
+const FormConstrutorFicha = ({dataRegistroChoice, dataGrupo, setIdRegistro, idRegistro, showModalCriarRegistro, setShowModalCriarRegistro, callback, atualizarCadastro, setAtualizarCadastro, carregando})=>{
     
     const [carregandoDadosChoice, setCarregandoDadosChoice] = React.useState(false)
 
@@ -65,38 +66,42 @@ const FormCliente = ({dataRegistroChoice, dataGrupo, setIdRegistro, idRegistro, 
 
         if(atualizarCadastro == true){
             const {url, options} = FORMULARIO_UPDATE_POST(idRegistro, data, getToken());
-
-
             const {response, json} = await request(url, options);
-            console.log('Save clients here')
-            console.log(json)
-            if(json){
-                console.log('Response Save clients here')
-                console.log(json)
-                
+            if(json){                
                 callback();
                 setShowModalCriarRegistro();
                 setAtualizarCadastro(false);
                 setIdRegistro(null);
+
+                Swal.fire({
+                  icon: "success",
+                  title: "",
+                  text: 'Registrado com sucesso',
+                  footer: '',//'<a href="#">Why do I have this issue?</a>'
+                  confirmButtonColor: "#07B201",
+                });
             }
 
         }else{
 
 
         	const {url, options} = FORMULARIO_SAVE_POST(data, getToken());
-
-
             const {response, json} = await request(url, options);
-            console.log('Save clients here')
-            console.log(json)
             if(json){
-                console.log('Response Save clients here')
-            	console.log(json)
-            	
             	callback();
             	setShowModalCriarRegistro();
                 setAtualizarCadastro(false);
+
+                Swal.fire({
+                  icon: "success",
+                  title: "",
+                  text: 'Registrado com sucesso',
+                  footer: '',//'<a href="#">Why do I have this issue?</a>'
+                  confirmButtonColor: "#07B201",
+                });
             }
+
+
 
         }
     }
@@ -114,15 +119,8 @@ const FormCliente = ({dataRegistroChoice, dataGrupo, setIdRegistro, idRegistro, 
 			if(data.hasOwnProperty('id')){
                 obj.id = data.id;
     		}
-
-			
-    		
-    		
-
-    		
+	
     	}
-    	console.log('dados para formulario ----------')
-    	//console.log(obj)
     	return obj;
     }
 
@@ -146,9 +144,6 @@ const FormCliente = ({dataRegistroChoice, dataGrupo, setIdRegistro, idRegistro, 
 				setDataGrupos([...grupoCarregado])
 				let contador = dataGrupos.length;
 				setPosicao(contador + 1)
-				//adicionarGrupo
-				console.log("aqui oooo")
-				console.log(grupoCarregado)
     		}
 		}
 	}, [dataRegistroChoice])
@@ -273,9 +268,20 @@ const FormCliente = ({dataRegistroChoice, dataGrupo, setIdRegistro, idRegistro, 
 
         return tableTitle;
     }
+
+    
+    if(error){
+        Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: error,
+            footer: '',//'<a href="#">Why do I have this issue?</a>'
+            confirmButtonColor: "#07B201",
+            //width:'20rem',
+        });
+    }
     //------------
 
-	console.log('Grupo', grupo)
     const rowsTableArr = gerarTableRegistro();    
     const titulosTableArr = gerarTitleTable();
 	return(
@@ -385,7 +391,7 @@ const FormCliente = ({dataRegistroChoice, dataGrupo, setIdRegistro, idRegistro, 
 											data={
 												{
 													hasLabel:true,
-													contentLabel:'',
+													contentLabel:'Nome do grupo',
 													atributsFormLabel:{
 
 													},
@@ -413,7 +419,7 @@ const FormCliente = ({dataRegistroChoice, dataGrupo, setIdRegistro, idRegistro, 
 											data={
 												{
 													hasLabel:true,
-													contentLabel:'',
+													contentLabel:'Posição',
 													atributsFormLabel:{
 
 													},
@@ -436,7 +442,7 @@ const FormCliente = ({dataRegistroChoice, dataGrupo, setIdRegistro, idRegistro, 
 										/>
 									</Col>
 									<Col className="mt-3" xs="12" sm="12" md="2">
-										<Button onClick={adicionarGrupo} className='btn btn-sm botao_success' >Adicionar</Button>
+										<Button onClick={adicionarGrupo} className='btn btn-sm botao_success' style={{marginTop:'32px'}} >Adicionar</Button>
 									</Col>
 	                        	</Row>
 
@@ -469,4 +475,4 @@ const FormCliente = ({dataRegistroChoice, dataGrupo, setIdRegistro, idRegistro, 
 	)
 }
 
-export default FormCliente;
+export default FormConstrutorFicha;

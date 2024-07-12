@@ -38,19 +38,10 @@ const FormFilial = ({dataFilialChoice, dataEstado, setIdFilial, idFilial, showMo
 
     	}
 
-    	//alert('aqui')
-
         if(atualizarCadastro == true){
             const {url, options} = FILIAIS_UPDATE_POST(idFilial, data, getToken());
-
-
             const {response, json} = await request(url, options);
-            console.log('Save clients here')
-            console.log(json)
             if(json){
-                console.log('Response Save clients here')
-                console.log(json)
-                
                 callback();
                 setShowModalCriarFilial();
                 setAtualizarCadastro(false);
@@ -59,7 +50,7 @@ const FormFilial = ({dataFilialChoice, dataEstado, setIdFilial, idFilial, showMo
                 Swal.fire({
                   icon: "success",
                   title: "",
-                  text: 'Reigistrado com sucesso',
+                  text: 'Registrado com sucesso',
                   footer: '',//'<a href="#">Why do I have this issue?</a>'
                   confirmButtonColor: "#07B201",
                 });
@@ -69,15 +60,9 @@ const FormFilial = ({dataFilialChoice, dataEstado, setIdFilial, idFilial, showMo
 
 
         	const {url, options} = FILIAIS_SAVE_POST(data, getToken());
-
-
             const {response, json} = await request(url, options);
-            console.log('Save clients here')
-            console.log(json)
             if(json){
-                console.log('Response Save clients here')
-            	console.log(json)
-            	
+                
             	callback();
             	setShowModalCriarFilial();
                 setAtualizarCadastro(false);
@@ -85,7 +70,7 @@ const FormFilial = ({dataFilialChoice, dataEstado, setIdFilial, idFilial, showMo
                 Swal.fire({
                   icon: "success",
                   title: "",
-                  text: 'Reigistrado com sucesso',
+                  text: 'Registrado com sucesso',
                   footer: '',//'<a href="#">Why do I have this issue?</a>'
                   confirmButtonColor: "#07B201",
                 });
@@ -131,19 +116,6 @@ const FormFilial = ({dataFilialChoice, dataEstado, setIdFilial, idFilial, showMo
     	return obj;
     }
     
-   /* if(atualizarCadastro){
-        return(
-            <Modal  handleConcluir={()=>null}  title={'Cadastrar Cliente ..'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarFilial} showHide={()=>{setShowModalCriarFilial();}}>
-                {carregandoDadosChoice && <Load/>}
-                <Atualizar
-                    idFilial={idFilial} 
-                    setDataCliente={setDataFilialChoice}
-                    setCarregandoDadosCliente={setCarregandoDadosChoice}
-                />
-             </Modal>
-        )
-    }
-   */
     const preparaFilialToForm = ()=>{
         let grupoFormat = [{label:'Selecione...',valor:'',props:{selected:'selected', disabled:'disabled'}}]
         if(dataEstado && dataEstado.hasOwnProperty('mensagem') ){
@@ -163,10 +135,6 @@ const FormFilial = ({dataFilialChoice, dataEstado, setIdFilial, idFilial, showMo
             }
             
         }
-
-        console.log('-------------grupo agui----------------------')
-        console.log(dataEstado)
-        console.log('-------------grupo agui aa----------------------')
 
         return grupoFormat;
     }

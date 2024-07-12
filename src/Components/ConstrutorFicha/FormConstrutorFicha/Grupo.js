@@ -43,15 +43,8 @@ const Grupo = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, showModal
 
         if(atualizarCadastro == true){
             const {url, options} = CLIENTES_UPDATE_POST(idCliente, data, getToken());
-
-
             const {response, json} = await request(url, options);
-            console.log('Save clients here')
-            console.log(json)
-            if(json){
-                console.log('Response Save clients here')
-                console.log(json)
-                
+            if(json){                
                 callback();
                 setShowModalCriarCliente();
                 setAtualizarCadastro(false);
@@ -60,17 +53,9 @@ const Grupo = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, showModal
 
         }else{
 
-
         	const {url, options} = CLIENTES_SAVE_POST(data, getToken());
-
-
             const {response, json} = await request(url, options);
-            console.log('Save clients here')
-            console.log(json)
             if(json){
-                console.log('Response Save clients here')
-            	console.log(json)
-            	
             	callback();
             	setShowModalCriarCliente();
                 setAtualizarCadastro(false);
