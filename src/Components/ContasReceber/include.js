@@ -23,6 +23,7 @@ import Baixar from './Baixar/index.js'
 import Estornar from './Estornar/index.js'
 import Card from '../Utils/Card/index.js'
 import MovimentacoesFinanceiras from '../MovimentacoesFinanceiras/index.js'
+import Visualizar from './Visualizar/index.js'
 import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../functions/index.js'
 
 
@@ -41,6 +42,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
     const [cadastrarContasReceber, setCadastrarContasReceber] = React.useState(false)  
     const [incicarContasReceber, setIniciarContasReceber] = React.useState(false) 
     const [visualizarMovimentacoes, setVisualizarMovimentacoes] = React.useState(false)  
+    const [visualizarCobrancaReceber, setVisualizarCobrancaReceber] = React.useState(false)  
     const [defaultFiltersMovimentacoes, setDefaultFiltersMovimentacoes] = React.useState({})
     const [nrPageAtual, setNrPageAtual] = React.useState(null)
     const [qtdItemsTo, setQtdItemsTo] = React.useState(null)
@@ -208,6 +210,13 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                     setVisualizarMovimentacoes(false);
                 }
                 break;
+            case 'visualizar':
+                if(consultaChoice > 0){
+                    setVisualizarCobrancaReceber(true);
+                }else{
+                    setVisualizarCobrancaReceber(false);
+                }
+                break;
             default://
                 
                 break;
@@ -231,6 +240,12 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
         setContasReceberChoice(idContasReceber)
         setAcao('editar')
         setAtualizarContasReceber(true);
+    }
+    
+    const visualizarContasReceberAction = (idContasReceber)=>{
+        setContasReceberChoice(idContasReceber)
+        setAcao('visualizar')
+        setVisualizarCobrancaReceber(true);
     }
 
     const baixarContasReceberAction = (idContasReceber)=>{
@@ -311,7 +326,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                     }
 
                     if(btnVisualizar){
-                        acoesArr.push({acao:()=>atualizarContasReceberAction(atual.id), label:'Visualizar', propsOption:{}, propsLabel:{}})
+                        acoesArr.push({acao:()=>visualizarContasReceberAction(atual.id), label:'Visualizar', propsOption:{}, propsLabel:{}})
                     }
 
                     if(btnCancelar){
@@ -580,7 +595,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                     }
 
                     if(btnVisualizar){
-                        acoesArr.push({acao:()=>atualizarContasReceberAction(atual.id), label:'Visualizar', propsOption:{}, propsLabel:{}})
+                        acoesArr.push({acao:()=>visualizarContasReceberAction(atual.id), label:'Visualizar', propsOption:{}, propsLabel:{}})
                     }
 
                     if(btnCancelar){
@@ -721,7 +736,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                     }
 
                     if(btnVisualizar){
-                        acoesArr.push({acao:()=>atualizarContasReceberAction(atual.id), label:'Visualizar', propsOption:{}, propsLabel:{}})
+                        acoesArr.push({acao:()=>visualizarContasReceberAction(atual.id), label:'Visualizar', propsOption:{}, propsLabel:{}})
                     }
 
                     if(btnCancelar){
@@ -901,6 +916,11 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
             {
                 estornarContasReceber &&
                 <Estornar estornarContasReceber={estornarContasReceber} setEstornarContasReceber={setEstornarContasReceber}  idContasReceber={consultaChoice} setIdContasReceber={setContasReceberChoice} callback={callBack} />
+            }
+            
+            {
+                visualizarCobrancaReceber &&
+                <Visualizar estornarContasReceber={estornarContasReceber} setEstornarContasReceber={setEstornarContasReceber}  idContasReceber={consultaChoice} setIdContasReceber={setContasReceberChoice} callback={callBack} />
             }
 
 

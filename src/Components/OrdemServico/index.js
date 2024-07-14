@@ -1,14 +1,14 @@
 import React from 'react';
 import estilos from './OrdemServico.module.css'
 import useFetch from '../../Hooks/useFetch.js';
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, ORDEM_SERVICO_ALL_POST} from '../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, ORDEM_SERVICO_ALL_POST, FILIAIS_ALL_POST} from '../../api/endpoints/geral.js'
 import {FORMAT_DATA_PT_BR} from '../../functions/index.js'
 import {Col, Row, Button } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
 import Breadcrumbs from '../Helper/Breadcrumbs.js'
 import { Link } from 'react-router-dom/cjs/react-router-dom.min';
-import { faHome, faSearch, faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faSearch, faPlus, faTimes, faChevronDown, faChevronUp, faBroom} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from '../Utils/Modal/index.js'
 import Load from '../Utils/Load/index.js'
@@ -35,14 +35,22 @@ const OrdemServico = (props)=>{
     const [digitarOrdemServico, setDigitarOrdemServico] = React.useState(false)    
     const [cadastrarOrdemServico, setCadastrarOrdemServico] = React.useState(false)  
     const [incicarOrdemServico, setIniciarOrdemServico] = React.useState(false) 
-    const [mostarFiltros, setMostarFiltros] = React.useState(false) 
+    const [mostarFiltros, setMostarFiltros] = React.useState(true) 
     const [filtroMobile, setFiltroMobile] = React.useState(null)
     const [acao, setAcao] = React.useState(null)
+    const [codOrdem, setCodOrdem] = React.useState('')
     const [pessoa, setPessoa] = React.useState('')
+    const [codPessoa, setCodPessoa] = React.useState('')
+    const [pessoaContato, setPessoaContato] = React.useState('')
+    const [statusOrdem, setStatusOrdem] = React.useState('')
+    const [tipoOrdem, setTipoOrdem] = React.useState('')
+    const [dtInicio, setDtInico] = React.useState('')
+    const [dtFim, setDtFim] = React.useState('')
     const [ordenacao, setOrdenacao] = React.useState('')
+    const [dataFiliais, setDataFiliais] = React.useState([])
+    const [codFilial, setCodFilial] = React.useState('')
     const [nadaEncontrado, setNadaEncontrado] = React.useState(false)
-
-
+    const [appliedFilters, setAppliedFilters] = React.useState([])
     const [filtroAbertas, setFiltroAbertas] = React.useState(false)
     const [filtroConcluidas, setFiltroConcluidas] = React.useState(false)
     const [filtroCanceladas, setFiltroCanceladas] = React.useState(false)
@@ -56,18 +64,72 @@ const OrdemServico = (props)=>{
         console.log(target)
     }
 
+    const handleSearch = (ev)=>{
+        if (ev.key === "Enter") {
+            requestAllOrdemServicos();
+        }
+    }
+
     const handleFiltroMobile = ({target})=>{
         setFiltroMobile(target.value)
     }
 
-    const setNamePessoa = ({target})=>{
+    const setCodeOrdemFilter = ({target})=>{
+        setCodOrdem(target.value)
+    }
+
+    const setCodeFilialOrdemFilter = ({target})=>{
+        setCodFilial(target.value)
+    }
+
+    const setDtInicioOrdemFilter = ({target})=>{
+        setDtInico(target.value)
+    }
+
+    const setDtFimOrdemFilter = ({target})=>{
+        setDtFim(target.value)
+    }
+
+    const setTipoOrdemFilter = ({target})=>{
+        
+        setTipoOrdem(target.value)
+    }
+
+    const setStatusOrdemFilter = ({target})=>{
+        
+        setStatusOrdem(target.value)
+    }
+
+
+    const setNamePessoaFilter = ({target})=>{
         
         setPessoa(target.value)
     }
 
+    const setCodPessoaFilter = ({target})=>{
+        
+        setCodPessoa(target.value)
+    }
+    const setPessoaContatoFilter = ({target})=>{
+        
+        setPessoaContato(target.value)
+    }
+
+
     const setOrdenacaoFiltro = ({target})=>{
         
         setOrdenacao(target.value)
+    }
+
+
+    const preparaFilialToForm = ()=>{
+        if(dataFiliais.hasOwnProperty('mensagem') && Array.isArray(dataFiliais.mensagem) && dataFiliais.mensagem.length > 0){
+            let filiais = dataFiliais.mensagem.map(({id, name_filial}, index, arr)=>({label:name_filial,value:id,props:{}}))
+            filiais.unshift({label:'Selecione...',value:'',props:{selected:'selected'}})
+            
+            return filiais;
+        }
+        return []
     }
 
     const filtersArr = [
@@ -75,40 +137,72 @@ const OrdemServico = (props)=>{
             type:'text',
             options:[], 
             hasLabel: true,
-            contentLabel:'Pessoa',
+            contentLabel:'Código',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'name':'id', value:codOrdem, onChange:setCodeOrdemFilter, onBlur:setCodeOrdemFilter, onKeyUp:handleSearch},
+
+        },
+        {
+            type:'select',
+            options:[...preparaFilialToForm()], 
+            hasLabel: true,
+            contentLabel:'Filial',
+            atributsFormLabel:{},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'select', size:"sm",'name':'filial_id', value:codFilial, onChange:setCodeFilialOrdemFilter, onBlur:setCodeFilialOrdemFilter, onKeyUp:handleSearch},
 
         },
         {
             type:'text',
             options:[], 
             hasLabel: true,
-            contentLabel:'Contato',
+            contentLabel:'Cód pessoa',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name_atendido':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm", name:'pessoa_id', value:codPessoa,onChange:setCodPessoaFilter, onBlur:setCodPessoaFilter, onKeyUp:handleSearch},
 
         },
         {
             type:'text',
             options:[], 
+            hasLabel: true,
+            contentLabel:'Pessoa',
+            atributsFormLabel:{},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm", name:'pessoa_name', value:pessoa,onChange:setNamePessoaFilter, onBlur:setNamePessoaFilter, onKeyUp:handleSearch},
+
+        },
+        {
+            type:'text',
+            options:[], 
+            hasLabel: true,
+            contentLabel:'Pessoa do contato',
+            atributsFormLabel:{},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",name:'name_atendido', value:pessoaContato, onChange:setPessoaContatoFilter, onBlur:setPessoaContatoFilter, onKeyUp:handleSearch},
+
+        },
+        {
+            type:'select',
+            options:[{'label':'Selecione...', 'value':''},{'label':'Aberto', 'value':'aberto'},
+            {'label':'Concluído', 'value':'concluido'},{'label':'Cancelado', 'value':'cancelado'},],  
             hasLabel: true,
             contentLabel:'Status',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'status':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",name:'status',value:statusOrdem,onChange:setStatusOrdemFilter, onBlur:setStatusOrdemFilter, onKeyUp:handleSearch},
 
         },
         {
-            type:'text',
-            options:[], 
+            type:'select',
+            options:[{'label':'Selecione...', 'value':''},{'label':'Orçamento', 'value':'orcamento'},
+            {'label':'Pedido', 'value':'pedido'}],  
             hasLabel: true,
             contentLabel:'Tipo',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'tipo':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",name:'tipo', value:tipoOrdem,onChange:setTipoOrdemFilter, onBlur:setTipoOrdemFilter, onKeyUp:handleSearch},
 
         },
         {
@@ -117,8 +211,8 @@ const OrdemServico = (props)=>{
             hasLabel: true,
             contentLabel:'Dt. inicio',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'date', size:"sm",'dt_inico':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'date', size:"sm",name:'dt_inico', value:dtInicio,onChange:setDtInicioOrdemFilter, onBlur:setDtInicioOrdemFilter, onKeyUp:handleSearch},
 
         },
         {
@@ -127,8 +221,8 @@ const OrdemServico = (props)=>{
             hasLabel: true,
             contentLabel:'Dt. fim',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'date', size:"sm",'dt_fim':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'date', size:"sm",name:'dt_fim', vlaue:dtFim,onChange:setDtFimOrdemFilter, onBlur:setDtFimOrdemFilter, onKeyUp:handleSearch},
 
         },
         {
@@ -138,24 +232,36 @@ const OrdemServico = (props)=>{
             hasLabel: true,
             contentLabel:'Classificar',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'select', size:"sm",'ordem':ordenacao, value:ordenacao, onChange:setOrdenacaoFiltro,    onBlur:setOrdenacaoFiltro},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'select', size:"sm",'ordem':ordenacao, value:ordenacao, onChange:setOrdenacaoFiltro, onBlur:setOrdenacaoFiltro, onKeyUp:handleSearch},
 
         },
     ]
 
     const acoesBottomCard=[{
-        label:'Pesquisar',
-        icon:<FontAwesomeIcon icon={faSearch} />,
-        props:{onClick:()=>requestAllOrdemServicos(), className:'btn btn-sm botao_success'}
-    },
-    {
-        label:'Cadastrar',
-        icon:<FontAwesomeIcon icon={faPlus} />,
-        props:{onClick:()=>setIniciarOrdemServico(true), className:'btn btn-sm mx-2 btn-secondary'}
-    }
+            label:'Pesquisar',
+            icon:<FontAwesomeIcon icon={faSearch} />,
+            props:{onClick:()=>requestAllOrdemServicos(), className:'btn btn-sm botao_success'}
+        },
+        {
+            label:'Limpar',
+            icon:<FontAwesomeIcon icon={faBroom} />,
+            props:{onClick:()=>limparFiltros(), className:'btn btn-sm btn-secondary mx-2'}
+        },
+        {
+            label:'Cadastrar',
+            icon:<FontAwesomeIcon icon={faPlus} />,
+            props:{onClick:()=>setIniciarOrdemServico(true), className:'btn btn-sm mx-2 btn-secondary'}
+        }
     ];
 
+
+    const acoesHeaderCard=[{
+            label:'',
+            icon:<FontAwesomeIcon icon={(mostarFiltros ? faChevronDown : faChevronUp)} />,
+            props:{onClick:()=>{setMostarFiltros(!mostarFiltros);}, className:'btn btn-sm btn-secondary'},
+        },
+    ];    
 
     React.useEffect(()=>{
 
@@ -197,35 +303,77 @@ const OrdemServico = (props)=>{
         setAcao('iniciar')
         setIniciarOrdemServico(true);
     }
+    const limparFiltros = ()=>{
+        setPessoa('')
+        setCodOrdem('');
+        setCodFilial('');
+        setCodPessoa('');
+        setPessoaContato('');
+        setFiltroAbertas('');
+        setFiltroConcluidas('');
+        setFiltroCanceladas('');
+        setStatusOrdem('');
+        setTipoOrdem('');
+        setFiltroMobile('');
+        setDtInico('');
+        setDtFim('');
+        setOrdenacao('');
+        setAppliedFilters([]);
+    }
+
+    const removeFilter = (key)=>{
+         setAppliedFilters(prevFilters => {
+            const updatedFilters = { ...prevFilters };
+            delete updatedFilters[key];
+            return updatedFilters;
+        });
+    }
     //------------
     const montarFiltro = ()=>{
         let filtros = {nr_itens_per_page:qtdItemsPerPage, usePaginate:1}
         let detalhesFiltros = {}
         
+        if(codOrdem){
+            filtros['id'] = codOrdem;
+            detalhesFiltros['id'] = {
+                label:'Código',
+                value:codOrdem,
+                resetFilter:()=>{setCodOrdem('');removeFilter('id')},
+            };
+        }
+        if(codFilial){
+            filtros['filial_id'] = codFilial;
+            detalhesFiltros['filial_id'] = {
+                label:'Filial',
+                value:codFilial,
+                resetFilter:()=>{setCodFilial('');removeFilter('filial_id')},
+            };
+        }
+
         if(pessoa){
             filtros['name_pessoa'] = pessoa;
             detalhesFiltros['name_pessoa'] = {
                 label:'Pessoa',
                 value:pessoa,
-                resetFilter:()=>setPessoa(''),
+                resetFilter:()=>{setPessoa('');removeFilter('name_pessoa')},
             };
         }
 
-        if(ordenacao){
-            filtros['ordem'] = ordenacao;
-            detalhesFiltros['ordem'] = {
-                label:'Ordenação',
-                value:ordenacao,
-                resetFilter:()=>setOrdenacao(''),
+        if(codPessoa){
+            filtros['pessoa_id'] = codPessoa;
+            detalhesFiltros['pessoa_id'] = {
+                label:'Pessoa',
+                value:codPessoa,
+                resetFilter:()=>{setCodPessoa('');removeFilter('pessoa_id')},
             };
         }
 
-        if(filtroMobile){
-            filtros['name_pessoa'] = filtroMobile;
-            detalhesFiltros['name_pessoa'] = {
-                label:'Filtro',
-                value:filtroMobile,
-                resetFilter:()=>setFiltroMobile(''),
+        if(pessoaContato){
+            filtros['pessoa_contato_name'] = pessoaContato;
+            detalhesFiltros['pessoa_contato_name'] = {
+                label:'Pessoa do contato',
+                value:pessoaContato,
+                resetFilter:()=>{setPessoaContato('');removeFilter('pessoa_contato_name')},
             };
         }
 
@@ -239,7 +387,7 @@ const OrdemServico = (props)=>{
             detalhesFiltros['status'] = {
                 label:'Status',
                 value:filtroMobile,
-                resetFilter:()=>setFiltroAbertas(''),
+                resetFilter:()=>{setFiltroAbertas('');removeFilter('status')},
             };
         }
 
@@ -253,7 +401,7 @@ const OrdemServico = (props)=>{
             detalhesFiltros['status'] = {
                 label:'Status',
                 value:filtroMobile,
-                resetFilter:()=>setFiltroConcluidas(''),
+                resetFilter:()=>{setFiltroConcluidas('');removeFilter('status')},
             };
         }
 
@@ -267,7 +415,52 @@ const OrdemServico = (props)=>{
             detalhesFiltros['status'] = {
                 label:'Status',
                 value:filtroMobile,
-                resetFilter:()=>setFiltroCanceladas(''),
+                resetFilter:()=>{setFiltroCanceladas('');removeFilter('status')},
+            };
+        }
+
+        if(statusOrdem){
+            filtros['status'] = statusOrdem;
+            detalhesFiltros['status'] = {
+                label:'Status',
+                value:statusOrdem,
+                resetFilter:()=>{setStatusOrdem('');removeFilter('status')},
+            };
+        }
+
+        if(tipoOrdem){
+            filtros['type'] = tipoOrdem;
+            detalhesFiltros['type'] = {
+                label:'Tipo',
+                value:tipoOrdem,
+                resetFilter:()=>{setTipoOrdem('');removeFilter('type')},
+            };
+        }
+
+        if(filtroMobile){
+            filtros['name_pessoa'] = filtroMobile;
+            detalhesFiltros['name_pessoa'] = {
+                label:'Filtro',
+                value:filtroMobile,
+                resetFilter:()=>{setFiltroMobile('');removeFilter('name_pessoa')},
+            };
+        }
+        
+        if(dtInicio || dtFim){
+            filtros['dt_exercicio'] = dtInicio+','+dtFim;
+            detalhesFiltros['dt_exercicio'] = {
+                label:'Exercíco',
+                value:dtInicio+','+dtFim,
+                resetFilter:()=>{setDtInico('');setDtFim('');removeFilter('dt_exercicio')},
+            };
+        }
+
+        if(ordenacao){
+            filtros['ordem'] = ordenacao;
+            detalhesFiltros['ordem'] = {
+                label:'Ordenação',
+                value:ordenacao,
+                resetFilter:()=>{setOrdenacao('');removeFilter('ordem')},
             };
         }
 
@@ -281,15 +474,13 @@ const OrdemServico = (props)=>{
         setOrdemServico([])
 
         let {filtros, detalhesFiltros} = montarFiltro();
+        setAppliedFilters(detalhesFiltros)
         let {url, options} = ORDEM_SERVICO_ALL_POST({...filtros}, getToken());
         if(nextPage){
             url = nextPage;
         }
 
         const {response, json} = await request(url, options);
-        console.log('All serviços here')
-        console.log({'name_servico':pessoa})
-        console.log(json)
         if(json){
             setOrdemServico(json)
             if( json?.mensagem && json?.mensagem.length > 0){
@@ -301,26 +492,40 @@ const OrdemServico = (props)=>{
         }else{
             setNadaEncontrado(true)
         }
-        //setMostarFiltros(false)
-        //setFiltroMobile(null)
-            
     }
+
+
+    const requestAllFilials = async() =>{
+        setDataFiliais([])
+
+        let {url, options} = FILIAIS_ALL_POST({}, getToken());
+        const {response, json} = await request(url, options);
+        if(json){            
+            setDataFiliais(json)
+        }            
+    }
+
 
     React.useEffect(()=>{
 
-        const requestAllOrdemServicosEffect = async() =>{
-       
-           await requestAllOrdemServicos();
-
-            
+        const requestDataConfigEffect = async() =>{
+            await requestAllFilials()
         }
 
+        const requestAllOrdemServicosEffect = async() =>{
+           await requestAllOrdemServicos();            
+        }
+
+        requestDataConfigEffect();
         requestAllOrdemServicosEffect();
 
         
     }, [filtroConcluidas, filtroCanceladas, filtroAbertas, nextPage, setNextPage])
 
-
+    React.useEffect(()=>{
+        let {filtros, detalhesFiltros} = montarFiltro();
+        setAppliedFilters(detalhesFiltros)
+    }, [])
 
     /**
      * Deve ter a opção de cadastrar salas de consulta
@@ -353,13 +558,17 @@ const OrdemServico = (props)=>{
                 mostarFiltros={mostarFiltros}
             />
             <Row>
-                {mostarFiltros && 
+                {
                     (
                         <>
-                            <Col  xs="12" sm="12" md="3" className={'default_card_report'}>
+                            <Col  xs="12" sm="12" md="12" className={'default_card_report'}>
                                 <Filter
                                     filtersArr={filtersArr}
                                     actionsArr={acoesBottomCard}
+                                    mostarFiltros={mostarFiltros}
+                                    setMostarFiltros={setMostarFiltros}
+                                    botoesHeader={acoesHeaderCard}
+                                    activeFilters={appliedFilters}
                                 />
                             </Col>
 
@@ -450,7 +659,7 @@ const OrdemServico = (props)=>{
                     </div>
                 </Col>
                 
-                <Col  xs="12" sm="12" md={mostarFiltros ? "9":"12"}>
+                <Col  xs="12" sm="12" md={12}>
                     <Include
                         dataEstado={estado}
                         loadingData={loading}

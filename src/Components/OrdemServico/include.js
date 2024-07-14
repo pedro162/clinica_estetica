@@ -806,16 +806,6 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                         totalPageCount={totalPageCount}
                     />
 
-                    {
-                    /*
-                    <CardMobile
-                        titulosTableArr={null}
-                        rowsTableArr={gerarCardContasReceber()}
-                        loading={loadingData}
-                        botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
-                    />
-                    */
-                    }
                 </Col>
 
                 <Col  xs="12" sm="12" md="12"  className={'default_card_report'}  >
@@ -824,7 +814,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                         rowsTableArr={rowsTableArr}
                         loading={loadingData}
                         nadaEncontrado={nadaEncontrado}
-                        botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
+                        botoesHeader={[]}
                         refScrollTable={divRef}
                         nextPage={nextPage}
                         setNextPage={setNextPage}

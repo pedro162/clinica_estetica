@@ -283,20 +283,15 @@ const MovimentacoesFinanceira = (props)=>{
     ]
 
     const acoesBottomCard=[{
-        label:'Pesquisar',
-        icon:<FontAwesomeIcon icon={faSearch} />,
-        props:{onClick:()=>requestAllMovimentacoesFinanceiras(), className:'btn btn-sm botao_success'}
-    },
-    {
-        label:'Limpar',
-        icon:<FontAwesomeIcon icon={faBroom} />,
-        props:{onClick:()=>limparFiltros(), className:'btn btn-sm btn-secondary mx-2'}
-    },
-    {
-        label:'Cadastrar',
-        icon:<FontAwesomeIcon icon={faPlus} />,
-        props:{onClick:()=>setCadastrarMovimentacoesFinanceira(true), className:'btn btn-sm btn-secondary'}
-    }
+            label:'Pesquisar',
+            icon:<FontAwesomeIcon icon={faSearch} />,
+            props:{onClick:()=>requestAllMovimentacoesFinanceiras(), className:'btn btn-sm botao_success'}
+        },
+        {
+            label:'Limpar',
+            icon:<FontAwesomeIcon icon={faBroom} />,
+            props:{onClick:()=>limparFiltros(), className:'btn btn-sm btn-secondary mx-2'}
+        },
     ];
 
     const acoesHeaderCard=[{

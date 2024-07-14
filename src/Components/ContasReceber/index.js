@@ -537,7 +537,6 @@ const ContasReceber = ({defaultFilters ,...props})=>{
         let {filtros, detalhesFiltros} = montarFiltro();
         setAppliedFilters(detalhesFiltros)
         let {url, options} = CONTAS_RECEBER_ALL_POST({...filtros}, getToken());
-
         if(nextPage){
             url = nextPage;
         }
