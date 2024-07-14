@@ -3,7 +3,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap');
 
 *{
-    box-sizing:borer-box !important;
+    box-sizing:border-box !important;
     letter-spacing: 0.07em;
 }
 

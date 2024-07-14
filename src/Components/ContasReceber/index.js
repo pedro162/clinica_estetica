@@ -1,7 +1,7 @@
 import React from 'react';
 import estilos from './ContasReceber.module.css'
 import useFetch from '../../Hooks/useFetch.js';
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CONTAS_RECEBER_ALL_POST, FILIAIS_ALL_POST} from '../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CONTAS_RECEBER_ALL_POST, FILIAIS_ALL_POST, RECORD_NUMBER_PER_REQUEST} from '../../api/endpoints/geral.js'
 import {FORMAT_DATA_PT_BR} from '../../functions/index.js'
 import {Col, Row, Button } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
@@ -43,7 +43,7 @@ const ContasReceber = ({defaultFilters ,...props})=>{
     const [nextPage, setNextPage] = React.useState(null)
     const [totalPageCount, setTotalPageCount] = React.useState(null)
     const [usePagination, setUsePagination] = React.useState(true)
-    const [qtdItemsPerPage, setQtdItemsPerPage] = React.useState(10)
+    const [qtdItemsPerPage, setQtdItemsPerPage] = React.useState(RECORD_NUMBER_PER_REQUEST)
     const [nadaEncontrado, setNadaEncontrado] = React.useState(false)
     const [ordenacao, setOrdenacao] = React.useState('')
     const [codCobReceber, setCodCobReceber] = React.useState('')
@@ -136,7 +136,7 @@ const ContasReceber = ({defaultFilters ,...props})=>{
     const preparaFilialToForm = ()=>{
         if(dataFiliais.hasOwnProperty('mensagem') && Array.isArray(dataFiliais.mensagem) && dataFiliais.mensagem.length > 0){
             let filiais = dataFiliais.mensagem.map(({id, name_filial}, index, arr)=>({label:name_filial,value:id,props:{}}))
-            filiais.unshift({label:'Selecione...',value:'',props:{selected:'selected', disabled:'disabled'}})
+            filiais.unshift({label:'Selecione...',value:'',props:{selected:'selected'}})
             
             return filiais;
         }
@@ -215,8 +215,8 @@ const ContasReceber = ({defaultFilters ,...props})=>{
 
         },
         {
-            type:'text',
-            options:[], 
+            type:'select',
+            options:[{'label':'Selecione...', 'value':''},{'label':'Ordems de serviços', 'value':'ordem_servicos'},{'label':'Sem referência', 'value':'sem_referencia'}], 
             hasLabel: true,
             contentLabel:'Referência',
             atributsFormLabel:{},
