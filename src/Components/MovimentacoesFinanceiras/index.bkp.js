@@ -16,6 +16,7 @@ import FormConsulta from './FormConsulta/index.js'
 import Cadastrar from './Cadastrar/index.js'
 import Atualizar from './Atualizar/index.js'
 import Cancelar from './Cancelar/index.js'
+import Visualizar from './Visualizar/index.js'
 
 
 const Consulta = (props)=>{

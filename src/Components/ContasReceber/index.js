@@ -46,7 +46,7 @@ const ContasReceber = ({defaultFilters ,...props})=>{
     const [qtdItemsPerPage, setQtdItemsPerPage] = React.useState(RECORD_NUMBER_PER_REQUEST)
     const [nadaEncontrado, setNadaEncontrado] = React.useState(false)
     const [ordenacao, setOrdenacao] = React.useState('')
-    const [codCobReceber, setCodCobReceber] = React.useState('')
+    const [codCobReceber, setCodCobReceber] = React.useState(()=>{return defaultFilters?.id;})
     const [dataFiliais, setDataFiliais] = React.useState([])
     const [codFilial, setCodFilial] = React.useState('')
     const [codPessoa, setCodPessoa] = React.useState('')
@@ -368,7 +368,8 @@ const ContasReceber = ({defaultFilters ,...props})=>{
             filtros['nr_itens_per_page'] = qtdItemsPerPage;
         }
         
-        if(codCobReceber){
+        if(String(codCobReceber).length >0){
+            
             filtros['id'] = codCobReceber;
             detalhesFiltros['id'] = {
                 label:'Código',
@@ -534,9 +535,9 @@ const ContasReceber = ({defaultFilters ,...props})=>{
         setContasReceber([])
         setNadaEncontrado(false)
 
-        let {filtros, detalhesFiltros} = montarFiltro();
+        let {filtros, detalhesFiltros} = await montarFiltro();
         setAppliedFilters(detalhesFiltros)
-        let {url, options} = CONTAS_RECEBER_ALL_POST({...filtros}, getToken());
+        let {url, options} = await CONTAS_RECEBER_ALL_POST({...filtros}, getToken());
         if(nextPage){
             url = nextPage;
         }
@@ -584,6 +585,7 @@ const ContasReceber = ({defaultFilters ,...props})=>{
     }
 
     React.useEffect(()=>{
+        //setCodCobReceber(defaultFilters?.id);
 
         const requestDataConfigEffect = async() =>{
             await requestAllFilials()
@@ -596,7 +598,7 @@ const ContasReceber = ({defaultFilters ,...props})=>{
         requestAllContasRecebersEffect();
 
         
-    }, [filtroAvencer, filtroVencidas, filtroPagas, filtroAbertas,nextPage, setNextPage])
+    }, [filtroAvencer, filtroVencidas, filtroPagas, filtroAbertas,nextPage, setNextPage, defaultFilters])
 
     React.useEffect(()=>{
         let {filtros, detalhesFiltros} = montarFiltro();

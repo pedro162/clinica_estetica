@@ -48,7 +48,7 @@ const Atualizar = ({idMovimentacoesFinanceira, setIdMovimentacoesFinanceira, cal
 	return(
 		<>
 			{! dataMovimentacoesFinanceira &&
-				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={()=>null}  title={'Atualizar MovimentacoesFinanceira'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="" show={setShowModalAtualizarMovimentacoesFinanceira} showHide={()=>{setShowModalAtualizarMovimentacoesFinanceira();}}>
+				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={()=>null}  title={'Atualizar MovimentacoesFinanceira'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="" show={setShowModalAtualizarMovimentacoesFinanceira} showHide={()=>{setShowModalAtualizarMovimentacoesFinanceira();}}>
 					<Load/>
 				</Modal>
 			}

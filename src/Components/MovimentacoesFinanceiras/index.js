@@ -43,8 +43,8 @@ const MovimentacoesFinanceira = ({defaultFilters, ...props})=>{
     const [estornado, setEstornado] = React.useState(null)
     const [conciliado, setConciliado] = React.useState(null)
     const [historico, setHistorico] = React.useState(null)
-    const [codigoOrigem, setCodigoOrigem] = React.useState(defaultFilters?.referencia_id)
-    const [origem, setOrigem] = React.useState(defaultFilters?.referencia)
+    const [codigoOrigem, setCodigoOrigem] = React.useState(()=>{return props?.idReferencia})
+    const [origem, setOrigem] = React.useState(()=>{return props?.referencia})
     const [dtInicio, setDtInicio] = React.useState(null)
     const [dtFim, setDtFim] = React.useState(null)
     const [filtroMobile, setFiltroMobile] = React.useState(null)
@@ -575,8 +575,8 @@ const MovimentacoesFinanceira = ({defaultFilters, ...props})=>{
     const requestAllMovimentacoesFinanceiras = async() =>{
         setMovimentacoesFinanceira([])
 
-        let {filtros, detalhesFiltros} = montarFiltro();
-        setAppliedFilters(detalhesFiltros)
+        let {filtros, detalhesFiltros} = await montarFiltro();
+        await setAppliedFilters(detalhesFiltros)
         let {url, options} = CONTAS_MOVIMENTACOES_FINANCEIRAS_ALL_POST({...filtros}, getToken());
         if(nextPage){
             url = nextPage;
@@ -641,7 +641,7 @@ const MovimentacoesFinanceira = ({defaultFilters, ...props})=>{
         requestAllMovimentacoesFinanceirasEffect();
 
         
-    }, [filtroDebitos, filtroCreditos, filtroEstornadas, filtroConciliadas, nextPage, setNextPage])
+    }, [filtroDebitos, filtroCreditos, filtroEstornadas, filtroConciliadas, nextPage, setNextPage, defaultFilters])
 
 
     React.useEffect(()=>{

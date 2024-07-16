@@ -17,6 +17,8 @@ import Cadastrar from './Cadastrar/index.js'
 import Atualizar from './Atualizar/index.js'
 import Cancelar from './Cancelar/index.js'
 import ListMobile from '../Relatorio/ListMobile/index.js'
+import Visualizar from './Visualizar/index.js'
+import Origem from './Origem/index.js'
 
 
 const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFiltros, idMovimentacoesFinanceiraCriada, nextPage, setNextPage, usePagination, setUsePagination, totalPageCount, setTotalPageCount,  ...props})=>{
@@ -35,6 +37,8 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
     const [nrPageAtual, setNrPageAtual] = React.useState(null)
     const [qtdItemsTo, setQtdItemsTo] = React.useState(null)
     const [qtdItemsTotal, setQtdItemsTotal] = React.useState(null)
+    const [visualizarMovimentacoesFinanceira, setVisualizarMovimentacoesFinanceira] = React.useState(false)  
+    const [visualizarOrigemMovimentacoesFinanceira, setVisualizarOrigemMovimentacoesFinanceira] = React.useState(false)  
 
 
     const {getToken, dataUser} = React.useContext(UserContex);
@@ -105,6 +109,22 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                     setCancelarMovimentacoesFinanceira(false);
                 }
                 break;
+
+            case 'vusializar':
+                if(consultaChoice > 0){
+                    setVisualizarMovimentacoesFinanceira(true);
+                }else{
+                    setVisualizarMovimentacoesFinanceira(false);
+                }
+                break;  
+
+            case 'origem':
+                if(consultaChoice > 0){
+                    setAtualizarMovimentacoesFinanceira(true);
+                }else{
+                    setAtualizarMovimentacoesFinanceira(false);
+                }
+                break;  
             default://
                 
                 break;
@@ -140,6 +160,18 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
         setAcao('consultar')
         setAtualizarMovimentacoesFinanceira(true);
     }
+    
+    const visualizarMovimentacoesFinanceiraAction = (idMovimentacoesFinanceira)=>{
+        setMovimentacoesFinanceiraChoice(idMovimentacoesFinanceira)
+        setAcao('visualizar')
+        setVisualizarMovimentacoesFinanceira(true);
+    }
+    
+    const visualizarOrigemMovimentacoesFinanceiraAction = (idMovimentacoesFinanceira)=>{
+        setMovimentacoesFinanceiraChoice(idMovimentacoesFinanceira)
+        setAcao('origem')
+        setVisualizarOrigemMovimentacoesFinanceira(true);
+    }
 
     const gerarTableMovimentacoesFinanceira = ()=>{
        
@@ -168,13 +200,15 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
 
 
                     if(btnDetalhes){
-                        acoesArr.push({acao:()=>atualizarMovimentacoesFinanceiraAction(atual.id), label:'Detalhes', propsOption:{}, propsLabel:{}})
+                        acoesArr.push({acao:()=>visualizarMovimentacoesFinanceiraAction(atual.id), label:'Detalhes', propsOption:{}, propsLabel:{}})
                     }
 
 
                     if(btnOrigem){
-                        acoesArr.push({acao:()=>atualizarMovimentacoesFinanceiraAction(atual.id), label:'Origem', propsOption:{}, propsLabel:{}})
+                        acoesArr.push({acao:()=>visualizarOrigemMovimentacoesFinanceiraAction(atual.id), label:'Origem', propsOption:{}, propsLabel:{}})
                     }
+
+
 
                     
                     //'remarcado','finalizado','cancelado','pendente'
@@ -326,12 +360,12 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
 
 
                     if(btnDetalhes){
-                        acoesArr.push({acao:()=>atualizarMovimentacoesFinanceiraAction(atual.id), label:'Detalhes', propsOption:{}, propsLabel:{}})
+                        acoesArr.push({acao:()=>visualizarMovimentacoesFinanceiraAction(atual.id), label:'Detalhes', propsOption:{}, propsLabel:{}})
                     }
 
 
                     if(btnOrigem){
-                        acoesArr.push({acao:()=>atualizarMovimentacoesFinanceiraAction(atual.id), label:'Origem', propsOption:{}, propsLabel:{}})
+                        acoesArr.push({acao:()=>visualizarOrigemMovimentacoesFinanceiraAction(atual.id), label:'Origem', propsOption:{}, propsLabel:{}})
                     }
 
                     data.push(
@@ -472,19 +506,20 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                     />
                 </Col>
             </Row>
-
-            {
-                cadastrarMovimentacoesFinanceira && <Cadastrar cadastrarMovimentacoesFinanceira={cadastrarMovimentacoesFinanceira} setCadastrarMovimentacoesFinanceira={setCadastrarMovimentacoesFinanceira} atualizarMovimentacoesFinanceira={atualizarMovimentacoesFinanceira} setAtualizarMovimentacoesFinanceira={setAtualizarMovimentacoesFinanceira}  idMovimentacoesFinanceira={consultaChoice} setIdMovimentacoesFinanceira={setMovimentacoesFinanceiraChoice} callback={requestAllMovimentacoesFinanceiras} />
-            }
             
             {
-                atualizarMovimentacoesFinanceira &&
+                /*atualizarMovimentacoesFinanceira && consultaChoice > 0 &&
                 <Atualizar atualizarMovimentacoesFinanceira={atualizarMovimentacoesFinanceira} setAtualizarMovimentacoesFinanceira={setAtualizarMovimentacoesFinanceira}  idMovimentacoesFinanceira={consultaChoice} setIdMovimentacoesFinanceira={setMovimentacoesFinanceiraChoice} callback={requestAllMovimentacoesFinanceiras} />
+            */}
+
+            {
+                visualizarMovimentacoesFinanceira && consultaChoice > 0 &&
+                <Visualizar idMovimentacoesFinanceira={consultaChoice} setIdMovimentacoesFinanceira={setMovimentacoesFinanceiraChoice} setVisualizarMovimentacoesFinanceira={setVisualizarMovimentacoesFinanceira} callback={callBack} />
             }
 
             {
-                cancelarMovimentacoesFinanceira &&
-                <Cancelar cancelarMovimentacoesFinanceira={cancelarMovimentacoesFinanceira} setCancelarMovimentacoesFinanceira={setCancelarMovimentacoesFinanceira}  idMovimentacoesFinanceira={consultaChoice} setIdMovimentacoesFinanceira={setMovimentacoesFinanceiraChoice} callback={requestAllMovimentacoesFinanceiras} />
+                visualizarOrigemMovimentacoesFinanceira && consultaChoice > 0 &&
+                <Origem idMovimentacoesFinanceira={consultaChoice} setIdMovimentacoesFinanceira={setMovimentacoesFinanceiraChoice} setVisualizarOrigemMovimentacoesFinanceira={setVisualizarOrigemMovimentacoesFinanceira} callback={callBack} />
             }
 
            

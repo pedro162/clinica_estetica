@@ -70,12 +70,12 @@ const Detalhes = ({dataContasReceberChoice, ...props})=>{
 		            </tfoot>
 		          </Table>
 		        </Col>
-		      </Row>
-		      <Row className="mt-4">
+		    </Row>
+		    <Row className="mt-4">
 		        <Col className="text-center">
 		          <p><strong>Obrigado pelo seu negócio!</strong></p>
 		        </Col>
-		      </Row>
+		    </Row>
 		</React.Fragment>
 	)
 }
