@@ -30,7 +30,7 @@ const Card =({children, title, acoesBottomCard, propsContainerTitulo, propsConta
 											}
 											if(label || icon){
 												return (
-													<Button key={index+'-'+arr.length} onClick={acao} {...propsAcoes} >{icon?icon:''} {label?label:''}</Button>
+													<Button key={'__btn_action_'+index+'-'+arr.length} onClick={acao} {...propsAcoes} >{icon?icon:''} {label?label:''}</Button>
 												)
 											}
 

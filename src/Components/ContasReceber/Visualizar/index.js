@@ -107,7 +107,7 @@ const Visualizar = ({idContasReceber, setIdContasReceber, callback, atualizarCon
 				<Modal 
 						noBtnConcluir={true}
 						handleConcluir={()=>null}
-						title={'Detalhes'}
+						title={'Detalhes conta a receber nº '+idContasReceber}
 						size="lg" propsConcluir={{'disabled':loading}}
 						labelConcluir={loading ? 'Salvando...' : 'Concluir'}
 						dialogClassName={''} aria-labelledby={'aria-labelledby'}
@@ -124,7 +124,6 @@ const Visualizar = ({idContasReceber, setIdContasReceber, callback, atualizarCon
 	                    setDataContasReceber={setDataContasReceber}
 	                    setIdContasReceber={setIdContasReceber}
 	                    idContasReceber={idContasReceber}
-	                    carregando={false}
 	                    dataContasReceberChoice={dataContasReceber}
 	                    showModalCriarContasReceber={showModalAtualizarContasReceber}
 	                    setShowModalCriarContasReceber={setShowModalAtualizarContasReceber}

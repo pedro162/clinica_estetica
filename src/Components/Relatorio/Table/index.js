@@ -196,7 +196,7 @@ const Table = ({children, titulosTableArr, rowsTableArr,loading, nadaEncontrado,
 							  <tfoot>
 								{arraySum && (
 									<tr>
-										<td></td>
+										<td key={'__00_tfooter'} ></td>
 										{Object.keys(arraySum).map((ojKey, index, arr)=>{
 											let {valor,isCoin} = arraySum[ojKey]
 											let rand = Math.floor(Math.random()*999999);
@@ -211,7 +211,7 @@ const Table = ({children, titulosTableArr, rowsTableArr,loading, nadaEncontrado,
 											}else{
 												valorAtual = valor;
 											}
-											return <td key={rand+index+'tfooter'} >{valorAtual}</td>
+											return <td key={'__'+rand+index+'_tfooter__'} >{valorAtual}</td>
 										})}
 
 										

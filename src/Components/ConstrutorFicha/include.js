@@ -194,7 +194,12 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
             for(let i=0; !(i == dataConstrutorFicha.length); i++){
                 let atual = dataConstrutorFicha[i];
                 if(atual){
-                    let acoesArr = [];
+                    let acoesArr = [
+                        {acao:()=>atualizarRegistro(atual.id), label:'Editar', propsOption:{}, propsLabel:{}},
+                        {acao:()=>novoAtendimento(atual.id), label:'Excluir', propsOption:{}, propsLabel:{}},
+                        {acao:()=>exbirListaGrupo(atual.id), label:'Grupos', propsOption:{}, propsLabel:{}},
+                        {acao:()=>exbirListaItem(atual.id), label:'Itens', propsOption:{}, propsLabel:{}},
+                    ];
 
                     let line_style = {}
 

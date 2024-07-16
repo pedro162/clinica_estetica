@@ -1,7 +1,7 @@
 import React from 'react';
 import estilos from './OrdemServico.module.css'
 import useFetch from '../../Hooks/useFetch.js';
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, ORDEM_SERVICO_ALL_POST, FILIAIS_ALL_POST} from '../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, ORDEM_SERVICO_ALL_POST, FILIAIS_ALL_POST, RECORD_NUMBER_PER_REQUEST, PROFISSIONAIS_ALL_POST} from '../../api/endpoints/geral.js'
 import {FORMAT_DATA_PT_BR} from '../../functions/index.js'
 import {Col, Row, Button } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
@@ -49,6 +49,8 @@ const OrdemServico = (props)=>{
     const [ordenacao, setOrdenacao] = React.useState('')
     const [dataFiliais, setDataFiliais] = React.useState([])
     const [codFilial, setCodFilial] = React.useState('')
+    const [dataProfissionais, setDataProfissionais] = React.useState([])
+    const [codProfissional, setCodProfissional] = React.useState('')
     const [nadaEncontrado, setNadaEncontrado] = React.useState(false)
     const [appliedFilters, setAppliedFilters] = React.useState([])
     const [filtroAbertas, setFiltroAbertas] = React.useState(false)
@@ -56,7 +58,7 @@ const OrdemServico = (props)=>{
     const [filtroCanceladas, setFiltroCanceladas] = React.useState(false)
     const [nextPage, setNextPage] = React.useState(null)
     const [usePagination, setUsePagination] = React.useState(true)
-    const [qtdItemsPerPage, setQtdItemsPerPage] = React.useState(10)
+    const [qtdItemsPerPage, setQtdItemsPerPage] = React.useState(RECORD_NUMBER_PER_REQUEST)
     const [totalPageCount, setTotalPageCount] = React.useState(null)
     const {getToken} = React.useContext(UserContex);
 
@@ -76,6 +78,10 @@ const OrdemServico = (props)=>{
 
     const setCodeOrdemFilter = ({target})=>{
         setCodOrdem(target.value)
+    }
+    
+    const setCodeProfissionalOrdemFilter = ({target})=>{
+        setCodProfissional(target.value)
     }
 
     const setCodeFilialOrdemFilter = ({target})=>{
@@ -132,6 +138,16 @@ const OrdemServico = (props)=>{
         return []
     }
 
+    const preparaProfissionalToForm = ()=>{
+        if(dataProfissionais.hasOwnProperty('mensagem') && Array.isArray(dataProfissionais.mensagem) && dataProfissionais.mensagem.length > 0){
+            let filiais = dataProfissionais.mensagem.map(({id, name_pessoa}, index, arr)=>({label:name_pessoa,value:id,props:{}}))
+            filiais.unshift({label:'Selecione...',value:'',props:{selected:'selected'}})
+            
+            return filiais;
+        }
+        return []
+    }
+
     const filtersArr = [
         {
             type:'text',
@@ -181,6 +197,16 @@ const OrdemServico = (props)=>{
             atributsFormLabel:{},
             atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
             atributsFormControl:{'type':'text', size:"sm",name:'name_atendido', value:pessoaContato, onChange:setPessoaContatoFilter, onBlur:setPessoaContatoFilter, onKeyUp:handleSearch},
+
+        },
+        {
+            type:'select',
+            options:[...preparaProfissionalToForm()], 
+            hasLabel: true,
+            contentLabel:'Profissional',
+            atributsFormLabel:{},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'select', size:"sm",'name':'profissional_id', value:codProfissional, onChange:setCodeProfissionalOrdemFilter, onBlur:setCodeProfissionalOrdemFilter, onKeyUp:handleSearch},
 
         },
         {
@@ -318,6 +344,7 @@ const OrdemServico = (props)=>{
         setDtInico('');
         setDtFim('');
         setOrdenacao('');
+        setCodProfissional('')
         setAppliedFilters([]);
     }
 
@@ -428,6 +455,15 @@ const OrdemServico = (props)=>{
             };
         }
 
+        if(codProfissional){
+            filtros['profissional_id'] = codProfissional;
+            detalhesFiltros['profissional_id'] = {
+                label:'Profissional',
+                value:codProfissional,
+                resetFilter:()=>{setCodProfissional('');removeFilter('profissional_id')},
+            };
+        }
+
         if(tipoOrdem){
             filtros['type'] = tipoOrdem;
             detalhesFiltros['type'] = {
@@ -505,11 +541,22 @@ const OrdemServico = (props)=>{
         }            
     }
 
+    const requestAllProfissionais = async() =>{
+        setDataProfissionais([])
+
+        let {url, options} = PROFISSIONAIS_ALL_POST({}, getToken());
+        const {response, json} = await request(url, options);
+        if(json){            
+            setDataProfissionais(json)
+        }            
+    }
+
 
     React.useEffect(()=>{
 
         const requestDataConfigEffect = async() =>{
             await requestAllFilials()
+            await requestAllProfissionais()
         }
 
         const requestAllOrdemServicosEffect = async() =>{

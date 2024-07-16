@@ -1,7 +1,7 @@
 import React from 'react';
 import estilos from './MovimentacoesFinanceira.module.css'
 import useFetch from '../../Hooks/useFetch.js';
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CONTAS_MOVIMENTACOES_FINANCEIRAS_ALL_POST, FILIAIS_ALL_POST, CAIXA_ALL_POST} from '../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CONTAS_MOVIMENTACOES_FINANCEIRAS_ALL_POST, FILIAIS_ALL_POST, CAIXA_ALL_POST, RECORD_NUMBER_PER_REQUEST} from '../../api/endpoints/geral.js'
 import {FORMAT_DATA_PT_BR} from '../../functions/index.js'
 import {IS_MOBILE, MOBILE_WITH, isMobileYet, WINDOW_WIDTH} from '../../var/index.js'
 import {Col, Row, Button } from 'react-bootstrap';
@@ -21,8 +21,7 @@ import Include from './include';
 import FormControlInput from '../FormControl/index.js'
 import { Link } from 'react-router-dom/cjs/react-router-dom.min.js';
 
-
-const MovimentacoesFinanceira = (props)=>{
+const MovimentacoesFinanceira = ({defaultFilters, ...props})=>{
 
     const {data, error, request, loading} = useFetch();
     const [estado, setMovimentacoesFinanceira] = React.useState([])
@@ -44,8 +43,8 @@ const MovimentacoesFinanceira = (props)=>{
     const [estornado, setEstornado] = React.useState(null)
     const [conciliado, setConciliado] = React.useState(null)
     const [historico, setHistorico] = React.useState(null)
-    const [codigoOrigem, setCodigoOrigem] = React.useState(null)
-    const [origem, setOrigem] = React.useState(null)
+    const [codigoOrigem, setCodigoOrigem] = React.useState(defaultFilters?.referencia_id)
+    const [origem, setOrigem] = React.useState(defaultFilters?.referencia)
     const [dtInicio, setDtInicio] = React.useState(null)
     const [dtFim, setDtFim] = React.useState(null)
     const [filtroMobile, setFiltroMobile] = React.useState(null)
@@ -53,7 +52,7 @@ const MovimentacoesFinanceira = (props)=>{
     const [nextPage, setNextPage] = React.useState(null)
     const [totalPageCount, setTotalPageCount] = React.useState(null)
     const [usePagination, setUsePagination] = React.useState(true)
-    const [qtdItemsPerPage, setQtdItemsPerPage] = React.useState(10)
+    const [qtdItemsPerPage, setQtdItemsPerPage] = React.useState(RECORD_NUMBER_PER_REQUEST)
     const [filtroEstornadas, setFiltroEstornadas] = React.useState(false)
     const [filtroDebitos, setFiltroDebitos] = React.useState(false)
     const [filtroCreditos, setFiltroCreditos] = React.useState(false)
@@ -438,20 +437,20 @@ const MovimentacoesFinanceira = (props)=>{
         }
 
         if(codigoOrigem){
-            filtros['origem_id'] = codigoOrigem;
-            detalhesFiltros['origem_id'] = {
-                label:'origem_id',
+            filtros['referencia_id'] = codigoOrigem;
+            detalhesFiltros['referencia_id'] = {
+                label:'Cód. referência',
                 value:codigoOrigem,
-                resetFilter:()=>{setCodigoOrigem('');removeFilter('origem_id')},
+                resetFilter:()=>{setCodigoOrigem('');removeFilter('referencia_id')},
             };
         }
 
         if(origem){
-            filtros['origem'] = origem;
-            detalhesFiltros['origem'] = {
-                label:'origem',
+            filtros['referencia'] = origem;
+            detalhesFiltros['referencia'] = {
+                label:'Origem',
                 value:origem,
-                resetFilter:()=>{setOrigem('');removeFilter('origem')},
+                resetFilter:()=>{setOrigem('');removeFilter('referencia')},
             };
         }
 
@@ -623,6 +622,10 @@ const MovimentacoesFinanceira = (props)=>{
             
     }
 
+    React.useEffect(()=>{
+        setCodigoOrigem(props?.idReferencia)
+        setOrigem(props?.referencia)
+    }, [props?.idReferencia, props?.referencia])
 
     React.useEffect(()=>{
 
@@ -645,6 +648,7 @@ const MovimentacoesFinanceira = (props)=>{
         let {filtros, detalhesFiltros} = montarFiltro();
         setAppliedFilters(detalhesFiltros)
     }, [])
+
    
     return(
         <>

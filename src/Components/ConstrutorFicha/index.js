@@ -214,7 +214,7 @@ const ConstrutorFicha = (props)=>{
     const requestAllRegistros = async() =>{
 
         let {filtros, detalhesFiltros} = await montarFiltro();
-        setAppliedFilters(detalhesFiltros)
+        await setAppliedFilters(detalhesFiltros)
         let {url, options} = FORMULARIO_ALL_POST({...filtros}, getToken());
         if(nextPage){
             url = nextPage;
