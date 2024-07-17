@@ -380,6 +380,7 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                         rowsTableArr={gerarListMobileRelatorio()}
                         loading={loadingData}
                         nadaEncontrado={nadaEncontrado}
+                        withoutFirstCol={true}
                         botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
                     />
 
@@ -401,7 +402,7 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                         rowsTableArr={rowsTableArr}
                         loading={loadingData}
                         nadaEncontrado={nadaEncontrado}
-                        botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
+                        botoesHeader={[]}
 
                     />
                 </Col>

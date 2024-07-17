@@ -7,7 +7,7 @@ import {Col, Row, Button } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
 import Breadcrumbs from '../Helper/Breadcrumbs.js'
-import { faHome, faSearch, faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faSearch, faPlus, faTimes,faChevronUp, faChevronDown, faBroom } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from '../Utils/Modal/index.js'
 import Load from '../Utils/Load/index.js'
@@ -38,6 +38,11 @@ const Servico = (props)=>{
     const [filtroInativos, setFiltroInAtivos] = React.useState(null)
     const [ordenacao, setOrdenacao] = React.useState('')
     const [nadaEncontrado, setNadaEncontrado] = React.useState(false)
+    const [appliedFilters, setAppliedFilters] = React.useState([])
+    const [vrMin, setVrMin] = React.useState('')
+    const [vrMax, setVrMax] = React.useState('')
+    const [descricao, setDescricao] = React.useState('')
+    const [serivicoCode, setServicoCode] = React.useState('')
 
 
 
@@ -49,6 +54,13 @@ const Servico = (props)=>{
         console.log(target)
     }
 
+    const handleSearch = (ev)=>{
+        if (ev.key === "Enter") {
+            requestAllServicos();
+        }
+    }
+
+
     const handleFiltroMobile = ({target})=>{
         setFiltroMobile(target.value)
     }
@@ -58,80 +70,128 @@ const Servico = (props)=>{
         setPessoa(target.value)
     }
 
+    const setVrMaxFilter = ({target})=>{
+        
+        setVrMax(target.value)
+    }
+
+    const setVrMinFilter = ({target})=>{
+        
+        setVrMin(target.value)
+    }
+
+    const setDescricaoFilter = ({target})=>{
+        
+        setDescricao(target.value)
+    }
+
+    const setCodeSerivicoFilter = ({target})=>{
+        
+        setServicoCode(target.value)
+    }
+
+    const setOrdenacaoFiltro = ({target})=>{
+        
+        setOrdenacao(target.value)
+    }
+
+    const limparFiltros = ()=>{
+        setServicoCode('');
+        setVrMin('');
+        setVrMax('');
+        setDescricao('');
+        setOrdenacao('');
+        setFiltroMobile('');
+        setFiltroMobile('');
+        setOrdenacao('');
+        setAppliedFilters([]);
+    }
+
+    const removeFilter = (key)=>{
+         setAppliedFilters(prevFilters => {
+            const updatedFilters = { ...prevFilters };
+            delete updatedFilters[key];
+            return updatedFilters;
+        });
+    }
+
     const filtersArr = [
         {
             type:'text',
             options:[], 
             hasLabel: true,
-            contentLabel:'Pessoa',
+            contentLabel:'Código',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",name:'id', value:serivicoCode,onChange:setCodeSerivicoFilter, onBlur:setCodeSerivicoFilter, onKeyUp:handleSearch},
 
         },
         {
             type:'text',
             options:[], 
             hasLabel: true,
-            contentLabel:'Contato',
+            contentLabel:'Descrição',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name_atendido':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",name:'name', value:descricao,onChange:setDescricaoFilter, onBlur:setDescricaoFilter, onKeyUp:handleSearch},
 
         },
         {
             type:'text',
             options:[], 
             hasLabel: true,
-            contentLabel:'Status',
+            contentLabel:'Valor mínimo',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'status':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",name:'vr_minimo', value:vrMin,onChange:setVrMinFilter, onBlur:setVrMinFilter, onKeyUp:handleSearch},
 
         },
         {
             type:'text',
             options:[], 
             hasLabel: true,
-            contentLabel:'Tipo',
+            contentLabel:'Valor máximo',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'tipo':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",name:'vr_maximo', value:vrMax,onChange:setVrMaxFilter, onBlur:setVrMaxFilter, onKeyUp:handleSearch},
 
         },
         {
-            type:'text',
-            options:[], 
+            type:'select',
+            options:[{'label':'Selecione...', 'value':''},{'label':'Código A-Z', 'value':'id-asc'},{'label':'Código Z-A', 'value':'id-desc'},
+            {'label':'Descrição A-Z', 'value':'name-asc'},{'label':'Descrição Z-A', 'value':'name-desc'},], 
             hasLabel: true,
-            contentLabel:'Dt. inicio',
+            contentLabel:'Classificar',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'date', size:"sm",'dt_inico':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
-
-        },
-        {
-            type:'text',
-            options:[], 
-            hasLabel: true,
-            contentLabel:'Dt. fim',
-            atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'date', size:"sm",'dt_fim':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'select', size:"sm",'ordem':ordenacao, value:ordenacao, onChange:setOrdenacaoFiltro, onBlur:setOrdenacaoFiltro, onKeyUp:handleSearch},
 
         },
     ]
 
-    const acoesBottomCard=[{
-        label:'Pesquisar',
-        icon:<FontAwesomeIcon icon={faSearch} />,
-        props:{onClick:()=>requestAllServicos(), className:'btn btn-sm botao_success'}
-    },
-    {
-        label:'Cadastrar',
-        icon:<FontAwesomeIcon icon={faPlus} />,
-        props:{onClick:()=>setCadastrarServico(true), className:'btn btn-sm mx-2 btn-secondary'}
-    }
+    const acoesBottomCard=[
+        {
+            label:'Pesquisar',
+            icon:<FontAwesomeIcon icon={faSearch} />,
+            props:{onClick:()=>requestAllServicos(), className:'btn btn-sm botao_success'}
+        },
+        {
+            label:'Limpar',
+            icon:<FontAwesomeIcon icon={faBroom} />,
+            props:{onClick:()=>limparFiltros(), className:'btn btn-sm btn-secondary mx-2'}
+        },
+        {
+            label:'Cadastrar',
+            icon:<FontAwesomeIcon icon={faPlus} />,
+            props:{onClick:()=>setCadastrarServico(true), className:'btn btn-sm mx-2 btn-secondary'}
+        }
     ];
+    const acoesHeaderCard=[{
+            label:'',
+            icon:<FontAwesomeIcon icon={(mostarFiltros ? faChevronDown : faChevronUp)} />,
+            props:{onClick:()=>{setMostarFiltros(!mostarFiltros);}, className:'btn btn-sm btn-secondary'},
+        },
+    ];    
 
 
     React.useEffect(()=>{
@@ -175,31 +235,47 @@ const Servico = (props)=>{
         let filtros = {}
         let detalhesFiltros = {}
         
-        if(pessoa){
-            filtros['name'] = pessoa;
-            detalhesFiltros['name'] = {
-                label:'Servico',
-                value:pessoa,
-                resetFilter:()=>setPessoa(''),
-            };
-        }
-        if(pessoa){
-            filtros['name_servico'] = pessoa;
-            detalhesFiltros['name_servico'] = {
-                label:'Servico',
-                value:pessoa,
-                resetFilter:()=>setPessoa(''),
+        if(serivicoCode){
+            filtros['id'] = serivicoCode;
+            detalhesFiltros['id'] = {
+                label:'Código',
+                value:serivicoCode,
+                resetFilter:()=>{setServicoCode('');removeFilter('id')},
             };
         }
 
-        
+        if(vrMin){
+            filtros['vr_min'] = vrMin;
+            detalhesFiltros['vr_min'] = {
+                label:'Valor mínimo',
+                value:vrMin,
+                resetFilter:()=>{setVrMin('');removeFilter('vr_min')},
+            };
+        }
+
+        if(vrMax){
+            filtros['vr_max'] = vrMax;
+            detalhesFiltros['vr_max'] = {
+                label:'Valor máximo',
+                value:vrMax,
+                resetFilter:()=>{setVrMax('');removeFilter('vr_max')},
+            };
+        }
+        if(descricao){
+            filtros['name'] = descricao;
+            detalhesFiltros['name'] = {
+                label:'Descrição',
+                value:descricao,
+                resetFilter:()=>{setDescricao('');removeFilter('name')},
+            };
+        }
 
         if(ordenacao){
             filtros['ordem'] = ordenacao;
             detalhesFiltros['ordem'] = {
                 label:'Ordenação',
                 value:ordenacao,
-                resetFilter:()=>setOrdenacao(''),
+                resetFilter:()=>{setOrdenacao('');removeFilter('ordem')},
             };
         }
 
@@ -208,25 +284,7 @@ const Servico = (props)=>{
             detalhesFiltros['name'] = {
                 label:'Filtro',
                 value:filtroMobile,
-                resetFilter:()=>setFiltroMobile(''),
-            };
-        }
-
-        if(filtroAtivos){
-            filtros['status'] += 'ativo,';
-            detalhesFiltros['status'] = {
-                label:'Status',
-                value:filtroMobile,
-                resetFilter:()=>setFiltroAtivos(null),
-            };
-        }
-
-        if(filtroInativos){
-            filtros['status'] += 'inativo,';
-            detalhesFiltros['status'] = {
-                label:'Status',
-                value:filtroMobile,
-                resetFilter:()=>setFiltroInAtivos(null),
+                resetFilter:()=>{setFiltroMobile('');removeFilter('name')},
             };
         }
 
@@ -327,16 +385,11 @@ const Servico = (props)=>{
     //------------
 
     const requestAllServicos = async() =>{
-       
-       let {filtros, detalhesFiltros} = montarFiltro();
-
+        setServico([])
+        let {filtros, detalhesFiltros} = montarFiltro();
+        setAppliedFilters(detalhesFiltros)
         const {url, options} = SERVICO_ALL_POST({...filtros}, getToken());
-
-
         const {response, json} = await request(url, options);
-        console.log('All serviços here')
-        console.log({'name_servico':pessoa})
-        console.log(json)
         if(json){
             
             setServico(json)
@@ -389,13 +442,17 @@ const Servico = (props)=>{
                 mostarFiltros={mostarFiltros}
             />
             <Row>
-                {mostarFiltros && 
+                { 
                     (
                         <>
-                            <Col  xs="12" sm="12" md="3" className={'default_card_report'}>
+                            <Col  xs="12" sm="12" md="12" className={'default_card_report'}>
                                 <Filter
                                     filtersArr={filtersArr}
                                     actionsArr={acoesBottomCard}
+                                    mostarFiltros={mostarFiltros}
+                                    setMostarFiltros={setMostarFiltros}
+                                    botoesHeader={acoesHeaderCard}
+                                    activeFilters={appliedFilters}
                                 />
                             </Col>
 
@@ -443,8 +500,7 @@ const Servico = (props)=>{
 
                                          <Row className={'mt-2'}>
                                             <div  style={{display:'flex', flexDirection:'collumn', flexWrap:'wrap'}}>
-                                                {(filtroAtivos ? <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroAtivos(false);}} ><FontAwesomeIcon icon={faTimes} /> Abertas</Button> : '')}
-                                                {(filtroInativos ? <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroInAtivos(false);}} ><FontAwesomeIcon icon={faTimes} /> Concluídas</Button> : '')}
+                                                
                                             </div>
                                         </Row>
                                     </Col>
@@ -466,8 +522,6 @@ const Servico = (props)=>{
 
                                     <div style={{display:'flex', flexDirection:'collumn', flexWrap:'wrap'}}>
                                         <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setCadastrarServico(true);}} ><FontAwesomeIcon icon={faPlus} /> Serviço</Button>
-                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroAtivos(true);}} ><FontAwesomeIcon icon={faSearch} /> Ativos</Button>
-                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroInAtivos(true);}} ><FontAwesomeIcon icon={faSearch} /> Inativos</Button>
                                     </div>
                                 </Row>
                             </Col>
@@ -484,7 +538,7 @@ const Servico = (props)=>{
                     </div>
                 </Col>
                 
-                <Col  xs="12" sm="12" md={mostarFiltros ? "9":"12"}>
+                <Col  xs="12" sm="12" md={12}>
                     <Include
                         dataEstado={estado}
                         loadingData={loading}
