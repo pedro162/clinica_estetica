@@ -527,7 +527,6 @@ const ContasReceber = ({defaultFilters ,...props})=>{
                 resetFilter:()=>{setOrdenacao('');removeFilter('ordem');},
             };
         }
-
         
         return {filtros, detalhesFiltros};
     }

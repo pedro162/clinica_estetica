@@ -1,7 +1,7 @@
 import React from 'react';
 import estilos from './Clientes.module.css'
 import useFetch from '../../Hooks/useFetch.js';
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CLIENTES_ALL_POST} from '../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CLIENTES_ALL_POST,RECORD_NUMBER_PER_REQUEST} from '../../api/endpoints/geral.js'
 import {Col, Row } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
@@ -22,14 +22,10 @@ import FormCliente from './FormCliente/index.js'
 import Home from '../Home/index.js'
 
 
-const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFiltros, idOrdemCriada, ...props})=>{
+const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFiltros, idClienteCriado, nextPage, setNextPage, usePagination, setUsePagination, totalPageCount, setTotalPageCount, ...props})=>{
 
 	const {data, error, request, loading} = useFetch();
     const [clientes, setClientes] = React.useState([])
-    const [exemplos, setExemplos] = React.useState([])
-    const [exemplosTitleTable, setExemplosTitleTable] = React.useState([])
-    const [showModalCriarCliente, setShowModalCriarCliente] = React.useState(false)
-    const [showModalAtualizarCliente, setShowModalAtualizarCliente] = React.useState(false)
     const [clientChoice, setClienteChoice] = React.useState(null);
     const [atualizarCadastro, setAtualizarCadastro] = React.useState(false)    
     const [cadastrarCliente, setCadastrarCliente] = React.useState(false)     
@@ -42,18 +38,68 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
     const [defaultFiltersConsulta, setDefaultFiltersConsulta] = React.useState({})
     const [defaultFiltersAgendaCalendario, setDefaultFiltersAgendaCalendario] = React.useState({})
     const [visualizarCalendarioAgenda, setVisualizarCalendarioAgenda] = React.useState(false)  
-
+    const [defaultFiltersClientes, setDefaultFiltersClientes] = React.useState({})
+    const [nrPageAtual, setNrPageAtual] = React.useState(null)
+    const [qtdItemsTo, setQtdItemsTo] = React.useState(null)
+    const [qtdItemsTotal, setQtdItemsTotal] = React.useState(null)
     //nadaEncontrado
     const {getToken} = React.useContext(UserContex);
 
-    const alerta = (target)=>{
-        console.log(target)
+
+    const handleTotalPages=()=>{
+        if(Number(dataEstado?.mensagem?.last_page > 0)){
+            setTotalPageCount(dataEstado?.mensagem?.last_page)
+        }
     }
+
+    const handleTotalItems=()=>{
+        if(Number(dataEstado?.mensagem?.to > 0)){
+            setQtdItemsTo(dataEstado?.mensagem?.to)
+        }
+
+        if(Number(dataEstado?.mensagem?.total > 0)){
+            setQtdItemsTotal(dataEstado?.mensagem?.total)
+        }
+    }
+
+    const nextPageRout = ()=>{       
+        if(dataEstado?.mensagem?.next_page_url){
+            setNextPage(dataEstado?.mensagem?.next_page_url)
+        }
+    }
+
+    const previousPageRout = ()=>{       
+        if(dataEstado?.mensagem?.prev_page_url){
+            setNextPage(dataEstado?.mensagem?.prev_page_url)
+        }
+    }
+
+    const firstPageRout = ()=>{       
+        if(dataEstado?.mensagem?.first_page_url){
+            setNextPage(dataEstado?.mensagem?.first_page_url)
+        }
+    }
+
+    const lastPageRout = ()=>{       
+        if(dataEstado?.mensagem?.last_page_url){
+            setNextPage(dataEstado?.mensagem?.last_page_url)
+        }
+    }
+
 
     const gerarTableClientes = ()=>{
        
         let data = [];
-        let dataClientes = clientes.mensagem
+        let dataClientes = clientes
+
+        if(dataClientes?.mensagem){
+            dataClientes = dataClientes?.mensagem;
+        }
+
+        if(dataClientes?.data){
+            dataClientes = dataClientes?.data;
+        }
+        
         if(dataClientes && Array.isArray(dataClientes) && dataClientes.length > 0){
             for(let i=0; !(i == dataClientes.length); i++){
                 let atual = dataClientes[i];
@@ -143,7 +189,16 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
     const gerarListMobileRelatorio = ()=>{
        
         let data = [];
-        let dataClientes = clientes.mensagem
+        let dataClientes = clientes
+
+        if(dataClientes?.mensagem){
+            dataClientes = dataClientes?.mensagem;
+        }
+
+        if(dataClientes?.data){
+            dataClientes = dataClientes?.data;
+        }
+
         if(dataClientes && Array.isArray(dataClientes) && dataClientes.length > 0){
             for(let i=0; !(i == dataClientes.length); i++){
                 let atual = dataClientes[i];
@@ -164,16 +219,7 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                     let btnCotinuarDigitacao        = true;
                     let btnCancelar                 = true;
 
-                    
-
                     let line_style = {}
-                    /*if(atual.status == 'cancelado'){
-                        line_style.color = 'red';
-                    }else if(atual.status == 'concluido'){
-                        line_style.color = 'green';
-                    } */
-
-                    //propsContainerTitulo, propsContainerButtons
                     data.push(
 
                         {
@@ -226,7 +272,6 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
     const requestAllClients = async() =>{
        
         const {url, options} = CLIENTES_ALL_POST({}, getToken());
-
 
         const {response, json} = await request(url, options);
         console.log('All clients here')
@@ -332,6 +377,9 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
     
     React.useEffect(()=>{
         setClientes(dataEstado)
+        setNrPageAtual(dataEstado?.mensagem?.current_page)
+        handleTotalPages();
+        handleTotalItems();
     }, [dataEstado])
     
     const rowsTableArr = gerarTableClientes();    
@@ -350,6 +398,18 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                         loading={loadingData}
                         nadaEncontrado={nadaEncontrado}
                         botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
+                        nextPage={nextPage}
+                        setNextPage={setNextPage}
+                        usePagination={usePagination}
+                        setUsePagination={setUsePagination}
+                        nextPageRout={nextPageRout}
+                        previousPageRout={previousPageRout}
+                        firstPageRout = {firstPageRout}
+                        nrPageAtual = {nrPageAtual}
+                        lastPageRout = {lastPageRout}
+                        totalPageCount={totalPageCount}
+                        qtdItemsTo={qtdItemsTo}
+                        qtdItemsTotal={qtdItemsTotal}
                     />
 
                 </Col>
@@ -360,7 +420,18 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                         rowsTableArr={rowsTableArr}
                         loading={loadingData}
                         nadaEncontrado={nadaEncontrado}
-                        botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
+                        botoesHeader={[]}nextPage={nextPage}
+                        setNextPage={setNextPage}
+                        usePagination={usePagination}
+                        setUsePagination={setUsePagination}
+                        nextPageRout={nextPageRout}
+                        previousPageRout={previousPageRout}
+                        firstPageRout = {firstPageRout}
+                        nrPageAtual = {nrPageAtual}
+                        lastPageRout = {lastPageRout}
+                        totalPageCount={totalPageCount}
+                        qtdItemsTo={qtdItemsTo}
+                        qtdItemsTotal={qtdItemsTotal}
 
                     />
                 </Col>
@@ -411,5 +482,3 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
 }
 
 export default Include;
-
-//<FormCliente dataGrupo={dataGrupo} dataClienteChoice={[]}  atualizarCadastro={false} setAtualizarCadastro={setAtualizarCadastro}  idCliente={null} setIdcliente={setClienteChoice}  showModalCriarCliente={showModalCriarCliente} setShowModalCriarCliente={setShowModalCriarCliente} callback={requestAllClients} />

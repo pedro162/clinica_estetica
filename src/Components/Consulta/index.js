@@ -1,14 +1,14 @@
 import React from 'react';
 import estilos from './Consulta.module.css'
 import useFetch from '../../Hooks/useFetch.js';
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CONSULTA_ALL_POST} from '../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CONSULTA_ALL_POST, FILIAIS_ALL_POST, RECORD_NUMBER_PER_REQUEST} from '../../api/endpoints/geral.js'
 import {FORMAT_DATA_PT_BR} from '../../functions/index.js'
 import {IS_MOBILE, MOBILE_WITH, isMobileYet, WINDOW_WIDTH} from '../../var/index.js'
 import {Col, Row, Button } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
 import Breadcrumbs from '../Helper/Breadcrumbs.js'
-import { faHome, faSearch, faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faSearch, faPlus, faTimes, faChevronUp, faChevronDown, faBroom } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from '../Utils/Modal/index.js'
 import Load from '../Utils/Load/index.js'
@@ -50,6 +50,7 @@ const Consulta = (props)=>{
     const [dtFim, setDtFim] = React.useState(null)
     const [filtroMobile, setFiltroMobile] = React.useState(null)
     const [nadaEncontrado, setNadaEncontrado] = React.useState(false)
+    const [ordenacao, setOrdenacao] = React.useState('')
     const [filtroAbertas, setFiltroAbertas] = React.useState(false)
     const [filtroConcluidas, setFiltroConcluidas] = React.useState(false)
     const [filtroCanceladas, setFiltroCanceladas] = React.useState(false)
@@ -57,7 +58,9 @@ const Consulta = (props)=>{
     const [nextPage, setNextPage] = React.useState(null)
     const [totalPageCount, setTotalPageCount] = React.useState(null)
     const [usePagination, setUsePagination] = React.useState(true)
-    const [qtdItemsPerPage, setQtdItemsPerPage] = React.useState(10)
+    const [qtdItemsPerPage, setQtdItemsPerPage] = React.useState(RECORD_NUMBER_PER_REQUEST)
+    const [appliedFilters, setAppliedFilters] = React.useState([])
+    const [dataFiliais, setDataFiliais] = React.useState([])
 
     const {getToken, dataUser, isMobile} = React.useContext(UserContex);
 
@@ -134,6 +137,21 @@ const Consulta = (props)=>{
         setDtFim(target.value)
     }
 
+    const setOrdenacaoFiltro = ({target})=>{
+        
+        setOrdenacao(target.value)
+    }
+    
+    const preparaFilialToForm = ()=>{
+        if(dataFiliais.hasOwnProperty('mensagem') && Array.isArray(dataFiliais.mensagem) && dataFiliais.mensagem.length > 0){
+            let filiais = dataFiliais.mensagem.map(({id, name_filial}, index, arr)=>({label:name_filial,value:id,props:{}}))
+            filiais.unshift({label:'Selecione...',value:'',props:{selected:'selected'}})
+            
+            return filiais;
+        }
+        return []
+    }
+
 
     const filtersArr = [
         {
@@ -142,18 +160,18 @@ const Consulta = (props)=>{
             hasLabel: true,
             contentLabel:'Código',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'id':codigoConsulta,onChange:handleCodigoConsultaFilter,    onBlur:handleCodigoConsultaFilter, onKeyUp:handleSearch},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'name':'id',value:codigoConsulta,onChange:handleCodigoConsultaFilter,    onBlur:handleCodigoConsultaFilter, onKeyUp:handleSearch},
 
         },
         {
             type:'select',
-            options:[], 
+            options:[...preparaFilialToForm()],  
             hasLabel: true,
             contentLabel:'Filial',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'id':codigoFilial,onChange:handleCodigoFilialFilter,    onBlur:handleCodigoFilialFilter, onKeyUp:handleSearch},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",name:'filial_id',value:codigoFilial,onChange:handleCodigoFilialFilter,    onBlur:handleCodigoFilialFilter, onKeyUp:handleSearch},
 
         },
         {
@@ -162,8 +180,8 @@ const Consulta = (props)=>{
             hasLabel: true,
             contentLabel:'Cod pessoa',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name':pessoa,onChange:handleCodPessoaFilter,    onBlur:handleCodPessoaFilter, onKeyUp:handleSearch},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",name:'pessoa_id',value:codigoPessoa,onChange:handleCodPessoaFilter,    onBlur:handleCodPessoaFilter, onKeyUp:handleSearch},
 
         },
         {
@@ -172,8 +190,8 @@ const Consulta = (props)=>{
             hasLabel: true,
             contentLabel:'Pessoa',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name_atendido':pessoa,onChange:handleNamePessoaFilter,    onBlur:handleNamePessoaFilter, onKeyUp:handleSearch},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",name:'name_atendido',value:pessoa,onChange:handleNamePessoaFilter,    onBlur:handleNamePessoaFilter, onKeyUp:handleSearch},
 
         },
         {
@@ -182,8 +200,8 @@ const Consulta = (props)=>{
             hasLabel: true,
             contentLabel:'Cod profissional',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'profissional_id':codigoProfissional,onChange:handleCodProfissionalFilter,    onBlur:handleCodProfissionalFilter, onKeyUp:handleSearch},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'name':'profissional_id', value:codigoProfissional,onChange:handleCodProfissionalFilter,    onBlur:handleCodProfissionalFilter, onKeyUp:handleSearch},
 
         },
         {
@@ -192,8 +210,8 @@ const Consulta = (props)=>{
             hasLabel: true,
             contentLabel:'Profissional',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name_profissional':profissional,onChange:handleNameProfissionalFilter,    onBlur:handleNameProfissionalFilter, onKeyUp:handleSearch},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",name:'name_profissional', value:profissional,onChange:handleNameProfissionalFilter,    onBlur:handleNameProfissionalFilter, onKeyUp:handleSearch},
 
         },
         {
@@ -208,8 +226,8 @@ const Consulta = (props)=>{
             hasLabel: true,
             contentLabel:'Status',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'status':status,onChange:handleStatusFilter,    onBlur:handleStatusFilter, onKeyUp:handleSearch},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'name':'status', value:status,onChange:handleStatusFilter,    onBlur:handleStatusFilter, onKeyUp:handleSearch},
 
         },
         {
@@ -224,7 +242,7 @@ const Consulta = (props)=>{
             hasLabel: true,
             contentLabel:'Tipo',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
             atributsFormControl:{'type':'text', size:"sm",'tipo':tipo,onChange:handleTipoFilter,    onBlur:handleTipoFilter, onKeyUp:handleSearch},
 
         },
@@ -241,8 +259,8 @@ const Consulta = (props)=>{
             hasLabel: true,
             contentLabel:'Prioridade',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'prioridade':prioridade,onChange:handlePrioridadeFilter,    onBlur:handlePrioridadeFilter, onKeyUp:handleSearch},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'name':'prioridade', value:prioridade,onChange:handlePrioridadeFilter,    onBlur:handlePrioridadeFilter, onKeyUp:handleSearch},
 
         },
         {
@@ -251,7 +269,7 @@ const Consulta = (props)=>{
             hasLabel: true,
             contentLabel:'Histórico',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
             atributsFormControl:{'type':'text', size:"sm",'historico':historico,onChange:handleHistoricoFilter,    onBlur:handleHistoricoFilter, onKeyUp:handleSearch},
 
         },
@@ -261,8 +279,8 @@ const Consulta = (props)=>{
             hasLabel: true,
             contentLabel:'Dt. inicio',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'date', size:"sm",'dt_inico':dtInicio,onChange:handleDtInicioFilter,    onBlur:handleDtInicioFilter, onKeyUp:handleSearch},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'date', size:"sm",'name':'dt_inico', value:dtInicio,onChange:handleDtInicioFilter,    onBlur:handleDtInicioFilter, onKeyUp:handleSearch},
 
         },
         {
@@ -271,25 +289,48 @@ const Consulta = (props)=>{
             hasLabel: true,
             contentLabel:'Dt. fim',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'date', size:"sm",'dt_fim':dtFim,onChange:handleDtFimFilter,    onBlur:handleDtFimFilter, onKeyUp:handleSearch},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'date', size:"sm",'name':'dt_fim',onChange:handleDtFimFilter,    onBlur:handleDtFimFilter, onKeyUp:handleSearch},
+
+        }, 
+        {
+            type:'select',
+            options:[{'label':'Selecione...', 'value':''},{'label':'Código A-Z', 'value':'id-asc'},{'label':'Código Z-A', 'value':'id-desc'},], 
+            hasLabel: true,
+            contentLabel:'Classificar',
+            atributsFormLabel:{},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'select', size:"sm",'ordem':ordenacao, value:ordenacao, onChange:setOrdenacaoFiltro, onBlur:setOrdenacaoFiltro, onKeyUp:handleSearch},
 
         },
     ]
 
-    const acoesBottomCard=[{
-        label:'Pesquisar',
-        icon:<FontAwesomeIcon icon={faSearch} />,
-        props:{onClick:()=>requestAllConsultas(), className:'btn btn-sm botao_success'}
-    },
-    {
-        label:'Cadastrar',
-        icon:<FontAwesomeIcon icon={faPlus} />,
-        props:{onClick:()=>setCadastrarConsulta(true), className:'btn btn-sm mx-2 btn-secondary'}
-    }
+    const acoesBottomCard=[
+        {
+            label:'Pesquisar',
+            icon:<FontAwesomeIcon icon={faSearch} />,
+            props:{onClick:()=>requestAllConsultas(), className:'btn btn-sm botao_success'}
+        },
+        {
+            label:'Limpar',
+            icon:<FontAwesomeIcon icon={faBroom} />,
+            props:{onClick:()=>limparFiltros(), className:'btn btn-sm btn-secondary mx-2'}
+        },
+        {
+            label:'Cadastrar',
+            icon:<FontAwesomeIcon icon={faPlus} />,
+            props:{onClick:()=>setCadastrarConsulta(true), className:'btn btn-sm mx-2 btn-secondary'}
+        }
     ];
 
 
+    const acoesHeaderCard=[
+        {
+            label:'',
+            icon:<FontAwesomeIcon icon={(mostarFiltros ? faChevronDown : faChevronUp)} />,
+            props:{onClick:()=>{setMostarFiltros(!mostarFiltros);}, className:'btn btn-sm btn-secondary'},
+        },
+    ];    
     React.useEffect(()=>{
         switch(acao){
             case 'editar':
@@ -342,15 +383,33 @@ const Consulta = (props)=>{
         setAtualizarConsulta(true);
     }
 
-   //name_profissional
+    const limparFiltros = ()=>{
+                
+        setCodigoPessoa('');
+        setPessoa('');
+        setCodigoProfissional('');
+        setProfissional('');
+        setFiltroMobile('');
+        setStatus('');
+        setTipo('');
+        setPrioridade('');
+        setHistorico('');
+        setCodigoConsulta('');
+        setCodigoFilial('');
+        setDtInicio('');
+        setDtFim('');
+        setFiltroMobile('');
+        setOrdenacao('');
+        setAppliedFilters([]);
+    }
 
-    //------------
-/*
-    React.useEffect(()=>{
-        setIsMobile(isMobileYet())
-    }, [IS_MOBILE, isMobileYet, WINDOW_WIDTH])
-*/
-
+    const removeFilter = (key)=>{
+         setAppliedFilters(prevFilters => {
+            const updatedFilters = { ...prevFilters };
+            delete updatedFilters[key];
+            return updatedFilters;
+        });
+    }
     //------------
     const montarFiltro = ()=>{
         let filtros = {}
@@ -360,13 +419,23 @@ const Consulta = (props)=>{
             filtros['usePaginate'] = 1;
             filtros['nr_itens_per_page'] = qtdItemsPerPage;
         }
+
+
+        if(codigoConsulta){
+            filtros['id'] = codigoConsulta;
+            detalhesFiltros['id'] = {
+                label:'Código',
+                value:codigoConsulta,
+                resetFilter:()=>{setCodigoConsulta('');removeFilter('id')},
+            };
+        }
         
         if(codigoPessoa){
             filtros['pessoa_id'] = codigoPessoa;
             detalhesFiltros['pessoa_id'] = {
                 label:'pessoa_id',
                 value:codigoPessoa,
-                resetFilter:()=>setPessoa(''),
+                resetFilter:()=>{setPessoa('');removeFilter('pessoa_id')},
             };
         }
 
@@ -375,14 +444,14 @@ const Consulta = (props)=>{
             detalhesFiltros['name'] = {
                 label:'name',
                 value:pessoa,
-                resetFilter:()=>setPessoa(''),
+                resetFilter:()=>{setPessoa('');removeFilter('name')},
             };
 
             filtros['name_pessoa'] = pessoa;
             detalhesFiltros['name_pessoa'] = {
                 label:'name_pessoa',
                 value:pessoa,
-                resetFilter:()=>setPessoa(''),
+                resetFilter:()=>{setPessoa('');removeFilter('name_pessoa')},
             };
         }
 
@@ -392,7 +461,7 @@ const Consulta = (props)=>{
             detalhesFiltros['profissional_id'] = {
                 label:'profissional_id',
                 value:codigoProfissional,
-                resetFilter:()=>setCodigoProfissional(''),
+                resetFilter:()=>{setCodigoProfissional('');removeFilter('profissional_id')},
             };
         }
 
@@ -402,17 +471,7 @@ const Consulta = (props)=>{
             detalhesFiltros['name_profissional'] = {
                 label:'name_profissional',
                 value:profissional,
-                resetFilter:()=>setProfissional(''),
-            };
-        }
-
-
-        if(codigoConsulta){
-            filtros['id'] = codigoConsulta;
-            detalhesFiltros['id'] = {
-                label:'id',
-                value:codigoConsulta,
-                resetFilter:()=>setCodigoConsulta(''),
+                resetFilter:()=>{setProfissional('');removeFilter('name_profissional')},
             };
         }
 
@@ -422,7 +481,7 @@ const Consulta = (props)=>{
             detalhesFiltros['filial_id'] = {
                 label:'filial_id',
                 value:codigoFilial,
-                resetFilter:()=>setCodigoFilial(''),
+                resetFilter:()=>{setCodigoFilial('');removeFilter('filial_id')},
             };
         }
 
@@ -432,7 +491,7 @@ const Consulta = (props)=>{
             detalhesFiltros['status'] = {
                 label:'status',
                 value:status,
-                resetFilter:()=>setStatus(''),
+                resetFilter:()=>{setStatus('');removeFilter('status')},
             };
         }
 
@@ -442,7 +501,7 @@ const Consulta = (props)=>{
             detalhesFiltros['prioridade'] = {
                 label:'prioridade',
                 value:prioridade,
-                resetFilter:()=>setPrioridade(''),
+                resetFilter:()=>{setPrioridade('');removeFilter('prioridade')},
             };
         }
 
@@ -452,7 +511,7 @@ const Consulta = (props)=>{
             detalhesFiltros['historico'] = {
                 label:'historico',
                 value:historico,
-                resetFilter:()=>setHistorico(''),
+                resetFilter:()=>{setHistorico('');removeFilter('historico')},
             };
         }
 
@@ -462,7 +521,7 @@ const Consulta = (props)=>{
             detalhesFiltros['tipo'] = {
                 label:'tipo',
                 value:tipo,
-                resetFilter:()=>setTipo(''),
+                resetFilter:()=>{setTipo('');removeFilter('tipo')},
             };
         }
 
@@ -472,7 +531,7 @@ const Consulta = (props)=>{
             detalhesFiltros['dt_inicio'] = {
                 label:'dt_inicio',
                 value:dtInicio,
-                resetFilter:()=>setDtInicio(''),
+                resetFilter:()=>{setDtInicio('');removeFilter('dt_inicio')},
             };
         }
 
@@ -482,7 +541,7 @@ const Consulta = (props)=>{
             detalhesFiltros['dt_fim'] = {
                 label:'dt_fim',
                 value:dtFim,
-                resetFilter:()=>setDtFim(''),
+                resetFilter:()=>{setDtFim('');removeFilter('dt_fim')},
             };
         }
 
@@ -492,7 +551,7 @@ const Consulta = (props)=>{
             detalhesFiltros['dt_periodo'] = {
                 label:'dt_periodo',
                 value:dtInicio+','+dtInicio,
-                resetFilter:()=>{setDtInicio('');setDtFim('');},
+                resetFilter:()=>{setDtInicio('');removeFilter('dt_periodo');},
             };
         }
         
@@ -502,7 +561,7 @@ const Consulta = (props)=>{
             detalhesFiltros['name'] = {
                 label:'Filtro',
                 value:filtroMobile,
-                resetFilter:()=>setFiltroMobile(''),
+                resetFilter:()=>{setFiltroMobile('');removeFilter('name');},
             };
         }
 
@@ -516,7 +575,7 @@ const Consulta = (props)=>{
             detalhesFiltros['status'] = {
                 label:'Status',
                 value:filtroMobile,
-                resetFilter:()=>setFiltroAbertas(''),
+                resetFilter:()=>{setFiltroAbertas('');},
             };
         }
 
@@ -530,7 +589,7 @@ const Consulta = (props)=>{
             detalhesFiltros['status'] = {
                 label:'Status',
                 value:filtroMobile,
-                resetFilter:()=>setFiltroConcluidas(''),
+                resetFilter:()=>{setFiltroConcluidas('');},
             };
         }
 
@@ -562,14 +621,36 @@ const Consulta = (props)=>{
             };
         }
 
+        
+        if(ordenacao){
+            filtros['ordem'] = ordenacao;
+            detalhesFiltros['ordem'] = {
+                label:'Ordem',
+                value:ordenacao,
+                resetFilter:()=>{setOrdenacao('');removeFilter('ordem');},
+            };
+        }
+
 
         return {filtros, detalhesFiltros};
     }
 
+    const requestAllFilials = async() =>{
+        setDataFiliais([])
+
+        let {url, options} = FILIAIS_ALL_POST({}, getToken());
+        const {response, json} = await request(url, options);
+        if(json){            
+            setDataFiliais(json)
+        }
+
+            
+    }
     const requestAllConsultas = async() =>{
         setConsulta([])
 
         let {filtros, detalhesFiltros} = montarFiltro();
+        setAppliedFilters(detalhesFiltros)
         let {url, options} = CONSULTA_ALL_POST({...filtros}, getToken());
         if(nextPage){
             url = nextPage;
@@ -593,10 +674,14 @@ const Consulta = (props)=>{
 
     React.useEffect(()=>{
 
+        const requestDataConfigEffect = async() =>{
+            await requestAllFilials()
+        }
         const requestAllConsultasEffect = async() =>{       
            await requestAllConsultas();            
         }
 
+        requestDataConfigEffect();
         requestAllConsultasEffect();
 
         
@@ -622,14 +707,18 @@ const Consulta = (props)=>{
                 mostarFiltros={mostarFiltros}
             />
             <Row>
-                {mostarFiltros && 
+                { 
                     (
                         <>
 
-                            <Col  xs="12" sm="12" md="3" className={'default_card_report'} >
+                            <Col  xs="12" sm="12" md="12" className={'default_card_report'} >
                                 <Filter
                                     filtersArr={filtersArr}
                                     actionsArr={acoesBottomCard}
+                                    mostarFiltros={mostarFiltros}
+                                    setMostarFiltros={setMostarFiltros}
+                                    botoesHeader={acoesHeaderCard}
+                                    activeFilters={appliedFilters}
                                 />
                             </Col>
                             <Col  xs="12" sm="12" md="12" className={'mobile_card_report pt-4'}  style={{backgroundColor:'#FFF'}}>
@@ -738,7 +827,7 @@ const Consulta = (props)=>{
                     </div>
                 </Col>
 
-                 <Col  xs="12" sm="12" md={isMobile ==true ? '12' : mostarFiltros ? "9":"12"}>
+                 <Col  xs="12" sm="12" md={12}>
                     <Include
                         dataEstado={estado}
                         loadingData={loading}

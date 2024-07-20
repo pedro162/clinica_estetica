@@ -22,7 +22,7 @@ import { Button } from 'bootstrap';
 import reactDom from 'react-dom';
 //
 
-const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFiltros, idGrupoCriado, ...props})=>{
+const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFiltros, idGrupoCriado, nextPage, setNextPage, usePagination, setUsePagination, totalPageCount, setTotalPageCount, ...props})=>{
     const {data, error, request, loading} = useFetch();
     const [estado, setGrupo] = React.useState([])
     const [exemplos, setExemplos] = React.useState([])
@@ -39,13 +39,78 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
     const [incicarGrupo, setIniciarGrupo] = React.useState(false) 
     const [acao, setAcao] = React.useState(null)
     const [pessoa, setPessoa] = React.useState('')
-    const [defaultFiltersCobReceber, setDefaultFiltersCobReceber] = React.useState({})
+    const [defaultFiltersGrupo, setDefaultFiltersGrupo] = React.useState({})
+    const [nrPageAtual, setNrPageAtual] = React.useState(null)
+    const [qtdItemsTo, setQtdItemsTo] = React.useState(null)
+    const [qtdItemsTotal, setQtdItemsTotal] = React.useState(null)
 
 
     const {getToken} = React.useContext(UserContex);
 
-    const alerta = (target)=>{
-        console.log(target)
+    
+
+    const handleTotalPages=()=>{
+        if(Number(dataEstado?.mensagem?.last_page > 0)){
+            setTotalPageCount(dataEstado?.mensagem?.last_page)
+        }
+        if(Number(dataEstado?.registro?.last_page > 0)){
+            setTotalPageCount(dataEstado?.registro?.last_page)
+        }
+    }
+
+    const handleTotalItems=()=>{
+        if(Number(dataEstado?.mensagem?.to > 0)){
+            setQtdItemsTo(dataEstado?.mensagem?.to)
+        }
+        if(Number(dataEstado?.registro?.to > 0)){
+            setQtdItemsTo(dataEstado?.registro?.to)
+        }
+
+        if(Number(dataEstado?.mensagem?.total > 0)){
+            setQtdItemsTotal(dataEstado?.mensagem?.total)
+        }
+
+        if(Number(dataEstado?.registro?.total > 0)){
+            setQtdItemsTotal(dataEstado?.registro?.total)
+        }
+    }
+
+    const nextPageRout = ()=>{       
+        if(dataEstado?.mensagem?.next_page_url){
+            setNextPage(dataEstado?.mensagem?.next_page_url)
+        }
+        if(dataEstado?.registro?.next_page_url){
+            setNextPage(dataEstado?.registro?.next_page_url)
+        }
+    }
+
+    const previousPageRout = ()=>{       
+        if(dataEstado?.mensagem?.prev_page_url){
+            setNextPage(dataEstado?.mensagem?.prev_page_url)
+        }
+
+        if(dataEstado?.registro?.prev_page_url){
+            setNextPage(dataEstado?.registro?.prev_page_url)
+        }
+    }
+
+    const firstPageRout = ()=>{       
+        if(dataEstado?.mensagem?.first_page_url){
+            setNextPage(dataEstado?.mensagem?.first_page_url)
+        }
+        if(dataEstado?.registro?.first_page_url){
+            setNextPage(dataEstado?.registro?.first_page_url)
+        }
+    }
+
+    const lastPageRout = ()=>{       
+        if(dataEstado?.mensagem?.last_page_url){
+            setNextPage(dataEstado?.mensagem?.last_page_url)
+        }
+
+        if(dataEstado?.registro?.last_page_url){
+            setNextPage(dataEstado?.registro?.last_page_url)
+        }
     }
 
     const setNamePessoa = ({target})=>{
@@ -54,78 +119,10 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
     }
 
     const filtersArr = [
-        {
-            type:'text',
-            options:[], 
-            hasLabel: true,
-            contentLabel:'Pessoa',
-            atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
 
-        },
-        {
-            type:'text',
-            options:[], 
-            hasLabel: true,
-            contentLabel:'Contato',
-            atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name_atendido':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
-
-        },
-        {
-            type:'text',
-            options:[], 
-            hasLabel: true,
-            contentLabel:'Status',
-            atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'status':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
-
-        },
-        {
-            type:'text',
-            options:[], 
-            hasLabel: true,
-            contentLabel:'Tipo',
-            atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'tipo':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
-
-        },
-        {
-            type:'text',
-            options:[], 
-            hasLabel: true,
-            contentLabel:'Dt. inicio',
-            atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'date', size:"sm",'dt_inico':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
-
-        },
-        {
-            type:'text',
-            options:[], 
-            hasLabel: true,
-            contentLabel:'Dt. fim',
-            atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'date', size:"sm",'dt_fim':pessoa,onChange:setNamePessoa,    onBlur:setNamePessoa},
-
-        },
     ]
 
-    const acoesBottomCard=[{
-        label:'Pesquisar',
-        icon:<FontAwesomeIcon icon={faSearch} />,
-        props:{onClick:()=>requestAllGrupos(), className:'btn btn-sm botao_success'}
-    },
-    {
-        label:'Cadastrar',
-        icon:<FontAwesomeIcon icon={faPlus} />,
-        props:{onClick:()=>setCadastrarGrupo(true), className:'btn btn-sm mx-2 btn-secondary'}
-    }
+    const acoesBottomCard=[
     ];
 
 
@@ -185,7 +182,19 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
     const gerarTableGrupo = ()=>{
        
         let data = [];
-        let dataGrupos = estado?.mensagem ? estado?.mensagem : estado?.registro 
+        
+        let dataGrupos = estado
+        if(dataGrupos?.mensagem){
+            dataGrupos = dataGrupos?.mensagem;
+        }
+        if(dataGrupos?.registro){
+            dataGrupos = dataGrupos?.registro;
+        }
+
+        if(dataGrupos?.data){
+            dataGrupos = dataGrupos?.data;
+        }
+
         if(dataGrupos && Array.isArray(dataGrupos) && dataGrupos.length > 0){
             for(let i=0; !(i == dataGrupos.length); i++){
                 let atual = dataGrupos[i];
@@ -253,7 +262,20 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
    const gerarListMobileRelatorio = ()=>{
        
         let data = [];
-        let dataGrupo = estado?.mensagem ? estado?.mensagem : estado?.registro 
+
+        let dataGrupo = estado
+
+        if(dataGrupo?.mensagem){
+            dataGrupo = dataGrupo?.mensagem;
+        }
+        if(dataGrupo?.registro){
+            dataGrupo = dataGrupo?.registro;
+        }
+
+        if(dataGrupo?.data){
+            dataGrupo = dataGrupo?.data;
+        }
+
         if(dataGrupo && Array.isArray(dataGrupo) && dataGrupo.length > 0){
             for(let i=0; !(i == dataGrupo.length); i++){
                 let atual = dataGrupo[i];
@@ -311,41 +333,12 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
         return data;
     }
 
-    //------------
-    //------------
-
-    const requestAllGrupos = async() =>{
-       
-        const {url, options} = SERVICO_ALL_POST({'name_servico':pessoa}, getToken());
-
-
-        const {response, json} = await request(url, options);
-        console.log('All serviços here')
-        console.log({'name_servico':pessoa})
-        console.log(json)
-        if(json){
-            setGrupo(json)
-        }
-
-            
-    }
-
-    React.useEffect(()=>{
-
-        const requestAllGruposEffect = async() =>{
-       
-           await requestAllGrupos();
-
-            
-        }
-
-        //requestAllGruposEffect();
-
-        
-    }, [])
 
     React.useEffect(()=>{
         setGrupo(dataEstado)
+        setNrPageAtual(dataEstado?.registro?.current_page)
+        handleTotalPages();
+        handleTotalItems();
     }, [dataEstado])
     
 
@@ -366,18 +359,20 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                         nadaEncontrado={nadaEncontrado}
                         withoutFirstCol={true}
                         botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
+                        nextPage={nextPage}
+                        setNextPage={setNextPage}
+                        usePagination={usePagination}
+                        setUsePagination={setUsePagination}
+                        nextPageRout={nextPageRout}
+                        previousPageRout={previousPageRout}
+                        firstPageRout = {firstPageRout}
+                        nrPageAtual = {nrPageAtual}
+                        lastPageRout = {lastPageRout}
+                        totalPageCount={totalPageCount}
+                        qtdItemsTo={qtdItemsTo}
+                        qtdItemsTotal={qtdItemsTotal}
                     />
 
-                    {
-                    /*
-                    <CardMobile
-                        titulosTableArr={null}
-                        rowsTableArr={gerarCardContasReceber()}
-                        loading={loadingData}
-                        botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
-                    />
-                    */
-                    }
                 </Col>
 
                 <Col  xs="12" sm="12" md="12"  className={'default_card_report'}>
@@ -386,15 +381,26 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                         rowsTableArr={rowsTableArr}
                         loading={loadingData}
                         nadaEncontrado={nadaEncontrado}
-                        botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
-
+                        botoesHeader={[]}
+                        nextPage={nextPage}
+                        setNextPage={setNextPage}
+                        usePagination={usePagination}
+                        setUsePagination={setUsePagination}
+                        nextPageRout={nextPageRout}
+                        previousPageRout={previousPageRout}
+                        firstPageRout = {firstPageRout}
+                        nrPageAtual = {nrPageAtual}
+                        lastPageRout = {lastPageRout}
+                        totalPageCount={totalPageCount}
+                        qtdItemsTo={qtdItemsTo}
+                        qtdItemsTotal={qtdItemsTotal}
                     />
                 </Col>
             </Row>
 
             {
                 atualizarGrupo &&
-                <Atualizar atualizarGrupo={atualizarGrupo} setAtualizarGrupo={setAtualizarGrupo} setAtualizarCadastro={setAtualizarGrupo}  idGrupo={consultaChoice} setIdGrupo={setGrupoChoice} callback={requestAllGrupos} />
+                <Atualizar atualizarGrupo={atualizarGrupo} atualizarCadastro={atualizarGrupo} setAtualizarGrupo={setAtualizarGrupo} setAtualizarCadastro={setAtualizarGrupo}  idGrupo={consultaChoice} setIdGrupo={setGrupoChoice} callback={callBack} />
             }
         
         </>

@@ -41,14 +41,8 @@ const FormGrupo = ({dataGrupoChoice, setIdGrupo, idGrupo, showModalCriarGrupo, s
 
         if(atualizarCadastro == true){
             const {url, options} = GRUPOS_UPDATE_POST(idGrupo, data, getToken());
-
-
             const {response, json} = await request(url, options);
-            console.log('Save clients here')
-            console.log(json)
             if(json){
-                console.log('Response Save clients here')
-                console.log(json)
                 
                 callback();
                 setShowModalCriarGrupo();
@@ -72,12 +66,7 @@ const FormGrupo = ({dataGrupoChoice, setIdGrupo, idGrupo, showModalCriarGrupo, s
 
 
             const {response, json} = await request(url, options);
-            console.log('Save clients here')
-            console.log(json)
             if(json){
-                console.log('Response Save clients here')
-            	console.log(json)
-            	
             	callback();
             	setShowModalCriarGrupo();
                 setAtualizarCadastro(false);
@@ -109,8 +98,7 @@ const FormGrupo = ({dataGrupoChoice, setIdGrupo, idGrupo, showModalCriarGrupo, s
     		}
     		    		
     	}
-    	console.log('dados para formulario ----------')
-    	//console.log(obj)
+        
     	return obj;
     }
     

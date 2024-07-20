@@ -1,12 +1,12 @@
 import React from 'react';
 import estilos from './Clientes.module.css'
 import useFetch from '../../Hooks/useFetch.js';
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CLIENTES_ALL_POST} from '../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CLIENTES_ALL_POST, RECORD_NUMBER_PER_REQUEST} from '../../api/endpoints/geral.js'
 import {Col, Row, Button } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
 import Breadcrumbs from '../Helper/Breadcrumbs.js'
-import { faHome, faSearch, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faSearch, faPlus,faChevronUp, faChevronDown, faBroom } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from '../Utils/Modal/index.js'
 import Load from '../Utils/Load/index.js'
@@ -17,6 +17,7 @@ import {UserContex} from '../../Context/UserContex.js'
 import FormCliente from './FormCliente/index.js'
 import Include from './include.js'
 import FormControlInput from '../FormControl/index.js'
+import { Link } from 'react-router-dom/cjs/react-router-dom.min.js';
 
 
 const Clientes = ({defaultFilters ,...props})=>{
@@ -37,8 +38,14 @@ const Clientes = ({defaultFilters ,...props})=>{
     const [mostarFiltros, setMostarFiltros] = React.useState(false) 
     const [filtroMobile, setFiltroMobile] = React.useState(null)
     const [nadaEncontrado, setNadaEncontrado] = React.useState(false)
+    const [ordenacao, setOrdenacao] = React.useState('')
+    const [nextPage, setNextPage] = React.useState(null)
+    const [totalPageCount, setTotalPageCount] = React.useState(null)
+    const [usePagination, setUsePagination] = React.useState(true)
+    const [qtdItemsPerPage, setQtdItemsPerPage] = React.useState(RECORD_NUMBER_PER_REQUEST)
     const [pessoa, setPessoa] = React.useState(null)
     const [codigoPessoa, setCodigoPessoa] = React.useState(null)
+    const [appliedFilters, setAppliedFilters] = React.useState([])
 
      const [referenciaContasReceber, setReferenciaContasReceber] = React.useState(()=>{
         return defaultFilters?.referencia
@@ -65,6 +72,10 @@ const Clientes = ({defaultFilters ,...props})=>{
     const handleFiltroMobile = ({target})=>{
         setFiltroMobile(target.value)
     }
+    const setOrdenacaoFiltro = ({target})=>{
+        
+        setOrdenacao(target.value)
+    }
 
     const handleSearch = (ev)=>{
         if (ev.key === "Enter") {
@@ -79,8 +90,8 @@ const Clientes = ({defaultFilters ,...props})=>{
             hasLabel: true,
             contentLabel:'Cód pessoa',
             atributsFormLabel:{},
-            atributsContainer:{xs:"4", sm:"4", md:"4",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name':'nome',onChange:handleCodPessoaFilter, onBlur:handleCodPessoaFilter, onKeyUp:handleSearch},
+            atributsContainer:{xs:"4", sm:"4", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'name':'id', value:codigoPessoa,onChange:handleCodPessoaFilter, onBlur:handleCodPessoaFilter, onKeyUp:handleSearch},
 
         },
         {
@@ -89,16 +100,32 @@ const Clientes = ({defaultFilters ,...props})=>{
             hasLabel: true,
             contentLabel:'Nome pessoa',
             atributsFormLabel:{},
-            atributsContainer:{xs:"8", sm:"8", md:"8",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name':'nome',onChange:handleNamePessoaFilter, onBlur:handleNamePessoaFilter, onKeyUp:handleSearch},
+            atributsContainer:{xs:"8", sm:"8", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'name':'nome', value:pessoa,onChange:handleNamePessoaFilter, onBlur:handleNamePessoaFilter, onKeyUp:handleSearch},
 
-        }
+        }, 
+        {
+            type:'select',
+            options:[{'label':'Selecione...', 'value':''},{'label':'Código A-Z', 'value':'id-asc'},{'label':'Código Z-A', 'value':'id-desc'},
+            {'label':'Nome A-Z', 'value':'name-asc'},{'label':'Nome Z-A', 'value':'name-desc'},], 
+            hasLabel: true,
+            contentLabel:'Classificar',
+            atributsFormLabel:{},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'select', size:"sm",'ordem':ordenacao, value:ordenacao, onChange:setOrdenacaoFiltro, onBlur:setOrdenacaoFiltro, onKeyUp:handleSearch},
+
+        },
     ]
 
     const acoesBottomCard=[{
             label:'Pesquisar',
             icon:<FontAwesomeIcon icon={faSearch} />,
             props:{onClick:()=>requestAllClients(), className:'btn btn-sm botao_success'}
+        },
+        {
+            label:'Limpar',
+            icon:<FontAwesomeIcon icon={faBroom} />,
+            props:{onClick:()=>limparFiltros(), className:'btn btn-sm btn-secondary mx-2'}
         },
         {
             label:'Cadastrar',
@@ -108,21 +135,46 @@ const Clientes = ({defaultFilters ,...props})=>{
     ];
     
 
+    const acoesHeaderCard=[
+        {
+            label:'',
+            icon:<FontAwesomeIcon icon={(mostarFiltros ? faChevronDown : faChevronUp)} />,
+            props:{onClick:()=>{setMostarFiltros(!mostarFiltros);}, className:'btn btn-sm btn-secondary'},
+        },
+    ];  
     
 
+    const limparFiltros = ()=>{
+        setFiltroMobile('');
+        setCodigoPessoa('')
+        setPessoa('')
+        setOrdenacao('');
+        setAppliedFilters([]);
+    }
+
+    const removeFilter = (key)=>{
+         setAppliedFilters(prevFilters => {
+            const updatedFilters = { ...prevFilters };
+            delete updatedFilters[key];
+            return updatedFilters;
+        });
+    }
     //------------
     const montarFiltro = ()=>{
         let filtros = {}
         let detalhesFiltros = {}
 
-
+        if(usePagination){
+            filtros['usePaginate'] = 1;
+            filtros['nr_itens_per_page'] = qtdItemsPerPage;
+        }
         
         if(codigoPessoa){
             filtros['id'] = codigoPessoa;
             detalhesFiltros['id'] = {
                 label:'id',
                 value:codigoPessoa,
-                resetFilter:()=>setPessoa(''),
+                resetFilter:()=>{setCodigoPessoa('');removeFilter('id')},
             };
         }
 
@@ -131,41 +183,29 @@ const Clientes = ({defaultFilters ,...props})=>{
             detalhesFiltros['name'] = {
                 label:'name',
                 value:pessoa,
-                resetFilter:()=>setPessoa(''),
+                resetFilter:()=>{setPessoa('');removeFilter('name')},
             };
         }
-
-        if(referenciaContasReceber){
-            filtros['referencia'] = referenciaContasReceber;
-            detalhesFiltros['referencia'] = {
-                label:'Referência',
-                value:referenciaContasReceber,
-                resetFilter:()=>setReferenciaContasReceber(''),
-            };
-        }
-        
-        
-        if(idReferenciaContasReceber){
-            filtros['referencia_id'] = idReferenciaContasReceber;   
-            detalhesFiltros['referencia_id'] = {
-                label:'Cód. referência',
-                value:idReferenciaContasReceber,
-                resetFilter:()=>setIdReferenciaContasReceber(''),
-            };
-        }
-
 
         if(filtroMobile){
             filtros['name'] = filtroMobile;
             detalhesFiltros['name'] = {
                 label:'Filtro',
                 value:filtroMobile,
-                resetFilter:()=>setFiltroMobile(''),
+                resetFilter:()=>{setFiltroMobile('');removeFilter('')},
             };
         }
 
+        if(ordenacao){
+            filtros['ordem'] = ordenacao;
+            detalhesFiltros['ordem'] = {
+                label:'Ordem',
+                value:ordenacao,
+                resetFilter:()=>{setOrdenacao('');removeFilter('ordem');},
+            };
+        }
 
-        return {filtros, detalhesFiltros};
+        return {filtros, detalhesFiltros, nextPage, setNextPage};
     }
 
     const requestAllClients = async() =>{
@@ -173,13 +213,13 @@ const Clientes = ({defaultFilters ,...props})=>{
         setClientes([])
 
         let {filtros, detalhesFiltros} = montarFiltro();
+        setAppliedFilters(detalhesFiltros)
 
-        const {url, options} = CLIENTES_ALL_POST({...filtros}, getToken());
-
-
+        let {url, options} = CLIENTES_ALL_POST({...filtros}, getToken());
+        if(nextPage){
+            url = nextPage;
+        }
         const {response, json} = await request(url, options);
-        console.log('All clients here')
-        console.log(json)
         if(json){
             
               setClientes(json)
@@ -199,16 +239,12 @@ const Clientes = ({defaultFilters ,...props})=>{
     React.useEffect(()=>{
 
         const requestAllClientsEffect = async() =>{
-       
-           await requestAllClients();
-
-            
+           await requestAllClients();            
         }
 
         requestAllClientsEffect();
-
         
-    }, [])
+    }, [nextPage, setNextPage, defaultFilters])
 
     
     React.useEffect(()=>{
@@ -223,14 +259,19 @@ const Clientes = ({defaultFilters ,...props})=>{
     }, [cadastrarCliente])
     
     
+    React.useEffect(()=>{
+        let {filtros, detalhesFiltros} = montarFiltro();
+        setAppliedFilters(detalhesFiltros)
+    }, [])
+
 	return(
 		<>
             <Breadcrumbs
                 items={[
-                        {
-                            props:{},
-                            label:'Início'
-                        },
+                    {
+                        props:{},
+                        label:<> <Link className={null}  to={'/'}>Início</Link></>
+                    },
                         {
                             props:{},
                             label:'Clientes'
@@ -242,13 +283,17 @@ const Clientes = ({defaultFilters ,...props})=>{
             />
 
             <Row>
-                {mostarFiltros && 
+                { 
                     (
                         <>
-                            <Col  xs="12" sm="12" md="3" className={'default_card_report'} >
+                            <Col  xs="12" sm="12" md="12" className={'default_card_report'} >
                                 <Filter
                                     filtersArr={filtersArr}
                                     actionsArr={acoesBottomCard}
+                                    mostarFiltros={mostarFiltros}
+                                    setMostarFiltros={setMostarFiltros}
+                                    botoesHeader={acoesHeaderCard}
+                                    activeFilters={appliedFilters}
                                 />
                             </Col>
 
@@ -334,7 +379,7 @@ const Clientes = ({defaultFilters ,...props})=>{
                     </div>
                 </Col>
                 
-                <Col  xs="12" sm="12" md={mostarFiltros ? "9":"12"}>
+                <Col  xs="12" sm="12" md={12}>
                     <Include
                         dataEstado={clientes}
                         loadingData={loading}
@@ -342,6 +387,12 @@ const Clientes = ({defaultFilters ,...props})=>{
                         callBack={requestAllClients}
                         setMostarFiltros={setMostarFiltros}
                         idClienteCriado={clientChoice}
+                        nextPage={nextPage}
+                        setNextPage={setNextPage}
+                        usePagination={usePagination}
+                        setUsePagination={setUsePagination}
+                        totalPageCount={totalPageCount}
+                        setTotalPageCount={setTotalPageCount}
                     />
                 </Col>
             </Row>
@@ -357,5 +408,3 @@ const Clientes = ({defaultFilters ,...props})=>{
 }
 
 export default Clientes;
-
-//<FormCliente dataGrupo={dataGrupo} dataClienteChoice={[]}  atualizarCadastro={false} setAtualizarCadastro={setAtualizarCadastro}  idCliente={null} setIdcliente={setClienteChoice}  showModalCriarCliente={showModalCriarCliente} setShowModalCriarCliente={setShowModalCriarCliente} callback={requestAllClients} />
