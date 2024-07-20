@@ -585,7 +585,7 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                         titulosTableArr={titulosTableArr}
                         rowsTableArr={rowsTableArr}
                         loading={loadingData}
-                        botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
+                        botoesHeader={[]}
                         nextPage={nextPage}
                         setNextPage={setNextPage}
                         usePagination={usePagination}
