@@ -259,17 +259,23 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                                 {
 
                                     label: atual?.tp_movimentacao == 'negativa' ? ( atual.vr_movimentacao > 0 ? FORMAT_MONEY(atual.vr_movimentacao) : 0) : 0,
-                                    propsRow:{}
+                                    propsRow:{},
+									toSum:1,
+									isCoin:1,
                                 },
                                 {
 
                                     label: atual?.tp_movimentacao == 'positiva' ? ( atual.vr_movimentacao > 0 ? FORMAT_MONEY(atual.vr_movimentacao) : 0) : 0,
-                                    propsRow:{}
+                                    propsRow:{},
+									toSum:1,
+									isCoin:1,
                                 },
                                 {
 
                                     label:FORMAT_MONEY(atual.vr_saldo),
-                                    propsRow:{}
+                                    propsRow:{},
+									toSum:1,
+									isCoin:1,
                                 },
                             ]
                         }
