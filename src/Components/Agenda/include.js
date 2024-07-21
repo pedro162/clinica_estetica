@@ -17,7 +17,7 @@ import {UserContex} from '../../Context/UserContex.js'
 import FormAgenda from './FormAgenda/index.js'
 
 
-const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncontrado, idAgendaCriada, ...props})=>{
+const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncontrado, idAgendaCriada, nextPage, setNextPage, usePagination, setUsePagination, totalPageCount, setTotalPageCount,  ...props})=>{
 
 	const {data, error, request, loading} = useFetch();
     const [cidade, setAgenda] = React.useState([])
@@ -30,119 +30,67 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
     const [cadastrarAgenda, setCadastrarAgenda] = React.useState(false)  
     const [pessoa, setPessoa] = React.useState('')
     const [agenda_id, setAgendaId] = React.useState('')
+    const [nrPageAtual, setNrPageAtual] = React.useState(null)
+    const [qtdItemsTo, setQtdItemsTo] = React.useState(null)
+    const [qtdItemsTotal, setQtdItemsTotal] = React.useState(null)
 
 
     const {getToken} = React.useContext(UserContex);
 
-    const alerta = (target)=>{
-        console.log(target)
+    
+    const handleTotalPages=()=>{
+        if(Number(dataEstado?.mensagem?.last_page > 0)){
+            setTotalPageCount(dataEstado?.mensagem?.last_page)
+        }
     }
-    const filtersArr = [
-        {
-            type:'text',
-            options:[], 
-            hasLabel: true,
-            contentLabel:'Código',
-            atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name':agenda_id,onChange:setAgendaId,    onBlur:setAgendaId},
 
-        },
-        {
-            type:'text',
-            options:[], 
-            hasLabel: true,
-            contentLabel:'Código pessoa',
-            atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name':pessoa,onChange:setPessoa,    onBlur:setPessoa},
-
-        },
-        {
-            type:'text',
-            options:[], 
-            hasLabel: true,
-            contentLabel:'Pessoa',
-            atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name':'nome',onChange:alerta,    onBlur:alerta},
-
-        },
-        {
-            type:'text',
-            options:[], 
-            hasLabel: true,
-            contentLabel:'Status',
-            atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name':'nome',onChange:alerta,    onBlur:alerta},
-
-        },
-        {
-            type:'text',
-            options:[], 
-            hasLabel: true,
-            contentLabel:'Histórico',
-            atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"12",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name':'nome',onChange:alerta,    onBlur:alerta},
-
-        }
-    ]
-
-    const acoesBottomCard=[{
-            label:'Pesquisar',
-            icon:<FontAwesomeIcon icon={faSearch} />,
-            props:{onClick:()=>requestAllAgenda(), className:'btn btn-sm botao_success'}
-        },
-        {
-            label:'Cadastrar',
-            icon:<FontAwesomeIcon icon={faPlus} />,
-            props:{onClick:()=>setCadastrarAgenda(true), className:'btn btn-sm mx-2 btn-secondary'}
-        }
-    ];
-    const gerarExemplos = ()=>{
-         let exemplos = [];
-        for(let i=0; !(i == 10); i++){
-            exemplos.push(
-
-                    {
-                        propsRow:{id:(i+1)},
-                        celBodyTableArr:[
-                            {
-
-                                label:'1',
-                                propsRow:{}
-                            },
-                            {
-
-                                label:'Peddro',
-                                propsRow:{}
-                            },
-                            {
-
-                                label:'(98) 98425-7623',
-                                propsRow:{}
-                            },
-                            {
-
-                                label:'phedroclooney@gmail.com',
-                                propsRow:{}
-                            }
-                        ]
-                    }
-
-                )
-
+    const handleTotalItems=()=>{
+        if(Number(dataEstado?.mensagem?.to > 0)){
+            setQtdItemsTo(dataEstado?.mensagem?.to)
         }
 
-        return exemplos;
+        if(Number(dataEstado?.mensagem?.total > 0)){
+            setQtdItemsTotal(dataEstado?.mensagem?.total)
+        }
+    }
+
+    const nextPageRout = ()=>{       
+        if(dataEstado?.mensagem?.next_page_url){
+            setNextPage(dataEstado?.mensagem?.next_page_url)
+        }
+    }
+
+    const previousPageRout = ()=>{       
+        if(dataEstado?.mensagem?.prev_page_url){
+            setNextPage(dataEstado?.mensagem?.prev_page_url)
+        }
+    }
+
+    const firstPageRout = ()=>{       
+        if(dataEstado?.mensagem?.first_page_url){
+            setNextPage(dataEstado?.mensagem?.first_page_url)
+        }
+    }
+
+    const lastPageRout = ()=>{       
+        if(dataEstado?.mensagem?.last_page_url){
+            setNextPage(dataEstado?.mensagem?.last_page_url)
+        }
     }
 
     const gerarTableAgenda = ()=>{
        
         let data = [];
-        let dataAgenda = cidade.mensagem
+        let dataAgenda = cidade
+
+        if(dataAgenda?.mensagem){
+            dataAgenda = dataAgenda?.mensagem;
+        }
+
+        if(dataAgenda?.data){
+            dataAgenda = dataAgenda?.data;
+        }
+
         if(dataAgenda && Array.isArray(dataAgenda) && dataAgenda.length > 0){
             for(let i=0; !(i == dataAgenda.length); i++){
                 let atual = dataAgenda[i];
@@ -216,10 +164,19 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
     const gerarListMobileRelatorio = ()=>{
        
         let data = [];
-        let dataOrdemServico = cidade.mensagem
-        if(dataOrdemServico && Array.isArray(dataOrdemServico) && dataOrdemServico.length > 0){
-            for(let i=0; !(i == dataOrdemServico.length); i++){
-                let atual = dataOrdemServico[i];
+        let dataAgenda = cidade
+
+        if(dataAgenda?.mensagem){
+            dataAgenda = dataAgenda?.mensagem;
+        }
+
+        if(dataAgenda?.data){
+            dataAgenda = dataAgenda?.data;
+        }
+
+        if(dataAgenda && Array.isArray(dataAgenda) && dataAgenda.length > 0){
+            for(let i=0; !(i == dataAgenda.length); i++){
+                let atual = dataAgenda[i];
                 if(atual){
                     let acoesArr = [
                         {acao:()=>setAgendaChoice(atual.id), label:'Editar', propsOption:{}, propsLabel:{}},
@@ -344,38 +301,6 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
 
         return tableTitle;
     }
-
-    const requestAllAgenda = async() =>{
-        const fil = {'name':pessoa, 'id':agenda_id};
-        console.log(fil)
-        
-        const {url, options} = AGENDA_ALL_POST({}, getToken());
-
-
-        const {response, json} = await request(url, options);
-        console.log('All clients here')
-        console.log(json)
-        if(json){
-               setAgenda(json)
-        }
-
-            
-    }
-
-    React.useEffect(()=>{
-
-        const requestAllAgendaEffect = async() =>{
-       
-           await requestAllAgenda();
-
-            
-        }
-
-        //requestAllAgendaEffect();
-
-        
-    }, [])
-
     React.useEffect(()=>{
 
         if(cidadeChoice > 0){
@@ -391,6 +316,9 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
 
     React.useEffect(()=>{
         setAgenda(dataEstado)
+        setNrPageAtual(dataEstado?.mensagem?.current_page)
+        handleTotalPages();
+        handleTotalItems();
     }, [dataEstado])
 
     
@@ -411,6 +339,18 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                         nadaEncontrado={nadaEncontrado}
                         withoutFirstCol={true}
                         botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
+                        nextPage={nextPage}
+                        setNextPage={setNextPage}
+                        usePagination={usePagination}
+                        setUsePagination={setUsePagination}
+                        nextPageRout={nextPageRout}
+                        previousPageRout={previousPageRout}
+                        firstPageRout = {firstPageRout}
+                        nrPageAtual = {nrPageAtual}
+                        lastPageRout = {lastPageRout}
+                        totalPageCount={totalPageCount}
+                        qtdItemsTo={qtdItemsTo}
+                        qtdItemsTotal={qtdItemsTotal}
                     />
 
                     
@@ -422,16 +362,28 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                         rowsTableArr={rowsTableArr}
                         loading={loadingData}
                         botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
+                        nextPage={nextPage}
+                        setNextPage={setNextPage}
+                        usePagination={usePagination}
+                        setUsePagination={setUsePagination}
+                        nextPageRout={nextPageRout}
+                        previousPageRout={previousPageRout}
+                        firstPageRout = {firstPageRout}
+                        nrPageAtual = {nrPageAtual}
+                        lastPageRout = {lastPageRout}
+                        totalPageCount={totalPageCount}
+                        qtdItemsTo={qtdItemsTo}
+                        qtdItemsTotal={qtdItemsTotal}
                     />
                 </Col>
             </Row>
             {
-                cadastrarAgenda && <Cadastrar cadastrarAgenda={cadastrarAgenda} setCadastrarAgenda={setCadastrarAgenda} atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro}  idAgenda={cidadeChoice} setIdAgenda={setAgendaChoice} callback={requestAllAgenda} />
+                cadastrarAgenda && <Cadastrar cadastrarAgenda={cadastrarAgenda} setCadastrarAgenda={setCadastrarAgenda} atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro}  idAgenda={cidadeChoice} setIdAgenda={setAgendaChoice} callback={callBack} />
             }
             
             {
                 atualizarCadastro &&
-                <Atualizar atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro}  idAgenda={cidadeChoice} setIdAgenda={setAgendaChoice} callback={requestAllAgenda} />
+                <Atualizar atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro}  idAgenda={cidadeChoice} setIdAgenda={setAgendaChoice} callback={callBack} />
             }
          </>
 

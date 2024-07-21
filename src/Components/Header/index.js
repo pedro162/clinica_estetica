@@ -106,8 +106,8 @@ const Header = (props)=>{
                             
                         </NavDropdown>
                         <NavDropdown title="Agenda" id="collasible-nav-dropdown">
-                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} onClick={handleLinkClick} to="/agenda/painel" >Agenda</Link></NavDropdown.Item>
-                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} onClick={handleLinkClick} to="/home/painel" >Calendario de agenda</Link></NavDropdown.Item>
+                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} onClick={handleLinkClick} to="/agenda/painel" >Lidata da agenda</Link></NavDropdown.Item>
+                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} onClick={handleLinkClick} to="/agenda/calendario" >Calendario de agenda</Link></NavDropdown.Item>
                             {/*<NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} onClick={handleLinkClick} to="/agenda/eventos/painel" >Evento de agenda</Link></NavDropdown.Item>*/}
                             {/*<NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} onClick={handleLinkClick} to="/categoria/eventos/painel" >Categoria de eventos</Link></NavDropdown.Item>*/}
                             

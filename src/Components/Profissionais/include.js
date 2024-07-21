@@ -19,9 +19,10 @@ import Atualizar from './Atualizar/index.js'
 import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../functions/index.js'
 import { Button } from 'bootstrap';
 import reactDom from 'react-dom';
+import Home from '../Home/index.js';
 //
 
-const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncontrado, idProfissionalCriado, ...props})=>{
+const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncontrado, idProfissionalCriado, nextPage, setNextPage, usePagination, setUsePagination, totalPageCount, setTotalPageCount, ...props})=>{
     const {data, error, request, loading} = useFetch();
     const [estado, setProfissional] = React.useState([])
     const [exemplos, setExemplos] = React.useState([])
@@ -38,19 +39,56 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
     const [incicarProfissional, setIniciarProfissional] = React.useState(false) 
     const [acao, setAcao] = React.useState(null)
     const [pessoa, setPessoa] = React.useState('')
-    const [defaultFiltersCobReceber, setDefaultFiltersCobReceber] = React.useState({})
+    const [defaultFiltersAgenda, setDefaultFiltersAgenda] = React.useState({})
+    const [nrPageAtual, setNrPageAtual] = React.useState(null)
+    const [qtdItemsTo, setQtdItemsTo] = React.useState(null)
+    const [qtdItemsTotal, setQtdItemsTotal] = React.useState(null)
+    const [visualizarAgenda, setVisualizarAgenda] = React.useState(false) 
 
 
     const {getToken} = React.useContext(UserContex);
 
-    const alerta = (target)=>{
-        console.log(target)
+    
+    const handleTotalPages=()=>{
+        if(Number(dataEstado?.mensagem?.last_page > 0)){
+            setTotalPageCount(dataEstado?.mensagem?.last_page)
+        }
     }
 
-    const setNamePessoa = ({target})=>{
-        
-        setPessoa(target.value)
+    const handleTotalItems=()=>{
+        if(Number(dataEstado?.mensagem?.to > 0)){
+            setQtdItemsTo(dataEstado?.mensagem?.to)
+        }
+
+        if(Number(dataEstado?.mensagem?.total > 0)){
+            setQtdItemsTotal(dataEstado?.mensagem?.total)
+        }
     }
+
+    const nextPageRout = ()=>{       
+        if(dataEstado?.mensagem?.next_page_url){
+            setNextPage(dataEstado?.mensagem?.next_page_url)
+        }
+    }
+
+    const previousPageRout = ()=>{       
+        if(dataEstado?.mensagem?.prev_page_url){
+            setNextPage(dataEstado?.mensagem?.prev_page_url)
+        }
+    }
+
+    const firstPageRout = ()=>{       
+        if(dataEstado?.mensagem?.first_page_url){
+            setNextPage(dataEstado?.mensagem?.first_page_url)
+        }
+    }
+
+    const lastPageRout = ()=>{       
+        if(dataEstado?.mensagem?.last_page_url){
+            setNextPage(dataEstado?.mensagem?.last_page_url)
+        }
+    }
+
 
 
 
@@ -63,66 +101,12 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                     setAtualizarProfissional(false);
                 }
                 break;
-            case 'cancelar':
+            case 'agenda_profissional':
                 if(consultaChoice > 0){
-                    setCancelarProfissional(true);
+                    setVisualizarAgenda(true);
                 }else{
-                    setCancelarProfissional(false);
+                    setVisualizarAgenda(false);
                 }
-                break;
-            case 'digitar':
-                if(consultaChoice > 0){
-                    setDigitarProfissional(true);
-                }else{
-                    setDigitarProfissional(false);
-                }
-                break;
-            case 'visualizar':
-                if(consultaChoice > 0){
-                    setDigitarProfissional(true);
-                }else{
-                    setDigitarProfissional(false);
-                }
-                break;
-            case 'iniciar_procedimento':
-                if(consultaChoice > 0){
-                    setDigitarProfissional(true);
-                }else{
-                    setDigitarProfissional(false);
-                }
-                break;
-            
-            case 'finalizar_procedimento':
-                if(consultaChoice > 0){
-                    setDigitarProfissional(true);
-                }else{
-                    setDigitarProfissional(false);
-                }
-                break;        
-            case 'contas_receber':
-                if(consultaChoice > 0){
-                    setVisualizarContasReceber(true);
-                }else{
-                    setVisualizarContasReceber(false);
-                }
-                break;     
-            case 'editar_cabecalho':
-
-                if(consultaChoice > 0){
-                    setAtualizarCabecalhoProfissional(true);
-                }else{
-                    setAtualizarCabecalhoProfissional(false);
-                }
-
-                break;                 
-            case 'finalizar':
-
-                if(consultaChoice > 0){
-                    setFinalizarProfissional(true);
-                }else{
-                    setFinalizarProfissional(false);
-                }
-
                 break;
             default:
                 
@@ -149,64 +133,15 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
         setAtualizarProfissional(true);
     }
 
-    const atualizarCabecalhoProfissionalAction = (idProfissional)=>{
-        setProfissionalChoice(idProfissional)
-        setAcao('editar_cabecalho')
-        setAtualizarCabecalhoProfissional(true);
-        //AtualizarCabecalhoForm
+
+    const visualizarAgendaActions = (idContasReceber)=>{
+        setProfissionalChoice(idContasReceber)
+        setAcao('agenda_profissional')
+        setVisualizarAgenda(true);
     }
-
-    
-
-    const visualizarContasReceberAction = (idProfissional)=>{
-        setProfissionalChoice(idProfissional)
-        setAcao('contas_receber')
-        setVisualizarContasReceber(true);
-    }
-
-    const digitarProfissionalAction = (idProfissional)=>{
-        setProfissionalChoice(idProfissional)
-        setAcao('digitar')
-        setAtualizarProfissional(true);
-    }
-
-    const cancelarProfissionalAction = (idProfissional)=>{
-        setProfissionalChoice(idProfissional)
-        setAcao('cancelar')
-        setCancelarProfissional(true);
-    }
-    //cancelarProfissional, setCancelarProfissional
-    const novaProfissional = (idProfissional)=>{
-        setProfissionalChoice(idProfissional)
-        setAcao('consultar')
-        setAtualizarProfissional(true);
-    }
-
-    const iniciarProfissional = (idProfissional)=>{
-        setIniciarProfissional(idProfissional)
-        setAcao('iniciar')
-        setIniciarProfissional(true);
-    }
-
-    const finalizarProfissionalAction = (idProfissional)=>{
-        setProfissionalChoice(idProfissional)
-        setAcao('finalizar')
-        setFinalizarProfissional(true);
-    }
-
-
-    //finalizarProfissional, setFinalizarProfissional
     
 
     React.useEffect(()=>{
-        /**
-         * consultaChoice, setProfissionalChoice] = React.useState(()=>{
-        return idProfissionalCriado;
-    }
-         */
-        console.log('Ordem criada..............')
-        console.log(idProfissionalCriado)
-        console.log('Ordem criada..............')
         idProfissionalCriado && idProfissionalCriado > 0 && atualizarProfissionalAction(idProfissionalCriado)
 
     }, [idProfissionalCriado])
@@ -214,7 +149,15 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
     const gerarTableProfissional = ()=>{
        
         let data = [];
-        let dataProfissional = estado.mensagem
+        let dataProfissional = estado
+
+        if(dataProfissional?.mensagem){
+            dataProfissional = dataProfissional?.mensagem;
+        }
+
+        if(dataProfissional?.data){
+            dataProfissional = dataProfissional?.data;
+        }
         if(dataProfissional && Array.isArray(dataProfissional) && dataProfissional.length > 0){
             for(let i=0; !(i == dataProfissional.length); i++){
                 let atual = dataProfissional[i];
@@ -234,7 +177,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                             propsRow:{id:(atual.id)},
                             acoes:[
                                 {acao:()=>atualizarProfissionalAction(atual.id), label:'Editar', propsOption:{}, propsLabel:{}},
-                                {acao:()=>alert('Agenda qui: '+(atual.id)), label:'Agenda', propsOption:{}, propsLabel:{}},
+                                {acao:()=>{visualizarAgendaActions(atual.id); setDefaultFiltersAgenda({...atual, referencia_id:atual?.id, referencia:'profissionals'})}, label:'Agenda', propsOption:{}, propsLabel:{}},
                             ],
                             celBodyTableArr:[
                                 {
@@ -283,14 +226,22 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
     const gerarListMobileRelatorio = ()=>{
        
         let data = [];
-        let dataProfissional = estado.mensagem
+        let dataProfissional = estado
+
+        if(dataProfissional?.mensagem){
+            dataProfissional = dataProfissional?.mensagem;
+        }
+
+        if(dataProfissional?.data){
+            dataProfissional = dataProfissional?.data;
+        }
         if(dataProfissional && Array.isArray(dataProfissional) && dataProfissional.length > 0){
             for(let i=0; !(i == dataProfissional.length); i++){
                 let atual = dataProfissional[i];
                 if(atual){
                     let acoesArr = [
                     	{acao:()=>atualizarProfissionalAction(atual.id), label:'Editar', propsOption:{}, propsLabel:{}},
-                        {acao:()=>alert('Agenda qui: '+(atual.id)), label:'Agenda', propsOption:{}, propsLabel:{}},
+                        {acao:()=>{visualizarAgendaActions(atual.id); setDefaultFiltersAgenda({...atual, referencia_id:atual?.id, referencia:'profissionals'})}, label:'Agenda', propsOption:{}, propsLabel:{}},
                     ];
                     
 
@@ -394,40 +345,12 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
     }
 
 
-    //------------
-
-    const requestAllProfissionals = async() =>{
-       
-        const {url, options} = ORDEM_SERVICO_ALL_POST({'name_servico':pessoa}, getToken());
-
-
-        const {response, json} = await request(url, options);
-        console.log('All serviços here')
-        console.log({'name_servico':pessoa})
-        console.log(json)
-        if(json){
-            setProfissional(json)
-        }
-
-            
-    }
-
-    React.useEffect(()=>{
-
-        const requestAllProfissionalsEffect = async() =>{
-       
-           await requestAllProfissionals();
-
-            
-        }
-
-       /// requestAllProfissionalsEffect();
-
-        
-    }, [])
 
     React.useEffect(()=>{
         setProfissional(dataEstado)
+        setNrPageAtual(dataEstado?.mensagem?.current_page)
+        handleTotalPages();
+        handleTotalItems();
     }, [dataEstado])
     
 
@@ -448,18 +371,20 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                         nadaEncontrado={nadaEncontrado}
                         withoutFirstCol={true}
                         botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
+                        nextPage={nextPage}
+                        setNextPage={setNextPage}
+                        usePagination={usePagination}
+                        setUsePagination={setUsePagination}
+                        nextPageRout={nextPageRout}
+                        previousPageRout={previousPageRout}
+                        firstPageRout = {firstPageRout}
+                        nrPageAtual = {nrPageAtual}
+                        lastPageRout = {lastPageRout}
+                        totalPageCount={totalPageCount}
+                        qtdItemsTo={qtdItemsTo}
+                        qtdItemsTotal={qtdItemsTotal}
                     />
 
-                    {
-                    /*
-                    <CardMobile
-                        titulosTableArr={null}
-                        rowsTableArr={gerarCardContasReceber()}
-                        loading={loadingData}
-                        botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
-                    />
-                    */
-                    }
                 </Col>
 
                 <Col  xs="12" sm="12" md="12"  className={'default_card_report'}>
@@ -468,8 +393,19 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                         rowsTableArr={rowsTableArr}
                         loading={loadingData}
                         nadaEncontrado={nadaEncontrado}
-                        botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
-
+                        botoesHeader={[]}
+                        nextPage={nextPage}
+                        setNextPage={setNextPage}
+                        usePagination={usePagination}
+                        setUsePagination={setUsePagination}
+                        nextPageRout={nextPageRout}
+                        previousPageRout={previousPageRout}
+                        firstPageRout = {firstPageRout}
+                        nrPageAtual = {nrPageAtual}
+                        lastPageRout = {lastPageRout}
+                        totalPageCount={totalPageCount}
+                        qtdItemsTo={qtdItemsTo}
+                        qtdItemsTotal={qtdItemsTotal}
                     />
                 </Col>
             </Row>
@@ -480,6 +416,14 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                 <Atualizar atualizarCadastro={atualizarProfissional} setAtualizarCadastro={setAtualizarProfissional}  idProfissionais={consultaChoice} setIdProfissionais={setProfissionalChoice} callback={callBack} />
             }
 
+            {
+                visualizarAgenda && defaultFiltersAgenda &&
+                <Modal noBtnCancelar={false} noBtnConcluir={true} handleConcluir={()=>null}  title={'Agenda'} size="lg" propsConcluir={{}} labelConcluir={''} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={consultaChoice} showHide={()=>{setVisualizarAgenda(false);}}>
+                    
+                    <Home defaultFilters={defaultFiltersAgenda} visualizarCalendarioAgenda={visualizarAgenda} setVisualizarCalendarioAgenda={setVisualizarAgenda}  setAtualizarCadastro={setAtualizarProfissional} idReferencia={null} referencia={null}  clientChoice={consultaChoice} setClienteChoice={setProfissionalChoice} callback={callBack} />
+                
+                </Modal>
+            }
         
         </>
     )

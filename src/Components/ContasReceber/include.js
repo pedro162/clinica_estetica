@@ -54,10 +54,6 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
 
     const {getToken} = React.useContext(UserContex);
 
-    const alerta = (target)=>{
-        console.log(target)
-    }
-
     const handleTotalPages=()=>{
         if(Number(dataEstado?.mensagem?.last_page > 0)){
             setTotalPageCount(dataEstado?.mensagem?.last_page)
@@ -96,11 +92,6 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
         if(dataEstado?.mensagem?.last_page_url){
             setNextPage(dataEstado?.mensagem?.last_page_url)
         }
-    }
-
-    const setNamePessoa = ({target})=>{
-        
-        setPessoa(target.value)
     }
 
     const filtersArr = [
@@ -754,20 +745,6 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
         return data;
     }
    
-
-    //------------
-
-    const requestAllContasRecebers = async() =>{
-       
-        const {url, options} = ORDEM_SERVICO_ALL_POST({'name_servico':pessoa}, getToken());
-        const {response, json} = await request(url, options);
-        if(json){
-            setContasReceber(json)
-        }
-
-            
-    }
-
 
     React.useEffect(()=>{
         setContasReceber(dataEstado)

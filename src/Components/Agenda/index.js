@@ -6,7 +6,7 @@ import {Col, Row, Button } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
 import Breadcrumbs from '../Helper/Breadcrumbs.js'
-import { faHome, faSearch, faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faSearch, faPlus, faTimes, faChevronUp, faChevronDown, faBroom } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from '../Utils/Modal/index.js'
 import Load from '../Utils/Load/index.js'
@@ -19,7 +19,7 @@ import FormControlInput from '../FormControl/index.js'
 import { Link } from 'react-router-dom/cjs/react-router-dom.min';
 
 
-const Agenda = (props)=>{
+const Agenda = ({defaultFilters, ...props})=>{
 
 	const {data, error, request, loading} = useFetch();
     const [cidade, setAgenda] = React.useState([])
@@ -41,21 +41,20 @@ const Agenda = (props)=>{
     const [acao, setAcao] = React.useState(null)
     const [ordenacao, setOrdenacao] = React.useState('')
     const [nadaEncontrado, setNadaEncontrado] = React.useState(false)
+    const [nextPage, setNextPage] = React.useState(null)
+    const [totalPageCount, setTotalPageCount] = React.useState(null)
+    const [usePagination, setUsePagination] = React.useState(true)
+    const [qtdItemsPerPage, setQtdItemsPerPage] = React.useState(RECORD_NUMBER_PER_REQUEST)
     const [filtroPendentes, setFiltroPendentes] = React.useState(false)
     const [filtroConcluidas, setFiltroConcluidas] = React.useState(false)
     const [filtroCanceladas, setFiltroCanceladas] = React.useState(false)
     const [dtInicio, setDtInicio] = React.useState(null)
     const [dtFim, setDtFim] = React.useState(null)
-
+    const [appliedFilters, setAppliedFilters] = React.useState([])
     
     const {getToken, dataUser, isMobile} = React.useContext(UserContex);
 
     const {type, is_system, tenant_id} = dataUser ? dataUser : {};
-
-    const alerta = (target)=>{
-        console.log(target)
-    }
-
 
     const setNamePessoa = ({target})=>{
         
@@ -80,33 +79,64 @@ const Agenda = (props)=>{
     const handleIdFilter = ({target})=>{    
         setAgendaId(target.value)
     }
-
-    
-
     const handleSearch = (ev)=>{
         if (ev.key === "Enter") {
             requestAllAgenda();
         }
     }
-
-
+    
     const handleFiltroMobile = ({target})=>{
         setFiltroMobile(target.value)
     }
+    const setOrdenacaoFiltro = ({target})=>{        
+        setOrdenacao(target.value)
+    }
 
+    const limparFiltros = ()=>{
+        setCodigoPessoa('')
+        setPessoa('');
+        setAgendaId('')
+        setStatus('')
+        setHistorico('')
+        setFiltroMobile('');
+        setOrdenacao('');
+        setDtInicio('');
+        setDtFim('');
+        setAppliedFilters([]);
+    }
+
+    const removeFilter = (key)=>{
+         setAppliedFilters(prevFilters => {
+            const updatedFilters = { ...prevFilters };
+            delete updatedFilters[key];
+            return updatedFilters;
+        });
+    }
     //------------
     const montarFiltro = ()=>{
         let filtros = {}
         let detalhesFiltros = {}
-
-
         
+        if(usePagination){
+            filtros['usePaginate'] = 1;
+            filtros['nr_itens_per_page'] = qtdItemsPerPage;
+        }
+
+        if(agenda_id){
+            filtros['id'] = agenda_id;
+            detalhesFiltros['id'] = {
+                label:'id',
+                value:agenda_id,
+                resetFilter:()=>{setAgendaId('');removeFilter('id')},
+            };
+        }
+
         if(codigoPessoa){
             filtros['pessoa_id'] = codigoPessoa;
             detalhesFiltros['pessoa_id'] = {
                 label:'pessoa_id',
                 value:codigoPessoa,
-                resetFilter:()=>setCodigoPessoa(''),
+                resetFilter:()=>{setCodigoPessoa('');removeFilter('pessoa_id')},
             };
         }
 
@@ -115,45 +145,26 @@ const Agenda = (props)=>{
             detalhesFiltros['name'] = {
                 label:'name',
                 value:pessoa,
-                resetFilter:()=>setPessoa(''),
+                resetFilter:()=>{setPessoa('');removeFilter('name')},
             };
-
             filtros['name_pessoa'] = pessoa;
-            detalhesFiltros['name_pessoa'] = {
-                label:'name_pessoa',
-                value:pessoa,
-                resetFilter:()=>setPessoa(''),
-            };
         }
-
-        if(agenda_id){
-            filtros['id'] = agenda_id;
-            detalhesFiltros['id'] = {
-                label:'id',
-                value:agenda_id,
-                resetFilter:()=>setAgendaId(''),
-            };
-        }
-
-
-
-
         if(status){
             filtros['status'] = status;
             detalhesFiltros['status'] = {
                 label:'status',
                 value:status,
-                resetFilter:()=>setStatus(''),
+                resetFilter:()=>{setStatus('');removeFilter('status')},
             };
         }
 
 
         if(historico){
-            filtros['historico'] = historico;
-            detalhesFiltros['historico'] = {
-                label:'historico',
+            filtros['descricao'] = historico;
+            detalhesFiltros['descricao'] = {
+                label:'Historico',
                 value:historico,
-                resetFilter:()=>setHistorico(''),
+                resetFilter:()=>{setHistorico('');removeFilter('descricao')},
             };
         }
 
@@ -162,7 +173,7 @@ const Agenda = (props)=>{
             detalhesFiltros['dt_inicio'] = {
                 label:'dt_inicio',
                 value:dtInicio,
-                resetFilter:()=>setDtInicio(''),
+                resetFilter:()=>{setDtInicio('');removeFilter('dt_inicio')},
             };
         }
 
@@ -172,7 +183,7 @@ const Agenda = (props)=>{
             detalhesFiltros['dt_fim'] = {
                 label:'dt_fim',
                 value:dtFim,
-                resetFilter:()=>setDtFim(''),
+                resetFilter:()=>{setDtFim('');removeFilter('dt_fim')},
             };
         }
 
@@ -180,9 +191,9 @@ const Agenda = (props)=>{
 
             filtros['dt_periodo'] = dtInicio+','+dtInicio;
             detalhesFiltros['dt_periodo'] = {
-                label:'dt_periodo',
+                label:'Período',
                 value:dtInicio+','+dtInicio,
-                resetFilter:()=>{setDtInicio('');setDtFim('');},
+                resetFilter:()=>{setDtInicio('');setDtFim('');removeFilter('dt_periodo')},
             };
         }
         
@@ -192,7 +203,7 @@ const Agenda = (props)=>{
             detalhesFiltros['name'] = {
                 label:'Filtro',
                 value:filtroMobile,
-                resetFilter:()=>setFiltroMobile(''),
+                resetFilter:()=>{setFiltroMobile('');removeFilter('name')},
             };
         }
 
@@ -237,8 +248,15 @@ const Agenda = (props)=>{
                 resetFilter:()=>setFiltroCanceladas(''),
             };
         }
-
-
+       
+        if(ordenacao){
+            filtros['ordem'] = ordenacao;
+            detalhesFiltros['ordem'] = {
+                label:'Ordem',
+                value:ordenacao,
+                resetFilter:()=>{setOrdenacao('');removeFilter('ordem');},
+            };
+        }
 
         return {filtros, detalhesFiltros};
     }
@@ -252,8 +270,8 @@ const Agenda = (props)=>{
             hasLabel: true,
             contentLabel:'Código',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name':agenda_id,onChange:handleIdFilter,    onBlur:handleIdFilter, onKeyUp:handleSearch},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'name':'agenda_id', value:agenda_id,onChange:handleIdFilter,    onBlur:handleIdFilter, onKeyUp:handleSearch},
 
         },
         {
@@ -262,8 +280,8 @@ const Agenda = (props)=>{
             hasLabel: true,
             contentLabel:'Código pessoa',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name':pessoa,onChange:handleCodPessoaFilter,    onBlur:handleCodPessoaFilter, onKeyUp:handleSearch},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'name':'pessoa_id', value:codigoPessoa,onChange:handleCodPessoaFilter,    onBlur:handleCodPessoaFilter, onKeyUp:handleSearch},
 
         },
         {
@@ -272,8 +290,8 @@ const Agenda = (props)=>{
             hasLabel: true,
             contentLabel:'Pessoa',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name':'nome',onChange:handleNamePessoaFilter,    onBlur:handleNamePessoaFilter, onKeyUp:handleSearch},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'name':'name', value:pessoa,onChange:handleNamePessoaFilter,    onBlur:handleNamePessoaFilter, onKeyUp:handleSearch},
 
         },
         {
@@ -287,8 +305,8 @@ const Agenda = (props)=>{
             hasLabel: true,
             contentLabel:'Status',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name':'nome',onChange:handleStatusFilter,    onBlur:handleStatusFilter, onKeyUp:handleSearch},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'name':'status', value:status,onChange:handleStatusFilter,    onBlur:handleStatusFilter, onKeyUp:handleSearch},
 
         },
         {
@@ -297,10 +315,24 @@ const Agenda = (props)=>{
             hasLabel: true,
             contentLabel:'Histórico',
             atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"12",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name':'nome',onChange:handleHistoricoFilter,    onBlur:handleHistoricoFilter, onKeyUp:handleSearch},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'name':'descricao', value:historico,onChange:handleHistoricoFilter,    onBlur:handleHistoricoFilter, onKeyUp:handleSearch},
 
-        }
+        },    
+        {
+            type:'select',
+            options:[
+                {'label':'Selecione...', 'value':''},
+                {'label':'Código A-Z', 'value':'id-asc'},{'label':'Código Z-A', 'value':'id-desc'},
+                {'label':'Pessoa A-Z', 'value':'name-asc'},{'label':'Pessoa Z-A', 'value':'name-desc'},
+            {'label':'Status A-Z', 'value':'status-asc'},{'label':'Status Z-A', 'value':'status-desc'},], 
+            hasLabel: true,
+            contentLabel:'Classificar',
+            atributsFormLabel:{},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'select', size:"sm",'ordem':ordenacao, value:ordenacao, onChange:setOrdenacaoFiltro, onBlur:setOrdenacaoFiltro, onKeyUp:handleSearch},
+
+        },
     ]
 
     const acoesBottomCard=[{
@@ -309,24 +341,36 @@ const Agenda = (props)=>{
             props:{onClick:()=>requestAllAgenda(), className:'btn btn-sm botao_success'}
         },
         {
+            label:'Limpar',
+            icon:<FontAwesomeIcon icon={faBroom} />,
+            props:{onClick:()=>limparFiltros(), className:'btn btn-sm btn-secondary mx-2'}
+        },
+        {
             label:'Cadastrar',
             icon:<FontAwesomeIcon icon={faPlus} />,
-            props:{onClick:()=>setCadastrarAgenda(true), className:'btn btn-sm mx-2 btn-secondary'}
+            props:{onClick:()=>alert('Em desenvolvimento'), className:'btn btn-sm mx-2 btn-secondary'}
         }
     ];
 
-
+    const acoesHeaderCard=[
+        {
+            label:'',
+            icon:<FontAwesomeIcon icon={(mostarFiltros ? faChevronDown : faChevronUp)} />,
+            props:{onClick:()=>{setMostarFiltros(!mostarFiltros);}, className:'btn btn-sm btn-secondary'},
+        },
+    ];
+    
     const requestAllAgenda = async() =>{
         setAgenda([])
+        setNadaEncontrado(false)
 
         let {filtros, detalhesFiltros} = montarFiltro();
-
-        const {url, options} = AGENDA_ALL_POST({...filtros}, getToken());
-
-
+        setAppliedFilters(detalhesFiltros)
+        let {url, options} = AGENDA_ALL_POST({...filtros}, getToken());
+        if(nextPage){
+            url = nextPage;
+        }
         const {response, json} = await request(url, options);
-        console.log('All clients here')
-        console.log(json)
         if(json){
             setAgenda(json)
             
@@ -345,17 +389,14 @@ const Agenda = (props)=>{
 
     React.useEffect(()=>{
 
-        const requestAllAgendaEffect = async() =>{
-       
-           await requestAllAgenda();
-
-            
+        const requestAllAgendaEffect = async() =>{       
+           await requestAllAgenda();            
         }
 
         requestAllAgendaEffect();
 
         
-    }, [filtroPendentes, filtroConcluidas, filtroCanceladas])
+    }, [filtroPendentes, filtroConcluidas, filtroCanceladas, nextPage, setNextPage, defaultFilters])
 
     React.useEffect(()=>{
 
@@ -364,7 +405,6 @@ const Agenda = (props)=>{
         }else{
             setAtualizarCadastro(false);
         }
-
         
     }, [cidadeChoice])
 
@@ -375,10 +415,13 @@ const Agenda = (props)=>{
         }else{
             setShowModalCriarAgenda(false);
         }
-
         
     }, [cadastrarAgenda])
 
+    React.useEffect(()=>{
+        let {filtros, detalhesFiltros} = montarFiltro();
+        setAppliedFilters(detalhesFiltros)
+    }, [])
     
 	return(
 		<>
@@ -407,6 +450,10 @@ const Agenda = (props)=>{
                                 <Filter
                                     filtersArr={filtersArr}
                                     actionsArr={acoesBottomCard}
+                                    mostarFiltros={mostarFiltros}
+                                    setMostarFiltros={setMostarFiltros}
+                                    botoesHeader={acoesHeaderCard}
+                                    activeFilters={appliedFilters}
                                 />
                             </Col>
 
@@ -525,6 +572,12 @@ const Agenda = (props)=>{
                         setMostarFiltros={setMostarFiltros}
                         idAgendaCriada={cidadeChoice}
                         nadaEncontrado={nadaEncontrado}
+                        nextPage={nextPage}
+                        setNextPage={setNextPage}
+                        usePagination={usePagination}
+                        setUsePagination={setUsePagination}
+                        totalPageCount={totalPageCount}
+                        setTotalPageCount={setTotalPageCount}
                     />
                 </Col>
             </Row>

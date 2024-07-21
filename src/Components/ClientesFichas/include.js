@@ -289,7 +289,7 @@ const Include = ({dataEstado, loadingData, callBack, nadaEncontrado, setMostarFi
                     }
 
                     if(btnCancelar){
-                        acoesArr.push({acao:()=>cancelarClientesFichasAction(atual.id), label:'Cancelar', propsOption:{}, propsLabel:{}})
+                        //acoesArr.push({acao:()=>cancelarClientesFichasAction(atual.id), label:'Cancelar', propsOption:{}, propsLabel:{}})
                     }
 
                     let line_style = {}
@@ -474,7 +474,7 @@ const Include = ({dataEstado, loadingData, callBack, nadaEncontrado, setMostarFi
                     }
 
                     if(btnCancelar){
-                        acoesArr.push({acao:()=>cancelarClientesFichasAction(atual.id), label:'Cancelar', propsOption:{}, propsLabel:{}})
+                        //acoesArr.push({acao:()=>cancelarClientesFichasAction(atual.id), label:'Cancelar', propsOption:{}, propsLabel:{}})
                     }
 
                     let line_style = {}
@@ -542,36 +542,6 @@ const Include = ({dataEstado, loadingData, callBack, nadaEncontrado, setMostarFi
 
     //------------
 
-    const requestAllClientesFichas = async() =>{
-       
-        const {url, options} = FORMULARIO_PESSOA_ALL_POST({'name_pessoa':pessoa}, getToken());
-
-
-        const {response, json} = await request(url, options);
-        console.log('All serviços here=================================================')
-        console.log({'name_pessoa':pessoa})
-        console.log(json)
-        if(json){
-            setClientesFichas(json)
-        }
-
-            
-    }
-
-    React.useEffect(()=>{
-
-        const requestAllClientesFichasEffect = async() =>{
-       
-           await requestAllClientesFichas();
-
-            
-        }
-
-       /// requestAllClientesFichasEffect();
-
-        
-    }, [])
-
     React.useEffect(()=>{
         setClientesFichas(dataEstado)
         setNrPageAtual(dataEstado?.mensagem?.current_page)
@@ -619,7 +589,7 @@ const Include = ({dataEstado, loadingData, callBack, nadaEncontrado, setMostarFi
                         rowsTableArr={rowsTableArr}
                         loading={loadingData}
                         nadaEncontrado={nadaEncontrado}
-                        botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
+                        botoesHeader={[]}
                         nextPage={nextPage}
                         setNextPage={setNextPage}
                         usePagination={usePagination}

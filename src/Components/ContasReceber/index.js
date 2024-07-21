@@ -128,8 +128,7 @@ const ContasReceber = ({defaultFilters ,...props})=>{
         setIdReferenciaContasReceber(target.value)
     }
 
-    const setOrdenacaoFiltro = ({target})=>{
-        
+    const setOrdenacaoFiltro = ({target})=>{        
         setOrdenacao(target.value)
     }
     
@@ -540,7 +539,6 @@ const ContasReceber = ({defaultFilters ,...props})=>{
         if(nextPage){
             url = nextPage;
         }
-
         const {response, json} = await request(url, options);
         if(json){
             setContasReceber(json)
@@ -578,9 +576,7 @@ const ContasReceber = ({defaultFilters ,...props})=>{
         const {response, json} = await request(url, options);
         if(json){            
             setDataFiliais(json)
-        }
-
-            
+        }   
     }
 
     React.useEffect(()=>{
