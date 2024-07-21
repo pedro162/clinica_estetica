@@ -545,7 +545,7 @@ const Agenda = ({defaultFilters, ...props})=>{
                                 </Row>
                                 <Row>
                                     <div style={{display:'flex', flexDirection:'collumn', flexWrap:'wrap'}}>
-                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setCadastrarAgenda(true);}} ><FontAwesomeIcon icon={faPlus} /> Agenda</Button>
+                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{alert('Em desenvolvimento')}} ><FontAwesomeIcon icon={faPlus} /> Agenda</Button>
                                     </div>
                                 </Row>
 
