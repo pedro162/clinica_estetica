@@ -63,7 +63,7 @@ const Header = (props)=>{
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} onClick={handleLinkClick} to="/configuracoes/estado" >Estados</Link></NavDropdown.Item>
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} onClick={handleLinkClick} to="/configuracoes/cidade" >Cidade</Link></NavDropdown.Item>
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} onClick={handleLinkClick} to="/configuracoes/sistema" >Sistema</Link></NavDropdown.Item>
-                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} onClick={handleLinkClick} to="/configuracoes/construtor/ficha" >Contrutro de ficha</Link></NavDropdown.Item>
+                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} onClick={handleLinkClick} to="/configuracoes/construtor/ficha" >Templates de fichas</Link></NavDropdown.Item>
                            
                             {/* <NavDropdown.Divider />
                                 <NavDropdown.Item className={[estilos.itemMenu]} as='div'>Separated link</NavDropdown.Item> */}

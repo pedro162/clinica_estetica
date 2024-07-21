@@ -1,7 +1,7 @@
 import React from 'react';
 import estilos from './Servico.module.css'
 import useFetch from '../../Hooks/useFetch.js';
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, SERVICO_ALL_POST} from '../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, SERVICO_ALL_POST, RECORD_NUMBER_PER_REQUEST} from '../../api/endpoints/geral.js'
 import {FORMAT_DATA_PT_BR} from '../../functions/index.js'
 import {Col, Row, Button } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
@@ -32,12 +32,16 @@ const Servico = (props)=>{
     const [cadastrarServico, setCadastrarServico] = React.useState(false) 
     const [acao, setAcao] = React.useState(null)
     const [pessoa, setPessoa] = React.useState('')
-    const [mostarFiltros, setMostarFiltros] = React.useState(false) 
+    const [mostarFiltros, setMostarFiltros] = React.useState(true) 
     const [filtroMobile, setFiltroMobile] = React.useState(null)
     const [filtroAtivos, setFiltroAtivos] = React.useState(null)
     const [filtroInativos, setFiltroInAtivos] = React.useState(null)
     const [ordenacao, setOrdenacao] = React.useState('')
     const [nadaEncontrado, setNadaEncontrado] = React.useState(false)
+    const [nextPage, setNextPage] = React.useState(null)
+    const [totalPageCount, setTotalPageCount] = React.useState(null)
+    const [usePagination, setUsePagination] = React.useState(true)
+    const [qtdItemsPerPage, setQtdItemsPerPage] = React.useState(RECORD_NUMBER_PER_REQUEST)
     const [appliedFilters, setAppliedFilters] = React.useState([])
     const [vrMin, setVrMin] = React.useState('')
     const [vrMax, setVrMax] = React.useState('')
@@ -234,7 +238,12 @@ const Servico = (props)=>{
     const montarFiltro = ()=>{
         let filtros = {}
         let detalhesFiltros = {}
-        
+
+        if(usePagination){
+            filtros['usePaginate'] = 1;
+            filtros['nr_itens_per_page'] = qtdItemsPerPage;
+        }
+
         if(serivicoCode){
             filtros['id'] = serivicoCode;
             detalhesFiltros['id'] = {
@@ -419,8 +428,6 @@ const Servico = (props)=>{
         
     }, [filtroAtivos, filtroInativos])
 
-    const rowsTableArr = gerarTableServico();    
-    const titulosTableArr = gerarTitleTable();
     return(
         <>
             
@@ -546,6 +553,12 @@ const Servico = (props)=>{
                         setMostarFiltros={setMostarFiltros}
                         idOrdemCriada={consultaChoice}
                         nadaEncontrado={nadaEncontrado}
+                        nextPage={nextPage}
+                        setNextPage={setNextPage}
+                        usePagination={usePagination}
+                        setUsePagination={setUsePagination}
+                        totalPageCount={totalPageCount}
+                        setTotalPageCount={setTotalPageCount}
                     />
                 </Col>
             </Row>
