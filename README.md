@@ -1,70 +1,111 @@
-# Getting Started with Create React App
+````markdown
+# React Application for Service-Based Businesses
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This application is designed for service-based businesses like aesthetic clinics and health professionals. It includes screens for Dashboard widgets, Accounts Receivable, Financial Transactions, Branches, and much more. The system consumes a RESTful API.
 
-## Available Scripts
+## Table of Contents
 
-In the project directory, you can run:
+- [Introduction](#introduction)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Running the Application](#running-the-application)
+- [Screenshots](#screenshots)
+- [API Reference](#api-reference)
+- [License](#license)
 
-### `npm start`
+## Introduction
 
-Runs the app in the development mode.\
+This React application helps manage various aspects of service-based businesses. It provides an intuitive interface to track accounts receivable, manage financial transactions, monitor multiple branches, and much more.
+
+## Prerequisites
+
+Before you begin, ensure you have met the following requirements:
+
+- Node.js (v14.x or later)
+- npm (v6.x or later) or yarn (v1.x or later)
+- Git
+
+## Installation
+
+Follow these steps to set up the development environment:
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/pedro162/clinica_estetica.git
+   ```
+2. Navigate to the project directory:
+   ```bash
+   cd your-repo-name
+   ```
+3. Install the dependencies:
+   ```bash
+   npm install
+   ```
+   or
+   ```bash
+   yarn install
+   ```
+
+## Configuration
+
+1. Create a `.env` file in the root directory of the project.
+2. Add the necessary environment variables. For example:
+   ```
+   REACT_APP_API_BASE_URL=https://api.yourdomain.com
+   ```
+
+## Running the Application
+
+To run the application in development mode, use the following command:
+
+```bash
+npm start
+```
+````
+
+or
+
+```bash
+yarn start
+```
+
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Screenshots
 
-### `npm test`
+### Dashboard Widgets
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+The Dashboard provides a quick overview of key metrics and widgets that help in monitoring the performance and status of the business.
 
-### `npm run build`
+![Dashboard](src/Assets/System/widgets.png)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Accounts Receivable
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+The Accounts Receivable screen helps in tracking the amounts due from clients, managing invoices, and monitoring payment statuses.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+![Accounts Receivable](src/Assets/System/contas_receber.png)
 
-### `npm run eject`
+### Financial Transactions
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+The Financial Transactions screen allows users to record and monitor all financial activities, ensuring accurate bookkeeping and financial management.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+![Financial Transactions](src/Assets/System/movimentacoes_financeira.png)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### Branches
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+The Branches screen provides a detailed view of different branches of the business, including their performance metrics and other relevant information.
 
-## Learn More
+![Branches](src/Assets/System/branchs_view.png)
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## API Reference
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+This application consumes a RESTful API to perform CRUD operations and fetch data. Ensure your API is running and accessible at the base URL specified in the `.env` file.
 
-### Code Splitting
+## License
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-### Analyzing the Bundle Size
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```
