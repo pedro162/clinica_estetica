@@ -1,4 +1,3 @@
-````markdown
 # React Application for Service-Based Businesses
 
 This application is designed for service-based businesses like aesthetic clinics and health professionals. It includes screens for Dashboard widgets, Accounts Receivable, Financial Transactions, Branches, and much more. The system consumes a RESTful API.
@@ -62,6 +61,7 @@ To run the application in development mode, use the following command:
 ```bash
 npm start
 ```
+
 ````
 
 or
@@ -106,6 +106,5 @@ This application consumes a RESTful API to perform CRUD operations and fetch dat
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-```
 
-```
+````
