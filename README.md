@@ -30,45 +30,37 @@ Before you begin, ensure you have met the following requirements:
 Follow these steps to set up the development environment:
 
 1. Clone the repository:
-   ```bash
+
    git clone https://github.com/pedro162/clinica_estetica.git
-   ```
+
 2. Navigate to the project directory:
-   ```bash
+
    cd your-repo-name
-   ```
+
 3. Install the dependencies:
-   ```bash
+
    npm install
-   ```
+
    or
-   ```bash
+
    yarn install
-   ```
 
 ## Configuration
 
 1. Create a `.env` file in the root directory of the project.
 2. Add the necessary environment variables. For example:
-   ```
+
    REACT_APP_API_BASE_URL=https://api.yourdomain.com
-   ```
 
 ## Running the Application
 
 To run the application in development mode, use the following command:
 
-```bash
 npm start
-```
-
-````
 
 or
 
-```bash
 yarn start
-```
 
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
@@ -105,6 +97,3 @@ This application consumes a RESTful API to perform CRUD operations and fetch dat
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-
-````
