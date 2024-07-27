@@ -22,7 +22,7 @@ import reactDom from 'react-dom';
 import Home from '../Home/index.js';
 //
 
-const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncontrado, idProfissionalCriado, nextPage, setNextPage, usePagination, setUsePagination, totalPageCount, setTotalPageCount, ...props})=>{
+const Include = ({dataEstado, callBakSelectedItem, ignoreTableActions, loadingData, callBack, setMostarFiltros, nadaEncontrado, idProfissionalCriado, nextPage, setNextPage, usePagination, setUsePagination, totalPageCount, setTotalPageCount, ...props})=>{
     const {data, error, request, loading} = useFetch();
     const [estado, setProfissional] = React.useState([])
     const [exemplos, setExemplos] = React.useState([])
@@ -174,7 +174,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                     data.push(
 
                         {
-                            propsRow:{id:(atual.id)},
+                            propsRow:{id:(atual.id),onClick:()=>callBakSelectedItem && callBakSelectedItem(atual.id)},
                             acoes:[
                                 {acao:()=>atualizarProfissionalAction(atual.id), label:'Editar', propsOption:{}, propsLabel:{}},
                                 {acao:()=>{visualizarAgendaActions(atual.id); setDefaultFiltersAgenda({...atual, referencia_id:atual?.id, referencia:'profissionals'})}, label:'Agenda', propsOption:{}, propsLabel:{}},
@@ -256,7 +256,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                     data.push(
 
                         {
-                            propsRow:{id:(atual.id), titleRow: atual?.id +' - '+ atual?.name_pessoa, style:{...line_style}, mainIcon:faFileAlt},
+                            propsRow:{id:(atual.id), titleRow: atual?.id +' - '+ atual?.name_pessoa, style:{...line_style}, mainIcon:faFileAlt, onClick:()=>callBakSelectedItem && callBakSelectedItem(atual.id)},
                             acoes:[
                                 ...acoesArr
                             ],
@@ -383,6 +383,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                         totalPageCount={totalPageCount}
                         qtdItemsTo={qtdItemsTo}
                         qtdItemsTotal={qtdItemsTotal}
+                        ignoreTableActions={ignoreTableActions}
                     />
 
                 </Col>
@@ -406,6 +407,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                         totalPageCount={totalPageCount}
                         qtdItemsTo={qtdItemsTo}
                         qtdItemsTotal={qtdItemsTotal}
+                        ignoreTableActions={ignoreTableActions}
                     />
                 </Col>
             </Row>

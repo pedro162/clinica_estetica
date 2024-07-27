@@ -14,9 +14,13 @@ import Required from '../../FormControl/Required.js';
 import Load from '../../Utils/Load/index.js'
 import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible.js'
 import Swal from 'sweetalert2'//https://sweetalert2.github.io/#examples
+import * as Yup from 'yup';
 
 
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, FORMA_PAGAMENTOALL_POST, OPERADOR_FINANCEIROALL_POST, PLANO_PAGAMENTOALL_POST, SERVICO_SAVE_POST, FILIAIS_ALL_POST, ORDEM_SERVICO_FINALIZAR_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST, CONTAS_RECEBER_UPDATE_POST, CONTAS_RECEBER_SAVE_POST} from '../../../api/endpoints/geral.js'
+
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, FORMA_PAGAMENTOALL_POST, OPERADOR_FINANCEIROALL_POST, PLANO_PAGAMENTOALL_POST, SERVICO_SAVE_POST, FILIAIS_ALL_POST, ORDEM_SERVICO_FINALIZAR_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST, CONTAS_RECEBER_UPDATE_POST, CONTAS_RECEBER_SAVE_POST, CAIXA_ALL_POST} from '../../../api/endpoints/geral.js'
+import Caixa from '../../Caixa/index.js';
+import Clientes from '../../Clientes/index.js';
 
 
 const FormContasReceber = ({dataContasReceberChoice, setDataContasReceber, setIdContasReceber, idContasReceber, showModalCriarContasReceber, setShowModalCriarContasReceber, callback, atualizarContasReceber, setAtualizarContasReceber, carregando})=>{
@@ -37,8 +41,10 @@ const FormContasReceber = ({dataContasReceberChoice, setDataContasReceber, setId
 	const [vrCobrancaForm, setVrCobrancaForm] 								= React.useState(0)					//--- Controla a quantidade do serviço
 	const [idPlanoPagamentoForm, setIdPlanoPagamentoForm] 					= React.useState(0)		//--- Controla a quantidade do serviço
 	const [idOperadorFinanceiroForm, setIdOperadorFinanceiroForm] 			= React.useState(0)
-	const [nrDocForm, setNrDocForm] 										= React.useState('')	
-	const [idPessoaForm, setIdPessoaForm] 			= React.useState(0)
+	const [idFilialForm, setIdFilialForm] = React.useState(0)
+	const [nrDocForm, setNrDocForm] = React.useState('')	
+	const [idPessoaForm, setIdPessoaForm] = React.useState(0)
+	const [idCaixaForm, setIdCaixaForm] = React.useState(0)
 
 	
 
@@ -92,11 +98,7 @@ const FormContasReceber = ({dataContasReceberChoice, setDataContasReceber, setId
     const requestAllFiliais = async() =>{
        
         const {url, options} = FILIAIS_ALL_POST({}, getToken());
-
-
         const {response, json} = await dataRequest.request(url, options);
-        console.log('All consultas here')
-        console.log(json)
         if(json){
             setDataFiliais(json)
         }else{
@@ -110,6 +112,7 @@ const FormContasReceber = ({dataContasReceberChoice, setDataContasReceber, setId
 	const dataToFormContasReceber = ()=>{
     	let obj = {filial_id:'', vrLiquido:'', descricao:'', documento:'', dsArquivo:'', pessoa_id:'', pessoa_name:'', pessoa_rca_id:'', forma_pagamento_id:'', plano_pagamento_id:'', operador_financeiro_id:'', user_id:'', user_update_id:'', active:'', deleted_at:'', created_at:'', updated_at:''}
     	if(dataContasReceberChoice && dataContasReceberChoice.hasOwnProperty('mensagem')){
+			
     		let data = dataContasReceberChoice.mensagem;
 			
     		if(data.hasOwnProperty('filial_id')){
@@ -167,7 +170,10 @@ const FormContasReceber = ({dataContasReceberChoice, setDataContasReceber, setId
     	if(idPessoaForm > 0){
     		obj.pessoa_id = idPessoaForm;
     	}
-
+    	if(idFilialForm > 0){
+    		obj.filial_id = idFilialForm;
+    	}
+		
     	return obj;
     }
 
@@ -187,7 +193,7 @@ const FormContasReceber = ({dataContasReceberChoice, setDataContasReceber, setId
 	const getFormaPagamentoAll = async ()=>{
 		
 		const {url, options} = FORMA_PAGAMENTOALL_POST({}, getToken());
-		const {response, json} = await request(url, options);
+		const {response, json} = await dataRequest.request(url, options);
 		
 		if(json){
 				
@@ -211,7 +217,7 @@ const FormContasReceber = ({dataContasReceberChoice, setDataContasReceber, setId
 		}
 
 		const {url, options} = PLANO_PAGAMENTOALL_POST({forma_pagamento_id:idFormaPagamentoForm}, getToken());
-		const {response, json} = await request(url, options);
+		const {response, json} = await dataRequest.request(url, options);
 		
 		if(json){
 				
@@ -235,7 +241,7 @@ const FormContasReceber = ({dataContasReceberChoice, setDataContasReceber, setId
 		}
 
 		const {url, options} = OPERADOR_FINANCEIROALL_POST({forma_pagamento_id:idFormaPagamentoForm}, getToken());
-		const {response, json} = await request(url, options);
+		const {response, json} = await dataRequest.request(url, options);
 		
 		if(json){
 				
@@ -318,9 +324,23 @@ const FormContasReceber = ({dataContasReceberChoice, setDataContasReceber, setId
 
     }, []);
 
-    console.log('----------------------------- data pais ----------------------------------')
-    console.log(dataToFormContasReceber())
+	const handleCustomSubmit = (validateForm, submitForm) => {
+		validateForm().then((errors) => {
+		  if (Object.keys(errors).length === 0) {
+			submitForm();
+		  } else {
+			alert('Please fill in all required fields.');
+		  }
+		});
+	  };
 
+	// Validação com Yup
+	const validationSchema = Yup.object({
+		filial_id: Yup.string().required('Filial é obrigatório'),
+		pessoa_id: Yup.string().required('O campo pessoa é obrigatório'),
+	});
+  
+	
 
 	return(
 
@@ -383,6 +403,7 @@ const FormContasReceber = ({dataContasReceberChoice, setDataContasReceber, setId
 					 
                      await sendData({...values});
                 }}
+				validationSchema={validationSchema}
             >
                 {
                     (
@@ -440,7 +461,7 @@ const FormContasReceber = ({dataContasReceberChoice, setDataContasReceber, setId
 																	{
 																		hasLabel:true,
 																		contentLabel:'Filial *',
-																		atributsFormLabel:{
+																		atributsFormLabel:{//setIdFilialForm
 
 																		},
 																		atributsFormControl:{
@@ -448,8 +469,10 @@ const FormContasReceber = ({dataContasReceberChoice, setDataContasReceber, setId
 																			name:'filial_id',
 																			placeholder:'Filial',
 																			id:'filial_id',
-																			onChange:handleChange,
-																			onBlur:handleBlur,
+																			//onChange:handleChange,
+																			//onBlur:handleBlur,
+																			onChange:(ev)=>{ setIdFilialForm(ev.target.value);handleChange(ev)},
+																			onBlur:(ev)=>{ setIdFilialForm(ev.target.value);handleBlur(ev)},
 																			value:values.filial_id,
 																			className:estilos.input,
 																			size:"sm"
@@ -503,6 +526,8 @@ const FormContasReceber = ({dataContasReceberChoice, setDataContasReceber, setId
 																			}
 																		}
 																	}
+																	ComponentFilter={Clientes}
+																	componentTitle={'Escolha uma pessoa'}
 																	component={Required}
 															>   </Field>    
 															<ErrorMessage className="alerta_error_form_label" name="pessoa_id" component="div" />
@@ -536,9 +561,11 @@ const FormContasReceber = ({dataContasReceberChoice, setDataContasReceber, setId
 																			atributsContainer:{
 																				className:''
 																			},
-																			hookToLoadFromDescription:CLIENTES_ALL_POST,
+																			hookToLoadFromDescription:CAIXA_ALL_POST,
 																		}
 																	}
+																	ComponentFilter={Caixa}
+																	componentTitle={'Escolha um caixa'}
 																	component={Required}
 															>   </Field>    
 															<ErrorMessage className="alerta_error_form_label" name="caixa_id" component="div" />

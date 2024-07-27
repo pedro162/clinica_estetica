@@ -22,7 +22,7 @@ import FormCliente from './FormCliente/index.js'
 import Home from '../Home/index.js'
 
 
-const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFiltros, idClienteCriado, nextPage, setNextPage, usePagination, setUsePagination, totalPageCount, setTotalPageCount, ...props})=>{
+const Include = ({dataEstado, callBakSelectedItem, ignoreTableActions, loadingData, nadaEncontrado, callBack, setMostarFiltros, idClienteCriado, nextPage, setNextPage, usePagination, setUsePagination, totalPageCount, setTotalPageCount, ...props})=>{
 
 	const {data, error, request, loading} = useFetch();
     const [clientes, setClientes] = React.useState([])
@@ -108,7 +108,7 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                     data.push(
 
                         {
-                            propsRow:{id:(atual.id)},
+                            propsRow:{id:(atual.id),onClick:()=>callBakSelectedItem && callBakSelectedItem(atual.id)},
                             acoes:[
                                 {acao:()=>atualizarCliente(atual.id), label:'Editar', propsOption:{}, propsLabel:{}},
                                 {acao:()=>novoAtendimento(atual.id), label:'Novo atendimento', propsOption:{}, propsLabel:{}},
@@ -223,7 +223,7 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                     data.push(
 
                         {
-                            propsRow:{id:(atual.id), titleRow:atual?.name},
+                            propsRow:{id:(atual.id), titleRow:atual?.name, onClick:()=>callBakSelectedItem && callBakSelectedItem(atual.id)},
                             acoes:[
                                 ...acoesArr
                             ],
@@ -274,10 +274,8 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
         const {url, options} = CLIENTES_ALL_POST({}, getToken());
 
         const {response, json} = await request(url, options);
-        console.log('All clients here')
-        console.log(json)
         if(json){
-               setClientes(json)
+            setClientes(json)
         }
 
             
@@ -410,6 +408,7 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                         totalPageCount={totalPageCount}
                         qtdItemsTo={qtdItemsTo}
                         qtdItemsTotal={qtdItemsTotal}
+                        ignoreTableActions={ignoreTableActions}
                     />
 
                 </Col>
@@ -432,6 +431,7 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                         totalPageCount={totalPageCount}
                         qtdItemsTo={qtdItemsTo}
                         qtdItemsTotal={qtdItemsTotal}
+                        ignoreTableActions={ignoreTableActions}
 
                     />
                 </Col>

@@ -16,6 +16,7 @@ import TableForm from '../../Relatorio/TableForm/index.js';
 import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../../functions/index.js'
 
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, SERVICO_SAVE_POST, ORDEM_SERVICO_ITENS_ONE_GET , SERVICO_ALL_POST, SERVICO_UPDATE_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST, SERVICO_ONE_GET, ORDEM_SERVICO_ONE_GET, ORDEM_SERVICO_ADD_ITEM_POST, ORDEM_SERVICO_DELETE_ITEM_POST} from '../../../api/endpoints/geral.js'
+import Servico from '../../Servico/index.js';
 
 
 const FormOrdemServicoItens = ({dataOrdemServicoChoice, setDataOrdemServicoGlobal, idOrdemServico, itensOrdem ,callback,carregando, setQtdAtualizaCobrancas})=>{
@@ -468,11 +469,8 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, setDataOrdemServicoGloba
 		let obj = {name:'', vr_desconto:0, pct_desconto: 0, id:'', servico_id:'', vrItem:0, vrTotal:0, vr_final:0 , vrItemBruto:0, qtd:1, os_item_id:null, ...dataServicoEscolhido}
 		let data = dataServicoEscolhido;
 		if(vrServicoForm){
-			console.log('Mudou o valor do serviço ====================== !!! ================================')
+			//
 		}
-		console.log('Conteceu...================================================')
-		console.log(dataServicoEscolhido?.vrItemBruto)
-		console.log('Conteceu...================================================')
 
 		let escutaVrbruto 		= false;
 		let escutaChangeVrItem 	= false;
@@ -641,12 +639,6 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, setDataOrdemServicoGloba
 			obj.vr_desconto = Number(FORMAT_CALC_COD(obj.vr_desconto));
 			
 		}
-		
-		
-		
-		
-
-		
 
 		let vrIt = obj.hasOwnProperty('vrItemBruto') ? obj.vrItemBruto : 0;
 		let qtdItem = obj.hasOwnProperty('qtd') ? obj.qtd : 1;
@@ -655,9 +647,6 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, setDataOrdemServicoGloba
 		obj.vrTotal = vrIt * qtdItem;
 
 		obj.vr_final = obj.vrTotal - (obj.vr_desconto * obj.qtd); 
-		console.log('Conteceu obj ...================================================')
-		console.log(obj)
-		console.log('Conteceu obj ..================================================')
 
     	return obj;
 	}
@@ -999,6 +988,8 @@ const FormOrdemServicoItens = ({dataOrdemServicoChoice, setDataOrdemServicoGloba
 																			}
 																		}
 																	}
+																	ComponentFilter={Servico}
+																	componentTitle={'Escolha serviço'}
 																	component={Required}
 															>   </Field>    
 															<ErrorMessage className="alerta_error_form_label" name="servico_id" component="div" />

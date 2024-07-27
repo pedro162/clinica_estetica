@@ -19,7 +19,7 @@ import FormControlInput from '../FormControl/index.js'
 import { Link } from 'react-router-dom/cjs/react-router-dom.min.js';
 
 
-const Profissionais = ({defaultFilters, ...props})=>{
+const Profissionais = ({defaultFilters, callBakSelectedItem, ignoreTableActions , ...props})=>{
 
 	const {data, error, request, loading} = useFetch();
     const [estado, setProfissionais] = React.useState([])
@@ -490,6 +490,8 @@ const Profissionais = ({defaultFilters, ...props})=>{
                         setUsePagination={setUsePagination}
                         totalPageCount={totalPageCount}
                         setTotalPageCount={setTotalPageCount}
+                        callBakSelectedItem={callBakSelectedItem}
+                        ignoreTableActions={ignoreTableActions}
                     />
                 </Col>
             </Row>

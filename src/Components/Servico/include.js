@@ -22,7 +22,7 @@ import { Button } from 'bootstrap';
 import reactDom from 'react-dom';
 //
 
-const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFiltros, idOrdemCriada,nextPage, setNextPage, usePagination, setUsePagination, totalPageCount, setTotalPageCount, ...props})=>{
+const Include = ({dataEstado, callBakSelectedItem, ignoreTableActions, loadingData, nadaEncontrado, callBack, setMostarFiltros, idOrdemCriada,nextPage, setNextPage, usePagination, setUsePagination, totalPageCount, setTotalPageCount, ...props})=>{
     const {data, error, request, loading} = useFetch();
     const [estado, setServico] = React.useState([])
     const [exemplos, setExemplos] = React.useState([])
@@ -172,7 +172,7 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                     data.push(
 
                         {
-                            propsRow:{id:(atual.id)},
+                            propsRow:{id:(atual.id), onClick:()=>callBakSelectedItem && callBakSelectedItem(atual.id)},
                             acoes:[
                                 ...acoesArr
                             ],
@@ -262,7 +262,7 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                     data.push(
 
                         {//
-                            propsRow:{id:(atual.id), titleRow:atual?.name, style:{...line_style}, mainIcon:faTasks},
+                            propsRow:{id:(atual.id), titleRow:atual?.name, style:{...line_style}, mainIcon:faTasks, onClick:()=>callBakSelectedItem && callBakSelectedItem(atual.id)},
                             acoes:[
                                 ...acoesArr
                             ],
@@ -344,6 +344,7 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                         totalPageCount={totalPageCount}
                         qtdItemsTo={qtdItemsTo}
                         qtdItemsTotal={qtdItemsTotal}
+                        ignoreTableActions={ignoreTableActions}
                     />
                 </Col>
 
@@ -366,6 +367,7 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                         totalPageCount={totalPageCount}
                         qtdItemsTo={qtdItemsTo}
                         qtdItemsTotal={qtdItemsTotal}
+                        ignoreTableActions={ignoreTableActions}
 
                     />
                 </Col>

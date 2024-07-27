@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../../functions/index.js'
 import Pagination from 'react-bootstrap/Pagination';
 
-const ListMobile = ({children, titulosTableArr, rowsTableArr,loading, nadaEncontrado, botoesHeader, title, withoutFirstCol, usePagination, nrPageAtual, previousPageRout, nextPageRout, firstPageRout, lastPageRout, totalPageCount, qtdItemsTo, qtdItemsTotal, ... props})=>{
+const ListMobile = ({children, titulosTableArr, ignoreTableActions, rowsTableArr,loading, nadaEncontrado, botoesHeader, title, withoutFirstCol, usePagination, nrPageAtual, previousPageRout, nextPageRout, firstPageRout, lastPageRout, totalPageCount, qtdItemsTo, qtdItemsTotal, ... props})=>{
 	const titulosTable = titulosTableArr ? titulosTableArr : []
 	const bodyTable =  rowsTableArr ? rowsTableArr : []
 	const [selecionados, setSelecionados] = React.useState([])
@@ -114,8 +114,9 @@ const ListMobile = ({children, titulosTableArr, rowsTableArr,loading, nadaEncont
 				  				let acoesBottomCard 		= item.hasOwnProperty('acoesBottomCard') 		? item.acoesBottomCard: [];
 
 
-				  				let titleRow 				= propsRowBodyTable.hasOwnProperty('titleRow') 		? propsRowBodyTable.titleRow: '';
+				  				let titleRow 				= propsRowBodyTable.hasOwnProperty('titleRow') 		? propsRowBodyTable.titleRow: '';//onClick
 				  				let style 					= propsRowBodyTable.hasOwnProperty('style') 		? propsRowBodyTable.style: {};
+				  				let onClickRow 					= propsRowBodyTable.hasOwnProperty('onClick') 		? propsRowBodyTable.onClick: ()=>null;
 				  				let mainIcon 				= propsRowBodyTable.hasOwnProperty('mainIcon') 		? propsRowBodyTable.mainIcon: faUserCircle;
 
 				  				id = Number(id);
@@ -130,7 +131,14 @@ const ListMobile = ({children, titulosTableArr, rowsTableArr,loading, nadaEncont
                                 	
                                      <Col  key={id+index+arr.length}>
 
-                                     		<Row className={'pb-2 px-1'}  onClick={()=>{setDataMenu(acoesRowBodyTable);setShowModalOptions(true)}} style={{...style}} > 
+                                     		<Row className={'pb-2 px-1'}  onClick={
+												()=>{
+													if(!ignoreTableActions){
+														setDataMenu(acoesRowBodyTable);setShowModalOptions(true);
+													}
+													onClickRow()
+												}
+										} style={{...style}} > 
 												{!withoutFirstCol && (
 													<Col xs="2" sm="2" md="2"  style={{textAlign:'left', alignItems:'center', justifyContent:'center', margin:'auto',fontSize:'25pt'}}>
                                                     	<FontAwesomeIcon size={'sm'} icon={mainIcon}/>

@@ -7,7 +7,7 @@ import MenuOpcoes from '../MenuOpcoes/index.js'
 import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../../functions/index.js'
 import Pagination from 'react-bootstrap/Pagination';
 
-const Table = ({children, titulosTableArr, rowsTableArr,loading, nadaEncontrado, botoesHeader, usePagination, nrPageAtual, previousPageRout, nextPageRout, firstPageRout, lastPageRout, totalPageCount, qtdItemsTo, qtdItemsTotal, ... props})=>{
+const Table = ({children, titulosTableArr,ignoreTableActions, rowsTableArr,loading, nadaEncontrado, botoesHeader, usePagination, nrPageAtual, previousPageRout, nextPageRout, firstPageRout, lastPageRout, totalPageCount, qtdItemsTo, qtdItemsTotal, ... props})=>{
 	const titulosTable = titulosTableArr ? titulosTableArr : []
 	const bodyTable =  rowsTableArr ? rowsTableArr : []
 	const [selecionados, setSelecionados] = React.useState([])
@@ -31,8 +31,6 @@ const Table = ({children, titulosTableArr, rowsTableArr,loading, nadaEncontrado,
 		
 		
 	}
-	//nadaEncontrado
-	console.log(selecionados)
 
 	const selecionarTodos = (target)=>{
 		let itens = [];
@@ -178,7 +176,7 @@ const Table = ({children, titulosTableArr, rowsTableArr,loading, nadaEncontrado,
 																
 
 																let propsCelBodyTable 	= itemCel.hasOwnProperty('props') ? itemCel.props : {};
-																return <td key={indexCel+id+arrCel.length+'td'+rand} {...propsCelBodyTable} onClick={()=>{setDataMenu(acoesRowBodyTable);setShowModalOptions(true)}}  >{labelCel}</td>
+																return <td key={indexCel+id+arrCel.length+'td'+rand} {...propsCelBodyTable} onClick={()=>{if(!ignoreTableActions){setDataMenu(acoesRowBodyTable);setShowModalOptions(true)} }}  >{labelCel}</td>
 															})
 
 														) : ('')

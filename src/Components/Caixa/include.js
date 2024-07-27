@@ -23,7 +23,7 @@ import MovimentacoesFinanceiras from '../MovimentacoesFinanceiras/index.js'
 import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../functions/index.js'
 
 
-const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncontrado, nextPage, setNextPage, usePagination, setUsePagination, totalPageCount, setTotalPageCount, ...props})=>{
+const Include = ({dataEstado, callBakSelectedItem, ignoreTableActions, loadingData, callBack, setMostarFiltros, nadaEncontrado, nextPage, setNextPage, usePagination, setUsePagination, totalPageCount, setTotalPageCount, ...props})=>{
     const {data, error, request, loading} = useFetch();
     const [estado, setCaixa] = React.useState([])
     const [showModalCriarCaixa, setShowModalCriarConstula] = React.useState(false)
@@ -168,7 +168,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                     data.push(
 
                         {
-                            propsRow:{id:(atual.id), style:{...line_style}},
+                            propsRow:{id:(atual.id), style:{...line_style}, onClick:()=>callBakSelectedItem && callBakSelectedItem(atual.id)},
                             acoes:[
                                 ...acoesArr
                             ],
@@ -334,7 +334,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                     data.push(
 
                         {
-                            propsRow:{id:(atual.id)},
+                            propsRow:{id:(atual.id), onClick:()=>callBakSelectedItem && callBakSelectedItem(atual.id)},
                             acoes:[
                                 ...acoesArr
                             ],
@@ -412,7 +412,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                     data.push(
 
                         {
-                            propsRow:{id:(atual.id), titleRow: atual.id+' - '+atual?.name, style:{...line_style}, mainIcon:faChartLine},
+                            propsRow:{id:(atual.id), titleRow: atual.id+' - '+atual?.name, style:{...line_style}, mainIcon:faChartLine, onClick:()=>callBakSelectedItem && callBakSelectedItem(atual.id)},
                             acoes:[
                                 ...acoesArr
                             ],
@@ -527,6 +527,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                         totalPageCount={totalPageCount}
                         qtdItemsTo={qtdItemsTo}
                         qtdItemsTotal={qtdItemsTotal}
+                        ignoreTableActions={ignoreTableActions}
                     />
 
                     
@@ -551,6 +552,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
                         totalPageCount={totalPageCount}
                         qtdItemsTo={qtdItemsTo}
                         qtdItemsTotal={qtdItemsTotal}
+                        ignoreTableActions={ignoreTableActions}
                     />
                 </Col>
             </Row>

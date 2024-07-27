@@ -18,7 +18,7 @@ import FormOrdemServicoCobrancas from '../FormOrdemServicoCobrancas/index.js'
 import Swal from 'sweetalert2'
 
 
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, SERVICO_SAVE_POST, SERVICO_ALL_POST, ORDEM_SERVICO_FINALIZAR_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST} from '../../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, SERVICO_SAVE_POST, SERVICO_ALL_POST, ORDEM_SERVICO_FINALIZAR_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST, FILIAIS_ALL_POST} from '../../../api/endpoints/geral.js'
 
 
 const FormOrdemServico = ({dataOrdemServicoChoice, setDataOrdemServico, setIdOrdemServico, idOrdemServico, showModalCriarOrdemServico, setShowModalCriarOrdemServico, callback, atualizarOrdemServico, setAtualizarOrdemServico, carregando})=>{
@@ -60,15 +60,8 @@ const FormOrdemServico = ({dataOrdemServicoChoice, setDataOrdemServico, setIdOrd
 		}
 
 		const {url, options} = ORDEM_SERVICO_FINALIZAR_POST(idOrdemServico, data, getToken());
-
-
 		const {response, json} = await request(url, options);
-		console.log('Save consulta here')
-		console.log(json)
-		if(json){
-			console.log('Response Save consulta here')
-			console.log(json)
-			
+		if(json){			
 			callback();
 			setShowModalCriarOrdemServico();
 			setAtualizarOrdemServico(false);
@@ -85,13 +78,9 @@ const FormOrdemServico = ({dataOrdemServicoChoice, setDataOrdemServico, setIdOrd
     }
 
     const requestAllFiliais = async() =>{
-       
-        const {url, options} = SERVICO_ALL_POST({}, getToken());
-
-
+		setDataFiliais([]);
+        const {url, options} = FILIAIS_ALL_POST({}, getToken());
         const {response, json} = await dataRequest.request(url, options);
-        console.log('All consultas here')
-        console.log(json)
         if(json){
             setDataFiliais(json)
         }else{
@@ -170,7 +159,7 @@ const FormOrdemServico = ({dataOrdemServicoChoice, setDataOrdemServico, setIdOrd
 
     const preparaFilialToForm = ()=>{
     	if(dataFiliais.hasOwnProperty('mensagem') && Array.isArray(dataFiliais.mensagem) && dataFiliais.mensagem.length > 0){
-    		let filiais = dataFiliais.mensagem.map(({id, name}, index, arr)=>({label:name,valor:id,props:{}}))
+    		let filiais = dataFiliais.mensagem.map(({id, name_filial}, index, arr)=>({label:name_filial,valor:id,props:{}}))
     		filiais.unshift({label:'Selecione...',valor:'',props:{selected:'selected', disabled:'disabled'}})
     		
     		return filiais;
@@ -195,9 +184,6 @@ const FormOrdemServico = ({dataOrdemServicoChoice, setDataOrdemServico, setIdOrd
     	requesFiliais();
 
     }, []);
-
-    console.log('----------------------------- data pais ----------------------------------')
-    console.log(dataToFormOrdemServico())
 
 
 	if(error){

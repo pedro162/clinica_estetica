@@ -11,8 +11,10 @@ import {UserContex} from '../../../Context/UserContex.js'
 import Required from '../../FormControl/Required.js';
 import Load from '../../Utils/Load/index.js'
 import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible.js'
-
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, ORDEM_SERVICO_SAVE_POST, SERVICO_ALL_POST, SERVICO_UPDATE_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST, RCA_ALL_POST} from '../../../api/endpoints/geral.js'
+import Swal from 'sweetalert2'
+import * as Yup from 'yup';
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, ORDEM_SERVICO_SAVE_POST, SERVICO_ALL_POST, SERVICO_UPDATE_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST, RCA_ALL_POST, FILIAIS_ALL_POST} from '../../../api/endpoints/geral.js'
+import Profissionais from '../../Profissionais/index.js';
 
 
 const FormOrdemServicoIniciar = ({dataOrdemServicoChoice, setIdOrdemServico, idOrdemServico, showModalCriarOrdemServico, setShowModalCriarOrdemServico, callback, atualizarOrdemServico, setAtualizarOrdemServico, carregando})=>{
@@ -23,6 +25,8 @@ const FormOrdemServicoIniciar = ({dataOrdemServicoChoice, setIdOrdemServico, idO
 	const {getToken, dataUser} = React.useContext(UserContex);
 	const [dataFiliais, setDataFiliais] = React.useState([])	
 	const [dataRca, setDataRca] = React.useState([])
+	const [idPessoaForm, setIdPessoaForm] = React.useState(0)
+	const [idProfissionalForm, setIdProfissionalForm] = React.useState(0)
 	const userLogar =  ()=>{
         console.log('Aqui............')
     }
@@ -47,27 +51,27 @@ const FormOrdemServicoIniciar = ({dataOrdemServicoChoice, setIdOrdemServico, idO
 		const {url, options} = ORDEM_SERVICO_SAVE_POST(data, getToken());
 
 		const {response, json} = await request(url, options);
-		console.log('Save service here')
-		console.log(json)
 		if(json){
-			console.log('Response Save service here')
-			console.log(json)
 			
 			callback();
 			setShowModalCriarOrdemServico();
 			setAtualizarOrdemServico(false);
 			setIdOrdemServico(json?.mensagem?.id)
+
+			Swal.fire({
+				icon: "success",
+				title: "",
+				text: 'Reigistrado com sucesso',
+				footer: '',//'<a href="#">Why do I have this issue?</a>'
+				confirmButtonColor: "#07B201",
+			  });
 		}
     }
 
     const requestAllFiliais = async() =>{
        
-        const {url, options} = SERVICO_ALL_POST({}, getToken());
-
-
+        const {url, options} = FILIAIS_ALL_POST({}, getToken());
         const {response, json} = await dataRequest.request(url, options);
-        console.log('All consultas here')
-        console.log(json)
         if(json){
             setDataFiliais(json)
         }else{
@@ -81,25 +85,19 @@ const FormOrdemServicoIniciar = ({dataOrdemServicoChoice, setIdOrdemServico, idO
 	const requestAllRca = async() =>{
        
         const {url, options} = RCA_ALL_POST({}, getToken());
-
-
         const {response, json} = await dataRequest.request(url, options);
-        console.log('All response rca here')
-        console.log(json)
         if(json){
             setDataRca(json)
         }else{
 
         	setDataRca([]);
-        }
-
-            
+        }            
     }
 
 	
 
 	const dataToFormOrdemServicoIniciar = ()=>{
-    	let obj = {name:'', vrDesconto:''}
+    	let obj = {name:'', vrDesconto:'', rca_id:'', filial_id:'', pessoa_id:'', profissional_id:'', name_pessoa_contato:''}
     	if(dataOrdemServicoChoice && dataOrdemServicoChoice.hasOwnProperty('mensagem')){
     		let data = dataOrdemServicoChoice.mensagem;
            
@@ -113,7 +111,13 @@ const FormOrdemServicoIniciar = ({dataOrdemServicoChoice, setIdOrdemServico, idO
     		
     		
     	}
-
+    	if(idPessoaForm > 0){
+    		obj.pessoa_id = idPessoaForm;
+    	}    	
+		
+		if(idProfissionalForm > 0){
+    		obj.profissional_id = idProfissionalForm;
+    	}
     	return obj;
     }
 
@@ -139,7 +143,7 @@ const FormOrdemServicoIniciar = ({dataOrdemServicoChoice, setIdOrdemServico, idO
 
     const preparaFilialToForm = ()=>{
     	if(dataFiliais.hasOwnProperty('mensagem') && Array.isArray(dataFiliais.mensagem) && dataFiliais.mensagem.length > 0){
-    		let filiais = dataFiliais.mensagem.map(({id, name}, index, arr)=>({label:name,valor:id,props:{}}))
+    		let filiais = dataFiliais.mensagem.map(({id, name_filial}, index, arr)=>({label:name_filial,valor:id,props:{}}))
     		filiais.unshift({label:'Selecione...',valor:'',props:{selected:'selected', disabled:'disabled'}})
     		
     		return filiais;
@@ -156,14 +160,32 @@ const FormOrdemServicoIniciar = ({dataOrdemServicoChoice, setIdOrdemServico, idO
 
     }, []);
 
-    console.log('----------------------------- data pais ----------------------------------')
-    console.log(dataToFormOrdemServicoIniciar())
+	if(error){
+		Swal.fire({
+		  	icon: "error",
+		  	title: "Oops...",
+		  	text: error,
+		  	footer: '',//'<a href="#">Why do I have this issue?</a>'
+			confirmButtonColor: "#07B201",
+			//width:'20rem',
+		});
+	}
+
+	// Validação com Yup
+	const validationSchema = Yup.object({
+		rca_id: Yup.string().required('Vendedor é obrigatório'),
+		filial_id: Yup.string().required('Filial é obrigatório'),
+		profissional_id: Yup.string().required('Profissíonal é obrigatório'),
+		pessoa_id: Yup.string().required('O campo pessoa é obrigatório'),
+	});
+  
 	return(
 
 		<>
 			 <Formik 
 
                 initialValues={{...dataToFormOrdemServicoIniciar()}}
+				enableReinitialize={true}
                 validate={
                     values=>{
 
@@ -185,11 +207,6 @@ const FormOrdemServicoIniciar = ({dataOrdemServicoChoice, setIdOrdemServico, idO
 						if(!values.profissional_id){
 						    errors.profissional_id="Obrigatório"
 						}
-
-						
-
-						
-
                         return errors;
                     }
                 }
@@ -203,6 +220,7 @@ const FormOrdemServicoIniciar = ({dataOrdemServicoChoice, setIdOrdemServico, idO
 					 
                      await sendData({...values});
                 }}
+				validationSchema={validationSchema}
             >
                 {
                     (
@@ -299,6 +317,11 @@ const FormOrdemServicoIniciar = ({dataOrdemServicoChoice, setIdOrdemServico, idO
 																		className:''
 																	},
 																	hookToLoadFromDescription:CLIENTES_ALL_POST,
+																	callbackDataItemChoice:(param)=>{
+																		let {label, value} = param
+																		
+																		setIdPessoaForm(value)
+																	}
 																}
 															}
 															component={Required}
@@ -369,8 +392,15 @@ const FormOrdemServicoIniciar = ({dataOrdemServicoChoice, setIdOrdemServico, idO
 																		className:''
 																	},
 																	hookToLoadFromDescription:PROFISSIONAIS_ALL_POST,
+																	callbackDataItemChoice:(param)=>{
+																		let {label, value} = param
+																		
+																		setIdProfissionalForm(value)
+																	}
 																}
 															}
+															ComponentFilter={Profissionais}
+															componentTitle={'Escolha um profissional'}
 															component={Required}
 													>   </Field>    
 													<ErrorMessage className="alerta_error_form_label" name="profissional_id" component="div" />

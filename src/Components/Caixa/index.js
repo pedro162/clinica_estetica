@@ -21,7 +21,7 @@ import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../functions/index.js'
 import { Link } from 'react-router-dom/cjs/react-router-dom.min.js';
 
 
-const Caixa = ({defaultFilters ,...props})=>{
+const Caixa = ({defaultFilters, callBakSelectedItem, ignoreTableActions ,...props})=>{
 
     const {data, error, request, loading} = useFetch();
     const [estado, setCaixa] = React.useState([])
@@ -384,6 +384,8 @@ const Caixa = ({defaultFilters ,...props})=>{
                         setUsePagination={setUsePagination}
                         totalPageCount={totalPageCount}
                         setTotalPageCount={setTotalPageCount}
+                        callBakSelectedItem={callBakSelectedItem}
+                        ignoreTableActions={ignoreTableActions}
                     />
                 </Col>
             </Row>

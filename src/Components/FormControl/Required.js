@@ -12,7 +12,7 @@ import Modal from '../Utils/Modal/index.js'
 import Profissionais from '../Profissionais/index.js';
 import Clientes from '../Clientes/index.js';
 
-const Required = ({data, url_btn, callback_selected, props_btn_search, label_btn_search, ComponentFilter, ...props})=>{
+const Required = ({data, url_btn, callback_selected, props_btn_search, label_btn_search, ComponentFilter, componentTitle, ...props})=>{
     const [cod, setCod] = React.useState('');
     const [description, setDescription] = React.useState(''); 
     const[activeSuggestion, setActiveSuggestion] = React.useState(0);
@@ -53,13 +53,9 @@ const Required = ({data, url_btn, callback_selected, props_btn_search, label_btn
 
         const {url, options} = hookToLoadFromDescription({to_require:true, codigo_to_search:data_get}, getToken());
         const {response, json} = await request(url, options);
-        console.log('R3egistro')
-        //console.log(json)
         if(json && json.hasOwnProperty('mensagem') && json.mensagem.length > 0){
             let registro = json.mensagem[0];
             callbackDataItemChoice(registro)
-            console.log('R3egistro')
-            console.log(registro)
             setCod(registro?.value)
             setDescription(registro?.label)
             setActiveSuggestion(0)
@@ -73,54 +69,11 @@ const Required = ({data, url_btn, callback_selected, props_btn_search, label_btn
     }
 
     const handleChangeCod =  ({target, ...event})=>{
-        //setCod(registro?.value)
-
         getServicoById(target?.value)
-        /* let data_get = target.value;
-        if(! (String(data_get).trim().length > 0)){
-            setCod('')
-            setDescription('')
-            setFilteredSuggestions([])
-            return false;
-        }
-
-        const {url, options} = hookToLoadFromDescription({to_require:true, codigo_to_search:data_get}, getToken());
-        const {response, json} = await request(url, options);
-        console.log('R3egistro')
-        //console.log(json)
-        if(json && json.hasOwnProperty('mensagem')){
-            let registro = json.mensagem[0];
-            callbackDataItemChoice(registro)
-            console.log('R3egistro')
-            console.log(registro)
-            setCod(registro?.value)
-            setDescription(registro?.label)
-            setActiveSuggestion(0)
-            setShowSuggestions(false)
-        }else{
-            callbackDataItemChoice([])
-            setCod('')
-            setActiveSuggestion(0)
-            setShowSuggestions(false)
-        } */
     }
 
     const handleBlurCod = async ({target, ...event})=>{
         
-        /* let data_get = target.value;
-
-        const {url, options} = hookToLoadFromDescription({to_require:true, codigo_to_search:data_get}, getToken());
-        const {response, json} = await request(url, options);
-        if(json && json.hasOwnProperty('mensagem') && json.mensagem.length > 0){
-            let registro = json.mensagem[0];
-            setCod(registro?.value)
-            setDescription(registro?.label)
-            callbackDataItemChoice(registro)
-        }else{
-            setCod('')
-            setDescription('')
-        } */
-
         let data_get = target.value;
         if(! (String(data_get).trim().length > 0)){
             setCod('')
@@ -132,13 +85,9 @@ const Required = ({data, url_btn, callback_selected, props_btn_search, label_btn
 
         const {url, options} = hookToLoadFromDescription({to_require:true, codigo_to_search:data_get}, getToken());
         const {response, json} = await request(url, options);
-        console.log('R3egistro')
-        //console.log(json)
         if(json && json.hasOwnProperty('mensagem')){
             let registro = json.mensagem[0];
             callbackDataItemChoice(registro)
-            console.log('R3egistro')
-            console.log(registro)
             setCod(registro?.value)
             setDescription(registro?.label)
             setActiveSuggestion(0)
@@ -152,8 +101,6 @@ const Required = ({data, url_btn, callback_selected, props_btn_search, label_btn
     }
 
     const handleChangeDescription = async ({target, ...ev})=>{
-        console.log(ev)
-        console.log('Description: '+target.value);
         let data_get = target.value;
         setDescription(data_get)
         if(! (String(data_get).trim() > 0)){
@@ -161,10 +108,6 @@ const Required = ({data, url_btn, callback_selected, props_btn_search, label_btn
         }
         const {url, options} = hookToLoadFromDescription({to_require:true, description_to_search:data_get}, getToken());
         const {response, json} = await request(url, options);
-        console.log('------------------- All clients here ------------------------------------ ')
-        console.log(json)
-
-        console.log('---------------------------------------');
         if(json && json.hasOwnProperty('mensagem')){
             setFilteredSuggestions(json.mensagem)
             setShowSuggestions(true)
@@ -246,7 +189,13 @@ const Required = ({data, url_btn, callback_selected, props_btn_search, label_btn
     //setCod(atributsFormControlForm?.value)
     
     if(!ComponentFilter){
-       ComponentFilter = <Clientes/>
+       ComponentFilter = Clientes
+    }
+
+    const callBakSelectedItem = (idjServico)=>{
+        getServicoById(idjServico)
+        setShowModalCriarProfissionais();
+        setCadastrarProfissionais(false) 
     }
 
     return(
@@ -359,8 +308,8 @@ const Required = ({data, url_btn, callback_selected, props_btn_search, label_btn
                     (null)
                 }
             </Col>
-            <Modal  handleConcluir={()=>null}  title={"Pessoas"} size="lg" noBtnConcluir={true} dialogClassName={'modal-90w modal-xl'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarProfissionais} showHide={()=>{setShowModalCriarProfissionais();setCadastrarProfissionais(false)}}>
-                {ComponentFilter}
+            <Modal  handleConcluir={()=>null}  title={componentTitle ?? "Pessoas"} size="lg" noBtnConcluir={true} dialogClassName={'modal-90w modal-xl'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarProfissionais} showHide={()=>{setShowModalCriarProfissionais();setCadastrarProfissionais(false)}}>
+                {<ComponentFilter callBakSelectedItem={callBakSelectedItem} ignoreTableActions={true}/>}
             </Modal>
         </Row>
 

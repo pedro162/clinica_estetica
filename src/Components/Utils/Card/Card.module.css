@@ -3,7 +3,10 @@
 }
 .headerFooter{
 	background-color: #FFF !important;
-
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	align-content: center;
 }
 
 .bodyCard{

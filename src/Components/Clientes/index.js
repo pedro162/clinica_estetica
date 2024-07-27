@@ -20,7 +20,7 @@ import FormControlInput from '../FormControl/index.js'
 import { Link } from 'react-router-dom/cjs/react-router-dom.min.js';
 
 
-const Clientes = ({defaultFilters ,...props})=>{
+const Clientes = ({defaultFilters, callBakSelectedItem, ignoreTableActions ,...props})=>{
 
 	const {data, error, request, loading} = useFetch();
     const [clientes, setClientes] = React.useState([])
@@ -393,6 +393,8 @@ const Clientes = ({defaultFilters ,...props})=>{
                         setUsePagination={setUsePagination}
                         totalPageCount={totalPageCount}
                         setTotalPageCount={setTotalPageCount}
+                        callBakSelectedItem={callBakSelectedItem}
+                        ignoreTableActions={ignoreTableActions}
                     />
                 </Col>
             </Row>

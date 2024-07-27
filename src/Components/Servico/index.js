@@ -19,7 +19,7 @@ import Include from './include';
 import FormControlInput from '../FormControl/index.js'
 
 
-const Servico = (props)=>{
+const Servico = ({callBakSelectedItem, ignoreTableActions, ...props})=>{
 
     const {data, error, request, loading} = useFetch();
     const [estado, setServico] = React.useState([])
@@ -559,6 +559,8 @@ const Servico = (props)=>{
                         setUsePagination={setUsePagination}
                         totalPageCount={totalPageCount}
                         setTotalPageCount={setTotalPageCount}
+                        callBakSelectedItem={callBakSelectedItem}
+                        ignoreTableActions={ignoreTableActions}
                     />
                 </Col>
             </Row>
