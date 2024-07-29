@@ -31,9 +31,11 @@ import CadastrarCliente from '../Components/Clientes/Cadastrar/index.js'
 import Widgets from '../Components/Widgets/index.js'
 import PainelHome from '../Components/Home/Painel.js'
 import CadastrarExternoSimples from '../Components/Consulta/Cadastrar/CadastrarExternoSimples.js'
-
+import SendMessageWhatsApp from '../Components/CanaisNotificacao/WhatsApp/index.js'
+import SendEmail from '../Components/CanaisNotificacao/Email/index.js'
 
 export {Home, NotFound, Login, ProtectedRoute, PainelInicial,Clientes,Grupos, ContasReceber, Caixa, Filial, Parametro, User, Pais,
      Estado, Cidade, Agenda, AgendaEvento, CategoriaEvento, Especialidade, Profissionais, Consulta, ConstrutorFicha, ConstrutorFichaGrupo,
-     ConstrutorFichaItem,Servico,OrdemServico, ClientesFichas, MovimentacoesFinanceiras,MenuBotoes,CadastrarCliente,Widgets,PainelHome, CadastrarExternoSimples
+     ConstrutorFichaItem,Servico,OrdemServico, ClientesFichas, MovimentacoesFinanceiras,MenuBotoes,CadastrarCliente,Widgets,PainelHome, CadastrarExternoSimples,
+     SendMessageWhatsApp,SendEmail
 }

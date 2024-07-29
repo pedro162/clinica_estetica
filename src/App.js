@@ -2,7 +2,7 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import {Home, NotFound, Login, ProtectedRoute, PainelInicial, Clientes, Grupos, ContasReceber, Caixa, Filial, Parametro, Pais, Estado, Cidade, Agenda, AgendaEvento, CategoriaEvento, Especialidade, Profissionais, Consulta, ConstrutorFicha, ConstrutorFichaItem, Servico,
-  OrdemServico, ClientesFichas,MovimentacoesFinanceiras,MenuBotoes,PainelHome,CadastrarExternoSimples
+  OrdemServico, ClientesFichas,MovimentacoesFinanceiras,MenuBotoes,PainelHome,CadastrarExternoSimples, SendMessageWhatsApp,SendEmail
 } from './View/index.js'
 import {Router, Route, Switch} from 'react-router'
 import {history} from './history.js'
@@ -149,6 +149,16 @@ function App() {
                       <ProtectedRoute
                         path="/ordem/servico/painel" 
                         component={OrdemServico}
+                      />
+
+                      <ProtectedRoute
+                        path="/nofiticacoes/email/:id" 
+                        component={SendEmail}
+                      />
+
+                      <ProtectedRoute
+                        path="/nofiticacoes/whatsapp/:id" 
+                        component={SendMessageWhatsApp}
                       />
 
 

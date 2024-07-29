@@ -20,7 +20,8 @@ import CadastrarFicha from '../ClientesFichas/Cadastrar/index.js'
 import {UserContex} from '../../Context/UserContex.js'
 import FormCliente from './FormCliente/index.js'
 import Home from '../Home/index.js'
-
+import SendWhatsApp from '../CanaisNotificacao/WhatsApp/index.js';
+import SendEmail from '../CanaisNotificacao/Email/index.js';
 
 const Include = ({dataEstado, callBakSelectedItem, ignoreTableActions, loadingData, nadaEncontrado, callBack, setMostarFiltros, idClienteCriado, nextPage, setNextPage, usePagination, setUsePagination, totalPageCount, setTotalPageCount, ...props})=>{
 
@@ -42,7 +43,9 @@ const Include = ({dataEstado, callBakSelectedItem, ignoreTableActions, loadingDa
     const [nrPageAtual, setNrPageAtual] = React.useState(null)
     const [qtdItemsTo, setQtdItemsTo] = React.useState(null)
     const [qtdItemsTotal, setQtdItemsTotal] = React.useState(null)
-    //nadaEncontrado
+    const [novaMensagemWhatsApp, setNovaMensagemWhatsApp] = React.useState(false) 
+    const [novaMensagemEmail, setNovaMensagemEmail] = React.useState(false) 
+    //nadaEncontrado//setNovaMensagemWhatsApp
     const {getToken} = React.useContext(UserContex);
 
 
@@ -112,12 +115,14 @@ const Include = ({dataEstado, callBakSelectedItem, ignoreTableActions, loadingDa
                             acoes:[
                                 {acao:()=>atualizarCliente(atual.id), label:'Editar', propsOption:{}, propsLabel:{}},
                                 {acao:()=>novoAtendimento(atual.id), label:'Novo atendimento', propsOption:{}, propsLabel:{}},
+                                {acao:()=>mensagemWhatsapp(atual.id), label:'Enviar msg WhtasApp', propsOption:{}, propsLabel:{}},
+                                {acao:()=>mensagemEmail(atual.id), label:'Enviar e-mail', propsOption:{}, propsLabel:{}},
                                 {acao:()=>consultaTodosAtendimentos(atual.id), label:'Histórico de atendimentos', propsOption:{}, propsLabel:{}},
                                 {acao:()=>cadastrarFichaAtendimento(atual.id), label:'Nova ficha', propsOption:{}, propsLabel:{}},
                                 {acao:()=>fichaAtendimento(atual.id), label:'Visualizar ficha', propsOption:{}, propsLabel:{}},
                                 {acao:()=>consultaAgendaCalendario(atual.id), label:'Calendário da agenda', propsOption:{}, propsLabel:{}},
                                 //{acao:()=>alert('Histórico de atentimentos: '+(atual.id)), label:'Histórico de atendimentos', propsOption:{}, propsLabel:{}},
-                                //{acao:()=>alert('Central do cliente: '+(atual.id)), label:'Central do cliente', propsOption:{}, propsLabel:{}},
+                                //{acao:()=>alert('Central do cliente: '+(atual.id)), label:'Central do cliente', propsOption:{}, propsLabel:{}},mensagemWhatsapp
                             ],
                             celBodyTableArr:[
                                 {
@@ -204,8 +209,10 @@ const Include = ({dataEstado, callBakSelectedItem, ignoreTableActions, loadingDa
                 let atual = dataClientes[i];
                 if(atual){
                     let acoesArr = [
-                        {acao:()=>atualizarCliente(atual.id), label:'Editar', propsOption:{}, propsLabel:{}},
+                        {acao:()=>atualizarCliente(atual.id), label:'Editar', propsOption:{}, propsLabel:{}},//
                         {acao:()=>novoAtendimento(atual.id), label:'Novo atendimento', propsOption:{}, propsLabel:{}},
+                        {acao:()=>mensagemWhatsapp(atual.id), label:'Enviar msg WhtasApp', propsOption:{}, propsLabel:{}},
+                        {acao:()=>mensagemEmail(atual.id), label:'Enviar e-mail', propsOption:{}, propsLabel:{}},
                         {acao:()=>consultaTodosAtendimentos(atual.id), label:'Histórico de atendimentos', propsOption:{}, propsLabel:{}},
                         {acao:()=>cadastrarFichaAtendimento(atual.id), label:'Nova ficha', propsOption:{}, propsLabel:{}},
                         {acao:()=>fichaAtendimento(atual.id), label:'Visualizar ficha', propsOption:{}, propsLabel:{}},
@@ -323,6 +330,20 @@ const Include = ({dataEstado, callBakSelectedItem, ignoreTableActions, loadingDa
                     setVisualizarCalendarioAgenda(true);
                 }else{
                     setVisualizarCalendarioAgenda(false);
+                }     
+                break;    
+            case 'mensagem_whatsapp':
+                if(clientChoice > 0){
+                    setNovaMensagemWhatsApp(true);
+                }else{
+                    setNovaMensagemWhatsApp(false);
+                }
+            break;   
+            case 'mensagem_email':
+                if(clientChoice > 0){
+                    setNovaMensagemEmail(true);
+                }else{
+                    setNovaMensagemEmail(false);
                 }
             break;
             default:
@@ -331,7 +352,7 @@ const Include = ({dataEstado, callBakSelectedItem, ignoreTableActions, loadingDa
                 setFicha(false);
                 break;
 
-        }
+        }//mensagemWhatsapp
         
     }, [clientChoice, acao])
     
@@ -371,8 +392,18 @@ const Include = ({dataEstado, callBakSelectedItem, ignoreTableActions, loadingDa
         setAcao('agenda_calendario')
         setVisualizarCalendarioAgenda(true);
     }
-    
-    
+    const mensagemWhatsapp = (idCliente)=>{
+        setClienteChoice(idCliente)
+        setAcao('mensagem_whatsapp')
+        setNovaMensagemWhatsApp(true);
+    }
+
+    const mensagemEmail = (idCliente)=>{
+        setClienteChoice(idCliente)
+        setAcao('mensagem_email')
+        setNovaMensagemEmail(true);
+    }
+        
     React.useEffect(()=>{
         setClientes(dataEstado)
         setNrPageAtual(dataEstado?.mensagem?.current_page)
@@ -474,6 +505,17 @@ const Include = ({dataEstado, callBakSelectedItem, ignoreTableActions, loadingDa
             {
                 cadastrarFicha &&
                 <CadastrarFicha  cadastrarClientesFichas={cadastrarFicha} setCadastrarFicha={atualizarCadastro} setCadastrarClientesFichas={setCadastrarFicha} atualizarClientesFichas={setCadastrarFicha} setAtualizarClientesFichas={setAtualizarCadastro} setIdClientesFichas={setClienteChoice} callback={requestAllClients} />
+            }
+
+
+            {
+                novaMensagemWhatsApp &&
+                <SendWhatsApp noUseModal={false} idPessoa={clientChoice} setIdPessoa={setClienteChoice}  callback={callBack} />
+            }
+
+{
+                novaMensagemEmail &&
+                <SendEmail  noUseModal={false} idPessoa={clientChoice} setIdPessoa={setClienteChoice}  callback={callBack} />
             }
 
          </>
