@@ -21,7 +21,7 @@ function App() {
        <Router history={history}>
           <UserStorange>
               <Header/>
-                <Container fluid className={'container_mobile'}>
+                <Container fluid className={'container_mobile'} >
                   <main className={"main_class"}>
                     <Switch>
                       <ProtectedRoute

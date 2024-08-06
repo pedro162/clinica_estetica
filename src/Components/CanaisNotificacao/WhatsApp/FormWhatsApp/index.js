@@ -8,12 +8,12 @@ import Modal from '../../../Utils/Modal/index.js'
 import useFetch from '../../../../Hooks/useFetch.js';
 import {UserContex} from '../../../../Context/UserContex.js'
 import Load from '../../../Utils/Load/index.js'
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CIDADE_SAVE_POST, CIDADE_UPDATE_POST, CIDADE_ONE_GET} from '../../../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, NOTIFICATION_WHATSAPP_SAVE_POST, NOTIFICATION_UPDATE_POST, CIDADE_ONE_GET} from '../../../../api/endpoints/geral.js'
 import Swal from 'sweetalert2'
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-const FormWhatsApp = ({noUseModal, dataWhatsApp, setCarregando, formikRef, dataEstado, setIdWhatsApp, idWhatsApp, showModalCriarWhatsApp, setShowModalCriarWhatsApp, callback, atualizarCadastro, setAtualizarCadastro, carregando})=>{
+const FormWhatsApp = ({idPessoa, noUseModal, dataWhatsApp, setCarregando, formikRef, dataEstado, setIdWhatsApp, idWhatsApp, showModalCriarWhatsApp, setShowModalCriarWhatsApp, callback, atualizarCadastro, setAtualizarCadastro, carregando})=>{
     
     const [carregandoDadosChoice, setCarregandoDadosChoice] = React.useState(false)
     //dataEstado={dataEstado} setIdWhatsApp={setIdWhatsApp} idWhatsApp={idWhatsApp} carregando={false} dataWhatsApp={dataWhatsApp} setAtualizarCadastro={setAtualizarCadastro} atualizarCadastro={atualizarCadastro} showModalCriarWhatsApp={showModalAtualizarWhatsApp} setShowModalCriarWhatsApp={()=>{setShowModalAtualizarWhatsApp();setCadastrarWhatsApp()}} callback={callback} 
@@ -28,20 +28,21 @@ const FormWhatsApp = ({noUseModal, dataWhatsApp, setCarregando, formikRef, dataE
     };
 
     const sendData = async ({
-    		mensagem, data_file, whats_dest, destinatario_id
+    		mensagem, data_file, whats_dest,
             
 		})=>{
 
     	const data = {
-    		mensagem,
-            data_file,
-            whats_dest,
-            destinatario_id
+    		message:mensagem,
+            target_contact_address:whats_dest,
+            title:'Notification',
+            pessoa_id:idPessoa,  
+    		data_file
 
     	}
 
         if(atualizarCadastro == true){
-            const {url, options} = CIDADE_UPDATE_POST(idWhatsApp, data, getToken());
+            const {url, options} = NOTIFICATION_UPDATE_POST(idWhatsApp, data, getToken());
             const {response, json} = await request(url, options);
             if(json){
                 
@@ -62,7 +63,7 @@ const FormWhatsApp = ({noUseModal, dataWhatsApp, setCarregando, formikRef, dataE
         }else{
 
 
-        	const {url, options} = CIDADE_SAVE_POST(data, getToken());
+        	const {url, options} = NOTIFICATION_WHATSAPP_SAVE_POST(data, getToken());
             const {response, json} = await request(url, options);
             if(json){
                 
@@ -85,7 +86,7 @@ const FormWhatsApp = ({noUseModal, dataWhatsApp, setCarregando, formikRef, dataE
 
 
     const dataToFormWhatsApp = ()=>{
-    	let obj = {mensagem:'', data_file:'', whats_dest:'', destinatario_id:''}
+    	let obj = {mensagem:'', data_file:'', whats_dest:''}
     	if(dataWhatsApp && dataWhatsApp.hasOwnProperty('registro')){
     		let data = dataWhatsApp.registro;
            
@@ -99,10 +100,6 @@ const FormWhatsApp = ({noUseModal, dataWhatsApp, setCarregando, formikRef, dataE
     		
             if(data.hasOwnProperty('whats_dest')){
     			obj.whats_dest = data.whats_dest;
-    		}
-
-    		if(data.hasOwnProperty('destinatario_id')){
-    			obj.destinatario_id = data.destinatario_id;
     		}
 
     	}
@@ -147,7 +144,7 @@ const FormWhatsApp = ({noUseModal, dataWhatsApp, setCarregando, formikRef, dataE
                         }
 
                         if(!values.data_file){
-                            errors.data_file="Obrigatório"
+                            //errors.data_file="Obrigatório"
                         }
 
                         if(!values.whats_dest){
@@ -272,7 +269,7 @@ const FormWhatsApp = ({noUseModal, dataWhatsApp, setCarregando, formikRef, dataE
                                                     data={
                                                         {
                                                             hasLabel:true,
-                                                            contentLabel:'Adicionar arquivo *',
+                                                            contentLabel:'Adicionar arquivo',
                                                             atributsFormLabel:{
 
                                                             },
