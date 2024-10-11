@@ -15,7 +15,7 @@ import Atualizar from './Atualizar/index.js'
 import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../functions/index.js'
 
 
-const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncontrado, ...props})=>{
+const Include = ({dataEstado, loadingData, requestAllParametros, callBack, setMostarFiltros, nadaEncontrado, ...props})=>{
     const {data, error, request, loading} = useFetch();
     const [estado, setParametro] = React.useState([])
     const [exemplos, setExemplos] = React.useState([])
@@ -389,22 +389,6 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
 
         return data;
     }
-   
-    const requestAllParametros = async() =>{
-        const {url, options} = ORDEM_SERVICO_ALL_POST({'name_servico':pessoa}, getToken());
-        const {response, json} = await request(url, options);
-        if(json){
-            setParametro(json)
-        }
-    }
-
-    React.useEffect(()=>{
-
-        const requestAllParametrosEffect = async() =>{
-           await requestAllParametros();           
-        }
-        
-    }, [])
 
     React.useEffect(()=>{
         setParametro(dataEstado)
@@ -414,14 +398,11 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
     const rowsTableArr = gerarTableParametro();    
     const titulosTableArr = gerarTitleTable();
     const dataParametroRelatorio = estado.mensagem;
-    //
+
     return(
         <>
             <Row >
-                <Col  xs="12" sm="12" md="12" className={'mobile_card_report py-4'}  style={{backgroundColor:'#FFF'}}>
-
-                   
-                    
+                <Col  xs="12" sm="12" md="12" className={'mobile_card_report py-4'}  style={{backgroundColor:'#FFF'}}> 
                     <ListMobile
                         titulosTableArr={null}
                         rowsTableArr={gerarListMobileParametro()}

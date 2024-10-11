@@ -57,15 +57,12 @@ export const UserStorange = ({children})=>{
             //console.log(getToken())
             setLoginUser(isAuthenticated)
 
-            if(isAuthenticated){
+            if(isAuthenticated && getToken() && String(getToken()).length > 0){
 
                 const {url, options} = USER_GET(getToken())
                 const {response, json} = await request(url, options);
                 if(json){ 
-                    console.log('====================== Dados do usuario aqui 00 =====')  
-                    setDataUser(json)    
-                    console.log(json)
-                    console.log('====================== Dados do usuario aqui 00 =====')           
+                    setDataUser(json)             
                 }
             }
 

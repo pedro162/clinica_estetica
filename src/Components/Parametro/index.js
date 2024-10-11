@@ -1,7 +1,7 @@
 import React from 'react';
 import estilos from './Parametro.module.css'
 import useFetch from '../../Hooks/useFetch.js';
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CONTAS_RECEBER_ALL_POST} from '../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, PARAMETRO_ALL_POST} from '../../api/endpoints/geral.js'
 import {FORMAT_DATA_PT_BR} from '../../functions/index.js'
 import {Col, Row, Button } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
@@ -19,7 +19,6 @@ import Include from './include';
 import FormControlInput from '../FormControl/index.js'
 import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../functions/index.js'
 import { Link } from 'react-router-dom/cjs/react-router-dom.min.js';
-
 
 const Parametro = ({defaultFilters ,...props})=>{
 
@@ -52,10 +51,6 @@ const Parametro = ({defaultFilters ,...props})=>{
     })
 
     const {getToken} = React.useContext(UserContex);
-
-    const alerta = (target)=>{
-        console.log(target)
-    }
 
     const handleSearch = (ev)=>{
         if (ev.key === "Enter") {
@@ -132,35 +127,6 @@ const Parametro = ({defaultFilters ,...props})=>{
         }        
     }, [cadastrarParametro])
 
-    const atualizarParametroAction = (idParametro)=>{
-        setParametroChoice(idParametro)
-        setAcao('editar')
-        setAtualizarParametro(true);
-    }
-
-    const digitarParametroAction = (idParametro)=>{
-        setParametroChoice(idParametro)
-        setAcao('digitar')
-        setAtualizarParametro(true);
-    }
-
-    const cancelarParametroAction = (idParametro)=>{
-        setParametroChoice(idParametro)
-        setAcao('cancelar')
-        setCancelarParametro(true);
-    }
-    //cancelarParametro, setCancelarParametro
-    const novaParametro = (idParametro)=>{
-        setParametroChoice(idParametro)
-        setAcao('consultar')
-        setAtualizarParametro(true);
-    }
-
-    const iniciarParametro = (idParametro)=>{
-        setCadastrarParametro(idParametro)
-        setAcao('iniciar')
-        setCadastrarParametro(true);
-    }
     const limparFiltros = ()=>{
         setIdParametro('');
         setParametroName('');
@@ -175,7 +141,6 @@ const Parametro = ({defaultFilters ,...props})=>{
         });
     }
 
-    //------------
     const montarFiltro = ()=>{
         let filtros = {}
         let detalhesFiltros = {}
@@ -209,13 +174,14 @@ const Parametro = ({defaultFilters ,...props})=>{
 
         return {filtros, detalhesFiltros};
     }
+
     const requestAllParametros = async() =>{
         setParametro([])
         setNadaEncontrado(false)
 
         let {filtros, detalhesFiltros} = montarFiltro();
         setAppliedFilters(detalhesFiltros)
-        const {url, options} = CONTAS_RECEBER_ALL_POST({...filtros}, getToken());
+        const {url, options} = PARAMETRO_ALL_POST({...filtros}, getToken());
         const {response, json} = await request(url, options);
         if(json){
             setParametro(json)
@@ -228,18 +194,6 @@ const Parametro = ({defaultFilters ,...props})=>{
         }else{
             setNadaEncontrado(true)
         }            
-    }
-
-    const requestAbertas = async ()=>{
-        setParametro([])
-
-        let {filtros, detalhesFiltros} = montarFiltro();
-        filtros.status = 'aberto';
-        const {url, options} = CONTAS_RECEBER_ALL_POST({...filtros}, getToken());
-        const {response, json} = await request(url, options);
-        if(json){
-            setParametro(json)
-        }
     }
 
     React.useEffect(()=>{
@@ -328,9 +282,7 @@ const Parametro = ({defaultFilters ,...props})=>{
 
                                             <Col xs="1" sm="1" md="1" style={{textAlign:'left', alignItems:'center', justifyContent:'center', margin:'auto',padding:'0'}} >
                                                 <FontAwesomeIcon onClick={()=>{requestAllParametros();}} size={'lg'} icon={faSearch}/>
-                                            </Col>
-                                        
-                                            
+                                            </Col>                                            
                                          </Row>
                                         <Row className={'mt-2'}>
                                             <div  style={{display:'flex', flexDirection:'collumn', flexWrap:'wrap'}}>

@@ -3451,6 +3451,7 @@ export const NOTIFICATION_DELETE_POST = (id, token)=>{
     }
 
 }
+
 //--- Contas a receber ----------------------------------
 export const CONTAS_RECEBER_ALL_POST = (data, token)=>{
 
@@ -3607,7 +3608,114 @@ export const CONTAS_RECEBER_DELETE_POST = (id, token)=>{
 
 }
 
+//--- Parametros ----------------------------------
+export const PARAMETRO_ALL_POST = (data, token)=>{
 
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'POST',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        body:JSON.stringify(data)
+   };
+
+   return{
+        url:BASE_URL+'/api/parametro/json',
+        options:myInit
+    }
+
+}
+
+export const PARAMETRO_ONE_GET = (id, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'GET',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+   };
+
+   return{
+        url:BASE_URL+'/api/parametro/info/'+id,
+        options:myInit
+    }
+
+}
+
+export const PARAMETRO_SAVE_POST = (data, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'POST',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        body:JSON.stringify(data)
+   };
+   
+   return{
+        url:BASE_URL+'/api/parametro/store',
+        options:myInit
+    }
+
+}
+
+export const PARAMETRO_UPDATE_POST = (id,data, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'PUT',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        body:JSON.stringify(data)
+   };
+
+   return{
+        url:BASE_URL+'/api/parametro/update/'+id,
+        options:myInit
+    }
+
+}
+
+export const PARAMETRO_DELETE_POST = (id, token)=>{
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("Authorization", 'Bearer '+token);
+
+    var myInit = { 
+        method: 'GET',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+   };
+
+   return{
+        url:BASE_URL+'/api/parametro/destroy/'+id,
+        options:myInit
+    }
+
+}
 
 //--- Widget faturamento liquidez mes ano  ----------------------------------
 export const WIDGET_FAT_LIQUIDEZ_MA_ALL_POST = (data, token)=>{
