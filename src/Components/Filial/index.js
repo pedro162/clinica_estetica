@@ -47,11 +47,6 @@ const Filial = (props)=>{
 
     const {type, is_system, tenant_id} = dataUser ? dataUser : {};
 
-
-    const alerta = (target)=>{
-        console.log(target)
-    }
-
     const handleSearch = (ev)=>{
         if (ev.key === "Enter") {
             requestAllFilials();
@@ -164,18 +159,6 @@ const Filial = (props)=>{
         
     }, [cadastrarFilial])
 
-    const atualizarFilialAction = (idFilial)=>{
-        setFilialChoice(idFilial)
-        setAcao('editar')
-        setAtualizarFilial(true);
-    }
-    //cancelarFilial, setCancelarFilial
-    const novaFilial = (idFilial)=>{
-        setFilialChoice(idFilial)
-        setAcao('consultar')
-        setAtualizarFilial(true);
-    }
-
     const limparFiltros = ()=>{
         setPessoa('');
         setCodigoPessoa('')
@@ -184,6 +167,7 @@ const Filial = (props)=>{
         setFiltroAbertas('')
         setAppliedFilters([]);
     }
+
     const removeFilter = (key)=>{
          setAppliedFilters(prevFilters => {
             const updatedFilters = { ...prevFilters };
@@ -191,7 +175,7 @@ const Filial = (props)=>{
             return updatedFilters;
         });
     }
-    //------------
+    
     const montarFiltro = ()=>{
         let filtros = {}
         let detalhesFiltros = {}
@@ -221,7 +205,6 @@ const Filial = (props)=>{
             filtros['name_pessoa'] = pessoa;
         }
 
-
         if(codigoFilial){
             filtros['id'] = codigoFilial;
             detalhesFiltros['id'] = {
@@ -231,12 +214,10 @@ const Filial = (props)=>{
             };
         }
 
-
         if(codigoFilial){
             filtros['filial_id'] = codigoFilial;
         }
         
-
         if(filtroMobile){
             filtros['name'] = filtroMobile;
             detalhesFiltros['name'] = {
@@ -245,7 +226,6 @@ const Filial = (props)=>{
                 resetFilter:()=>{setFiltroMobile('');removeFilter('name');},
             };
         }
-
 
         return {filtros, detalhesFiltros};
     }
@@ -288,15 +268,10 @@ const Filial = (props)=>{
         
     }, [filtroConcluidas, filtroCanceladas, filtroAbertas, filtroRemarcadas, nextPage, setNextPage])
 
-
-
-
     React.useEffect(()=>{
         let {filtros, detalhesFiltros} = montarFiltro();
         setAppliedFilters(detalhesFiltros)
     }, [])
-
-    
    
     return(
         <>
@@ -367,20 +342,15 @@ const Filial = (props)=>{
 
                                             <Col xs="1" sm="1" md="1" style={{textAlign:'left', alignItems:'center', justifyContent:'center', margin:'auto',padding:'0'}} >
                                                 <FontAwesomeIcon onClick={()=>{requestAllFilials();}} size={'lg'} icon={faSearch}/>
-                                            </Col>
-                                        
-                                            
+                                            </Col>    
                                          </Row>
 
                                          <Row className={'mt-2'}>
                                             <div  style={{display:'flex', flexDirection:'collumn', flexWrap:'wrap'}}>
-                                               
                                                 
                                             </div>
                                         </Row>
                                     </Col>
-                                    
-                                    
                                 </Row>
 
                                 <Row>

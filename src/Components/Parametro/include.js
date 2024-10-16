@@ -14,8 +14,7 @@ import {UserContex} from '../../Context/UserContex.js'
 import Atualizar from './Atualizar/index.js'
 import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../functions/index.js'
 
-
-const Include = ({dataEstado, loadingData, requestAllParametros, callBack, setMostarFiltros, nadaEncontrado, ...props})=>{
+const Include = ({dataEstado, loadingData, requestAllParametros, callBack, setMostarFiltros, nadaEncontrado, idParametroCriado, nextPage, setNextPage, usePagination, setUsePagination, totalPageCount, setTotalPageCount, ...props})=>{
     const {data, error, request, loading} = useFetch();
     const [estado, setParametro] = React.useState([])
     const [exemplos, setExemplos] = React.useState([])
@@ -31,15 +30,53 @@ const Include = ({dataEstado, loadingData, requestAllParametros, callBack, setMo
     const [incicarParametro, setIniciarParametro] = React.useState(false) 
     const [visualizarMovimentacoes, setVisualizarMovimentacoes] = React.useState(false)  
     const [defaultFiltersMovimentacoes, setDefaultFiltersMovimentacoes] = React.useState({})
+    const [nrPageAtual, setNrPageAtual] = React.useState(null)
+    const [qtdItemsTo, setQtdItemsTo] = React.useState(null)
+    const [qtdItemsTotal, setQtdItemsTotal] = React.useState(null)
 
     const [acao, setAcao] = React.useState(null)
     const [pessoa, setPessoa] = React.useState('')
 
-
     const {getToken} = React.useContext(UserContex);
 
-    const alerta = (target)=>{
-        console.log(target)
+    const handleTotalPages=()=>{
+        if(Number(dataEstado?.mensagem?.last_page > 0)){
+            setTotalPageCount(dataEstado?.mensagem?.last_page)
+        }
+    }
+
+    const handleTotalItems=()=>{
+        if(Number(dataEstado?.mensagem?.to > 0)){
+            setQtdItemsTo(dataEstado?.mensagem?.to)
+        }
+
+        if(Number(dataEstado?.mensagem?.total > 0)){
+            setQtdItemsTotal(dataEstado?.mensagem?.total)
+        }
+    }
+
+    const nextPageRout = ()=>{       
+        if(dataEstado?.mensagem?.next_page_url){
+            setNextPage(dataEstado?.mensagem?.next_page_url)
+        }
+    }
+
+    const previousPageRout = ()=>{       
+        if(dataEstado?.mensagem?.prev_page_url){
+            setNextPage(dataEstado?.mensagem?.prev_page_url)
+        }
+    }
+
+    const firstPageRout = ()=>{       
+        if(dataEstado?.mensagem?.first_page_url){
+            setNextPage(dataEstado?.mensagem?.first_page_url)
+        }
+    }
+
+    const lastPageRout = ()=>{       
+        if(dataEstado?.mensagem?.last_page_url){
+            setNextPage(dataEstado?.mensagem?.last_page_url)
+        }
     }
 
     const setNamePessoa = ({target})=>{
@@ -120,7 +157,16 @@ const Include = ({dataEstado, loadingData, requestAllParametros, callBack, setMo
     const gerarTableParametro = ()=>{
        
         let data = [];
-        let dataParametro = estado.mensagem
+        let dataParametro = estado
+        
+        if(dataParametro?.mensagem){
+            dataParametro = dataParametro?.mensagem;
+        }
+
+        if(dataParametro?.data){
+            dataParametro = dataParametro?.data;
+        }
+
         if(dataParametro && Array.isArray(dataParametro) && dataParametro.length > 0){
             for(let i=0; !(i == dataParametro.length); i++){
                 let atual = dataParametro[i];
@@ -149,7 +195,6 @@ const Include = ({dataEstado, loadingData, requestAllParametros, callBack, setMo
                         btnEditar               = false;
                     }
 
-
                     if(btnEditar){
                         acoesArr.push({acao:()=>atualizarParametroAction(atual.id), label:'Editar', propsOption:{}, propsLabel:{}})
                     }
@@ -159,11 +204,8 @@ const Include = ({dataEstado, loadingData, requestAllParametros, callBack, setMo
                         line_style.color = 'red';
                     }else if(atual.status == 'pago'){
                         line_style.color = 'green';
-                    }else if(atual.status == 'aberto'){
-                        //line_style.color = 'green';
                     } 
 
-                    //'remarcado','finalizado','cancelado','pendente'
                     data.push(
 
                         {
@@ -223,73 +265,19 @@ const Include = ({dataEstado, loadingData, requestAllParametros, callBack, setMo
         return tableTitle;
     }
 
-
-    const gerarCardParametro = ()=>{
-       
-        let data = [];
-        let dataParametro = estado.mensagem
-        if(dataParametro && Array.isArray(dataParametro) && dataParametro.length > 0){
-            for(let i=0; !(i == dataParametro.length); i++){
-                let atual = dataParametro[i];
-                if(atual){
-                    let acoesArr = [];
-                    let btnEditar                   = true;
-
-                    if(btnEditar){
-                        acoesArr.push({acao:()=>atualizarParametroAction(atual.id), label:'Editar', propsOption:{}, propsLabel:{}})
-                    }
-
-                    data.push(
-
-                        {
-                            propsRow:{id:(atual.id)},
-                            acoes:[
-                                ...acoesArr
-                            ],
-                            title:<> <div style={{display:'flex', justifyContent:'space-between',fontSize:'18pt', fontWeight:'bolder'}} ><span><FontAwesomeIcon size={'lg'} icon={faUserCircle}/> {atual?.name} </span> </div> </>,
-                            propsContainerTitulo:{md:'11', sm:'9', xs:'9'},
-                            propsContainerButtons:{md:'1', sm:'3', xs:'3'},
-                            acoesBottomCard:[
-                               {label:'', props:{onClick:()=>atualizarParametroAction(atual?.id), className:'btn  btn-sm mx-2 btn-primary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faPen} />},
-                               {props:{onClick:()=>atualizarParametroAction(atual?.id), className:'btn  btn-sm mx-2 btn-danger', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faTrash} /> },
-                            ],
-                            celBodyTableArr:[
-                                [
-                                    {
-                                        title:<span style={{fontWeight:'bolder'}}>Parâmtro: </span>,
-                                        label:atual?.name,
-                                        props:{style:{textAlign:'left'}},
-                                        toSum:1,
-                                        isCoin:1,
-                                    },
-                                    {
-                                        title:<span style={{fontWeight:'bolder'}}>Valor: </span>,
-                                        label:atual?.vrPago,
-                                        props:{style:{textAlign:'left'}},
-                                        toSum:1,
-                                        isCoin:1,
-                                    },
-
-                                ],
-                               
-                               
-                            ]
-                        }
-
-                    )
-
-                }
-
-            }
-        }
-
-        return data;
-    }
-
     const gerarListMobileParametro = ()=>{
        
         let data = [];
-        let dataParametro = estado.mensagem
+        let dataParametro = estado
+
+        if(dataParametro?.mensagem){
+            dataParametro = dataParametro?.mensagem;
+        }
+
+        if(dataParametro?.data){
+            dataParametro = dataParametro?.data;
+        }
+
         if(dataParametro && Array.isArray(dataParametro) && dataParametro.length > 0){
             for(let i=0; !(i == dataParametro.length); i++){
                 let atual = dataParametro[i];
@@ -392,6 +380,9 @@ const Include = ({dataEstado, loadingData, requestAllParametros, callBack, setMo
 
     React.useEffect(()=>{
         setParametro(dataEstado)
+        setNrPageAtual(dataEstado?.mensagem?.current_page)
+        handleTotalPages();
+        handleTotalItems();
     }, [dataEstado])
     
 
@@ -410,9 +401,19 @@ const Include = ({dataEstado, loadingData, requestAllParametros, callBack, setMo
                         nadaEncontrado={nadaEncontrado}
                         withoutFirstCol={true}
                         botoesHeader={[{acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> }]}
+                        nextPage={nextPage}
+                        setNextPage={setNextPage}
+                        usePagination={usePagination}
+                        setUsePagination={setUsePagination}
+                        nextPageRout={nextPageRout}
+                        previousPageRout={previousPageRout}
+                        firstPageRout = {firstPageRout}
+                        nrPageAtual = {nrPageAtual}
+                        lastPageRout = {lastPageRout}
+                        totalPageCount={totalPageCount}
+                        qtdItemsTo={qtdItemsTo}
+                        qtdItemsTotal={qtdItemsTotal}
                     />
-
-                    
                 </Col>
 
                 <Col  xs="12" sm="12" md="12"  className={'default_card_report'}>
@@ -422,6 +423,18 @@ const Include = ({dataEstado, loadingData, requestAllParametros, callBack, setMo
                         loading={loadingData}
                         nadaEncontrado={nadaEncontrado}
                         botoesHeader={[]}
+                        nextPage={nextPage}
+                        setNextPage={setNextPage}
+                        usePagination={usePagination}
+                        setUsePagination={setUsePagination}
+                        nextPageRout={nextPageRout}
+                        previousPageRout={previousPageRout}
+                        firstPageRout = {firstPageRout}
+                        nrPageAtual = {nrPageAtual}
+                        lastPageRout = {lastPageRout}
+                        totalPageCount={totalPageCount}
+                        qtdItemsTo={qtdItemsTo}
+                        qtdItemsTotal={qtdItemsTotal}
                     />
                 </Col>
             </Row>

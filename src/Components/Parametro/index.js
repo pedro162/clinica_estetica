@@ -41,6 +41,10 @@ const Parametro = ({defaultFilters ,...props})=>{
     const [filtroAvencer, setFiltroAvencer] = React.useState(false)
     const [nadaEncontrado, setNadaEncontrado] = React.useState(false)
     const [appliedFilters, setAppliedFilters] = React.useState([])
+    const [nextPage, setNextPage] = React.useState(null)
+    const [totalPageCount, setTotalPageCount] = React.useState(null)
+    const [usePagination, setUsePagination] = React.useState(true)
+    const [qtdItemsPerPage, setQtdItemsPerPage] = React.useState(10)
 
 
     const [idParametro, setIdParametro] = React.useState(()=>{
@@ -144,6 +148,11 @@ const Parametro = ({defaultFilters ,...props})=>{
     const montarFiltro = ()=>{
         let filtros = {}
         let detalhesFiltros = {}
+        
+        if(usePagination){
+            filtros['usePaginate'] = 1;
+            filtros['nr_itens_per_page'] = qtdItemsPerPage;
+        }
         
         if(idParametro){
             filtros['id'] = idParametro;   
@@ -290,8 +299,6 @@ const Parametro = ({defaultFilters ,...props})=>{
                                             </div>
                                         </Row>
                                     </Col>
-                                    
-                                    
                                 </Row>
                                 <Row className={'my-2'}>
                                     <Col>
@@ -330,6 +337,12 @@ const Parametro = ({defaultFilters ,...props})=>{
                         callBack={requestAllParametros}
                         setMostarFiltros={setMostarFiltros}
                         nadaEncontrado={nadaEncontrado}
+                        nextPage={nextPage}
+                        setNextPage={setNextPage}
+                        usePagination={usePagination}
+                        setUsePagination={setUsePagination}
+                        totalPageCount={totalPageCount}
+                        setTotalPageCount={setTotalPageCount}
                     />
                 </Col>
             </Row>
