@@ -1,0 +1,16 @@
+services:
+  react-app:
+    container_name: clinica_estetica
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      UID: ${UID:-1001}
+      GID: ${GID:-1001}
+      NODE_ENV: development
+      NODE_OPTIONS: --openssl-legacy-provider
+    stdin_open: true
+    tty: true
