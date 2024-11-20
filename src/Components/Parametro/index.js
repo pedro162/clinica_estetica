@@ -1,7 +1,7 @@
 import React from 'react';
 import estilos from './Parametro.module.css'
 import useFetch from '../../Hooks/useFetch.js';
-import { TOKEN_POST, CLIENT_ID, CLIENT_SECRET, PARAMETRO_ALL_POST } from '../../api/endpoints/geral.js'
+import { TOKEN_POST, CLIENT_ID, CLIENT_SECRET, PARAMETRO_ALL_POST, RECORD_NUMBER_PER_REQUEST } from '../../api/endpoints/geral.js'
 import { FORMAT_DATA_PT_BR } from '../../functions/index.js'
 import { Col, Row, Button } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
@@ -44,8 +44,7 @@ const Parametro = ({ defaultFilters, ...props }) => {
     const [nextPage, setNextPage] = React.useState(null)
     const [totalPageCount, setTotalPageCount] = React.useState(null)
     const [usePagination, setUsePagination] = React.useState(true)
-    const [qtdItemsPerPage, setQtdItemsPerPage] = React.useState(10)
-
+    const [qtdItemsPerPage, setQtdItemsPerPage] = React.useState(RECORD_NUMBER_PER_REQUEST)
 
     const [idParametro, setIdParametro] = React.useState(() => {
         return defaultFilters?.referencia_id
@@ -201,6 +200,7 @@ const Parametro = ({ defaultFilters, ...props }) => {
 
         if (json) {
             setParametro(json)
+
             if (json?.mensagem && json?.mensagem.length > 0) {
                 setNadaEncontrado(false)
             } else {
@@ -234,10 +234,13 @@ const Parametro = ({ defaultFilters, ...props }) => {
                     {
                         props: {},
                         label: <> <Link className={null} to={'/'}>Início</Link></>
+                    }, {
+                        props: {},
+                        label: <> <Link className={null} to={'/configuracoes/sistema'}>Configuracoes</Link></>
                     },
                     {
                         props: {},
-                        label: 'Parãmetros'
+                        label: 'Parâmetros'
                     }
                 ]}
 

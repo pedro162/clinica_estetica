@@ -2,7 +2,7 @@ import React from 'react';
 import estilos from './Filial.module.css';
 import useFetch from '../../Hooks/useFetch.js';
 import useModal from '../../Hooks/useModal.js';
-import { TOKEN_POST, CLIENT_ID, CLIENT_SECRET, FILIAIS_ALL_POST } from '../../api/endpoints/geral.js'
+import { TOKEN_POST, CLIENT_ID, CLIENT_SECRET, FILIAIS_ALL_POST, RECORD_NUMBER_PER_REQUEST } from '../../api/endpoints/geral.js'
 import { FORMAT_DATA_PT_BR } from '../../functions/index.js'
 import { IS_MOBILE, MOBILE_WITH, isMobileYet, WINDOW_WIDTH } from '../../var/index.js'
 import { Col, Row, Button } from 'react-bootstrap';
@@ -41,7 +41,7 @@ const Filial = (props) => {
     const [nextPage, setNextPage] = React.useState(null)
     const [totalPageCount, setTotalPageCount] = React.useState(null)
     const [usePagination, setUsePagination] = React.useState(true)
-    const [qtdItemsPerPage, setQtdItemsPerPage] = React.useState(10)
+    const [qtdItemsPerPage, setQtdItemsPerPage] = React.useState(RECORD_NUMBER_PER_REQUEST)
     const { getToken, dataUser, isMobile } = React.useContext(UserContex);
     const [appliedFilters, setAppliedFilters] = React.useState([])
 

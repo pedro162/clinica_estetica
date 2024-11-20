@@ -17,19 +17,10 @@ import { FORMAT_CALC_COD, FORMAT_MONEY } from '../../functions/index.js'
 const Include = ({ dataEstado, loadingData, requestAllParametros, callBack, setMostarFiltros, nadaEncontrado, idParametroCriado, nextPage, setNextPage, usePagination, setUsePagination, totalPageCount, setTotalPageCount, ...props }) => {
     const { data, error, request, loading } = useFetch();
     const [estado, setParametro] = React.useState([])
-    const [exemplos, setExemplos] = React.useState([])
-    const [exemplosTitleTable, setExemplosTitleTable] = React.useState([])
     const [showModalCriarParametro, setShowModalCriarConstula] = React.useState(false)
     const [consultaChoice, setParametroChoice] = React.useState(null);
     const [atualizarParametro, setAtualizarParametro] = React.useState(false)
-    const [baixarParametro, setBaixarParametro] = React.useState(false)
-    const [estornarParametro, setEstornarParametro] = React.useState(false)
-    const [cancelarParametro, setCancelarParametro] = React.useState(false)
-    const [digitarParametro, setDigitarParametro] = React.useState(false)
     const [cadastrarParametro, setCadastrarParametro] = React.useState(false)
-    const [incicarParametro, setIniciarParametro] = React.useState(false)
-    const [visualizarMovimentacoes, setVisualizarMovimentacoes] = React.useState(false)
-    const [defaultFiltersMovimentacoes, setDefaultFiltersMovimentacoes] = React.useState({})
     const [nrPageAtual, setNrPageAtual] = React.useState(null)
     const [qtdItemsTo, setQtdItemsTo] = React.useState(null)
     const [qtdItemsTotal, setQtdItemsTotal] = React.useState(null)
