@@ -1,15 +1,15 @@
 import React from 'react';
-import {Formik, ErrorMessage, Field} from 'formik';
+import { Formik, ErrorMessage, Field } from 'formik';
 import { faHome, faSearch, faPlus, faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import FormControlInput from '../../FormControl/index.js'
 import FormControlSelect from '../../FormControl/Select.js'
-import {Col, Row, Tabs, Tab } from 'react-bootstrap';
+import { Col, Row, Tabs, Tab } from 'react-bootstrap';
 import Button from '../../FormControl/Button.js';
 import estilos from './FormContasReceber.module.css'
 import Modal from '../../Utils/Modal/index.js'
 import useFetch from '../../../Hooks/useFetch.js';
-import {UserContex} from '../../../Context/UserContex.js'
+import { UserContex } from '../../../Context/UserContex.js'
 import Required from '../../FormControl/Required.js';
 import Load from '../../Utils/Load/index.js'
 import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible.js'
@@ -18,430 +18,430 @@ import * as Yup from 'yup';
 
 
 
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, FORMA_PAGAMENTOALL_POST, OPERADOR_FINANCEIROALL_POST, PLANO_PAGAMENTOALL_POST, SERVICO_SAVE_POST, FILIAIS_ALL_POST, ORDEM_SERVICO_FINALIZAR_POST,CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST, CONTAS_RECEBER_UPDATE_POST, CONTAS_RECEBER_SAVE_POST, CAIXA_ALL_POST} from '../../../api/endpoints/geral.js'
+import { TOKEN_POST, CLIENT_ID, CLIENT_SECRET, FORMA_PAGAMENTOALL_POST, OPERADOR_FINANCEIROALL_POST, PLANO_PAGAMENTOALL_POST, SERVICO_SAVE_POST, FILIAIS_ALL_POST, ORDEM_SERVICO_FINALIZAR_POST, CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST, CONTAS_RECEBER_UPDATE_POST, CONTAS_RECEBER_SAVE_POST, CAIXA_ALL_POST } from '../../../api/endpoints/geral.js'
 import Caixa from '../../Caixa/index.js';
 import Clientes from '../../Clientes/index.js';
 
 
-const FormContasReceber = ({dataContasReceberChoice, setDataContasReceber, setIdContasReceber, idContasReceber, showModalCriarContasReceber, setShowModalCriarContasReceber, callback, atualizarContasReceber, setAtualizarContasReceber, carregando})=>{
+const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setIdContasReceber, idContasReceber, showModalCriarContasReceber, setShowModalCriarContasReceber, callback, atualizarContasReceber, setAtualizarContasReceber, carregando }) => {
 
-	const {data, error, request, loading} = useFetch();
+	const { data, error, request, loading } = useFetch();
 	const dataRequest = useFetch();
 
-	const {getToken, dataUser} 												= React.useContext(UserContex);
-	const [dataFiliais, setDataFiliais] 									= React.useState([])
-	const [dataItens, setDataitens]		 									= React.useState([])
-	const [isOrcamento, setIsOramento]		 								= React.useState(false)
-	const [qtdAtualizaCobrancas, setQtdAtualizaCobrancas]					= React.useState(0)
-	const [dataFormaPagamento, setDataFormaPagamento] 						= React.useState([])
-	const [dataPlanoPagamento, setDataPlanoPagamento] 						= React.useState([])
-	const [dataOperadorFinanceiro, setDataOperadorFinanceiro] 				= React.useState([])
-	const [dataFormaPagamentoEscolhido, setDataFormaPagamentoEscolhido] 	= React.useState([])
-	const [idFormaPagamentoForm, setIdFormaPagamentoForm] 					= React.useState(0)				//--- Controla a quantidade do serviço
-	const [vrCobrancaForm, setVrCobrancaForm] 								= React.useState(0)					//--- Controla a quantidade do serviço
-	const [idPlanoPagamentoForm, setIdPlanoPagamentoForm] 					= React.useState(0)		//--- Controla a quantidade do serviço
-	const [idOperadorFinanceiroForm, setIdOperadorFinanceiroForm] 			= React.useState(0)
+	const { getToken, dataUser } = React.useContext(UserContex);
+	const [dataFiliais, setDataFiliais] = React.useState([])
+	const [dataItens, setDataitens] = React.useState([])
+	const [isOrcamento, setIsOramento] = React.useState(false)
+	const [qtdAtualizaCobrancas, setQtdAtualizaCobrancas] = React.useState(0)
+	const [dataFormaPagamento, setDataFormaPagamento] = React.useState([])
+	const [dataPlanoPagamento, setDataPlanoPagamento] = React.useState([])
+	const [dataOperadorFinanceiro, setDataOperadorFinanceiro] = React.useState([])
+	const [dataFormaPagamentoEscolhido, setDataFormaPagamentoEscolhido] = React.useState([])
+	const [idFormaPagamentoForm, setIdFormaPagamentoForm] = React.useState(0)				//--- Controla a quantidade do serviço
+	const [vrCobrancaForm, setVrCobrancaForm] = React.useState(0)					//--- Controla a quantidade do serviço
+	const [idPlanoPagamentoForm, setIdPlanoPagamentoForm] = React.useState(0)		//--- Controla a quantidade do serviço
+	const [idOperadorFinanceiroForm, setIdOperadorFinanceiroForm] = React.useState(0)
 	const [idFilialForm, setIdFilialForm] = React.useState(0)
-	const [nrDocForm, setNrDocForm] = React.useState('')	
+	const [nrDocForm, setNrDocForm] = React.useState('')
 	const [idPessoaForm, setIdPessoaForm] = React.useState(0)
 	const [idCaixaForm, setIdCaixaForm] = React.useState(0)
 
-	
 
-	const userLogar =  ()=>{
-        console.log('Aqui............')
-    }
 
-    const sendData = async ({
-			...params
-		})=>{
-		
+	const userLogar = () => {
+		console.log('Aqui............')
+	}
+
+	const sendData = async ({
+		...params
+	}) => {
+
 
 		const data = {
 			...params,
-			vrBruto:params?.vrLiquido
+			vrBruto: params?.vrLiquido
 		}
 
 		let data_config = {}
-		if(idContasReceber && idContasReceber > 0){
+		if (idContasReceber && idContasReceber > 0) {
 			data_config = CONTAS_RECEBER_UPDATE_POST(idContasReceber, data, getToken());
-		}else{
+		} else {
 			data_config = CONTAS_RECEBER_SAVE_POST(data, getToken());
 		}
 
-		
-		const {url, options} = data_config;
+
+		const { url, options } = data_config;
 
 
-		const {response, json} = await request(url, options);
+		const { response, json } = await request(url, options);
 		console.log('Save consulta here')
 		console.log(json)
-		if(json){
+		if (json) {
 			console.log('Response Save consulta here')
 			console.log(json)
-			
+
 			callback();
 			setShowModalCriarContasReceber();
 			setAtualizarContasReceber(false);
 			setIdContasReceber(null);
 
 			Swal.fire({
-			  icon: "success",
-			  title: "",
-			  text: 'Reigistrado com sucesso',
-			  footer: '',//'<a href="#">Why do I have this issue?</a>'
-			  confirmButtonColor: "#07B201",
+				icon: "success",
+				title: "",
+				text: 'Reigistrado com sucesso',
+				footer: '',//'<a href="#">Why do I have this issue?</a>'
+				confirmButtonColor: "#07B201",
 			});
 		}
-    }
+	}
 
-    const requestAllFiliais = async() =>{
-       
-        const {url, options} = FILIAIS_ALL_POST({}, getToken());
-        const {response, json} = await dataRequest.request(url, options);
-        if(json){
-            setDataFiliais(json)
-        }else{
+	const requestAllFiliais = async () => {
 
-        	setDataFiliais([]);
-        }
+		const { url, options } = FILIAIS_ALL_POST({}, getToken());
+		const { response, json } = await dataRequest.request(url, options);
+		if (json) {
+			setDataFiliais(json)
+		} else {
 
-            
-    }
+			setDataFiliais([]);
+		}
 
-	const dataToFormContasReceber = ()=>{
-    	let obj = {filial_id:'', vrLiquido:'', descricao:'', documento:'', dsArquivo:'', pessoa_id:'', pessoa_name:'', pessoa_rca_id:'', forma_pagamento_id:'', plano_pagamento_id:'', operador_financeiro_id:'', user_id:'', user_update_id:'', active:'', deleted_at:'', created_at:'', updated_at:''}
-    	if(dataContasReceberChoice && dataContasReceberChoice.hasOwnProperty('mensagem')){
-			
-    		let data = dataContasReceberChoice.mensagem;
-			
-    		if(data.hasOwnProperty('filial_id')){
-                obj.filial_id = data.filial_id;
-    		}
 
-    		if(data.hasOwnProperty('vrLiquido')){
-    			obj.vrLiquido = data.vrLiquido;
-    		}
-			
-			if(data.hasOwnProperty('status')){
-    			obj.status = data.status;
-    		}
+	}
 
-			if(data.hasOwnProperty('descricao')){
-    			obj.descricao = data.descricao;
-    		}
+	const dataToFormContasReceber = () => {
+		let obj = { filial_id: '', vrLiquido: '', descricao: '', documento: '', dsArquivo: '', pessoa_id: '', pessoa_name: '', pessoa_rca_id: '', forma_pagamento_id: '', plano_pagamento_id: '', operador_financeiro_id: '', user_id: '', user_update_id: '', active: '', deleted_at: '', created_at: '', updated_at: '' }
+		if (dataContasReceberChoice && dataContasReceberChoice.hasOwnProperty('mensagem')) {
 
-    		if(data.hasOwnProperty('documento')){
-    			obj.documento = data.documento;
-    		}
+			let data = dataContasReceberChoice.mensagem;
 
-			if(data.hasOwnProperty('dsArquivo')){
-    			obj.dsArquivo = data.dsArquivo;
-    		}
+			if (data.hasOwnProperty('filial_id')) {
+				obj.filial_id = data.filial_id;
+			}
 
-			if(data.hasOwnProperty('pessoa_id')){
-    			obj.pessoa_id = data.pessoa_id;
-    		}
+			if (data.hasOwnProperty('vrLiquido')) {
+				obj.vrLiquido = data.vrLiquido;
+			}
 
-			if(data.hasOwnProperty('pessoa_rca_id')){
-    			obj.pessoa_rca_id = data.pessoa_rca_id;
-    		}
+			if (data.hasOwnProperty('status')) {
+				obj.status = data.status;
+			}
 
-			if(data.hasOwnProperty('vr_final')){
-    			obj.vr_final = data.vr_final;
-    		}
+			if (data.hasOwnProperty('descricao')) {
+				obj.descricao = data.descricao;
+			}
 
-			if(data.hasOwnProperty('forma_pagamento_id')){
-    			obj.forma_pagamento_id = data.forma_pagamento_id;
-    		}
+			if (data.hasOwnProperty('documento')) {
+				obj.documento = data.documento;
+			}
 
-			if(data.hasOwnProperty('operador_financeiro_id')){
-    			obj.operador_financeiro_id = data.operador_financeiro_id;
-    		}
+			if (data.hasOwnProperty('dsArquivo')) {
+				obj.dsArquivo = data.dsArquivo;
+			}
 
-			if(data.hasOwnProperty('plano_pagamento_id')){
-    			obj.plano_pagamento_id = data.plano_pagamento_id;
-    		}
+			if (data.hasOwnProperty('pessoa_id')) {
+				obj.pessoa_id = data.pessoa_id;
+			}
 
-			
-    		
-    	}
+			if (data.hasOwnProperty('pessoa_rca_id')) {
+				obj.pessoa_rca_id = data.pessoa_rca_id;
+			}
 
-    	if(idPessoaForm > 0){
-    		obj.pessoa_id = idPessoaForm;
-    	}
-    	if(idFilialForm > 0){
-    		obj.filial_id = idFilialForm;
-    	}
-		
-    	return obj;
-    }
+			if (data.hasOwnProperty('vr_final')) {
+				obj.vr_final = data.vr_final;
+			}
+
+			if (data.hasOwnProperty('forma_pagamento_id')) {
+				obj.forma_pagamento_id = data.forma_pagamento_id;
+			}
+
+			if (data.hasOwnProperty('operador_financeiro_id')) {
+				obj.operador_financeiro_id = data.operador_financeiro_id;
+			}
+
+			if (data.hasOwnProperty('plano_pagamento_id')) {
+				obj.plano_pagamento_id = data.plano_pagamento_id;
+			}
 
 
 
-    const preparaFilialToForm = ()=>{
-    	if(dataFiliais.hasOwnProperty('mensagem') && Array.isArray(dataFiliais.mensagem) && dataFiliais.mensagem.length > 0){
-    		let filiais = dataFiliais.mensagem.map(({id, name_filial}, index, arr)=>({label:name_filial,valor:id,props:{}}))
-    		filiais.unshift({label:'Selecione...',valor:'',props:{selected:'selected', disabled:'disabled'}})
-    		
-    		return filiais;
-    	}
-    	return []
-    }
+		}
+
+		if (idPessoaForm > 0) {
+			obj.pessoa_id = idPessoaForm;
+		}
+		if (idFilialForm > 0) {
+			obj.filial_id = idFilialForm;
+		}
+
+		return obj;
+	}
 
 
-	const getFormaPagamentoAll = async ()=>{
-		
-		const {url, options} = FORMA_PAGAMENTOALL_POST({}, getToken());
-		const {response, json} = await dataRequest.request(url, options);
-		
-		if(json){
-				
-			if(json && json.hasOwnProperty('mensagem')){
+
+	const preparaFilialToForm = () => {
+		if (dataFiliais.hasOwnProperty('mensagem') && Array.isArray(dataFiliais.mensagem) && dataFiliais.mensagem.length > 0) {
+			let filiais = dataFiliais.mensagem.map(({ id, name_filial }, index, arr) => ({ label: name_filial, valor: id, props: {} }))
+			filiais.unshift({ label: 'Selecione...', valor: '', props: { selected: 'selected', disabled: 'disabled' } })
+
+			return filiais;
+		}
+		return []
+	}
+
+
+	const getFormaPagamentoAll = async () => {
+
+		const { url, options } = FORMA_PAGAMENTOALL_POST({}, getToken());
+		const { response, json } = await dataRequest.request(url, options);
+
+		if (json) {
+
+			if (json && json.hasOwnProperty('mensagem')) {
 				let data = json.mensagem;
 				//console.log("Formas de pagamento: ",data)
 				setDataFormaPagamento(data)
-			}else{
+			} else {
 				setDataFormaPagamento([])
 			}
-			 
-		}else{
+
+		} else {
 			setDataFormaPagamento([])
 		}
 	}
 
-	const getPlanoPagamentoAll = async ()=>{
-		if(!(idFormaPagamentoForm > 0)){
+	const getPlanoPagamentoAll = async () => {
+		if (!(idFormaPagamentoForm > 0)) {
 			setDataPlanoPagamento([])
 			return false;
 		}
 
-		const {url, options} = PLANO_PAGAMENTOALL_POST({forma_pagamento_id:idFormaPagamentoForm}, getToken());
-		const {response, json} = await dataRequest.request(url, options);
-		
-		if(json){
-				
-			if(json && json.hasOwnProperty('mensagem')){
+		const { url, options } = PLANO_PAGAMENTOALL_POST({ forma_pagamento_id: idFormaPagamentoForm }, getToken());
+		const { response, json } = await dataRequest.request(url, options);
+
+		if (json) {
+
+			if (json && json.hasOwnProperty('mensagem')) {
 				let data = json.mensagem;
 				//console.log("Planos de pagamento: ",data)
 				setDataPlanoPagamento(data)
-			}else{
+			} else {
 				setDataPlanoPagamento([])
 			}
-			 
-		}else{
+
+		} else {
 			setDataPlanoPagamento([])
 		}
 	}
 
-	const getOperadorFinanceiroAll = async ()=>{
-		if(!(idFormaPagamentoForm > 0)){
+	const getOperadorFinanceiroAll = async () => {
+		if (!(idFormaPagamentoForm > 0)) {
 			setDataOperadorFinanceiro([])
 			return false;
 		}
 
-		const {url, options} = OPERADOR_FINANCEIROALL_POST({forma_pagamento_id:idFormaPagamentoForm}, getToken());
-		const {response, json} = await dataRequest.request(url, options);
-		
-		if(json){
-				
-			if(json && json.hasOwnProperty('mensagem')){
+		const { url, options } = OPERADOR_FINANCEIROALL_POST({ forma_pagamento_id: idFormaPagamentoForm }, getToken());
+		const { response, json } = await dataRequest.request(url, options);
+
+		if (json) {
+
+			if (json && json.hasOwnProperty('mensagem')) {
 				let data = json.mensagem;
 				//console.log("Operadores financeiros: ",data)
 				setDataOperadorFinanceiro(data)
-			}else{
+			} else {
 				setDataOperadorFinanceiro([])
 			}
-			 
-		}else{
+
+		} else {
 			setDataOperadorFinanceiro([])
 		}
 	}
 
 
 
-	const preparaFormaPagamentoToForm = ()=>{
-    	if(dataFormaPagamento && Array.isArray(dataFormaPagamento) && dataFormaPagamento.length > 0){
-    		let formaPgto = dataFormaPagamento.map(({id, name}, index, arr)=>({label:name,valor:id,props:{}}))
-    		//formaPgto.unshift({label:'Teste',valor:'2',props:{selected:'selected'}})
-			formaPgto.unshift({label:'Selecione...',valor:'0',props:{selected:'selected', }})
-    		//console.table(formaPgto)
-    		return formaPgto;
-    	}
-    	return []
-    }
+	const preparaFormaPagamentoToForm = () => {
+		if (dataFormaPagamento && Array.isArray(dataFormaPagamento) && dataFormaPagamento.length > 0) {
+			let formaPgto = dataFormaPagamento.map(({ id, name }, index, arr) => ({ label: name, valor: id, props: {} }))
+			//formaPgto.unshift({label:'Teste',valor:'2',props:{selected:'selected'}})
+			formaPgto.unshift({ label: 'Selecione...', valor: '0', props: { selected: 'selected', } })
+			//console.table(formaPgto)
+			return formaPgto;
+		}
+		return []
+	}
 
-	const preparaPlanoPagamentoToForm = ()=>{
-    	if(dataPlanoPagamento && Array.isArray(dataPlanoPagamento) && dataPlanoPagamento.length > 0){
-    		let formaPgto = dataPlanoPagamento.map(({id, name}, index, arr)=>({label:name,valor:id,props:{}}))
-    		formaPgto.unshift({label:'Selecione...',valor:'',props:{selected:'selected', }})
-    		//console.table(formaPgto)
-    		return formaPgto;
-    	}
-    	return []
-    }
+	const preparaPlanoPagamentoToForm = () => {
+		if (dataPlanoPagamento && Array.isArray(dataPlanoPagamento) && dataPlanoPagamento.length > 0) {
+			let formaPgto = dataPlanoPagamento.map(({ id, name }, index, arr) => ({ label: name, valor: id, props: {} }))
+			formaPgto.unshift({ label: 'Selecione...', valor: '', props: { selected: 'selected', } })
+			//console.table(formaPgto)
+			return formaPgto;
+		}
+		return []
+	}
 
-	const preparaOperadorFinanceiroToForm = ()=>{
-    	if(dataOperadorFinanceiro && Array.isArray(dataOperadorFinanceiro) && dataOperadorFinanceiro.length > 0){
-    		let formaPgto = dataOperadorFinanceiro.map(({id, name}, index, arr)=>({label:name,valor:id,props:{}}))
-    		formaPgto.unshift({label:'Selecione...',valor:'',props:{selected:'selected', }})
-    		//console.table(formaPgto)
-    		return formaPgto;
-    	}
-    	return []
-    }
+	const preparaOperadorFinanceiroToForm = () => {
+		if (dataOperadorFinanceiro && Array.isArray(dataOperadorFinanceiro) && dataOperadorFinanceiro.length > 0) {
+			let formaPgto = dataOperadorFinanceiro.map(({ id, name }, index, arr) => ({ label: name, valor: id, props: {} }))
+			formaPgto.unshift({ label: 'Selecione...', valor: '', props: { selected: 'selected', } })
+			//console.table(formaPgto)
+			return formaPgto;
+		}
+		return []
+	}
 
 
 
-    React.useEffect(()=>{
+	React.useEffect(() => {
 		getFormaPagamentoAll();
 	}, []);
 
-	React.useEffect(()=>{
+	React.useEffect(() => {
 		getOperadorFinanceiroAll()
 		getPlanoPagamentoAll();
 		//idFormaPagamentoForm 
 		//alert(idFormaPagamentoForm)
-		setDataFormaPagamentoEscolhido({...dataFormaPagamentoEscolhido })
+		setDataFormaPagamentoEscolhido({ ...dataFormaPagamentoEscolhido })
 	}, [idFormaPagamentoForm]);
 
 
-	React.useEffect(()=>{
+	React.useEffect(() => {
 
-		if(dataContasReceberChoice && dataContasReceberChoice.hasOwnProperty('mensagem')){
+		if (dataContasReceberChoice && dataContasReceberChoice.hasOwnProperty('mensagem')) {
 			let data = dataContasReceberChoice.mensagem;
 			setDataitens(data?.item)
 		}
-		
+
 	}, [])
 
-    React.useEffect(()=>{
-    	const requesFiliais = async ()=>{
-    		await requestAllFiliais();
-    	}
-    	
-    	requesFiliais();
+	React.useEffect(() => {
+		const requesFiliais = async () => {
+			await requestAllFiliais();
+		}
 
-    }, []);
+		requesFiliais();
+
+	}, []);
 
 	const handleCustomSubmit = (validateForm, submitForm) => {
 		validateForm().then((errors) => {
-		  if (Object.keys(errors).length === 0) {
-			submitForm();
-		  } else {
-			alert('Please fill in all required fields.');
-		  }
+			if (Object.keys(errors).length === 0) {
+				submitForm();
+			} else {
+				alert('Please fill in all required fields.');
+			}
 		});
-	  };
+	};
 
 	// Validação com Yup
 	const validationSchema = Yup.object({
 		filial_id: Yup.string().required('Filial é obrigatório'),
 		pessoa_id: Yup.string().required('O campo pessoa é obrigatório'),
 	});
-  
-	
 
-	return(
+
+
+	return (
 
 		<>
-			 <Formik 
+			<Formik
 
-                initialValues={{...dataToFormContasReceber()}}
+				initialValues={{ ...dataToFormContasReceber() }}
 				enableReinitialize={true}
-                validate={
-                    values=>{
+				validate={
+					values => {
 
-                        const errors = {}
+						const errors = {}
 
-                        /* if(!values.name){
-                            errors.name="Obrigatório"
-                        } */
-									
-						if(!values.descricao){
-							errors.descricao="Obrigatório"    			
+						/* if(!values.name){
+							errors.name="Obrigatório"
+						} */
+
+						if (!values.descricao) {
+							errors.descricao = "Obrigatório"
 						}
 
-						if(!values.filial_id){
-							errors.filial_id="Obrigatório"    			
+						if (!values.filial_id) {
+							errors.filial_id = "Obrigatório"
 						}
 
-						if(!values.pessoa_id){
-							errors.pessoa_id="Obrigatório"    			
+						if (!values.pessoa_id) {
+							errors.pessoa_id = "Obrigatório"
 						}
 
-						if(!values.vrLiquido){
-							errors.vrLiquido="Obrigatório"    			
+						if (!values.vrLiquido) {
+							errors.vrLiquido = "Obrigatório"
 						}
 
-						if(!values.forma_pagamento_id){
-							errors.forma_pagamento_id="Obrigatório"    			
+						if (!values.forma_pagamento_id) {
+							errors.forma_pagamento_id = "Obrigatório"
 						}
 
-						if(!values.plano_pagamento_id){
-							errors.plano_pagamento_id="Obrigatório"    			
+						if (!values.plano_pagamento_id) {
+							errors.plano_pagamento_id = "Obrigatório"
 						}
 
-						if(!values.operador_financeiro_id){
-							errors.operador_financeiro_id="Obrigatório"    			
+						if (!values.operador_financeiro_id) {
+							errors.operador_financeiro_id = "Obrigatório"
 						}
 
-						if(!values.documento){
+						if (!values.documento) {
 							//errors.documento="Obrigatório"    			
 						}
 
-                        return errors;
-                    }
-                }
+						return errors;
+					}
+				}
 
-                onSubmit={async(values, {setSubmitting})=>{
-                    /*setTimeout(() => {
-                        alert(JSON.stringify(values, null, 2));
-                        setSubmitting(false);
-                      }, 400);*/
-                      //alert('aqui')
-					 
-                     await sendData({...values});
-                }}
+				onSubmit={async (values, { setSubmitting }) => {
+					/*setTimeout(() => {
+						alert(JSON.stringify(values, null, 2));
+						setSubmitting(false);
+					  }, 400);*/
+					//alert('aqui')
+
+					await sendData({ ...values });
+				}}
 				validationSchema={validationSchema}
-            >
-                {
-                    (
-                        {
-                            values,
-                            errors,
-                            touched,
-                            handleChange,
-                            handleBlur,
-                            handleSubmit,
-                            isSubmitting
-                        }
-                    )=>(
-						
+			>
+				{
+					(
+						{
+							values,
+							errors,
+							touched,
+							handleChange,
+							handleBlur,
+							handleSubmit,
+							isSubmitting
+						}
+					) => (
+
 						<Modal
 							bottomButtons={null}
-							handleConcluir={()=>{handleSubmit(); }}
-							title={ (atualizarContasReceber == true ? 'Atualizar' : 'Cadastrar')+' Contas a Receber'}
+							handleConcluir={() => { handleSubmit(); }}
+							title={(atualizarContasReceber == true ? 'Atualizar' : 'Cadastrar') + ' Contas a Receber'}
 							size="lg"
-							propsConcluir={{'disabled':loading}}
+							propsConcluir={{ 'disabled': loading }}
 							labelConcluir={loading ? <><FontAwesomeIcon icon={faCheck} /> Salvando...</> : <><FontAwesomeIcon icon={faCheck} /> Concluir </>}
 							dialogClassName={''}
 							aria-labelledby={'aria-labelledby'}
 							labelCanelar="Fechar"
 							show={showModalCriarContasReceber}
-							showHide={()=>{setShowModalCriarContasReceber();setAtualizarContasReceber(false);setIdContasReceber(null);}}
+							showHide={() => { setShowModalCriarContasReceber(); setAtualizarContasReceber(false); setIdContasReceber(null); }}
 						>
 							{
-									
-                                carregando && carregando==true
-                                ?
-                                    (<Load/>)
-                                :
-                                    (  
+
+								carregando && carregando == true
+									?
+									(<Load />)
+									:
+									(
 										<form onSubmit={handleSubmit}>
 											<Col xs="12" sm="12" md="12">
 												<span className="label_title_grup_forms">Dados básicos</span>
-												<hr/>
+												<hr />
 											</Col>
 
 											{
@@ -451,77 +451,77 @@ const FormContasReceber = ({dataContasReceberChoice, setDataContasReceber, setId
 													</Col>
 												</Row>
 											}
-											{ !(idContasReceber && idContasReceber > 0) && 
-											(
-												<>
-													<Row className="mb-3">
-														<Col xs="12" sm="12" md="6">
-															<Field
-																data={
-																	{
-																		hasLabel:true,
-																		contentLabel:'Filial *',
-																		atributsFormLabel:{//setIdFilialForm
-
-																		},
-																		atributsFormControl:{
-																			type:'text',
-																			name:'filial_id',
-																			placeholder:'Filial',
-																			id:'filial_id',
-																			//onChange:handleChange,
-																			//onBlur:handleBlur,
-																			onChange:(ev)=>{ setIdFilialForm(ev.target.value);handleChange(ev)},
-																			onBlur:(ev)=>{ setIdFilialForm(ev.target.value);handleBlur(ev)},
-																			value:values.filial_id,
-																			className:estilos.input,
-																			size:"sm"
-																		},
-																		options:preparaFilialToForm(),
-																		atributsContainer:{
-																			className:''
-																		}
-																	}
-																}
-															
-																component={FormControlSelect}
-															></Field>
-															<ErrorMessage className="alerta_error_form_label" name="filial_id" component="div" />
-															
-															
-														</Col>
-
-														<Col xs="12" sm="12" md="6">
-															<Field
+											{!(idContasReceber && idContasReceber > 0) &&
+												(
+													<>
+														<Row className="mb-3">
+															<Col xs="12" sm="12" md="6">
+																<Field
 																	data={
 																		{
-																			hasLabel:true,
-																			contentLabel:'Pessoa *',
-																			atributsFormLabel:{
+																			hasLabel: true,
+																			contentLabel: 'Filial *',
+																			atributsFormLabel: {//setIdFilialForm
 
 																			},
-																			atributsFormControl:{
-																				type:'text',
-																				name:'pessoa_id',
-																				placeholder:'Ex: fulano de tal',
-																				id:'pessoa_id',
-																				name_cod:'pessoa_id',
-																				name_desacription:'pessoa_name',
-																				onChange:handleChange,
-																				onBlur:handleBlur,
+																			atributsFormControl: {
+																				type: 'text',
+																				name: 'filial_id',
+																				placeholder: 'Filial',
+																				id: 'filial_id',
+																				//onChange:handleChange,
+																				//onBlur:handleBlur,
+																				onChange: (ev) => { setIdFilialForm(ev.target.value); handleChange(ev) },
+																				onBlur: (ev) => { setIdFilialForm(ev.target.value); handleBlur(ev) },
+																				value: values.filial_id,
+																				className: estilos.input,
+																				size: "sm"
+																			},
+																			options: preparaFilialToForm(),
+																			atributsContainer: {
+																				className: ''
+																			}
+																		}
+																	}
+
+																	component={FormControlSelect}
+																></Field>
+																<ErrorMessage className="alerta_error_form_label" name="filial_id" component="div" />
+
+
+															</Col>
+
+															<Col xs="12" sm="12" md="6">
+																<Field
+																	data={
+																		{
+																			hasLabel: true,
+																			contentLabel: 'Pessoa *',
+																			atributsFormLabel: {
+
+																			},
+																			atributsFormControl: {
+																				type: 'text',
+																				name: 'pessoa_id',
+																				placeholder: 'Ex: fulano de tal',
+																				id: 'pessoa_id',
+																				name_cod: 'pessoa_id',
+																				name_desacription: 'pessoa_name',
+																				onChange: handleChange,
+																				onBlur: handleBlur,
 																				//onChange:(ev)=>{ setIdPessoaForm(ev.target.value); handleChange(ev)},
 																				//onBlur:(ev)=>{ setIdPessoaForm(ev.target.value);handleBlur(ev)},
-																				value:values.pessoa_id,
-																				className:`${estilos.input}`,
-																				size:"sm"
+																				value: values.pessoa_id,
+																				className: `${estilos.input}`,
+																				size: "sm"
 																			},
-																			atributsContainer:{
-																				className:''
+																			atributsContainer: {
+																				className: ''
 																			},
-																			hookToLoadFromDescription:CLIENTES_ALL_POST,
-																			callbackDataItemChoice:(param)=>{
-																				let {label, value} = param
-																				
+																			hookToLoadFromDescription: CLIENTES_ALL_POST,
+																			callbackDataItemChoice: (param) => {
+																				let { label, value } = param
+
 																				setIdPessoaForm(value)
 																			}
 																		}
@@ -529,344 +529,344 @@ const FormContasReceber = ({dataContasReceberChoice, setDataContasReceber, setId
 																	ComponentFilter={Clientes}
 																	componentTitle={'Escolha uma pessoa'}
 																	component={Required}
-															>   </Field>    
-															<ErrorMessage className="alerta_error_form_label" name="pessoa_id" component="div" />
-														</Col>
-													</Row>
+																>   </Field>
+																<ErrorMessage className="alerta_error_form_label" name="pessoa_id" component="div" />
+															</Col>
+														</Row>
 
-													<Row className="mb-3">
-														
-														<Col xs="12" sm="12" md="6">
-															<Field
+														<Row className="mb-3">
+
+															<Col xs="12" sm="12" md="6">
+																<Field
 																	data={
 																		{
-																			hasLabel:true,
-																			contentLabel:'Caixa para baixa',
-																			atributsFormLabel:{
+																			hasLabel: true,
+																			contentLabel: 'Caixa para baixa',
+																			atributsFormLabel: {
 
 																			},
-																			atributsFormControl:{
-																				type:'text',
-																				name:'caixa_id',
-																				placeholder:'Caixa para baixa',
-																				id:'caixa_id',
-																				name_cod:'caixa_id',
-																				name_desacription:'caixa_name',
-																				onChange:handleChange,
-																				onBlur:handleBlur,
-																				value:values.caixa_id,
-																				className:`${estilos.input}`,
-																				size:"sm"
+																			atributsFormControl: {
+																				type: 'text',
+																				name: 'caixa_id',
+																				placeholder: 'Caixa para baixa',
+																				id: 'caixa_id',
+																				name_cod: 'caixa_id',
+																				name_desacription: 'caixa_name',
+																				onChange: handleChange,
+																				onBlur: handleBlur,
+																				value: values.caixa_id,
+																				className: `${estilos.input}`,
+																				size: "sm"
 																			},
-																			atributsContainer:{
-																				className:''
+																			atributsContainer: {
+																				className: ''
 																			},
-																			hookToLoadFromDescription:CAIXA_ALL_POST,
+																			hookToLoadFromDescription: CAIXA_ALL_POST,
 																		}
 																	}
 																	ComponentFilter={Caixa}
 																	componentTitle={'Escolha um caixa'}
 																	component={Required}
-															>   </Field>    
-															<ErrorMessage className="alerta_error_form_label" name="caixa_id" component="div" />
-														</Col>
+																>   </Field>
+																<ErrorMessage className="alerta_error_form_label" name="caixa_id" component="div" />
+															</Col>
 
-														<Col xs="12" sm="12" md="6">
-															<Field
+															<Col xs="12" sm="12" md="6">
+																<Field
 																	data={
 																		{
-																			hasLabel:true,
-																			contentLabel:'Valor *',
-																			atributsFormLabel:{
+																			hasLabel: true,
+																			contentLabel: 'Valor *',
+																			atributsFormLabel: {
 
 																			},
-																			atributsFormControl:{
-																				type:'text',
-																				name:'vrLiquido',
-																				placeholder:'0,00',
-																				id:'vrLiquido',
-																				name_cod:'vrLiquido',
-																				name_desacription:'vrLiquido',
-																				onChange:handleChange,
-																				onBlur:handleBlur,
-																				value:values.vrLiquido,
-																				className:`${estilos.input}`,
-																				size:"sm",
+																			atributsFormControl: {
+																				type: 'text',
+																				name: 'vrLiquido',
+																				placeholder: '0,00',
+																				id: 'vrLiquido',
+																				name_cod: 'vrLiquido',
+																				name_desacription: 'vrLiquido',
+																				onChange: handleChange,
+																				onBlur: handleBlur,
+																				value: values.vrLiquido,
+																				className: `${estilos.input}`,
+																				size: "sm",
 																			},
-																			atributsContainer:{
-																				className:''
+																			atributsContainer: {
+																				className: ''
 																			},
 																		}
 																	}
 																	component={FormControlInput}
-															>   </Field>    
-															<ErrorMessage className="alerta_error_form_label" name="vrLiquido" component="div" />
-														</Col>
+																>   </Field>
+																<ErrorMessage className="alerta_error_form_label" name="vrLiquido" component="div" />
+															</Col>
 
-													</Row>
+														</Row>
 
-													<Row className="mb-3">
-														<Col xs="12" sm="12" md="6">
-															<Field
-																data={
-																	{
-																		hasLabel:true,
-																		contentLabel:'Forma de pagamento *',
-																		atributsFormLabel:{
-
-																		},
-																		atributsFormControl:{
-																			type:'text',
-																			name:'forma_pagamento_id',
-																			placeholder:'Forma de pagament',
-																			id:'forma_pagamento_id',
-																			//onChange:handleChange,
-																			//onBlur:handleBlur,
-																			onChange:(ev)=>{ setIdFormaPagamentoForm(ev.target.value);handleChange(ev)},
-																			onBlur:(ev)=>{ setIdFormaPagamentoForm(ev.target.value);handleBlur(ev)},
-																			value:values.forma_pagamento_id,
-																			className:estilos.input,
-																			size:"sm",
-																		},
-																		options:preparaFormaPagamentoToForm(),
-																		atributsContainer:{
-																			className:''
-																		}
-																	}
-																}
-															
-																component={FormControlSelect}
-															></Field>
-															<ErrorMessage className="alerta_error_form_label" name="forma_pagamento_id" component="div" />														
-															
-														</Col>
-
-														<Col xs="12" sm="12" md="6">
-															<Field
-																data={
-																	{
-																		hasLabel:true,
-																		contentLabel:'Plano de pagamento *',
-																		atributsFormLabel:{
-
-																		},
-																		atributsFormControl:{
-																			type:'text',
-																			name:'plano_pagamento_id',
-																			placeholder:'Plano de pagament',
-																			id:'plano_pagamento_id',
-																			onChange:handleChange,
-																			onBlur:handleBlur,
-																			value:values.plano_pagamento_id,
-																			className:estilos.input,
-																			size:"sm"
-																		},
-																		options:preparaPlanoPagamentoToForm(),
-																		atributsContainer:{
-																			className:''
-																		}
-																	}
-																}
-															
-																component={FormControlSelect}
-															></Field>
-															<ErrorMessage className="alerta_error_form_label" name="plano_pagamento_id" component="div" />														
-															
-														</Col>
-													</Row>
-
-													<Row className="mb-3">
-												
-														<Col xs="12" sm="12" md="6">
-															<Field
-																data={
-																	{
-																		hasLabel:true,
-																		contentLabel:'Agente financeiro',
-																		atributsFormLabel:{
-
-																		},
-																		atributsFormControl:{
-																			type:'text',
-																			name:'operador_financeiro_id',
-																			placeholder:'Plano de pagament',
-																			id:'operador_financeiro_id',
-																			onChange:handleChange,
-																			onBlur:handleBlur,
-																			value:values.operador_financeiro_id,
-																			className:estilos.input,
-																			size:"sm"
-																		},
-																		options:preparaOperadorFinanceiroToForm(),
-																		atributsContainer:{
-																			className:''
-																		}
-																	}
-																}
-															
-																component={FormControlSelect}
-															></Field>
-															<ErrorMessage className="alerta_error_form_label" name="operador_financeiro_id" component="div" />														
-															
-														</Col>
-
-														<Col xs="12" sm="12" md="6">
-															<Field
+														<Row className="mb-3">
+															<Col xs="12" sm="12" md="6">
+																<Field
 																	data={
 																		{
-																			hasLabel:true,
-																			contentLabel:'Nº documento',
-																			atributsFormLabel:{
+																			hasLabel: true,
+																			contentLabel: 'Forma de pagamento *',
+																			atributsFormLabel: {
 
 																			},
-																			atributsFormControl:{
-																				type:'text',
-																				name:'documento',
-																				placeholder:'Nº documento',
-																				id:'documento',
-																				name_cod:'documento',
-																				name_desacription:'documento',
-																				onChange:handleChange,
-																				onBlur:handleBlur,
-																				value:values.documento,
-																				className:`${estilos.input}`,
-																				size:"sm",
+																			atributsFormControl: {
+																				type: 'text',
+																				name: 'forma_pagamento_id',
+																				placeholder: 'Forma de pagament',
+																				id: 'forma_pagamento_id',
+																				//onChange:handleChange,
+																				//onBlur:handleBlur,
+																				onChange: (ev) => { setIdFormaPagamentoForm(ev.target.value); handleChange(ev) },
+																				onBlur: (ev) => { setIdFormaPagamentoForm(ev.target.value); handleBlur(ev) },
+																				value: values.forma_pagamento_id,
+																				className: estilos.input,
+																				size: "sm",
 																			},
-																			atributsContainer:{
-																				className:''
+																			options: preparaFormaPagamentoToForm(),
+																			atributsContainer: {
+																				className: ''
+																			}
+																		}
+																	}
+
+																	component={FormControlSelect}
+																></Field>
+																<ErrorMessage className="alerta_error_form_label" name="forma_pagamento_id" component="div" />
+
+															</Col>
+
+															<Col xs="12" sm="12" md="6">
+																<Field
+																	data={
+																		{
+																			hasLabel: true,
+																			contentLabel: 'Plano de pagamento *',
+																			atributsFormLabel: {
+
+																			},
+																			atributsFormControl: {
+																				type: 'text',
+																				name: 'plano_pagamento_id',
+																				placeholder: 'Plano de pagament',
+																				id: 'plano_pagamento_id',
+																				onChange: handleChange,
+																				onBlur: handleBlur,
+																				value: values.plano_pagamento_id,
+																				className: estilos.input,
+																				size: "sm"
+																			},
+																			options: preparaPlanoPagamentoToForm(),
+																			atributsContainer: {
+																				className: ''
+																			}
+																		}
+																	}
+
+																	component={FormControlSelect}
+																></Field>
+																<ErrorMessage className="alerta_error_form_label" name="plano_pagamento_id" component="div" />
+
+															</Col>
+														</Row>
+
+														<Row className="mb-3">
+
+															<Col xs="12" sm="12" md="6">
+																<Field
+																	data={
+																		{
+																			hasLabel: true,
+																			contentLabel: 'Agente financeiro',
+																			atributsFormLabel: {
+
+																			},
+																			atributsFormControl: {
+																				type: 'text',
+																				name: 'operador_financeiro_id',
+																				placeholder: 'Plano de pagament',
+																				id: 'operador_financeiro_id',
+																				onChange: handleChange,
+																				onBlur: handleBlur,
+																				value: values.operador_financeiro_id,
+																				className: estilos.input,
+																				size: "sm"
+																			},
+																			options: preparaOperadorFinanceiroToForm(),
+																			atributsContainer: {
+																				className: ''
+																			}
+																		}
+																	}
+
+																	component={FormControlSelect}
+																></Field>
+																<ErrorMessage className="alerta_error_form_label" name="operador_financeiro_id" component="div" />
+
+															</Col>
+
+															<Col xs="12" sm="12" md="6">
+																<Field
+																	data={
+																		{
+																			hasLabel: true,
+																			contentLabel: 'Nº documento',
+																			atributsFormLabel: {
+
+																			},
+																			atributsFormControl: {
+																				type: 'text',
+																				name: 'documento',
+																				placeholder: 'Nº documento',
+																				id: 'documento',
+																				name_cod: 'documento',
+																				name_desacription: 'documento',
+																				onChange: handleChange,
+																				onBlur: handleBlur,
+																				value: values.documento,
+																				className: `${estilos.input}`,
+																				size: "sm",
+																			},
+																			atributsContainer: {
+																				className: ''
 																			},
 																		}
 																	}
 																	component={FormControlInput}
-															>   </Field>    
-															<ErrorMessage className="alerta_error_form_label" name="documento" component="div" />
-														</Col>
+																>   </Field>
+																<ErrorMessage className="alerta_error_form_label" name="documento" component="div" />
+															</Col>
 
-													</Row>
+														</Row>
 
-													<Row className="mb-3">												
+														<Row className="mb-3">
 
-														<Col xs="12" sm="12" md="6">
-															<Field
+															<Col xs="12" sm="12" md="6">
+																<Field
 																	data={
 																		{
-																			hasLabel:true,
-																			contentLabel:'Data de competência *',
-																			atributsFormLabel:{
+																			hasLabel: true,
+																			contentLabel: 'Data de competência *',
+																			atributsFormLabel: {
 
 																			},
-																			atributsFormControl:{
-																				type:'date',
-																				name:'dt_competencia',
-																				placeholder:'0,00',
-																				id:'dt_competencia',
-																				name_cod:'dt_competencia',
-																				name_desacription:'dt_competencia',
-																				onChange:handleChange,
-																				onBlur:handleBlur,
-																				value:values.dt_competencia,
-																				className:`${estilos.input}`,
-																				size:"sm",
+																			atributsFormControl: {
+																				type: 'date',
+																				name: 'dt_competencia',
+																				placeholder: '0,00',
+																				id: 'dt_competencia',
+																				name_cod: 'dt_competencia',
+																				name_desacription: 'dt_competencia',
+																				onChange: handleChange,
+																				onBlur: handleBlur,
+																				value: values.dt_competencia,
+																				className: `${estilos.input}`,
+																				size: "sm",
 																			},
-																			atributsContainer:{
-																				className:''
+																			atributsContainer: {
+																				className: ''
 																			},
 																		}
 																	}
 																	component={FormControlInput}
-															>   </Field>    
-															<ErrorMessage className="alerta_error_form_label" name="dt_competencia" component="div" />
-														</Col>
+																>   </Field>
+																<ErrorMessage className="alerta_error_form_label" name="dt_competencia" component="div" />
+															</Col>
 
-														<Col xs="12" sm="12" md="6">
-															<Field
+															<Col xs="12" sm="12" md="6">
+																<Field
 																	data={
 																		{
-																			hasLabel:true,
-																			contentLabel:'Data de pagamento',
-																			atributsFormLabel:{
+																			hasLabel: true,
+																			contentLabel: 'Data de pagamento',
+																			atributsFormLabel: {
 
 																			},
-																			atributsFormControl:{
-																				type:'date',
-																				name:'dt_pagamento',
-																				placeholder:'0,00',
-																				id:'dt_pagamento',
-																				name_cod:'dt_pagamento',
-																				name_desacription:'dt_pagamento',
-																				onChange:handleChange,
-																				onBlur:handleBlur,
-																				value:values.dt_pagamento,
-																				className:`${estilos.input}`,
-																				size:"sm",
+																			atributsFormControl: {
+																				type: 'date',
+																				name: 'dt_pagamento',
+																				placeholder: '0,00',
+																				id: 'dt_pagamento',
+																				name_cod: 'dt_pagamento',
+																				name_desacription: 'dt_pagamento',
+																				onChange: handleChange,
+																				onBlur: handleBlur,
+																				value: values.dt_pagamento,
+																				className: `${estilos.input}`,
+																				size: "sm",
 																			},
-																			atributsContainer:{
-																				className:''
+																			atributsContainer: {
+																				className: ''
 																			},
 																		}
 																	}
 																	component={FormControlInput}
-															>   </Field>    
-															<ErrorMessage className="alerta_error_form_label" name="dt_pagamento" component="div" />
-														</Col>
+																>   </Field>
+																<ErrorMessage className="alerta_error_form_label" name="dt_pagamento" component="div" />
+															</Col>
 
-													</Row>
+														</Row>
 
-													
-												</>
-											)
 
-										}
-											
+													</>
+												)
+
+											}
+
 											<Row className="mb-3">
-												
+
 
 												<Col xs="12" sm="12" md="12">
 													<Field
-															data={
-																{
-																	hasLabel:true,
-																	contentLabel:'Histórico *',
-																	atributsFormLabel:{
+														data={
+															{
+																hasLabel: true,
+																contentLabel: 'Histórico *',
+																atributsFormLabel: {
 
-																	},
-																	atributsFormControl:{
-																		type:'text',
-																		name:'descricao',
-																		placeholder:'Histórico',
-																		id:'descricao',
-																		name_cod:'descricao',
-																		name_desacription:'descricao',
-																		onChange:handleChange,
-																		onBlur:handleBlur,
-																		value:values.descricao,
-																		className:`${estilos.input}`,
-																		size:"sm",
-																	},
-																	atributsContainer:{
-																		className:''
-																	},
-																}
+																},
+																atributsFormControl: {
+																	type: 'text',
+																	name: 'descricao',
+																	placeholder: 'Histórico',
+																	id: 'descricao',
+																	name_cod: 'descricao',
+																	name_desacription: 'descricao',
+																	onChange: handleChange,
+																	onBlur: handleBlur,
+																	value: values.descricao,
+																	className: `${estilos.input}`,
+																	size: "sm",
+																},
+																atributsContainer: {
+																	className: ''
+																},
 															}
-															component={FormControlInput}
-													>   </Field>    
+														}
+														component={FormControlInput}
+													>   </Field>
 													<ErrorMessage className="alerta_error_form_label" name="descricao" component="div" />
 												</Col>
 
 											</Row>
-											
-											             
+
+
 
 										</form>
 
 									)
-														
-							}  
 
-                        </Modal>
-                    )
-                }
-            </Formik>
+							}
+
+						</Modal>
+					)
+				}
+			</Formik>
 		</>
 	)
 }
