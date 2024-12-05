@@ -15,19 +15,14 @@ import Load from '../../Utils/Load/index.js'
 import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible.js'
 import Swal from 'sweetalert2'//https://sweetalert2.github.io/#examples
 import * as Yup from 'yup';
-
-
-
 import { TOKEN_POST, CLIENT_ID, CLIENT_SECRET, FORMA_PAGAMENTOALL_POST, OPERADOR_FINANCEIROALL_POST, PLANO_PAGAMENTOALL_POST, SERVICO_SAVE_POST, FILIAIS_ALL_POST, ORDEM_SERVICO_FINALIZAR_POST, CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST, CONTAS_RECEBER_UPDATE_POST, CONTAS_RECEBER_SAVE_POST, CAIXA_ALL_POST } from '../../../api/endpoints/geral.js'
 import Caixa from '../../Caixa/index.js';
 import Clientes from '../../Clientes/index.js';
-
 
 const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setIdContasReceber, idContasReceber, showModalCriarContasReceber, setShowModalCriarContasReceber, callback, atualizarContasReceber, setAtualizarContasReceber, carregando }) => {
 
 	const { data, error, request, loading } = useFetch();
 	const dataRequest = useFetch();
-
 	const { getToken, dataUser } = React.useContext(UserContex);
 	const [dataFiliais, setDataFiliais] = React.useState([])
 	const [dataItens, setDataitens] = React.useState([])
@@ -46,16 +41,9 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 	const [idPessoaForm, setIdPessoaForm] = React.useState(0)
 	const [idCaixaForm, setIdCaixaForm] = React.useState(0)
 
-
-
-	const userLogar = () => {
-		console.log('Aqui............')
-	}
-
 	const sendData = async ({
 		...params
 	}) => {
-
 
 		const data = {
 			...params,
@@ -63,23 +51,17 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 		}
 
 		let data_config = {}
+
 		if (idContasReceber && idContasReceber > 0) {
 			data_config = CONTAS_RECEBER_UPDATE_POST(idContasReceber, data, getToken());
 		} else {
 			data_config = CONTAS_RECEBER_SAVE_POST(data, getToken());
 		}
 
-
 		const { url, options } = data_config;
-
-
 		const { response, json } = await request(url, options);
-		console.log('Save consulta here')
-		console.log(json)
-		if (json) {
-			console.log('Response Save consulta here')
-			console.log(json)
 
+		if (json) {
 			callback();
 			setShowModalCriarContasReceber();
 			setAtualizarContasReceber(false);
@@ -89,7 +71,7 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 				icon: "success",
 				title: "",
 				text: 'Reigistrado com sucesso',
-				footer: '',//'<a href="#">Why do I have this issue?</a>'
+				footer: '',
 				confirmButtonColor: "#07B201",
 			});
 		}
@@ -99,18 +81,18 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 
 		const { url, options } = FILIAIS_ALL_POST({}, getToken());
 		const { response, json } = await dataRequest.request(url, options);
+
 		if (json) {
 			setDataFiliais(json)
 		} else {
 
 			setDataFiliais([]);
 		}
-
-
 	}
 
 	const dataToFormContasReceber = () => {
 		let obj = { filial_id: '', vrLiquido: '', descricao: '', documento: '', dsArquivo: '', pessoa_id: '', pessoa_name: '', pessoa_rca_id: '', forma_pagamento_id: '', plano_pagamento_id: '', operador_financeiro_id: '', user_id: '', user_update_id: '', active: '', deleted_at: '', created_at: '', updated_at: '' }
+
 		if (dataContasReceberChoice && dataContasReceberChoice.hasOwnProperty('mensagem')) {
 
 			let data = dataContasReceberChoice.mensagem;
@@ -163,21 +145,18 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 				obj.plano_pagamento_id = data.plano_pagamento_id;
 			}
 
-
-
 		}
 
 		if (idPessoaForm > 0) {
 			obj.pessoa_id = idPessoaForm;
 		}
+
 		if (idFilialForm > 0) {
 			obj.filial_id = idFilialForm;
 		}
 
 		return obj;
 	}
-
-
 
 	const preparaFilialToForm = () => {
 		if (dataFiliais.hasOwnProperty('mensagem') && Array.isArray(dataFiliais.mensagem) && dataFiliais.mensagem.length > 0) {
@@ -186,9 +165,9 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 
 			return filiais;
 		}
+
 		return []
 	}
-
 
 	const getFormaPagamentoAll = async () => {
 
@@ -199,7 +178,6 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 
 			if (json && json.hasOwnProperty('mensagem')) {
 				let data = json.mensagem;
-				//console.log("Formas de pagamento: ",data)
 				setDataFormaPagamento(data)
 			} else {
 				setDataFormaPagamento([])
@@ -223,7 +201,6 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 
 			if (json && json.hasOwnProperty('mensagem')) {
 				let data = json.mensagem;
-				//console.log("Planos de pagamento: ",data)
 				setDataPlanoPagamento(data)
 			} else {
 				setDataPlanoPagamento([])
@@ -247,7 +224,6 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 
 			if (json && json.hasOwnProperty('mensagem')) {
 				let data = json.mensagem;
-				//console.log("Operadores financeiros: ",data)
 				setDataOperadorFinanceiro(data)
 			} else {
 				setDataOperadorFinanceiro([])
@@ -258,16 +234,13 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 		}
 	}
 
-
-
 	const preparaFormaPagamentoToForm = () => {
 		if (dataFormaPagamento && Array.isArray(dataFormaPagamento) && dataFormaPagamento.length > 0) {
 			let formaPgto = dataFormaPagamento.map(({ id, name }, index, arr) => ({ label: name, valor: id, props: {} }))
-			//formaPgto.unshift({label:'Teste',valor:'2',props:{selected:'selected'}})
 			formaPgto.unshift({ label: 'Selecione...', valor: '0', props: { selected: 'selected', } })
-			//console.table(formaPgto)
 			return formaPgto;
 		}
+
 		return []
 	}
 
@@ -275,9 +248,9 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 		if (dataPlanoPagamento && Array.isArray(dataPlanoPagamento) && dataPlanoPagamento.length > 0) {
 			let formaPgto = dataPlanoPagamento.map(({ id, name }, index, arr) => ({ label: name, valor: id, props: {} }))
 			formaPgto.unshift({ label: 'Selecione...', valor: '', props: { selected: 'selected', } })
-			//console.table(formaPgto)
 			return formaPgto;
 		}
+
 		return []
 	}
 
@@ -285,13 +258,11 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 		if (dataOperadorFinanceiro && Array.isArray(dataOperadorFinanceiro) && dataOperadorFinanceiro.length > 0) {
 			let formaPgto = dataOperadorFinanceiro.map(({ id, name }, index, arr) => ({ label: name, valor: id, props: {} }))
 			formaPgto.unshift({ label: 'Selecione...', valor: '', props: { selected: 'selected', } })
-			//console.table(formaPgto)
 			return formaPgto;
 		}
+
 		return []
 	}
-
-
 
 	React.useEffect(() => {
 		getFormaPagamentoAll();
@@ -300,8 +271,6 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 	React.useEffect(() => {
 		getOperadorFinanceiroAll()
 		getPlanoPagamentoAll();
-		//idFormaPagamentoForm 
-		//alert(idFormaPagamentoForm)
 		setDataFormaPagamentoEscolhido({ ...dataFormaPagamentoEscolhido })
 	}, [idFormaPagamentoForm]);
 
@@ -334,13 +303,10 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 		});
 	};
 
-	// Validação com Yup
 	const validationSchema = Yup.object({
 		filial_id: Yup.string().required('Filial é obrigatório'),
 		pessoa_id: Yup.string().required('O campo pessoa é obrigatório'),
 	});
-
-
 
 	return (
 
@@ -353,10 +319,6 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 					values => {
 
 						const errors = {}
-
-						/* if(!values.name){
-							errors.name="Obrigatório"
-						} */
 
 						if (!values.descricao) {
 							errors.descricao = "Obrigatório"
@@ -395,11 +357,6 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 				}
 
 				onSubmit={async (values, { setSubmitting }) => {
-					/*setTimeout(() => {
-						alert(JSON.stringify(values, null, 2));
-						setSubmitting(false);
-					  }, 400);*/
-					//alert('aqui')
 
 					await sendData({ ...values });
 				}}
@@ -469,8 +426,6 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 																				name: 'filial_id',
 																				placeholder: 'Filial',
 																				id: 'filial_id',
-																				//onChange:handleChange,
-																				//onBlur:handleBlur,
 																				onChange: (ev) => { setIdFilialForm(ev.target.value); handleChange(ev) },
 																				onBlur: (ev) => { setIdFilialForm(ev.target.value); handleBlur(ev) },
 																				value: values.filial_id,
@@ -487,8 +442,6 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 																	component={FormControlSelect}
 																></Field>
 																<ErrorMessage className="alerta_error_form_label" name="filial_id" component="div" />
-
-
 															</Col>
 
 															<Col xs="12" sm="12" md="6">
@@ -509,8 +462,6 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 																				name_desacription: 'pessoa_name',
 																				onChange: handleChange,
 																				onBlur: handleBlur,
-																				//onChange:(ev)=>{ setIdPessoaForm(ev.target.value); handleChange(ev)},
-																				//onBlur:(ev)=>{ setIdPessoaForm(ev.target.value);handleBlur(ev)},
 																				value: values.pessoa_id,
 																				className: `${estilos.input}`,
 																				size: "sm"
@@ -602,7 +553,6 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 																>   </Field>
 																<ErrorMessage className="alerta_error_form_label" name="vrLiquido" component="div" />
 															</Col>
-
 														</Row>
 
 														<Row className="mb-3">
@@ -620,8 +570,6 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 																				name: 'forma_pagamento_id',
 																				placeholder: 'Forma de pagament',
 																				id: 'forma_pagamento_id',
-																				//onChange:handleChange,
-																				//onBlur:handleBlur,
 																				onChange: (ev) => { setIdFormaPagamentoForm(ev.target.value); handleChange(ev) },
 																				onBlur: (ev) => { setIdFormaPagamentoForm(ev.target.value); handleBlur(ev) },
 																				value: values.forma_pagamento_id,
@@ -638,7 +586,6 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 																	component={FormControlSelect}
 																></Field>
 																<ErrorMessage className="alerta_error_form_label" name="forma_pagamento_id" component="div" />
-
 															</Col>
 
 															<Col xs="12" sm="12" md="6">
@@ -707,7 +654,6 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 																	component={FormControlSelect}
 																></Field>
 																<ErrorMessage className="alerta_error_form_label" name="operador_financeiro_id" component="div" />
-
 															</Col>
 
 															<Col xs="12" sm="12" md="6">
@@ -741,11 +687,8 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 																>   </Field>
 																<ErrorMessage className="alerta_error_form_label" name="documento" component="div" />
 															</Col>
-
 														</Row>
-
 														<Row className="mb-3">
-
 															<Col xs="12" sm="12" md="6">
 																<Field
 																	data={
@@ -811,16 +754,12 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 															</Col>
 
 														</Row>
-
-
 													</>
 												)
 
 											}
 
 											<Row className="mb-3">
-
-
 												<Col xs="12" sm="12" md="12">
 													<Field
 														data={
@@ -854,13 +793,8 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 												</Col>
 
 											</Row>
-
-
-
 										</form>
-
 									)
-
 							}
 
 						</Modal>
