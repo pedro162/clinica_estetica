@@ -1,24 +1,14 @@
 import React from 'react'
-import estilos from './Cidade.module.css'
 import useFetch from '../../Hooks/useFetch.js';
-import { TOKEN_POST, CLIENT_ID, CLIENT_SECRET, CIDADE_ALL_POST } from '../../api/endpoints/geral.js'
-import { FORMAT_DATA_PT_BR } from '../../functions/index.js'
 import { Col, Row } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import ListMobile from '../Relatorio/ListMobile/index.js'
-import Filter from '../Relatorio/Filter/index.js'
-import Breadcrumbs from '../Helper/Breadcrumbs.js'
 import { faHome, faSearch, faPlus, faUserCircle, faHandHoldingUsd, faHandHolding, faTasks, faFileAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Modal from '../Utils/Modal/index.js'
-import Load from '../Utils/Load/index.js'
 import { UserContex } from '../../Context/UserContex.js'
-import FormCidade from './FormCidade/index.js'
 import Cadastrar from './Cadastrar/index.js'
 import Atualizar from './Atualizar/index.js'
 import { FORMAT_CALC_COD, FORMAT_MONEY } from '../../functions/index.js'
-import { Button } from 'bootstrap';
-import reactDom from 'react-dom';
 
 const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEncontrado, idCidadeCriada, nextPage, setNextPage, usePagination, setUsePagination, totalPageCount, setTotalPageCount, ...props }) => {
     const { data, error, request, loading } = useFetch();
@@ -31,7 +21,6 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
     const [nrPageAtual, setNrPageAtual] = React.useState(null)
     const [qtdItemsTo, setQtdItemsTo] = React.useState(null)
     const [qtdItemsTotal, setQtdItemsTotal] = React.useState(null)
-
     const { getToken } = React.useContext(UserContex);
 
     const handleTotalPages = () => {
@@ -110,7 +99,6 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
         } else {
             setShowModalCriarConstula(false);
         }
-
 
     }, [cadastrarCidade])
 
