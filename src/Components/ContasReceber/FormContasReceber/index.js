@@ -470,11 +470,6 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 																				className: ''
 																			},
 																			hookToLoadFromDescription: CLIENTES_ALL_POST,
-																			callbackDataItemChoice: (param) => {
-																				let { label, value } = param
-
-																				setIdPessoaForm(value)
-																			}
 																		}
 																	}
 																	ComponentFilter={Clientes}
