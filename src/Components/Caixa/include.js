@@ -153,6 +153,11 @@ const Include = ({ dataEstado, callBakSelectedItem, ignoreTableActions, loadingD
                 let atual = dataCaixa[i];
                 if (atual) {
                     let acoesArr = [];
+                    let btnEditar = true;
+
+                    if (btnEditar) {
+                        acoesArr.push({ acao: () => atualizarCaixaAction(atual.id), label: 'Editar', propsOption: {}, propsLabel: {} })
+                    }
 
                     let line_style = {}
 
