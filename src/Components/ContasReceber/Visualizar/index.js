@@ -11,8 +11,6 @@ import Swal from 'sweetalert2'
 import Detalhes from './Detalhes.js'
 
 const Visualizar = ({ idContasReceber, setIdContasReceber, callback, atualizarContasReceber, setAtualizarContasReceber, noUseModal }) => {
-
-
 	const [showModalAtualizarContasReceber, setShowModalAtualizarContasReceber] = React.useState(false)
 	const [carregando, setCarregando] = React.useState(false)
 	const [dataContasReceber, setDataContasReceber] = React.useState(null)
@@ -44,7 +42,7 @@ const Visualizar = ({ idContasReceber, setIdContasReceber, callback, atualizarCo
 						data = json?.data
 					}
 
-					let erroValidaao = validarBaixa(data);
+					let erroValidaao = validarCobranca(data);
 
 					if (Array.isArray(erroValidaao) && erroValidaao.length > 0) {
 						setShowModalErro(true)
@@ -55,7 +53,7 @@ const Visualizar = ({ idContasReceber, setIdContasReceber, callback, atualizarCo
 							icon: "error",
 							title: "Oops...",
 							text: erroValidaao,
-							footer: '',//'<a href="#">Why do I have this issue?</a>'
+							footer: '',
 							confirmButtonColor: "#07B201",
 						});
 					} else {
@@ -73,18 +71,10 @@ const Visualizar = ({ idContasReceber, setIdContasReceber, callback, atualizarCo
 	}, [idContasReceber])
 
 
-	const validarBaixa = (data) => {
+	const validarCobranca = (data) => {
 		let erros = [];
 
 		let { vrLiquido, vrPago, status, id } = data;
-		vrLiquido = Number(vrLiquido)
-		vrPago = Number(vrPago)
-		let difAberto = vrLiquido - vrPago
-		let difAbertoAbs = Math.abs(difAberto);
-
-		if (!(String(status) == 'aberto')) {
-			//erros.push(`O contas a receber de código n° ${id} encontra-se ${status} e não poderá ser modificado`);
-		}
 
 		return erros;
 	}

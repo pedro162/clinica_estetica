@@ -44,8 +44,6 @@ const Detalhes = ({ dataContasReceberChoice, ...props }) => {
 				</Col>
 			</Row>
 
-
-
 			<Row>
 				<Col>
 					<Table striped bordered>
@@ -82,6 +80,5 @@ const Detalhes = ({ dataContasReceberChoice, ...props }) => {
 		</React.Fragment>
 	)
 }
-
 
 export default Detalhes;
