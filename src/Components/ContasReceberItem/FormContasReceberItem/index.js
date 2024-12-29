@@ -6,7 +6,7 @@ import FormControlInput from '../../FormControl/index.js'
 import FormControlSelect from '../../FormControl/Select.js'
 import { Col, Row, Tabs, Tab } from 'react-bootstrap';
 import Button from '../../FormControl/Button.js';
-import estilos from './FormContasReceber.module.css'
+import estilos from './FormContasReceberItem.module.css'
 import Modal from '../../Utils/Modal/index.js'
 import useFetch from '../../../Hooks/useFetch.js';
 import { UserContex } from '../../../Context/UserContex.js'
@@ -19,7 +19,7 @@ import { TOKEN_POST, CLIENT_ID, CLIENT_SECRET, FORMA_PAGAMENTOALL_POST, OPERADOR
 import Caixa from '../../Caixa/index.js';
 import Clientes from '../../Clientes/index.js';
 
-const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setIdContasReceber, idContasReceber, showModalCriarContasReceber, setShowModalCriarContasReceber, callback, atualizarContasReceber, setAtualizarContasReceber, carregando }) => {
+const FormContasReceberItem = ({ dataContasReceberItemChoice, setDataContasReceberItem, setIdContasReceberItem, idContasReceberItem, showModalCriarContasReceberItem, setShowModalCriarContasReceberItem, callback, atualizarContasReceberItem, setAtualizarContasReceberItem, carregando }) => {
 
 	const { data, error, request, loading } = useFetch();
 	const dataRequest = useFetch();
@@ -52,8 +52,8 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 
 		let data_config = {}
 
-		if (idContasReceber && idContasReceber > 0) {
-			data_config = CONTAS_RECEBER_UPDATE_POST(idContasReceber, data, getToken());
+		if (idContasReceberItem && idContasReceberItem > 0) {
+			data_config = CONTAS_RECEBER_UPDATE_POST(idContasReceberItem, data, getToken());
 		} else {
 			data_config = CONTAS_RECEBER_SAVE_POST(data, getToken());
 		}
@@ -63,9 +63,9 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 
 		if (json) {
 			callback();
-			setShowModalCriarContasReceber();
-			setAtualizarContasReceber(false);
-			setIdContasReceber(null);
+			setShowModalCriarContasReceberItem();
+			setAtualizarContasReceberItem(false);
+			setIdContasReceberItem(null);
 
 			Swal.fire({
 				icon: "success",
@@ -90,12 +90,12 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 		}
 	}
 
-	const dataToFormContasReceber = () => {
-		let obj = { filial_id: '', vrLiquido: '', descricao: '', documento: '', dsArquivo: '', pessoa_id: '', pessoa_name: '', pessoa_rca_id: '', forma_pagamento_id: '', plano_pagamento_id: '', operador_financeiro_id: '', active: '', deleted_at: '', created_at: '', updated_at: '' }
+	const dataToFormContasReceberItem = () => {
+		let obj = { filial_id: '', vrLiquido: '', descricao: '', documento: '', dsArquivo: '', pessoa_id: '', pessoa_name: '', pessoa_rca_id: '', forma_pagamento_id: '', plano_pagamento_id: '', operador_financeiro_id: '', user_id: '', user_update_id: '', active: '', deleted_at: '', created_at: '', updated_at: '' }
 
-		if (dataContasReceberChoice && dataContasReceberChoice.hasOwnProperty('mensagem')) {
+		if (dataContasReceberItemChoice && dataContasReceberItemChoice.hasOwnProperty('mensagem')) {
 
-			let data = dataContasReceberChoice.mensagem;
+			let data = dataContasReceberItemChoice.mensagem;
 
 			if (data.hasOwnProperty('filial_id')) {
 				obj.filial_id = data.filial_id;
@@ -277,8 +277,8 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 
 	React.useEffect(() => {
 
-		if (dataContasReceberChoice && dataContasReceberChoice.hasOwnProperty('mensagem')) {
-			let data = dataContasReceberChoice.mensagem;
+		if (dataContasReceberItemChoice && dataContasReceberItemChoice.hasOwnProperty('mensagem')) {
+			let data = dataContasReceberItemChoice.mensagem;
 			setDataitens(data?.item)
 		}
 
@@ -313,7 +313,7 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 		<>
 			<Formik
 
-				initialValues={{ ...dataToFormContasReceber() }}
+				initialValues={{ ...dataToFormContasReceberItem() }}
 				enableReinitialize={true}
 				validate={
 					values => {
@@ -378,15 +378,15 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 						<Modal
 							bottomButtons={null}
 							handleConcluir={() => { handleSubmit(); }}
-							title={(atualizarContasReceber == true ? 'Atualizar' : 'Cadastrar') + ' Contas a Receber'}
+							title={(atualizarContasReceberItem == true ? 'Atualizar' : 'Cadastrar') + ' Contas a Receber'}
 							size="lg"
 							propsConcluir={{ 'disabled': loading }}
 							labelConcluir={loading ? <><FontAwesomeIcon icon={faCheck} /> Salvando...</> : <><FontAwesomeIcon icon={faCheck} /> Concluir </>}
 							dialogClassName={''}
 							aria-labelledby={'aria-labelledby'}
 							labelCanelar="Fechar"
-							show={showModalCriarContasReceber}
-							showHide={() => { setShowModalCriarContasReceber(); setAtualizarContasReceber(false); setIdContasReceber(null); }}
+							show={showModalCriarContasReceberItem}
+							showHide={() => { setShowModalCriarContasReceberItem(); setAtualizarContasReceberItem(false); setIdContasReceberItem(null); }}
 						>
 							{
 
@@ -408,7 +408,7 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 													</Col>
 												</Row>
 											}
-											{!(idContasReceber && idContasReceber > 0) &&
+											{!(idContasReceberItem && idContasReceberItem > 0) &&
 												(
 													<>
 														<Row className="mb-3">
@@ -470,11 +470,6 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 																				className: ''
 																			},
 																			hookToLoadFromDescription: CLIENTES_ALL_POST,
-																			callbackDataItemChoice: (param) => {
-																				let { label, value } = param
-
-																				setIdPessoaForm(value)
-																			}
 																		}
 																	}
 																	ComponentFilter={Clientes}
@@ -805,4 +800,4 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 	)
 }
 
-export default FormContasReceber;
+export default FormContasReceberItem;

@@ -1,5 +1,5 @@
 import React from 'react';
-import estilos from './ContasReceber.module.css'
+import estilos from './ContasReceberItem.module.css'
 import useFetch from '../../Hooks/useFetch.js';
 import { TOKEN_POST, CLIENT_ID, CLIENT_SECRET, CONTAS_RECEBER_ALL_POST, FILIAIS_ALL_POST, RECORD_NUMBER_PER_REQUEST } from '../../api/endpoints/geral.js'
 import { FORMAT_DATA_PT_BR } from '../../functions/index.js'
@@ -12,7 +12,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from '../Utils/Modal/index.js'
 import Load from '../Utils/Load/index.js'
 import { UserContex } from '../../Context/UserContex.js'
-import FormContasReceber from './FormContasReceber/index.js'
+import FormContasReceberItem from './FormContasReceberItem/index.js'
 import Cadastrar from './Cadastrar/index.js'
 import Atualizar from './Atualizar/index.js'
 import Include from './include';
@@ -21,18 +21,18 @@ import { FORMAT_CALC_COD, FORMAT_MONEY } from '../../functions/index.js'
 import { Link } from 'react-router-dom/cjs/react-router-dom.min.js';
 
 
-const ContasReceber = ({ defaultFilters, ...props }) => {
+const ContasReceberItem = ({ defaultFilters, ...props }) => {
 
     const { data, error, request, loading } = useFetch();
-    const [estado, setContasReceber] = React.useState([])
+    const [estado, setContasReceberItem] = React.useState([])
     const [exemplos, setExemplos] = React.useState([])
     const [exemplosTitleTable, setExemplosTitleTable] = React.useState([])
-    const [showModalCriarContasReceber, setShowModalCriarConstula] = React.useState(false)
-    const [consultaChoice, setContasReceberChoice] = React.useState(null);
-    const [atualizarContasReceber, setAtualizarContasReceber] = React.useState(false)
-    const [cancelarContasReceber, setCancelarContasReceber] = React.useState(false)
-    const [digitarContasReceber, setDigitarContasReceber] = React.useState(false)
-    const [cadastrarContasReceber, setCadastrarContasReceber] = React.useState(false)
+    const [showModalCriarContasReceberItem, setShowModalCriarConstula] = React.useState(false)
+    const [consultaChoice, setContasReceberItemChoice] = React.useState(null);
+    const [atualizarContasReceberItem, setAtualizarContasReceberItem] = React.useState(false)
+    const [cancelarContasReceberItem, setCancelarContasReceberItem] = React.useState(false)
+    const [digitarContasReceberItem, setDigitarContasReceberItem] = React.useState(false)
+    const [cadastrarContasReceberItem, setCadastrarContasReceberItem] = React.useState(false)
     const [mostarFiltros, setMostarFiltros] = React.useState(true)
     const [acao, setAcao] = React.useState(null)
     const [filtroMobile, setFiltroMobile] = React.useState(null)
@@ -57,11 +57,11 @@ const ContasReceber = ({ defaultFilters, ...props }) => {
     const [tpExercicio, setTpExercicio] = React.useState('')
     const [appliedFilters, setAppliedFilters] = React.useState([])
 
-    const [referenciaContasReceber, setReferenciaContasReceber] = React.useState(() => {
+    const [referenciaContasReceberItem, setReferenciaContasReceberItem] = React.useState(() => {
         return defaultFilters?.referencia
     })
 
-    const [idReferenciaContasReceber, setIdReferenciaContasReceber] = React.useState(() => {
+    const [idReferenciaContasReceberItem, setIdReferenciaContasReceberItem] = React.useState(() => {
         return defaultFilters?.referencia_id
     })
 
@@ -73,7 +73,7 @@ const ContasReceber = ({ defaultFilters, ...props }) => {
 
     const handleSearch = (ev) => {
         if (ev.key === "Enter") {
-            requestAllContasRecebers();
+            requestAllContasReceberItems();
         }
     }
 
@@ -119,11 +119,11 @@ const ContasReceber = ({ defaultFilters, ...props }) => {
 
     const setDsReferencia = ({ target }) => {
 
-        setReferenciaContasReceber(target.value)
+        setReferenciaContasReceberItem(target.value)
     }
 
     const setIdReferencia = ({ target }) => {
-        setIdReferenciaContasReceber(target.value)
+        setIdReferenciaContasReceberItem(target.value)
     }
 
     const setOrdenacaoFiltro = ({ target }) => {
@@ -209,7 +209,7 @@ const ContasReceber = ({ defaultFilters, ...props }) => {
             contentLabel: 'Cód. ref',
             atributsFormLabel: {},
             atributsContainer: { xs: "12", sm: "12", md: "2", className: 'mb-2' },
-            atributsFormControl: { 'type': 'text', size: "sm", 'referencia_id': idReferenciaContasReceber, value: idReferenciaContasReceber, onChange: setIdReferencia, onBlur: setIdReferencia, onKeyUp: handleSearch },
+            atributsFormControl: { 'type': 'text', size: "sm", 'referencia_id': idReferenciaContasReceberItem, value: idReferenciaContasReceberItem, onChange: setIdReferencia, onBlur: setIdReferencia, onKeyUp: handleSearch },
 
         },
         {
@@ -219,7 +219,7 @@ const ContasReceber = ({ defaultFilters, ...props }) => {
             contentLabel: 'Referência',
             atributsFormLabel: {},
             atributsContainer: { xs: "12", sm: "12", md: "2", className: 'mb-2' },
-            atributsFormControl: { 'type': 'text', size: "sm", 'referencia': referenciaContasReceber, value: referenciaContasReceber, onChange: setDsReferencia, onBlur: setDsReferencia, onKeyUp: handleSearch },
+            atributsFormControl: { 'type': 'text', size: "sm", 'referencia': referenciaContasReceberItem, value: referenciaContasReceberItem, onChange: setDsReferencia, onBlur: setDsReferencia, onKeyUp: handleSearch },
 
         },
         {
@@ -268,7 +268,7 @@ const ContasReceber = ({ defaultFilters, ...props }) => {
     const acoesBottomCard = [{
         label: 'Pesquisar',
         icon: <FontAwesomeIcon icon={faSearch} />,
-        props: { onClick: () => requestAllContasRecebers(), className: 'btn btn-sm botao_success' }
+        props: { onClick: () => requestAllContasReceberItems(), className: 'btn btn-sm botao_success' }
     },
     {
         label: 'Limpar',
@@ -278,7 +278,7 @@ const ContasReceber = ({ defaultFilters, ...props }) => {
     {
         label: 'Cadastrar',
         icon: <FontAwesomeIcon icon={faPlus} />,
-        props: { onClick: () => setCadastrarContasReceber(true), className: 'btn btn-sm mx-2 btn-secondary' }
+        props: { onClick: () => setCadastrarContasReceberItem(true), className: 'btn btn-sm mx-2 btn-secondary' }
     }
     ];
 
@@ -291,15 +291,45 @@ const ContasReceber = ({ defaultFilters, ...props }) => {
 
     React.useEffect(() => {
 
-        if (cadastrarContasReceber == true) {
+        if (cadastrarContasReceberItem == true) {
             setShowModalCriarConstula(true);
         } else {
             setShowModalCriarConstula(false);
         }
-    }, [cadastrarContasReceber])
+    }, [cadastrarContasReceberItem])
+
+    const atualizarContasReceberItemAction = (idContasReceberItem) => {
+        setContasReceberItemChoice(idContasReceberItem)
+        setAcao('editar')
+        setAtualizarContasReceberItem(true);
+    }
+
+    const digitarContasReceberItemAction = (idContasReceberItem) => {
+        setContasReceberItemChoice(idContasReceberItem)
+        setAcao('digitar')
+        setAtualizarContasReceberItem(true);
+    }
+
+    const cancelarContasReceberItemAction = (idContasReceberItem) => {
+        setContasReceberItemChoice(idContasReceberItem)
+        setAcao('cancelar')
+        setCancelarContasReceberItem(true);
+    }
+
+    const novaContasReceberItem = (idContasReceberItem) => {
+        setContasReceberItemChoice(idContasReceberItem)
+        setAcao('consultar')
+        setAtualizarContasReceberItem(true);
+    }
+
+    const iniciarContasReceberItem = (idContasReceberItem) => {
+        setCadastrarContasReceberItem(idContasReceberItem)
+        setAcao('iniciar')
+        setCadastrarContasReceberItem(true);
+    }
 
     const limparFiltros = () => {
-        setReferenciaContasReceber('');
+        setReferenciaContasReceberItem('');
         setPessoa('');
         setFiltroMobile('');
         setFiltroAbertas(false);
@@ -391,21 +421,21 @@ const ContasReceber = ({ defaultFilters, ...props }) => {
         }
 
 
-        if (idReferenciaContasReceber) {
-            filtros['referencia_id'] = idReferenciaContasReceber;
+        if (idReferenciaContasReceberItem) {
+            filtros['referencia_id'] = idReferenciaContasReceberItem;
             detalhesFiltros['referencia_id'] = {
                 label: 'Cód. referência',
-                value: idReferenciaContasReceber,
-                resetFilter: () => { setIdReferenciaContasReceber(''); removeFilter('referencia_id'); },
+                value: idReferenciaContasReceberItem,
+                resetFilter: () => { setIdReferenciaContasReceberItem(''); removeFilter('referencia_id'); },
             };
         }
 
-        if (referenciaContasReceber) {
-            filtros['referencia'] = referenciaContasReceber;
+        if (referenciaContasReceberItem) {
+            filtros['referencia'] = referenciaContasReceberItem;
             detalhesFiltros['referencia'] = {
                 label: 'Referência',
-                value: referenciaContasReceber,
-                resetFilter: () => { setReferenciaContasReceber(''); removeFilter('referencia') },
+                value: referenciaContasReceberItem,
+                resetFilter: () => { setReferenciaContasReceberItem(''); removeFilter('referencia') },
             };
         }
 
@@ -447,7 +477,6 @@ const ContasReceber = ({ defaultFilters, ...props }) => {
         }
 
         if (!(filtroAvencer && filtroAvencer)) {
-
 
             if (filtroVencidas) {
                 filtros['vencido'] = 'yes';
@@ -498,22 +527,19 @@ const ContasReceber = ({ defaultFilters, ...props }) => {
         return { filtros, detalhesFiltros };
     }
 
-    const requestAllContasRecebers = async () => {
-        setContasReceber([])
+    const requestAllContasReceberItems = async () => {
+        setContasReceberItem([])
         setNadaEncontrado(false)
 
         let { filtros, detalhesFiltros } = await montarFiltro();
         setAppliedFilters(detalhesFiltros)
         let { url, options } = await CONTAS_RECEBER_ALL_POST({ ...filtros }, getToken());
-
         if (nextPage) {
             url = nextPage;
         }
-
         const { response, json } = await request(url, options);
-
         if (json) {
-            setContasReceber(json)
+            setContasReceberItem(json)
             if (json?.mensagem && json?.mensagem.length > 0) {
                 setNadaEncontrado(false)
             } else {
@@ -522,6 +548,25 @@ const ContasReceber = ({ defaultFilters, ...props }) => {
 
         } else {
             setNadaEncontrado(true)
+        }
+    }
+
+    const requestAbertas = async () => {
+        setContasReceberItem([])
+
+        let { filtros, detalhesFiltros } = montarFiltro();
+        filtros.status = 'aberto';
+        setAppliedFilters(detalhesFiltros)
+        let { url, options } = CONTAS_RECEBER_ALL_POST({ ...filtros }, getToken());
+
+        if (nextPage) {
+            url = nextPage;
+        }
+
+        const { response, json } = await request(url, options);
+
+        if (json) {
+            setContasReceberItem(json)
         }
     }
 
@@ -541,12 +586,13 @@ const ContasReceber = ({ defaultFilters, ...props }) => {
         const requestDataConfigEffect = async () => {
             await requestAllFilials()
         }
-        const requestAllContasRecebersEffect = async () => {
-            await requestAllContasRecebers();
+        const requestAllContasReceberItemsEffect = async () => {
+            await requestAllContasReceberItems();
         }
 
         requestDataConfigEffect();
-        requestAllContasRecebersEffect();
+        requestAllContasReceberItemsEffect();
+
 
     }, [filtroAvencer, filtroVencidas, filtroPagas, filtroAbertas, nextPage, setNextPage, defaultFilters])
 
@@ -562,10 +608,13 @@ const ContasReceber = ({ defaultFilters, ...props }) => {
                     {
                         props: {},
                         label: <> <Link className={null} to={'/'}>Início</Link></>
+                    }, {
+                        props: {},
+                        label: <> <Link className={null} to={'/financeiro/contas_receber'}>Contas a receber</Link></>
                     },
                     {
                         props: {},
-                        label: 'Contas a receber'
+                        label: 'Contas a receber item'
                     }
                 ]}
 
@@ -613,7 +662,7 @@ const ContasReceber = ({ defaultFilters, ...props }) => {
                                                                 onKeyUp: (ev) => {
 
                                                                     if (ev.key === "Enter") {
-                                                                        requestAllContasRecebers();
+                                                                        requestAllContasReceberItems();
                                                                     }
                                                                 },
                                                                 value: filtroMobile,
@@ -625,7 +674,7 @@ const ContasReceber = ({ defaultFilters, ...props }) => {
                                             </Col>
 
                                             <Col xs="1" sm="1" md="1" style={{ textAlign: 'left', alignItems: 'center', justifyContent: 'center', margin: 'auto', padding: '0' }} >
-                                                <FontAwesomeIcon onClick={() => { requestAllContasRecebers(); }} size={'lg'} icon={faSearch} />
+                                                <FontAwesomeIcon onClick={() => { requestAllContasReceberItems(); }} size={'lg'} icon={faSearch} />
                                             </Col>
 
 
@@ -655,7 +704,7 @@ const ContasReceber = ({ defaultFilters, ...props }) => {
                                 </Row>
                                 <Row>
                                     <div style={{ display: 'flex', flexDirection: 'collumn', flexWrap: 'wrap' }}>
-                                        <Button style={{ borderRadius: '50px', marginBottom: '10px', marginRight: '0.4rem' }} className={'btn btn-sm btn-secondary'} onClick={() => { setCadastrarContasReceber(true); }} ><FontAwesomeIcon icon={faPlus} /> Receita</Button>
+                                        <Button style={{ borderRadius: '50px', marginBottom: '10px', marginRight: '0.4rem' }} className={'btn btn-sm btn-secondary'} onClick={() => { setCadastrarContasReceberItem(true); }} ><FontAwesomeIcon icon={faPlus} /> Receita</Button>
                                         <Button style={{ borderRadius: '50px', marginBottom: '10px', marginRight: '0.4rem' }} className={'btn btn-sm btn-secondary'} onClick={() => { setFiltroAbertas(true); }} ><FontAwesomeIcon icon={faSearch} /> Abertas</Button>
                                         <Button style={{ borderRadius: '50px', marginBottom: '10px', marginRight: '0.4rem' }} className={'btn btn-sm btn-secondary'} onClick={() => { setFiltroPagas(true); }} ><FontAwesomeIcon icon={faSearch} /> Pagas</Button>
                                         <Button style={{ borderRadius: '50px', marginBottom: '10px', marginRight: '0.4rem' }} className={'btn btn-sm btn-secondary'} onClick={() => { setFiltroVencidas(true); }} ><FontAwesomeIcon icon={faSearch} /> Vencidas</Button>
@@ -680,7 +729,7 @@ const ContasReceber = ({ defaultFilters, ...props }) => {
                     <Include
                         dataEstado={estado}
                         loadingData={loading}
-                        callBack={requestAllContasRecebers}
+                        callBack={requestAllContasReceberItems}
                         setMostarFiltros={setMostarFiltros}
                         nadaEncontrado={nadaEncontrado}
                         nextPage={nextPage}
@@ -693,8 +742,8 @@ const ContasReceber = ({ defaultFilters, ...props }) => {
                 </Col>
             </Row>
             {
-                cadastrarContasReceber &&
-                <Cadastrar cadastrarContasReceber={cadastrarContasReceber} setCadastrarContasReceber={setCadastrarContasReceber} atualizarContasReceber={atualizarContasReceber} setAtualizarContasReceber={setAtualizarContasReceber} idContasReceber={consultaChoice} setIdContasReceber={setContasReceberChoice} callback={requestAllContasRecebers} />
+                cadastrarContasReceberItem &&
+                <Cadastrar cadastrarContasReceberItem={cadastrarContasReceberItem} setCadastrarContasReceberItem={setCadastrarContasReceberItem} atualizarContasReceberItem={atualizarContasReceberItem} setAtualizarContasReceberItem={setAtualizarContasReceberItem} idContasReceberItem={consultaChoice} setIdContasReceberItem={setContasReceberItemChoice} callback={requestAllContasReceberItems} />
             }
 
         </>
@@ -702,4 +751,4 @@ const ContasReceber = ({ defaultFilters, ...props }) => {
     )
 }
 
-export default ContasReceber;
+export default ContasReceberItem;

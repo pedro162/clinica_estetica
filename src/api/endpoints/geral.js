@@ -11,6 +11,7 @@ export const TOKEN_POST = (data) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
 
     var myInit = {
         method: 'POST',
@@ -63,6 +64,7 @@ export const USER_GET = (token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -85,6 +87,7 @@ export const USER_ALL_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -107,6 +110,7 @@ export const CLIENTES_ALL_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -128,6 +132,7 @@ export const CLIENTES_ONE_GET = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -150,6 +155,7 @@ export const CLIENTES_SAVE_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -172,6 +178,7 @@ export const CLIENTES_UPDATE_POST = (id, data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -196,6 +203,7 @@ export const CLIENTES_FICHA_MAIS_RECENTE_ONE_GET = (idPessoa, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -219,6 +227,7 @@ export const HOME_ALL_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -240,6 +249,7 @@ export const HOME_ONE_GET = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -262,6 +272,7 @@ export const HOME_SAVE_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -284,6 +295,7 @@ export const HOME_UPDATE_POST = (id, data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -309,6 +321,7 @@ export const FILIAIS_ALL_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -330,6 +343,7 @@ export const FILIAIS_ONE_GET = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -352,6 +366,7 @@ export const FILIAIS_SAVE_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -374,6 +389,7 @@ export const FILIAIS_UPDATE_POST = (id, data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -397,6 +413,7 @@ export const GRUPOS_ALL_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -418,6 +435,7 @@ export const GRUPOS_ONE_GET = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -440,6 +458,7 @@ export const GRUPOS_SAVE_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -462,6 +481,7 @@ export const GRUPOS_UPDATE_POST = (id, data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -484,6 +504,7 @@ export const CIDADE_ALL_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -505,6 +526,7 @@ export const CIDADE_ONE_GET = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -527,6 +549,7 @@ export const CIDADE_SAVE_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -549,6 +572,7 @@ export const CIDADE_UPDATE_POST = (id, data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -571,6 +595,7 @@ export const PAIS_ALL_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -592,6 +617,7 @@ export const PAIS_SAVE_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -615,6 +641,7 @@ export const PAIS_ONE_GET = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -638,6 +665,7 @@ export const PAIS_UPDATE_POST = (id, data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -661,6 +689,7 @@ export const ESTADO_ALL_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -682,6 +711,7 @@ export const ESTADO_SAVE_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -704,6 +734,7 @@ export const ESTADO_ONE_GET = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -727,6 +758,7 @@ export const ESTADO_UPDATE_POST = (id, data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -752,6 +784,7 @@ export const AGENDA_EVENTO_ALL_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -773,6 +806,7 @@ export const AGENDA_EVENTO_ONE_GET = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -795,6 +829,7 @@ export const AGENDA_EVENTO_SAVE_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -817,6 +852,7 @@ export const AGENDA_EVENTO_UPDATE_POST = (id, data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -840,6 +876,7 @@ export const CATEGORIA_EVENTO_ALL_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -861,6 +898,7 @@ export const CATEGORIA_EVENTO_ONE_GET = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -883,6 +921,7 @@ export const CATEGORIA_EVENTO_SAVE_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -905,6 +944,7 @@ export const CATEGORIA_EVENTO_UPDATE_POST = (id, data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -927,6 +967,7 @@ export const CATEGORIA_EVENTO_DELETE_POST = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -949,6 +990,7 @@ export const ESPECIALIDADE_ALL_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -970,6 +1012,7 @@ export const ESPECIALIDADE_ONE_GET = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -992,6 +1035,7 @@ export const ESPECIALIDADE_SAVE_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -1014,6 +1058,7 @@ export const ESPECIALIDADE_UPDATE_POST = (id, data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -1036,6 +1081,7 @@ export const ESPECIALIDADE_DELETE_POST = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -1058,6 +1104,7 @@ export const PROFISSIONAL_HORARIOS_ALL_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -1079,6 +1126,7 @@ export const PROFISSIONAL_HORARIOS_ONE_GET = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -1101,6 +1149,7 @@ export const PROFISSIONAL_HORARIOS_SAVE_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -1123,6 +1172,7 @@ export const PROFISSIONAL_HORARIOS_UPDATE_POST = (id, data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -1145,6 +1195,7 @@ export const PROFISSIONAL_HORARIOS_DELETE_POST = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -1161,14 +1212,13 @@ export const PROFISSIONAL_HORARIOS_DELETE_POST = (id, token) => {
 
 }
 
-
-
 //--- HORARIOS PROFISSIONAIS  ----------------------------------
 export const PROFISSIONAL_DIAS_EXPEDIENTE_ALL_POST = (data, token) => {
 
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -1190,6 +1240,7 @@ export const PROFISSIONAL_DIAS_EXPEDIENTE_ONE_GET = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -1212,6 +1263,7 @@ export const PROFISSIONAL_DIAS_EXPEDIENTE_SAVE_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -1234,6 +1286,7 @@ export const PROFISSIONAL_DIAS_EXPEDIENTE_UPDATE_POST = (id, data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -1256,6 +1309,7 @@ export const PROFISSIONAL_DIAS_EXPEDIENTE_DELETE_POST = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -1278,6 +1332,7 @@ export const PROFISSIONAIS_ALL_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -1299,6 +1354,7 @@ export const PROFISSIONAIS_ONE_GET = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -1321,6 +1377,7 @@ export const PROFISSIONAIS_SAVE_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -1343,6 +1400,7 @@ export const PROFISSIONAIS_UPDATE_POST = (id, data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -1365,6 +1423,7 @@ export const PROFISSIONAIS_DELETE_POST = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -1392,6 +1451,7 @@ export const CONSULTA_ALL_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -1413,6 +1473,7 @@ export const CONSULTA_ONE_GET = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -1435,6 +1496,7 @@ export const CONSULTA_SAVE_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -1457,6 +1519,7 @@ export const CONSULTA_UPDATE_POST = (id, data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -1479,6 +1542,7 @@ export const CONSULTA_DELETE_POST = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -1499,6 +1563,7 @@ export const CONSULTA_CANCELAR_POST = (id, data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -1523,6 +1588,7 @@ export const FORMULARIO_ALL_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -1544,6 +1610,7 @@ export const FORMULARIO_ONE_GET = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -1566,6 +1633,7 @@ export const FORMULARIO_SAVE_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -1588,6 +1656,7 @@ export const FORMULARIO_UPDATE_POST = (id, data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -1610,6 +1679,7 @@ export const FORMULARIO_DELETE_POST = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -1634,6 +1704,7 @@ export const FORMULARIO_GRUPO_ALL_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -1655,6 +1726,7 @@ export const FORMULARIO_GRUPO_ONE_GET = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -1677,6 +1749,7 @@ export const FORMULARIO_GRUPO_SAVE_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -1699,6 +1772,7 @@ export const FORMULARIO_GRUPO_UPDATE_POST = (id, data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -1721,6 +1795,7 @@ export const FORMULARIO_GRUPO_DELETE_POST = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -1744,6 +1819,7 @@ export const FORMULARIO_ITEM_ALL_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -1765,6 +1841,7 @@ export const FORMULARIO_ITEM_ONE_GET = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -1787,6 +1864,7 @@ export const FORMULARIO_ITEM_SAVE_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -1809,6 +1887,7 @@ export const FORMULARIO_ITEM_UPDATE_POST = (id, data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -1831,6 +1910,7 @@ export const FORMULARIO_ITEM_DELETE_POST = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -1852,6 +1932,7 @@ export const FORMULARIO_PESSOA_ALL_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -1873,6 +1954,7 @@ export const FORMULARIO_PESSOA_ONE_GET = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -1895,6 +1977,7 @@ export const FORMULARIO_PESSOA_SAVE_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -1917,6 +2000,7 @@ export const FORMULARIO_PESSOA_UPDATE_POST = (id, data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -1939,6 +2023,7 @@ export const FORMULARIO_PESSOA_DELETE_POST = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -1961,6 +2046,7 @@ export const SERVICO_ALL_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -1982,6 +2068,7 @@ export const SERVICO_ONE_GET = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2004,6 +2091,7 @@ export const SERVICO_SAVE_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2026,6 +2114,7 @@ export const SERVICO_UPDATE_POST = (id, data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2048,6 +2137,7 @@ export const SERVICO_DELETE_POST = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2071,6 +2161,7 @@ export const ORDEM_SERVICO_ALL_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2092,6 +2183,7 @@ export const ORDEM_SERVICO_ONE_GET = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2114,6 +2206,7 @@ export const ORDEM_SERVICO_SAVE_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2136,6 +2229,7 @@ export const ORDEM_SERVICO_UPDATE_POST = (id, data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2160,6 +2254,7 @@ export const ORDEM_SERVICO_CANCEL_POST = (id, data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2181,6 +2276,7 @@ export const ORDEM_SERVICO_FINALIZAR_POST = (id, data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2203,6 +2299,7 @@ export const ORDEM_SERVICO_FINALIZAR_PROCEDIMENTO_POST = (id, data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2225,6 +2322,7 @@ export const ORDEM_SERVICO_ADD_ITEM_POST = (id, data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2246,6 +2344,7 @@ export const ORDEM_SERVICO_DELETE_ITEM_POST = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2268,6 +2367,7 @@ export const ORDEM_SERVICO_DELETE_POST = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2291,6 +2391,7 @@ export const ORDEM_SERVICO_ITENS_ALL_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2312,6 +2413,7 @@ export const ORDEM_SERVICO_ITENS_ONE_GET = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2334,6 +2436,7 @@ export const ORDEM_SERVICO_ITENS_SAVE_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2356,6 +2459,7 @@ export const ORDEM_SERVICO_ITENS_UPDATE_POST = (id, data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2378,6 +2482,7 @@ export const ORDEM_SERVICO_ITENS_DELETE_POST = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2401,6 +2506,7 @@ export const RCA_ALL_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2422,6 +2528,7 @@ export const RCA_ONE_GET = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2444,6 +2551,7 @@ export const RCA_SAVE_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2466,6 +2574,7 @@ export const RCA_UPDATE_POST = (id, data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2488,6 +2597,7 @@ export const RCA_DELETE_POST = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2510,6 +2620,7 @@ export const AGENDA_ALL_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2531,6 +2642,7 @@ export const AGENDA_ONE_GET = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2553,6 +2665,7 @@ export const AGENDA_SAVE_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2575,6 +2688,7 @@ export const AGENDA_UPDATE_POST = (id, data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2597,6 +2711,7 @@ export const AGENDA_DELETE_POST = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2617,6 +2732,7 @@ export const AGENDA_CANCELAR_POST = (id, data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2641,6 +2757,7 @@ export const FORMA_PAGAMENTOALL_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2662,6 +2779,7 @@ export const FORMA_PAGAMENTO_ONE_GET = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2684,6 +2802,7 @@ export const FORMA_PAGAMENTO_SAVE_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2706,6 +2825,7 @@ export const FORMA_PAGAMENTO_UPDATE_POST = (id, data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2728,6 +2848,7 @@ export const FORMA_PAGAMENTO_DELETE_POST = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2751,6 +2872,7 @@ export const PLANO_PAGAMENTOALL_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2772,6 +2894,7 @@ export const PLANO_PAGAMENTO_ONE_GET = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2794,6 +2917,7 @@ export const PLANO_PAGAMENTO_SAVE_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2816,6 +2940,7 @@ export const PLANO_PAGAMENTO_UPDATE_POST = (id, data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2838,6 +2963,7 @@ export const PLANO_PAGAMENTO_DELETE_POST = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2861,6 +2987,7 @@ export const OPERADOR_FINANCEIROALL_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2882,6 +3009,7 @@ export const OPERADOR_FINANCEIRO_ONE_GET = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2904,6 +3032,7 @@ export const OPERADOR_FINANCEIRO_SAVE_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2926,6 +3055,7 @@ export const OPERADOR_FINANCEIRO_UPDATE_POST = (id, data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2948,6 +3078,7 @@ export const OPERADOR_FINANCEIRO_DELETE_POST = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2964,13 +3095,13 @@ export const OPERADOR_FINANCEIRO_DELETE_POST = (id, token) => {
 
 }
 
-
 //--- Cobrança ordem serviço ----------------------------------
 export const COBRANCA_ORDEM_ALL_POST = (data, token) => {
 
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -2987,11 +3118,13 @@ export const COBRANCA_ORDEM_ALL_POST = (data, token) => {
     }
 
 }
+
 export const COBRANCA_ORDEM_ONE_GET = (id, token) => {
 
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -3014,6 +3147,7 @@ export const COBRANCA_ORDEM_SAVE_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -3036,6 +3170,7 @@ export const COBRANCA_ORDEM_UPDATE_POST = (id, data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -3058,6 +3193,7 @@ export const COBRANCA_ORDEM_DELETE_POST = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -3074,13 +3210,13 @@ export const COBRANCA_ORDEM_DELETE_POST = (id, token) => {
 
 }
 
-
 //--- Cobrança ordem serviço motivos cancelamentos----------------------------------
 export const MOTIVOS_CANCEL_OS_ALL_POST = (data, token) => {
 
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -3102,6 +3238,7 @@ export const MOTIVOS_CANCEL_OS_ONE_GET = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -3124,6 +3261,7 @@ export const MOTIVOS_CANCEL_OS_SAVE_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -3146,6 +3284,7 @@ export const MOTIVOS_CANCEL_OS_UPDATE_POST = (id, data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -3168,6 +3307,7 @@ export const MOTIVOS_CANCEL_OS_DELETE_POST = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -3189,6 +3329,7 @@ export const CAIXA_ALL_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -3210,6 +3351,7 @@ export const CAIXA_ONE_GET = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -3232,6 +3374,7 @@ export const CAIXA_SAVE_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -3254,6 +3397,7 @@ export const CAIXA_UPDATE_POST = (id, data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -3276,6 +3420,7 @@ export const CAIXA_DELETE_POST = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -3292,16 +3437,13 @@ export const CAIXA_DELETE_POST = (id, token) => {
 
 }
 
-
-
-
-
 //--- Notificaions----------------------------------
 export const NOTIFICATION_ALL_POST = (data, token) => {
 
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -3318,11 +3460,13 @@ export const NOTIFICATION_ALL_POST = (data, token) => {
     }
 
 }
+
 export const NOTIFICATION_ONE_GET = (id, token) => {
 
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -3345,6 +3489,7 @@ export const NOTIFICATION_SAVE_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -3362,12 +3507,12 @@ export const NOTIFICATION_SAVE_POST = (data, token) => {
 
 }
 
-
 export const NOTIFICATION_EMAIL_SAVE_POST = (data, token) => {
 
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -3384,11 +3529,13 @@ export const NOTIFICATION_EMAIL_SAVE_POST = (data, token) => {
     }
 
 }
+
 export const NOTIFICATION_WHATSAPP_SAVE_POST = (data, token) => {
 
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -3411,6 +3558,7 @@ export const NOTIFICATION_UPDATE_POST = (id, data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -3433,6 +3581,7 @@ export const NOTIFICATION_DELETE_POST = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -3455,6 +3604,7 @@ export const CONTAS_RECEBER_ALL_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -3471,11 +3621,13 @@ export const CONTAS_RECEBER_ALL_POST = (data, token) => {
     }
 
 }
+
 export const CONTAS_RECEBER_ONE_GET = (id, token) => {
 
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -3483,7 +3635,6 @@ export const CONTAS_RECEBER_ONE_GET = (id, token) => {
         headers: myHeaders,
         mode: 'cors',
         cache: 'no-store',
-        //body:JSON.stringify(data)
     };
 
     return {
@@ -3498,6 +3649,7 @@ export const CONTAS_RECEBER_SAVE_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -3520,6 +3672,7 @@ export const CONTAS_RECEBER_UPDATE_POST = (id, data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -3542,6 +3695,7 @@ export const CONTAS_RECEBER_ESTORNAR_POST = (id, data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -3559,12 +3713,12 @@ export const CONTAS_RECEBER_ESTORNAR_POST = (id, data, token) => {
 
 }
 
-
 export const CONTAS_RECEBER_BAIXAR_POST = (id, data, token) => {
 
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -3582,13 +3736,12 @@ export const CONTAS_RECEBER_BAIXAR_POST = (id, data, token) => {
 
 }
 
-
-
 export const CONTAS_RECEBER_DELETE_POST = (id, token) => {
 
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -3605,12 +3758,173 @@ export const CONTAS_RECEBER_DELETE_POST = (id, token) => {
 
 }
 
+//--- Contas a receber ----------------------------------
+export const CONTAS_RECEBER_ITEM_ALL_POST = (data, token) => {
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
+    myHeaders.append("Authorization", 'Bearer ' + token);
+
+    var myInit = {
+        method: 'POST',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        body: JSON.stringify(data)
+    };
+
+    return {
+        url: BASE_URL + '/api/receber/item/json',
+        options: myInit
+    }
+
+}
+export const CONTAS_RECEBER_ITEM_ONE_GET = (id, token) => {
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
+    myHeaders.append("Authorization", 'Bearer ' + token);
+
+    var myInit = {
+        method: 'GET',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        //body:JSON.stringify(data)
+    };
+
+    return {
+        url: BASE_URL + '/api/receber/item/info/' + id,
+        options: myInit
+    }
+
+}
+
+export const CONTAS_RECEBER_ITEM_SAVE_POST = (data, token) => {
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
+    myHeaders.append("Authorization", 'Bearer ' + token);
+
+    var myInit = {
+        method: 'POST',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        body: JSON.stringify(data)
+    };
+
+    return {
+        url: BASE_URL + '/api/receber/item/store',
+        options: myInit
+    }
+
+}
+
+export const CONTAS_RECEBER_ITEM_UPDATE_POST = (id, data, token) => {
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
+    myHeaders.append("Authorization", 'Bearer ' + token);
+
+    var myInit = {
+        method: 'PUT',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        body: JSON.stringify(data)
+    };
+
+    return {
+        url: BASE_URL + '/api/receber/item/update/' + id,
+        options: myInit
+    }
+
+}
+
+export const CONTAS_RECEBER_ITEM_ESTORNAR_POST = (id, data, token) => {
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
+    myHeaders.append("Authorization", 'Bearer ' + token);
+
+    var myInit = {
+        method: 'PUT',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        body: JSON.stringify(data)
+    };
+
+    return {
+        url: BASE_URL + '/api/receber/item/estornar/' + id,
+        options: myInit
+    }
+
+}
+
+export const CONTAS_RECEBER_ITEM_BAIXAR_POST = (id, data, token) => {
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
+    myHeaders.append("Authorization", 'Bearer ' + token);
+
+    var myInit = {
+        method: 'PUT',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+        body: JSON.stringify(data)
+    };
+
+    return {
+        url: BASE_URL + '/api/receber/item/baixar/' + id,
+        options: myInit
+    }
+
+}
+
+export const CONTAS_RECEBER_ITEM_DELETE_POST = (id, token) => {
+
+    var myHeaders = new Headers();
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
+    myHeaders.append("Authorization", 'Bearer ' + token);
+
+    var myInit = {
+        method: 'GET',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'no-store',
+    };
+
+    return {
+        url: BASE_URL + '/api/receber/item/destroy/' + id,
+        options: myInit
+    }
+
+}
+
 //--- Parametros ----------------------------------
 export const PARAMETRO_ALL_POST = (data, token) => {
 
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -3633,6 +3947,7 @@ export const PARAMETRO_ONE_GET = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -3654,6 +3969,7 @@ export const PARAMETRO_SAVE_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -3676,6 +3992,7 @@ export const PARAMETRO_UPDATE_POST = (id, data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -3698,6 +4015,7 @@ export const PARAMETRO_DELETE_POST = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -3720,6 +4038,7 @@ export const WIDGET_FAT_LIQUIDEZ_MA_ALL_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -3743,6 +4062,7 @@ export const WIDGET_FAT_LIQUIDEZ_FILIAL_ALL_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -3766,6 +4086,7 @@ export const WIDGET_FAT_LIQUIDEZ_PROFISSIONAL_ALL_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -3789,6 +4110,7 @@ export const WIDGET_ATENDIMENTOS_TIPOS_ALL_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -3812,6 +4134,7 @@ export const CONTAS_MOVIMENTACOES_FINANCEIRAS_ALL_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -3833,6 +4156,7 @@ export const CONTAS_MOVIMENTACOES_FINANCEIRAS_ONE_GET = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -3855,6 +4179,7 @@ export const CONTAS_MOVIMENTACOES_FINANCEIRAS_SAVE_POST = (data, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -3877,6 +4202,7 @@ export const CONTAS_MOVIMENTACOES_FINANCEIRAS_UPDATE_POST = (id, data, token) =>
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -3899,6 +4225,7 @@ export const CONTAS_MOVIMENTACOES_FINANCEIRAS_ESTORNAR_POST = (id, data, token) 
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
@@ -3923,6 +4250,7 @@ export const CONTAS_MOVIMENTACOES_FINANCEIRAS_DELETE_POST = (id, token) => {
     var myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+    myHeaders.append("accept", "application/json");
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {

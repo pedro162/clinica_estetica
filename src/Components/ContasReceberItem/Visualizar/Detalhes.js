@@ -16,12 +16,9 @@ import Swal from 'sweetalert2'
 
 import { FORMAT_CALC_COD, FORMAT_MONEY, FORMAT_DATA_PT_BR } from '../../../functions/index.js'
 
-const Detalhes = ({ dataContasReceberChoice, ...props }) => {
+const Detalhes = ({ dataContasReceberItemChoice, ...props }) => {
 
-	const dataRegistro = dataContasReceberChoice?.data
-		? dataContasReceberChoice?.data
-		: dataContasReceberChoice?.mensagem
-
+	const dataRegistro = dataContasReceberItemChoice?.mensagem
 	const dataReferencia = dataRegistro?.data_referencia
 
 	return (

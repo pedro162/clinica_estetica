@@ -112,7 +112,6 @@ const Include = ({ dataEstado, callBakSelectedItem, ignoreTableActions, loadingD
             setShowModalCriarConstula(false);
         }
 
-
     }, [cadastrarCaixa])
 
     const atualizarCaixaAction = (idCaixa) => {

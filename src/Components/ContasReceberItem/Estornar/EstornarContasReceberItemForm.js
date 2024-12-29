@@ -18,66 +18,103 @@ import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible.js'
 import { TOKEN_POST, CLIENT_ID, CLIENT_SECRET, SERVICO_SAVE_POST, SERVICO_ALL_POST, ORDEM_SERVICO_FINALIZAR_POST, CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST, CONTAS_RECEBER_UPDATE_POST, CONTAS_RECEBER_SAVE_POST, CONTAS_RECEBER_ESTORNAR_POST } from '../../../api/endpoints/geral.js'
 
 
-const FormEstornarContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setIdContasReceber, idContasReceber, showModalEstornarontasReceber, setShowModalEstornarContasReceber, callback, setEstornarContasReceber, atualizarContasReceber, setAtualizarContasReceber, showModalCriarContasReceber, setShowModalCriarContasReceber, carregando }) => {
+const FormEstornarContasReceberItem = ({ dataContasReceberItemChoice, setDataContasReceberItem, setIdContasReceberItem, idContasReceberItem, showModalEstornarontasReceber, setShowModalEstornarContasReceberItem, callback, setEstornarContasReceberItem, atualizarContasReceberItem, setAtualizarContasReceberItem, showModalCriarContasReceberItem, setShowModalCriarContasReceberItem, carregando }) => {
 
 	const { data, error, request, loading } = useFetch();
 	const dataRequest = useFetch();
+
 	const { getToken, dataUser } = React.useContext(UserContex);
 	const [dataFiliais, setDataFiliais] = React.useState([])
 	const [dataItens, setDataitens] = React.useState([])
 	const [isOrcamento, setIsOramento] = React.useState(false)
 	const [qtdAtualizaCobrancas, setQtdAtualizaCobrancas] = React.useState(0)
 
+
+	const userLogar = () => {
+		console.log('Aqui............')
+	}
+
 	const sendData = async ({
 		...params
 	}) => {
+
+
+
 
 		const data = {
 			...params
 		}
 
-		const { url, options } = CONTAS_RECEBER_ESTORNAR_POST(idContasReceber, data, getToken());
-		const { response, json } = await request(url, options);
 
+
+		const { url, options } = CONTAS_RECEBER_ESTORNAR_POST(idContasReceberItem, data, getToken());
+
+
+		const { response, json } = await request(url, options);
+		console.log('Save consulta here')
+		console.log(json)
 		if (json) {
+			console.log('Response Save consulta here')
+			console.log(json)
 
 			callback();
-			setShowModalEstornarContasReceber();
-			setAtualizarContasReceber(false);
-			setIdContasReceber(null);
+			setShowModalEstornarContasReceberItem();
+			setAtualizarContasReceberItem(false);
+			setIdContasReceberItem(null);
 		}
 	}
 
 	const requestAllFiliais = async () => {
-		const { url, options } = SERVICO_ALL_POST({}, getToken());
-		const { response, json } = await dataRequest.request(url, options);
 
+		const { url, options } = SERVICO_ALL_POST({}, getToken());
+
+
+		const { response, json } = await dataRequest.request(url, options);
+		console.log('All consultas here')
+		console.log(json)
 		if (json) {
 			setDataFiliais(json)
 		} else {
 
 			setDataFiliais([]);
 		}
+
+
 	}
 
-	const dataToFormContasReceber = () => {
+	const dataToFormContasReceberItem = () => {
 		let obj = { descricao: '' }
-		if (dataContasReceberChoice && dataContasReceberChoice.hasOwnProperty('mensagem')) {
-			let data = dataContasReceberChoice.mensagem;
+		if (dataContasReceberItemChoice && dataContasReceberItemChoice.hasOwnProperty('mensagem')) {
+			let data = dataContasReceberItemChoice.mensagem;
+
 
 			if (data.hasOwnProperty('descricao')) {
 				obj.descricao = data.descricao;
 			}
+
+
 
 		}
 
 		return obj;
 	}
 
+
+
+	const preparaFilialToForm = () => {
+		if (dataFiliais.hasOwnProperty('mensagem') && Array.isArray(dataFiliais.mensagem) && dataFiliais.mensagem.length > 0) {
+			let filiais = dataFiliais.mensagem.map(({ id, name }, index, arr) => ({ label: name, valor: id, props: {} }))
+			filiais.unshift({ label: 'Selecione...', valor: '', props: { selected: 'selected', disabled: 'disabled' } })
+
+			return filiais;
+		}
+		return []
+	}
+
 	React.useEffect(() => {
 
-		if (dataContasReceberChoice && dataContasReceberChoice.hasOwnProperty('mensagem')) {
-			let data = dataContasReceberChoice.mensagem;
+		if (dataContasReceberItemChoice && dataContasReceberItemChoice.hasOwnProperty('mensagem')) {
+			let data = dataContasReceberItemChoice.mensagem;
 			setDataitens(data?.item)
 		}
 
@@ -92,27 +129,43 @@ const FormEstornarContasReceber = ({ dataContasReceberChoice, setDataContasReceb
 
 	}, []);
 
+	console.log('----------------------------- data pais ----------------------------------')
+	console.log(dataToFormContasReceberItem())
+
+
 	return (
 
 		<>
 			<Formik
 
-				initialValues={{ ...dataToFormContasReceber() }}
+				initialValues={{ ...dataToFormContasReceberItem() }}
 				enableReinitialize={true}
 				validate={
 					values => {
 
 						const errors = {}
 
+						/* if(!values.name){
+							errors.name="Obrigatório"
+						} */
+
 						if (!values.descricao) {
 							errors.descricao = "Obrigatório"
 						}
+
+
 
 						return errors;
 					}
 				}
 
 				onSubmit={async (values, { setSubmitting }) => {
+					/*setTimeout(() => {
+						alert(JSON.stringify(values, null, 2));
+						setSubmitting(false);
+					  }, 400);*/
+					//alert('aqui')
+
 					await sendData({ ...values });
 				}}
 			>
@@ -139,7 +192,7 @@ const FormEstornarContasReceber = ({ dataContasReceberChoice, setDataContasReceb
 							dialogClassName={''}
 							aria-labelledby={'aria-labelledby'}
 							labelCanelar="Fechar"
-							show={showModalCriarContasReceber} showHide={() => { setShowModalCriarContasReceber(); setEstornarContasReceber(false); setIdContasReceber(null); }}
+							show={showModalCriarContasReceberItem} showHide={() => { setShowModalCriarContasReceberItem(); setEstornarContasReceberItem(false); setIdContasReceberItem(null); }}
 						>
 							{
 
@@ -248,4 +301,4 @@ const FormEstornarContasReceber = ({ dataContasReceberChoice, setDataContasReceb
 	)
 }
 
-export default FormEstornarContasReceber;
+export default FormEstornarContasReceberItem;

@@ -24,7 +24,10 @@ const useFetch = () => {
 
             if (response.ok == false) {
 
-                throw new Error(json.mensagem);
+                throw new Error(json.mensagem
+                    ? json.mensagem
+                    : json.message
+                );
             }
 
         } catch (err) {

@@ -2,7 +2,7 @@ import React from 'react';
 import useFetch from '../../../Hooks/useFetch.js';
 import { TOKEN_POST, CLIENT_ID, CLIENT_SECRET, CONTAS_RECEBER_ONE_GET, GRUPOS_ALL_POST } from '../../../api/endpoints/geral.js'
 import { UserContex } from '../../../Context/UserContex.js'
-import AtualizarForm from '../FormContasReceber/index.js'
+import AtualizarForm from '../FormContasReceberItem/index.js'
 import Modal from '../../Utils/Modal/index.js'
 import Load from '../../Utils/Load/index.js'
 import { Col, Row } from 'react-bootstrap';
@@ -10,47 +10,34 @@ import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible'
 import Swal from 'sweetalert2'
 import Detalhes from './Detalhes.js'
 
-const Visualizar = ({ idContasReceber, setIdContasReceber, callback, atualizarContasReceber, setAtualizarContasReceber, noUseModal }) => {
+const Visualizar = ({ idContasReceberItem, setIdContasReceberItem, callback, atualizarContasReceberItem, setAtualizarContasReceberItem, noUseModal }) => {
 
 
-	const [showModalAtualizarContasReceber, setShowModalAtualizarContasReceber] = React.useState(false)
+	const [showModalAtualizarContasReceberItem, setShowModalAtualizarContasReceberItem] = React.useState(false)
 	const [carregando, setCarregando] = React.useState(false)
-	const [dataContasReceber, setDataContasReceber] = React.useState(null)
+	const [dataContasReceberItem, setDataContasReceberItem] = React.useState(null)
 	const [dataGrupo, setDataGrupo] = React.useState(null)
 	const { getToken, dataUser } = React.useContext(UserContex);
 	const [erroValidacao, setErroValidacao] = React.useState(null)
 	const [showModalErro, setShowModalErro] = React.useState(false)
 
 	const { data, error, request, loading } = useFetch();
-
 	React.useEffect(() => {
 
-		const getContasReceber = async () => {
-			if (idContasReceber > 0) {
-				const { url, options } = CONTAS_RECEBER_ONE_GET(idContasReceber, getToken());
+		const getContasReceberItem = async () => {
+			if (idContasReceberItem > 0) {
+				const { url, options } = CONTAS_RECEBER_ONE_GET(idContasReceberItem, getToken());
 				const { response, json } = await request(url, options);
-
 				if (json) {
 
-					setDataContasReceber(json)
+					setDataContasReceberItem(json)
 
-					let data = json
-
-					if (data?.mensagem) {
-						data = json?.mensagem
-					}
-
-					if (data?.data) {
-						data = json?.data
-					}
-
+					let data = json?.mensagem
 					let erroValidaao = validarBaixa(data);
-
 					if (Array.isArray(erroValidaao) && erroValidaao.length > 0) {
 						setShowModalErro(true)
 						erroValidaao = erroValidaao.join('<br/>')
 						setErroValidacao(erroValidaao)
-
 						Swal.fire({
 							icon: "error",
 							title: "Oops...",
@@ -59,18 +46,18 @@ const Visualizar = ({ idContasReceber, setIdContasReceber, callback, atualizarCo
 							confirmButtonColor: "#07B201",
 						});
 					} else {
-						setDataContasReceber(json)
-						setShowModalAtualizarContasReceber(true)
+						setDataContasReceberItem(json)
+						setShowModalAtualizarContasReceberItem(true)
 					}
 				} else {
-					setDataContasReceber([])
+					setDataContasReceberItem([])
 				}
 			}
 		}
 
-		getContasReceber();
+		getContasReceberItem();
 
-	}, [idContasReceber])
+	}, [idContasReceberItem])
 
 
 	const validarBaixa = (data) => {
@@ -93,7 +80,7 @@ const Visualizar = ({ idContasReceber, setIdContasReceber, callback, atualizarCo
 		return (
 			<>
 
-				{!dataContasReceber &&
+				{!dataContasReceberItem &&
 					<Load />
 				}
 
@@ -110,23 +97,23 @@ const Visualizar = ({ idContasReceber, setIdContasReceber, callback, atualizarCo
 
 	return (
 		<>
-			{!dataContasReceber &&
-				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={() => null} title={'Atualizar ContasReceber'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="" show={setShowModalAtualizarContasReceber} showHide={() => { setShowModalAtualizarContasReceber(); }}>
+			{!dataContasReceberItem &&
+				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={() => null} title={'Atualizar ContasReceberItem'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="" show={setShowModalAtualizarContasReceberItem} showHide={() => { setShowModalAtualizarContasReceberItem(); }}>
 					<Load />
 				</Modal>
 			}
 
-			{dataContasReceber &&
+			{dataContasReceberItem &&
 				<Modal
 					noBtnConcluir={true}
 					handleConcluir={() => null}
-					title={'Detalhes conta a receber nº ' + idContasReceber}
+					title={'Detalhes conta a receber nº ' + idContasReceberItem}
 					size="lg" propsConcluir={{ 'disabled': loading }}
 					labelConcluir={loading ? 'Salvando...' : 'Concluir'}
 					dialogClassName={''} aria-labelledby={'aria-labelledby'}
 					labelCanelar="Fechar"
-					show={showModalAtualizarContasReceber}
-					showHide={() => { setShowModalAtualizarContasReceber(); setIdContasReceber(null); }}
+					show={showModalAtualizarContasReceberItem}
+					showHide={() => { setShowModalAtualizarContasReceberItem(); setIdContasReceberItem(null); }}
 
 				>
 					<Detalhes
@@ -134,12 +121,12 @@ const Visualizar = ({ idContasReceber, setIdContasReceber, callback, atualizarCo
 						carregando={carregando}
 						error={error}
 						loading={loading}
-						setDataContasReceber={setDataContasReceber}
-						setIdContasReceber={setIdContasReceber}
-						idContasReceber={idContasReceber}
-						dataContasReceberChoice={dataContasReceber}
-						showModalCriarContasReceber={showModalAtualizarContasReceber}
-						setShowModalCriarContasReceber={setShowModalAtualizarContasReceber}
+						setDataContasReceberItem={setDataContasReceberItem}
+						setIdContasReceberItem={setIdContasReceberItem}
+						idContasReceberItem={idContasReceberItem}
+						dataContasReceberItemChoice={dataContasReceberItem}
+						showModalCriarContasReceberItem={showModalAtualizarContasReceberItem}
+						setShowModalCriarContasReceberItem={setShowModalAtualizarContasReceberItem}
 						callback={callback}
 
 					/>

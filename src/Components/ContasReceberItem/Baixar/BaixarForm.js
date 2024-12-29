@@ -16,10 +16,10 @@ import { FORMAT_CALC_COD, FORMAT_MONEY } from '../../../functions/index.js'
 import Swal from 'sweetalert2'
 
 
-import { TOKEN_POST, CLIENT_ID, CLIENT_SECRET, SERVICO_SAVE_POST, SERVICO_ALL_POST, CONTAS_RECEBER_BAIXAR_POST, CAIXA_ALL_POST, PROFISSIONAIS_ALL_POST } from '../../../api/endpoints/geral.js'
+import { TOKEN_POST, CLIENT_ID, CLIENT_SECRET, SERVICO_SAVE_POST, SERVICO_ALL_POST, CONTAS_RECEBER_BAIXAR_POST, CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST } from '../../../api/endpoints/geral.js'
 
 
-const BaixarForm = ({ dataContasReceberChoice, setDataContasReceber, setIdContasReceber, idContasReceber, showModalCriarContasReceber, setShowModalCriarContasReceber, callback, atualizarContasReceber, baixarContasReceber, setBaixarContasReceber, carregando }) => {
+const BaixarForm = ({ dataContasReceberItemChoice, setDataContasReceberItem, setIdContasReceberItem, idContasReceberItem, showModalCriarContasReceberItem, setShowModalCriarContasReceberItem, callback, atualizarContasReceberItem, baixarContasReceberItem, setBaixarContasReceberItem, carregando }) => {
 
 	const { data, error, request, loading } = useFetch();
 	const dataRequest = useFetch();
@@ -31,11 +31,13 @@ const BaixarForm = ({ dataContasReceberChoice, setDataContasReceber, setIdContas
 	const [vrMultaForm, setVrMultaForm] = React.useState(0)
 	const [vrAcrescimosForm, setVrAcrescimosForm] = React.useState(0)
 	const [vrDescontoForm, setVrDescontoForm] = React.useState(0)
-	const [dataBaixaContasReceber, setDataBaixaContasReceber] = React.useState(
-		dataContasReceberChoice.mensagem ? dataContasReceberChoice.mensagem : dataContasReceberChoice.data
 
-	)
-	const [idCaixaForm, setIdCaixaForm] = React.useState(0)
+	const [dataBaixaContasReceberItem, setDataBaixaContasReceberItem] = React.useState(dataContasReceberItemChoice.mensagem)
+
+
+	const userLogar = () => {
+		console.log('Aqui............')
+	}
 
 	const sendData = async (dados) => {
 
@@ -45,54 +47,91 @@ const BaixarForm = ({ dataContasReceberChoice, setDataContasReceber, setIdContas
 			observacao: dados?.ds_observacao
 		}
 
-		const { url, options } = CONTAS_RECEBER_BAIXAR_POST(idContasReceber, data, getToken());
+
+		const { url, options } = CONTAS_RECEBER_BAIXAR_POST(idContasReceberItem, data, getToken());
+
+
 		const { response, json } = await request(url, options);
+		console.log('Save consulta here')
+		console.log(json)
+
 
 		if (json) {
+			console.log('Response Save consulta here')
+			console.log(json)
+
 			callback();
-			setShowModalCriarContasReceber();
-			setBaixarContasReceber(false);
-			setIdContasReceber(null);
+			setShowModalCriarContasReceberItem();
+			setBaixarContasReceberItem(false);
+			setIdContasReceberItem(null);
 
 			Swal.fire({
 				icon: "success",
 				title: "",
 				text: 'Reigistrado com sucesso',
-				footer: '',
+				footer: '',//'<a href="#">Why do I have this issue?</a>'
 				confirmButtonColor: "#07B201",
 			});
 		}
+	}
+
+	const requestAllFiliais = async () => {
+
+		const { url, options } = SERVICO_ALL_POST({}, getToken());
+
+
+		const { response, json } = await dataRequest.request(url, options);
+		console.log('All consultas here')
+		console.log(json)
+		if (json) {
+			setDataFiliais(json)
+		} else {
+
+			setDataFiliais([]);
+		}
+
+
 	}
 
 	const handleChangeDesconto = (ve) => {
 		let vrDesconto = ve.target.value
 		vrDesconto = FORMAT_CALC_COD(vrDesconto)
 		vrDesconto = Number(vrDesconto)
+		//console.log({vrDesconto })
 
 		let vrJuros = FORMAT_CALC_COD(vrJurosForm)
 		vrJuros = Number(vrJuros)
 
+
 		let vrMulta = FORMAT_CALC_COD(vrMultaForm)
 		vrMulta = Number(vrMulta)
-
+		console.log({ vrMultaForm, vrJurosForm })
+		//
 		if ((vrMulta > 0 || vrMulta > 0) && vrDesconto > 0) {
-			//
-		}
+			//vrDesconto = 0;
 
+		}
+		console.log({ vrMultaForm, vrJurosForm, vrDesconto })
 		setVrDescontoForm(vrDesconto)
 	}
 
 	const calcularCobranca = (objParams = {}) => {
-		let obj = { caixa_id: '', vrLiquido: '', status: '', vr_total: '', vr_acrescimo: '', vr_final: '', vr_multa: '', vr_juros: '', vr_desconto: '', ds_observacao: '', ...dataBaixaContasReceber }
-		let data = dataBaixaContasReceber;
-
+		let obj = { filial_id: '', vrLiquido: '', status: '', vr_total: '', vr_acrescimo: '', vr_final: '', vr_multa: '', vr_juros: '', vr_desconto: '', ds_observacao: '', ...dataBaixaContasReceberItem }
+		let data = dataBaixaContasReceberItem;//dataContasReceberItemChoice?.mensagem;
+		/*
+			if(dataContasReceberItemChoice && dataContasReceberItemChoice.hasOwnProperty('mensagem')){
+			let data = dataContasReceberItemChoice.mensagem;
+		*/
+		//console.log('======================================== objParams ================')//vrMultaForm
+		//console.log(objParams)
+		//
 		let vrJurosForm = objParams?.vrJurosForm
 		let vrMultaForm = objParams?.vrMultaForm
 		let vrDescontoForm = objParams?.vrDescontoForm
 		let vrAcrescimosForm = objParams?.vrAcrescimosForm
 
-		if (data.hasOwnProperty('caixa_id')) {
-			obj.caixa_id = data.caixa_id;
+		if (data.hasOwnProperty('filial_id')) {
+			obj.filial_id = data.filial_id;
 		}
 
 		if (data.hasOwnProperty('vrLiquido')) {
@@ -104,12 +143,15 @@ const BaixarForm = ({ dataContasReceberChoice, setDataContasReceber, setIdContas
 			obj.status = data.status;
 		}
 
+		//console.log('vrDesconto: '+vrDescontoForm)
+
 		let vrJuros = 0
 		let vrDesconto = 0
 		let vrMulta = 0
 		let vrAcrescimo = 0
 		let vrBaixar = FORMAT_CALC_COD(data?.vrLiquido)
 		let subTotal = 0;
+		//console.log("=========================== "+vrBaixar +"================================")
 
 		if (vrJurosForm != undefined && vrJurosForm != null) {
 			vrJuros = FORMAT_CALC_COD(vrJurosForm)
@@ -148,7 +190,7 @@ const BaixarForm = ({ dataContasReceberChoice, setDataContasReceber, setIdContas
 		} else {
 
 		}
-
+		console.log('vrDesconto: ' + vrDesconto)
 		if (!(!isNaN(vrDesconto) && vrDesconto >= 0)) {
 			vrDesconto = 0;
 		}
@@ -165,6 +207,10 @@ const BaixarForm = ({ dataContasReceberChoice, setDataContasReceber, setIdContas
 			vrBaixar = 0;
 		}
 
+		console.log('vrDesconto: ' + vrDesconto)
+		console.log('vrMulta: ' + vrMulta)
+		console.log('vrJuros: ' + vrJuros)
+
 		if ((vrMulta > 0 || vrJuros > 0) && vrDesconto > 0) {
 			vrDesconto = 0;
 
@@ -180,69 +226,88 @@ const BaixarForm = ({ dataContasReceberChoice, setDataContasReceber, setIdContas
 
 		obj.vr_final = FORMAT_MONEY(subTotal);
 
-		obj.vr_desconto = vrDesconto
-		obj.vr_juros = vrJuros
-		obj.vr_multa = vrMulta
-		obj.vr_acrescimo = vrAcrescimo
-
-		if (idCaixaForm > 0) {
-			obj.caixa_id = idCaixaForm;
-		}
+		obj.vr_desconto = vrDesconto//FORMAT_MONEY(vrDesconto);
+		obj.vr_juros = vrJuros//FORMAT_MONEY(vrJuros);
+		obj.vr_multa = vrMulta//FORMAT_MONEY(vrMulta);
+		obj.vr_acrescimo = vrAcrescimo//FORMAT_MONEY(vrAcrescimo);
 
 		return obj;
 	}
 
+
+
 	React.useEffect(() => {
 
-		if (dataContasReceberChoice && dataContasReceberChoice.hasOwnProperty('mensagem')) {
-
-			let data = dataContasReceberChoice
-
-			if (dataContasReceberChoice?.mensagem) {
-				data = dataContasReceberChoice?.mensagem
-			}
-
-			if (dataContasReceberChoice?.data) {
-				data = dataContasReceberChoice?.data
-			}
-
-			setDataBaixaContasReceber(data)
+		if (dataContasReceberItemChoice && dataContasReceberItemChoice.hasOwnProperty('mensagem')) {
+			let data = dataContasReceberItemChoice.mensagem;
+			//console.log('========================================')//
+			//console.log(data)
+			setDataBaixaContasReceberItem(data)
 		}
+
 
 	}, [])
 
+
 	React.useEffect(() => {
 
-		setDataBaixaContasReceber({ ...dataBaixaContasReceber, ...calcularCobranca({ vrJurosForm }) })
+		setDataBaixaContasReceberItem({ ...dataBaixaContasReceberItem, ...calcularCobranca({ vrJurosForm }) })
 
 	}, [vrJurosForm])
 
 	React.useEffect(() => {
-		setDataBaixaContasReceber({ ...dataBaixaContasReceber, ...calcularCobranca({ vrMultaForm }) })
+		console.log('Multa: ' + vrMultaForm)
+		setDataBaixaContasReceberItem({ ...dataBaixaContasReceberItem, ...calcularCobranca({ vrMultaForm }) })
 
 	}, [vrMultaForm])
 
 	React.useEffect(() => {
 
-		setDataBaixaContasReceber({ ...dataBaixaContasReceber, ...calcularCobranca({ vrDescontoForm }) })
+		setDataBaixaContasReceberItem({ ...dataBaixaContasReceberItem, ...calcularCobranca({ vrDescontoForm }) })
 
 	}, [vrDescontoForm])
 
 	React.useEffect(() => {
 
-		setDataBaixaContasReceber({ ...dataBaixaContasReceber, ...calcularCobranca({ vrAcrescimosForm }) })
+		setDataBaixaContasReceberItem({ ...dataBaixaContasReceberItem, ...calcularCobranca({ vrAcrescimosForm }) })
 
 	}, [vrAcrescimosForm])
 
+
+
+	const preparaFilialToForm = () => {
+		if (dataFiliais.hasOwnProperty('mensagem') && Array.isArray(dataFiliais.mensagem) && dataFiliais.mensagem.length > 0) {
+			let filiais = dataFiliais.mensagem.map(({ id, name }, index, arr) => ({ label: name, valor: id, props: {} }))
+			filiais.unshift({ label: 'Selecione...', valor: '', props: { selected: 'selected', disabled: 'disabled' } })
+
+			return filiais;
+		}
+		return []
+	}
+
+	React.useEffect(() => {
+		const requesFiliais = async () => {
+			await requestAllFiliais();
+		}
+
+		requesFiliais();
+
+	}, []);
+
+	console.log('----------------------------- data pais ----------------------------------')
+	console.log(calcularCobranca())
+
 	const dataFormCob = calcularCobranca({})
+
 
 	if (error) {
 		Swal.fire({
 			icon: "error",
 			title: "Oops...",
 			text: error,
-			footer: '',
+			footer: '',//'<a href="#">Why do I have this issue?</a>'
 			confirmButtonColor: "#07B201",
+			//width:'20rem',
 		});
 	}
 
@@ -271,11 +336,18 @@ const BaixarForm = ({ dataContasReceberChoice, setDataContasReceber, setIdContas
 							errors.ds_observacao = "Obrigatório"
 						}
 
+
 						return errors;
 					}
 				}
 
 				onSubmit={async (values, { setSubmitting }) => {
+					/*setTimeout(() => {
+						alert(JSON.stringify(values, null, 2));
+						setSubmitting(false);
+					  }, 400);*/
+					//alert('aqui')
+
 					await sendData({ ...values });
 				}}
 			>
@@ -292,7 +364,7 @@ const BaixarForm = ({ dataContasReceberChoice, setDataContasReceber, setIdContas
 						}
 					) => (
 
-						<Modal handleConcluir={() => { handleSubmit(); }} title={'Baixar Contas a Receber'} size="lg" propsConcluir={{ 'disabled': loading }} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarContasReceber} showHide={() => { setShowModalCriarContasReceber(); setBaixarContasReceber(false); setIdContasReceber(null); }}>
+						<Modal handleConcluir={() => { handleSubmit(); }} title={'Baixar Contas a Receber'} size="lg" propsConcluir={{ 'disabled': loading }} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarContasReceberItem} showHide={() => { setShowModalCriarContasReceberItem(); setBaixarContasReceberItem(false); setIdContasReceberItem(null); }}>
 							{
 
 								carregando && carregando == true
@@ -341,12 +413,7 @@ const BaixarForm = ({ dataContasReceberChoice, setDataContasReceber, setIdContas
 																atributsContainer: {
 																	className: ''
 																},
-																hookToLoadFromDescription: CAIXA_ALL_POST,
-																callbackDataItemChoice: (param) => {
-																	let { label, value } = param
-
-																	setIdCaixaForm(value)
-																}
+																hookToLoadFromDescription: CLIENTES_ALL_POST,
 															}
 														}
 														ComponentFilter={<Caixa />}
@@ -410,6 +477,8 @@ const BaixarForm = ({ dataContasReceberChoice, setDataContasReceber, setIdContas
 																	id: 'vr_juros',
 																	name_cod: 'vr_juros',
 																	name_desacription: 'vr_juros',
+																	//onChange:handleChange,
+																	//onBlur:handleBlur,
 																	onChange: (ev) => { setVrJurosForm(ev.target.value); handleChange(ev) },
 																	onBlur: (ev) => { setVrJurosForm(ev.target.value); handleBlur(ev) },
 																	value: values.vr_juros,
@@ -443,6 +512,8 @@ const BaixarForm = ({ dataContasReceberChoice, setDataContasReceber, setIdContas
 																	id: 'vr_multa',
 																	name_cod: 'vr_multa',
 																	name_desacription: 'vr_multa',
+																	//onChange:handleChange,
+																	//onBlur:handleBlur,
 																	onChange: (ev) => { setVrMultaForm(ev.target.value); handleChange(ev) },
 																	onBlur: (ev) => { setVrMultaForm(ev.target.value); handleBlur(ev) },
 																	value: values.vr_multa,
@@ -479,6 +550,9 @@ const BaixarForm = ({ dataContasReceberChoice, setDataContasReceber, setIdContas
 																	id: 'vr_desconto',
 																	name_cod: 'vr_desconto',
 																	name_desacription: 'vr_desconto',
+																	//onChange:handleChange,
+																	//onBlur:handleBlur,
+
 																	onChange: (ev) => { setVrDescontoForm(ev.target.value); handleChange(ev) },
 																	onBlur: (ev) => { setVrDescontoForm(ev.target.value); handleBlur(ev) },
 																	value: values.vr_desconto,
@@ -512,6 +586,8 @@ const BaixarForm = ({ dataContasReceberChoice, setDataContasReceber, setIdContas
 																	id: 'vr_acrescimo',
 																	name_cod: 'vr_acrescimo',
 																	name_desacription: 'vr_acrescimo',
+																	//onChange:handleChange,
+																	//onBlur:handleBlur,
 																	onChange: (ev) => { setVrAcrescimosForm(ev.target.value); handleChange(ev) },
 																	onBlur: (ev) => { setVrAcrescimosForm(ev.target.value); handleBlur(ev) },
 																	value: values.vr_acrescimo,
