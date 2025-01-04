@@ -29,11 +29,11 @@ const Baixar = ({ idContasReceber, setIdContasReceber, callback, BaixarContasRec
 
 					let data = json
 
-					if (data?.mensagem) {
+					if (json?.mensagem) {
 						data = json?.mensagem
 					}
 
-					if (data?.data) {
+					if (json?.data) {
 						data = json?.data
 					}
 

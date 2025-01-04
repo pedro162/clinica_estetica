@@ -1,19 +1,23 @@
-import React from 'react';
+import React, { forwardRef, useImperativeHandle } from 'react';
 import { Formik, ErrorMessage, Field } from 'formik';
 import FormControlInput from '../../FormControl/index.js'
 import FormControlSelect from '../../FormControl/Select.js'
 import { Col, Row } from 'react-bootstrap';
 import Button from '../../FormControl/Button.js';
 import estilos from './FormCaixa.module.css'
+import useFetch from '../../../Hooks/useFetch.js';
+import { UserContex } from '../../../Context/UserContex.js'
+import Swal from 'sweetalert2'
+import { TOKEN_POST, CLIENT_ID, CLIENT_SECRET, FILIAIS_ALL_POST, CAIXA_UPDATE_POST, CAIXA_SAVE_POST } from '../../../api/endpoints/geral.js'
 
-const FormCaixa = ({
+const FormCaixa = forwardRef(({
 	nome,
 	setNome,
-	tipo,
+	type,
 	setTipo,
-	vr_minimo,
+	vrMin,
 	setVrMinimo,
-	vr_maximo,
+	vrMax,
 	setVrMaximo,
 	bloquear,
 	setBloquear,
@@ -21,100 +25,200 @@ const FormCaixa = ({
 	setAceitaTransferencia,
 	vr_saldo_inicial,
 	setVrSaldoInicial,
+	carregando,
+	setAtualizarCaixa,
+	callback,
+	setShowModalCriarCaixa,
+	showModalCriarCaixa,
+	idCaixa,
+	setIdCaixa,
+	dataCaixaChoice,
+	atualizarCaixa,
+	setCarregando,
 	...props
-}) => {
+}, ref) => {
 
-	const userLogar = () => {
-		console.log('Aqui............')
+	const { data, error, request, loading } = useFetch();
+	const dataRequest = useFetch();
+	const { getToken, dataUser } = React.useContext(UserContex);
+	const [dataFiliais, setDataFiliais] = React.useState([])
+	const [dataItens, setDataitens] = React.useState([])
+	const [dataFormaPagamento, setDataFormaPagamento] = React.useState([])
+	const [dataPlanoPagamento, setDataPlanoPagamento] = React.useState([])
+	const [dataOperadorFinanceiro, setDataOperadorFinanceiro] = React.useState([])
+	const [dataFormaPagamentoEscolhido, setDataFormaPagamentoEscolhido] = React.useState([])
+	const [idFormaPagamentoForm, setIdFormaPagamentoForm] = React.useState(0)
+	const [vrCobrancaForm, setVrCobrancaForm] = React.useState(0)
+	const [idPlanoPagamentoForm, setIdPlanoPagamentoForm] = React.useState(0)
+	const [idOperadorFinanceiroForm, setIdOperadorFinanceiroForm] = React.useState(0)
+	const [idFilialForm, setIdFilialForm] = React.useState(0)
+	const [nrDocForm, setNrDocForm] = React.useState('')
+	const [idPessoaForm, setIdPessoaForm] = React.useState(0)
+	const [idCaixaForm, setIdCaixaForm] = React.useState(0)
+
+	const formikRef = React.useRef();
+
+	const sendData = async ({
+		...params
+	}) => {
+		const data = {
+			...params,
+		}
+
+		let data_config = idCaixa && idCaixa > 0
+			? CAIXA_UPDATE_POST(idCaixa, data, getToken())
+			: CAIXA_SAVE_POST(data, getToken());
+
+		setCarregando(true);
+		const { url, options } = data_config;
+		const { response, json } = await request(url, options);
+		setCarregando(false);
+
+		if (json) {
+			callback();
+			setShowModalCriarCaixa();
+			setAtualizarCaixa(false);
+			setIdCaixa(null);
+
+			Swal.fire({
+				icon: "success",
+				title: "",
+				text: 'Reigistrado com sucesso',
+				footer: '',
+				confirmButtonColor: "#07B201",
+			});
+		}
 	}
 
-	nome = nome ? nome : '';
-	tipo = tipo ? tipo : '';
-	vr_minimo = vr_minimo ? vr_minimo : '';
-	vr_maximo = vr_maximo ? vr_maximo : '';
-	bloquear = bloquear ? bloquear : '';
-	aceita_transferencia = aceita_transferencia ? aceita_transferencia : '';
-	vr_saldo_inicial = vr_saldo_inicial ? vr_saldo_inicial : '';
+	const validate = (values) => {
+		const errors = {};
+		if (!values.nome) errors.nome = 'Obrigatório';
+		if (!values.type) errors.type = 'Obrigatório';
+		if (!values.vrMin) errors.vrMin = 'Obrigatório';
+		if (!values.vrMax) errors.vrMax = 'Obrigatório';
+		if (!values.bloquear) errors.bloquear = 'Obrigatório';
+		if (!values.aceita_transferencia) errors.aceita_transferencia = 'Obrigatório';
+		if (!values.vr_saldo_inicial) errors.vr_saldo_inicial = 'Obrigatório';
+		return errors;
+	};
+
+	useImperativeHandle(ref, () => ({
+		submitForm: () => {
+			formikRef.current.handleSubmit();
+		},
+	}));
+
+	React.useRef(() => {
+		setCarregando(loading)
+	}, [loading, setCarregando]);
+
+	const dataToFormCaixa = () => {
+		let obj = { filial_id: '', nome: '', type: '', vrMin: '', vrMax: '', bloquear: '', aceita_transferencia: '', vr_saldo_inicial: '', active: '', deleted_at: '', created_at: '', updated_at: '' }
+
+		if (dataCaixaChoice) {
+
+			let data = dataCaixaChoice
+
+			if (data?.mensagem) {
+				data = data?.mensagem
+			} else if (data?.data) {
+				data = data?.data
+			}
+
+			if (data.hasOwnProperty('filial_id')) {
+				obj.filial_id = data.filial_id;
+			}
+
+			if (data.hasOwnProperty('nome')) {
+				obj.nome = data.nome;
+			}
+
+			if (data.hasOwnProperty('status')) {
+				obj.status = data.status;
+			}
+
+			if (data.hasOwnProperty('type')) {
+				obj.type = data.type;
+			}
+
+			if (data.hasOwnProperty('vrMin')) {
+				obj.vrMin = data.vrMin;
+			}
+
+			if (data.hasOwnProperty('vrMax')) {
+				obj.vrMax = data.vrMax;
+			}
+
+			if (data.hasOwnProperty('bloquear')) {
+				obj.bloquear = data.bloquear;
+			}
+
+			if (data.hasOwnProperty('aceita_transferencia')) {
+				obj.aceita_transferencia = data.aceita_transferencia;
+			}
+
+			if (data.hasOwnProperty('vr_saldo_inicial')) {
+				obj.vr_saldo_inicial = data.vr_saldo_inicial;
+			}
+
+		}
+
+		if (idPessoaForm > 0) {
+			obj.bloquear = idPessoaForm;
+		}
+
+		if (idFilialForm > 0) {
+			obj.filial_id = idFilialForm;
+		}
+
+		return obj;
+	}
+
+	const requestAllFiliais = async () => {
+
+		const { url, options } = FILIAIS_ALL_POST({}, getToken());
+		const { response, json } = await dataRequest.request(url, options);
+
+		if (json) {
+			setDataFiliais(json)
+		} else {
+
+			setDataFiliais([]);
+		}
+	}
+
+	const preparaFilialToForm = () => {
+		if (dataFiliais.hasOwnProperty('mensagem') && Array.isArray(dataFiliais.mensagem) && dataFiliais.mensagem.length > 0) {
+			let filiais = dataFiliais.mensagem.map(({ id, name_filial }, index, arr) => ({ label: name_filial, valor: id, props: {} }))
+			filiais.unshift({ label: 'Selecione...', valor: '', props: { selected: 'selected', disabled: 'disabled' } })
+
+			return filiais;
+		}
+
+		return []
+	}
+
+	React.useEffect(() => {
+		const requesFiliais = async () => {
+			await requestAllFiliais();
+		}
+
+		requesFiliais();
+
+	}, []);
 
 	return (
 
 		<>
 			<Formik
-
-				initialValues={{ nome, tipo, vr_minimo, vr_maximo, bloquear, aceita_transferencia, vr_saldo_inicial }}
-				validate={
-					values => {
-
-						const errors = {}
-
-						if (!values.nome) {
-							errors.nome = "Obrigatório"
-						}
-
-						if (!values.tipo) {
-							errors.tipo = "Obrigatório"
-						}
-
-						if (!values.vr_minimo) {
-							errors.vr_minimo = "Obrigatório"
-						}
-
-						if (!values.vr_maximo) {
-							errors.vr_maximo = "Obrigatório"
-						}
-
-						if (!values.bloquear) {
-							errors.bloquear = "Obrigatório"
-						}
-
-						if (!values.aceita_transferencia) {
-							errors.aceita_transferencia = "Obrigatório"
-						}
-
-						if (!values.vr_saldo_inicial) {
-							errors.vr_saldo_inicial = "Obrigatório"
-						}
-
-						if (!values.logradouro) {
-							errors.logradouro = "Obrigatório"
-						}
-
-						if (!values.complemento) {
-							errors.complemento = "Obrigatório"
-						}
-
-						if (!values.numero) {
-							errors.numero = "Obrigatório"
-						}
-
-
-						if (!values.telefone) {
-							errors.telefone = "Obrigatório"
-						}
-
-						if (!values.celular) {
-							errors.celular = "Obrigatório"
-						}
-
-						if (!values.tp_telefone) {
-							errors.tp_telefone = "Obrigatório"
-						}
-
-						if (!values.tp_celular) {
-							errors.tp_celular = "Obrigatório"
-						}
-
-						if (!values.tp_email) {
-							errors.tp_email = "Obrigatório"
-						}
-
-						return errors;
-					}
-				}
-
+				innerRef={formikRef}
+				initialValues={dataToFormCaixa()}
+				validate={validate}
 				onSubmit={(values, { setSubmitting }) => {
-					userLogar(values.nome, values.tipo)
+					sendData(values.nome, values.type)
+					setSubmitting(false);
 				}}
+
 			>
 				{
 					(
@@ -129,13 +233,13 @@ const FormCaixa = ({
 						}
 					) => (
 
-						<form onSubmit={handleSubmit}>
+						<form onSubmit={handleSubmit} id="formCaixa" >
 							<Row className="my-3">
 								<Col xs="12" sm="12" md="12">
 									<span className="label_title_grup_forms" >Dados básicos</span>
 								</Col>
 							</Row>
-							<Row className="mb-1">
+							<Row className="mb-3">
 								<Col xs="12" sm="12" md="6">
 									<Field
 										data={
@@ -178,16 +282,16 @@ const FormCaixa = ({
 												},
 												atributsFormControl: {
 													type: 'text',
-													name: 'tipo',
+													name: 'type',
 													placeholder: '',
-													id: 'tipo',
+													id: 'type',
 													onChange: handleChange,
 													onBlur: handleBlur,
-													value: values.tipo,
+													value: values.type,
 													className: estilos.input,
 													size: "sm",
 												},
-												options: [{ label: 'Banco', valor: 'banco', props: { selected: 'selected' } }, { label: 'Balcão', valor: 'convencional', props: {} }],
+												options: [{ label: 'Selecione', valor: '', props: { selected: 'selected', disabled: 'disabled' } }, { label: 'Banco', valor: 'banco', props: { selected: '' } }, { label: 'Balcão', valor: 'convencional', props: {} }],
 												atributsContainer: {
 													className: ''
 												}
@@ -196,108 +300,40 @@ const FormCaixa = ({
 
 										component={FormControlSelect}
 									></Field>
-									<ErrorMessage className="alerta_error_form_label" name="tipo" component="div" />
+									<ErrorMessage className="alerta_error_form_label" name="type" component="div" />
 								</Col>
 							</Row>
-
-							<Row className="mb-1">
+							<Row className="mb-3">
 								<Col xs="12" sm="12" md="6">
 									<Field
 										data={
 											{
 												hasLabel: true,
-												contentLabel: 'Valor mínimo *',
+												contentLabel: 'Filial *',
 												atributsFormLabel: {
 
 												},
 												atributsFormControl: {
 													type: 'text',
-													name: 'vr_minimo',
-													placeholder: '',
-													id: 'vr_minimo',
-													onChange: handleChange,
-													onBlur: handleBlur,
-													value: values.vr_minimo,
+													name: 'filial_id',
+													placeholder: 'Filial',
+													id: 'filial_id',
+													onChange: (ev) => { setIdFilialForm(ev.target.value); handleChange(ev) },
+													onBlur: (ev) => { setIdFilialForm(ev.target.value); handleBlur(ev) },
+													value: values.filial_id,
 													className: estilos.input,
 													size: "sm"
 												},
+												options: preparaFilialToForm(),
 												atributsContainer: {
 													className: ''
 												}
 											}
 										}
 
-										component={FormControlInput}
+										component={FormControlSelect}
 									></Field>
-									<ErrorMessage className="alerta_error_form_label" name="vr_minimo" component="div" />
-								</Col>
-
-								<Col xs="12" sm="12" md="6">
-									<Field
-										data={
-											{
-												hasLabel: true,
-												contentLabel: 'Valor máximo *',
-												atributsFormLabel: {
-
-												},
-												atributsFormControl: {
-													type: 'text',
-													name: 'vr_maximo',
-													placeholder: 'fulano de tal',
-													id: 'vr_maximo',
-													onChange: handleChange,
-													onBlur: handleBlur,
-													value: values.vr_maximo,
-													className: estilos.input,
-													size: "sm"
-												},
-												atributsContainer: {
-													className: ''
-												}
-											}
-										}
-
-										component={FormControlInput}
-									></Field>
-									<ErrorMessage className="alerta_error_form_label" name="vr_maximo" component="div" />
-								</Col>
-							</Row>
-							<Row className="my-3">
-								<Col xs="12" sm="12" md="12">
-									<span className="label_title_grup_forms">Dados de complementares</span>
-								</Col>
-							</Row>
-							<Row className="mb-1">
-								<Col xs="12" sm="12" md="6">
-									<Field
-										data={
-											{
-												hasLabel: true,
-												contentLabel: 'Bloquear *',
-												atributsFormLabel: {
-
-												},
-												atributsFormControl: {
-													type: 'text',
-													name: 'bloquear',
-													placeholder: '',
-													id: 'bloquear',
-													onChange: handleChange,
-													onBlur: handleBlur,
-													value: values.bloquear,
-													className: estilos.input,
-													size: "sm"
-												},
-												atributsContainer: {
-													className: ''
-												}
-											}
-										}
-
-										component={FormControlInput}
-									></Field>
-									<ErrorMessage className="alerta_error_form_label" name="bloquear" component="div" />
+									<ErrorMessage className="alerta_error_form_label" name="filial_id" component="div" />
 								</Col>
 
 								<Col xs="12" sm="12" md="6">
@@ -331,8 +367,101 @@ const FormCaixa = ({
 									<ErrorMessage className="alerta_error_form_label" name="aceita_transferencia" component="div" />
 								</Col>
 							</Row>
-							<Row className="mb-1">
-								<Col xs="12" sm="12" md="12">
+							<Row className="mb-3">
+								<Col xs="12" sm="12" md="6">
+									<Field
+										data={
+											{
+												hasLabel: true,
+												contentLabel: 'Valor mínimo *',
+												atributsFormLabel: {
+
+												},
+												atributsFormControl: {
+													type: 'text',
+													name: 'vrMin',
+													placeholder: '',
+													id: 'vrMin',
+													onChange: handleChange,
+													onBlur: handleBlur,
+													value: values.vrMin,
+													className: estilos.input,
+													size: "sm"
+												},
+												atributsContainer: {
+													className: ''
+												}
+											}
+										}
+
+										component={FormControlInput}
+									></Field>
+									<ErrorMessage className="alerta_error_form_label" name="vrMin" component="div" />
+								</Col>
+
+								<Col xs="12" sm="12" md="6">
+									<Field
+										data={
+											{
+												hasLabel: true,
+												contentLabel: 'Valor máximo *',
+												atributsFormLabel: {
+
+												},
+												atributsFormControl: {
+													type: 'text',
+													name: 'vrMax',
+													placeholder: 'fulano de tal',
+													id: 'vrMax',
+													onChange: handleChange,
+													onBlur: handleBlur,
+													value: values.vrMax,
+													className: estilos.input,
+													size: "sm"
+												},
+												atributsContainer: {
+													className: ''
+												}
+											}
+										}
+
+										component={FormControlInput}
+									></Field>
+									<ErrorMessage className="alerta_error_form_label" name="vrMax" component="div" />
+								</Col>
+							</Row>
+							<Row className="mb-3">
+								<Col xs="12" sm="12" md="6">
+									<Field
+										data={
+											{
+												hasLabel: true,
+												contentLabel: 'Bloquear *',
+												atributsFormLabel: {
+
+												},
+												atributsFormControl: {
+													type: 'text',
+													name: 'bloquear',
+													placeholder: '',
+													id: 'bloquear',
+													onChange: handleChange,
+													onBlur: handleBlur,
+													value: values.bloquear,
+													className: estilos.input,
+													size: "sm"
+												},
+												atributsContainer: {
+													className: ''
+												}
+											}
+										}
+
+										component={FormControlInput}
+									></Field>
+									<ErrorMessage className="alerta_error_form_label" name="bloquear" component="div" />
+								</Col>
+								<Col xs="12" sm="12" md="6">
 									<Field
 										data={
 											{
@@ -372,6 +501,6 @@ const FormCaixa = ({
 			</Formik>
 		</>
 	)
-}
+})
 
 export default FormCaixa;

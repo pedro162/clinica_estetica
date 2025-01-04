@@ -1,6 +1,6 @@
 import React from 'react';
 import useFetch from '../../../Hooks/useFetch.js';
-import { TOKEN_POST, CLIENT_ID, CLIENT_SECRET, CONTAS_RECEBER_ONE_GET, GRUPOS_ALL_POST } from '../../../api/endpoints/geral.js'
+import { TOKEN_POST, CLIENT_ID, CLIENT_SECRET, CONTAS_RECEBER_ITEM_ONE_GET, GRUPOS_ALL_POST } from '../../../api/endpoints/geral.js'
 import { UserContex } from '../../../Context/UserContex.js'
 import AtualizarForm from '../FormContasReceberItem/index.js'
 import Modal from '../../Utils/Modal/index.js'
@@ -10,8 +10,7 @@ import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible'
 import Swal from 'sweetalert2'
 import Detalhes from './Detalhes.js'
 
-const Visualizar = ({ idContasReceberItem, setIdContasReceberItem, callback, atualizarContasReceberItem, setAtualizarContasReceberItem, noUseModal }) => {
-
+const Visualizar = ({ idContasReceberItem, setIdContasReceberItem, callback, setVisualizarCobrancaReceber, setAtualizarContasReceberItem, noUseModal }) => {
 
 	const [showModalAtualizarContasReceberItem, setShowModalAtualizarContasReceberItem] = React.useState(false)
 	const [carregando, setCarregando] = React.useState(false)
@@ -26,23 +25,34 @@ const Visualizar = ({ idContasReceberItem, setIdContasReceberItem, callback, atu
 
 		const getContasReceberItem = async () => {
 			if (idContasReceberItem > 0) {
-				const { url, options } = CONTAS_RECEBER_ONE_GET(idContasReceberItem, getToken());
+				const { url, options } = CONTAS_RECEBER_ITEM_ONE_GET(idContasReceberItem, getToken());
 				const { response, json } = await request(url, options);
+
 				if (json) {
 
 					setDataContasReceberItem(json)
 
-					let data = json?.mensagem
+					let data = json
+
+					if (data?.mensagem) {
+						data = json?.mensagem
+					} else if (data?.data) {
+						data = json?.data
+					}
+
 					let erroValidaao = validarBaixa(data);
+
 					if (Array.isArray(erroValidaao) && erroValidaao.length > 0) {
 						setShowModalErro(true)
 						erroValidaao = erroValidaao.join('<br/>')
 						setErroValidacao(erroValidaao)
+						setVisualizarCobrancaReceber(false)
+
 						Swal.fire({
 							icon: "error",
 							title: "Oops...",
 							text: erroValidaao,
-							footer: '',//'<a href="#">Why do I have this issue?</a>'
+							footer: '',
 							confirmButtonColor: "#07B201",
 						});
 					} else {
@@ -51,6 +61,8 @@ const Visualizar = ({ idContasReceberItem, setIdContasReceberItem, callback, atu
 					}
 				} else {
 					setDataContasReceberItem([])
+					setVisualizarCobrancaReceber(false)
+
 				}
 			}
 		}
@@ -70,7 +82,7 @@ const Visualizar = ({ idContasReceberItem, setIdContasReceberItem, callback, atu
 		let difAbertoAbs = Math.abs(difAberto);
 
 		if (!(String(status) == 'aberto')) {
-			//erros.push(`O contas a receber de código n° ${id} encontra-se ${status} e não poderá ser modificado`);
+
 		}
 
 		return erros;
@@ -113,7 +125,7 @@ const Visualizar = ({ idContasReceberItem, setIdContasReceberItem, callback, atu
 					dialogClassName={''} aria-labelledby={'aria-labelledby'}
 					labelCanelar="Fechar"
 					show={showModalAtualizarContasReceberItem}
-					showHide={() => { setShowModalAtualizarContasReceberItem(); setIdContasReceberItem(null); }}
+					showHide={() => { setShowModalAtualizarContasReceberItem(); setIdContasReceberItem(null); setVisualizarCobrancaReceber(false) }}
 
 				>
 					<Detalhes
@@ -127,6 +139,7 @@ const Visualizar = ({ idContasReceberItem, setIdContasReceberItem, callback, atu
 						dataContasReceberItemChoice={dataContasReceberItem}
 						showModalCriarContasReceberItem={showModalAtualizarContasReceberItem}
 						setShowModalCriarContasReceberItem={setShowModalAtualizarContasReceberItem}
+						setVisualizarCobrancaReceber={setVisualizarCobrancaReceber}
 						callback={callback}
 
 					/>

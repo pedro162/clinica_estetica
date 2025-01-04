@@ -18,7 +18,10 @@ import { FORMAT_CALC_COD, FORMAT_MONEY, FORMAT_DATA_PT_BR } from '../../../funct
 
 const Detalhes = ({ dataContasReceberItemChoice, ...props }) => {
 
-	const dataRegistro = dataContasReceberItemChoice?.mensagem
+	const dataRegistro = dataContasReceberItemChoice?.data
+		? dataContasReceberItemChoice?.data
+		: dataContasReceberItemChoice?.mensagem
+
 	const dataReferencia = dataRegistro?.data_referencia
 
 	return (

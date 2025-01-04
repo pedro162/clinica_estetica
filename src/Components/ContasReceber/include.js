@@ -23,6 +23,7 @@ import Baixar from './Baixar/index.js'
 import Estornar from './Estornar/index.js'
 import Card from '../Utils/Card/index.js'
 import MovimentacoesFinanceiras from '../MovimentacoesFinanceiras/index.js'
+import ContasReceberItem from '../ContasReceberItem/index.js';
 import Visualizar from './Visualizar/index.js'
 import { FORMAT_CALC_COD, FORMAT_MONEY } from '../../functions/index.js'
 
@@ -41,9 +42,9 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
     const [digitarContasReceber, setDigitarContasReceber] = React.useState(false)
     const [cadastrarContasReceber, setCadastrarContasReceber] = React.useState(false)
     const [incicarContasReceber, setIniciarContasReceber] = React.useState(false)
-    const [visualizarMovimentacoes, setVisualizarMovimentacoes] = React.useState(false)
+    const [visualizarContasReceberItens, setVisualizarContasReceberItens] = React.useState(false)
     const [visualizarCobrancaReceber, setVisualizarCobrancaReceber] = React.useState(false)
-    const [defaultFiltersMovimentacoes, setDefaultFiltersMovimentacoes] = React.useState({})
+    const [filtrosPadroesItens, setFiltrosPadroesItens] = React.useState({})
     const [nrPageAtual, setNrPageAtual] = React.useState(null)
     const [qtdItemsTo, setQtdItemsTo] = React.useState(null)
     const [qtdItemsTotal, setQtdItemsTotal] = React.useState(null)
@@ -124,9 +125,9 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
 
             case 'movimentacao_financeira':
                 if (consultaChoice > 0) {
-                    setVisualizarMovimentacoes(true);
+                    setVisualizarContasReceberItens(true);
                 } else {
-                    setVisualizarMovimentacoes(false);
+                    setVisualizarContasReceberItens(false);
                 }
                 break;
             case 'visualizar':
@@ -178,10 +179,10 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
         setEstornarContasReceber(true);
     }
 
-    const visualizarMovimentacoesActions = (idContasReceber) => {
+    const visualizarContasReceberItensActions = (idContasReceber) => {
         setContasReceberChoice(idContasReceber)
         setAcao('movimentacao_financeira')
-        setVisualizarMovimentacoes(true);
+        setVisualizarContasReceberItens(true);
     }
 
     const gerarTableContasReceber = () => {
@@ -214,7 +215,7 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                     let baixar = true;
                     let btnFinalizar = true;
                     let estornar = true;
-                    let btnVisualizarMovimentacoes = true;
+                    let btnVisualizarItens = true;
                     let btnVisualizar = true;
                     let btnCotinuarDigitacao = true;
                     let btnCancelar = true;
@@ -245,8 +246,8 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                         acoesArr.push({ acao: () => estornarContasReceberAction(atual.id), label: 'Estornar', propsOption: {}, propsLabel: {} })
                     }
 
-                    if (btnVisualizarMovimentacoes) {
-                        acoesArr.push({ acao: () => visualizarMovimentacoesActions(atual.id), label: 'Movimentações', propsOption: {}, propsLabel: {} })
+                    if (btnVisualizarItens) {
+                        acoesArr.push({ acao: () => { visualizarContasReceberItensActions(atual.id); setFiltrosPadroesItens({ idContasReceber: atual?.id, referencia: 'contas_receber' }) }, label: 'Contas a receber analítico', propsOption: {}, propsLabel: {} })
                     }
 
                     if (btnVisualizar) {
@@ -486,7 +487,7 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                     let baixar = true;
                     let btnFinalizar = true;
                     let estornar = true;
-                    let btnVisualizarMovimentacoes = true;
+                    let btnVisualizarItens = true;
                     let btnVisualizar = true;
                     let btnCotinuarDigitacao = true;
                     let btnCancelar = true;
@@ -522,8 +523,8 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
 
                     }
 
-                    if (btnVisualizarMovimentacoes) {
-                        acoesArr.push({ acao: () => { visualizarMovimentacoesActions(atual.id); setDefaultFiltersMovimentacoes({ ...atual, referencia_id: atual?.id, referencia: 'contas_receber' }) }, label: 'Movimentações', propsOption: {}, propsLabel: {} })
+                    if (btnVisualizarItens) {
+                        acoesArr.push({ acao: () => { visualizarContasReceberItensActions(atual.id); setFiltrosPadroesItens({ idContasReceber: atual?.id, referencia: 'contas_receber' }) }, label: 'Contas a receber analítico', propsOption: {}, propsLabel: {} })
                     }
 
                     if (btnVisualizar) {
@@ -696,10 +697,10 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
             }
 
             {
-                visualizarMovimentacoes && defaultFiltersMovimentacoes &&
-                <Modal noBtnCancelar={false} noBtnConcluir={true} handleConcluir={() => null} title={'Contas a receber'} size="lg" propsConcluir={{}} labelConcluir={''} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={consultaChoice} showHide={() => { setVisualizarMovimentacoes(false); }}>
+                visualizarContasReceberItens && filtrosPadroesItens &&
+                <Modal noBtnCancelar={false} noBtnConcluir={true} handleConcluir={() => null} title={'Contas a receber analítico'} size="lg" propsConcluir={{}} labelConcluir={''} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={consultaChoice} showHide={() => { setVisualizarContasReceberItens(false); }}>
 
-                    <MovimentacoesFinanceiras defaultFilters={defaultFiltersMovimentacoes} visualizarMovimentacoes={visualizarMovimentacoes} setVisualizarMovimentacoes={setVisualizarMovimentacoes} setAtualizarContasReceber={setAtualizarContasReceber} setAtualizarContasReceber={setAtualizarContasReceber} idReferencia={consultaChoice} referencia={'contas_receber'} idCobrancaReceber={consultaChoice} setIdContasReceber={setContasReceberChoice} callback={callBack} />
+                    <ContasReceberItem defaultFilters={filtrosPadroesItens} visualizarContasReceberItens={visualizarContasReceberItens} setVisualizarContasReceberItens={setVisualizarContasReceberItens} setAtualizarContasReceber={setAtualizarContasReceber} idReferencia={consultaChoice} referencia={'contas_receber'} idCobrancaReceber={consultaChoice} setIdContasReceber={setContasReceberChoice} callback={callBack} />
 
                 </Modal>
             }

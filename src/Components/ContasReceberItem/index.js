@@ -1,7 +1,7 @@
 import React from 'react';
 import estilos from './ContasReceberItem.module.css'
 import useFetch from '../../Hooks/useFetch.js';
-import { TOKEN_POST, CLIENT_ID, CLIENT_SECRET, CONTAS_RECEBER_ALL_POST, FILIAIS_ALL_POST, RECORD_NUMBER_PER_REQUEST } from '../../api/endpoints/geral.js'
+import { TOKEN_POST, CLIENT_ID, CLIENT_SECRET, CONTAS_RECEBER_ITEM_ALL_POST, FILIAIS_ALL_POST, RECORD_NUMBER_PER_REQUEST } from '../../api/endpoints/geral.js'
 import { FORMAT_DATA_PT_BR } from '../../functions/index.js'
 import { Col, Row, Button } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
@@ -61,8 +61,8 @@ const ContasReceberItem = ({ defaultFilters, ...props }) => {
         return defaultFilters?.referencia
     })
 
-    const [idReferenciaContasReceberItem, setIdReferenciaContasReceberItem] = React.useState(() => {
-        return defaultFilters?.referencia_id
+    const [idContasReceber, setIdContasReceber] = React.useState(() => {
+        return defaultFilters?.idContasReceber
     })
 
     const [pessoa, setPessoa] = React.useState(() => {
@@ -123,7 +123,7 @@ const ContasReceberItem = ({ defaultFilters, ...props }) => {
     }
 
     const setIdReferencia = ({ target }) => {
-        setIdReferenciaContasReceberItem(target.value)
+        setIdContasReceber(target.value)
     }
 
     const setOrdenacaoFiltro = ({ target }) => {
@@ -206,20 +206,10 @@ const ContasReceberItem = ({ defaultFilters, ...props }) => {
             type: 'text',
             options: [],
             hasLabel: true,
-            contentLabel: 'Cód. ref',
+            contentLabel: 'Cód. contas a receber',
             atributsFormLabel: {},
-            atributsContainer: { xs: "12", sm: "12", md: "2", className: 'mb-2' },
-            atributsFormControl: { 'type': 'text', size: "sm", 'referencia_id': idReferenciaContasReceberItem, value: idReferenciaContasReceberItem, onChange: setIdReferencia, onBlur: setIdReferencia, onKeyUp: handleSearch },
-
-        },
-        {
-            type: 'select',
-            options: [{ 'label': 'Selecione...', 'value': '' }, { 'label': 'Ordems de serviços', 'value': 'ordem_servicos' }, { 'label': 'Sem referência', 'value': 'sem_referencia' }],
-            hasLabel: true,
-            contentLabel: 'Referência',
-            atributsFormLabel: {},
-            atributsContainer: { xs: "12", sm: "12", md: "2", className: 'mb-2' },
-            atributsFormControl: { 'type': 'text', size: "sm", 'referencia': referenciaContasReceberItem, value: referenciaContasReceberItem, onChange: setDsReferencia, onBlur: setDsReferencia, onKeyUp: handleSearch },
+            atributsContainer: { xs: "12", sm: "12", md: "4", className: 'mb-2' },
+            atributsFormControl: { 'type': 'text', size: "sm", 'referencia_id': idContasReceber, value: idContasReceber, onChange: setIdReferencia, onBlur: setIdReferencia, onKeyUp: handleSearch },
 
         },
         {
@@ -421,21 +411,12 @@ const ContasReceberItem = ({ defaultFilters, ...props }) => {
         }
 
 
-        if (idReferenciaContasReceberItem) {
-            filtros['referencia_id'] = idReferenciaContasReceberItem;
+        if (idContasReceber) {
+            filtros['referencia_id'] = idContasReceber;
             detalhesFiltros['referencia_id'] = {
-                label: 'Cód. referência',
-                value: idReferenciaContasReceberItem,
-                resetFilter: () => { setIdReferenciaContasReceberItem(''); removeFilter('referencia_id'); },
-            };
-        }
-
-        if (referenciaContasReceberItem) {
-            filtros['referencia'] = referenciaContasReceberItem;
-            detalhesFiltros['referencia'] = {
-                label: 'Referência',
-                value: referenciaContasReceberItem,
-                resetFilter: () => { setReferenciaContasReceberItem(''); removeFilter('referencia') },
+                label: 'Cód. conta receber',
+                value: idContasReceber,
+                resetFilter: () => { setIdContasReceber(''); removeFilter('referencia_id'); },
             };
         }
 
@@ -533,7 +514,7 @@ const ContasReceberItem = ({ defaultFilters, ...props }) => {
 
         let { filtros, detalhesFiltros } = await montarFiltro();
         setAppliedFilters(detalhesFiltros)
-        let { url, options } = await CONTAS_RECEBER_ALL_POST({ ...filtros }, getToken());
+        let { url, options } = await CONTAS_RECEBER_ITEM_ALL_POST({ ...filtros }, getToken());
         if (nextPage) {
             url = nextPage;
         }
@@ -557,7 +538,7 @@ const ContasReceberItem = ({ defaultFilters, ...props }) => {
         let { filtros, detalhesFiltros } = montarFiltro();
         filtros.status = 'aberto';
         setAppliedFilters(detalhesFiltros)
-        let { url, options } = CONTAS_RECEBER_ALL_POST({ ...filtros }, getToken());
+        let { url, options } = CONTAS_RECEBER_ITEM_ALL_POST({ ...filtros }, getToken());
 
         if (nextPage) {
             url = nextPage;

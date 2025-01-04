@@ -52,42 +52,42 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
     const { getToken } = React.useContext(UserContex);
 
     const handleTotalPages = () => {
-        if (Number(dataEstado?.mensagem?.last_page > 0)) {
-            setTotalPageCount(dataEstado?.mensagem?.last_page)
+        if (Number(estado?.data?.last_page > 0)) {
+            setTotalPageCount(estado?.data?.last_page)
         }
     }
 
     const handleTotalItems = () => {
-        if (Number(dataEstado?.mensagem?.to > 0)) {
-            setQtdItemsTo(dataEstado?.mensagem?.to)
+        if (Number(estado?.data?.to > 0)) {
+            setQtdItemsTo(estado?.data?.to)
         }
 
-        if (Number(dataEstado?.mensagem?.total > 0)) {
-            setQtdItemsTotal(dataEstado?.mensagem?.total)
+        if (Number(estado?.data?.total > 0)) {
+            setQtdItemsTotal(estado?.data?.total)
         }
     }
 
     const nextPageRout = () => {
-        if (dataEstado?.mensagem?.next_page_url) {
-            setNextPage(dataEstado?.mensagem?.next_page_url)
+        if (estado?.data?.next_page_url) {
+            setNextPage(estado?.data?.next_page_url)
         }
     }
 
     const previousPageRout = () => {
-        if (dataEstado?.mensagem?.prev_page_url) {
-            setNextPage(dataEstado?.mensagem?.prev_page_url)
+        if (estado?.data?.prev_page_url) {
+            setNextPage(estado?.data?.prev_page_url)
         }
     }
 
     const firstPageRout = () => {
-        if (dataEstado?.mensagem?.first_page_url) {
-            setNextPage(dataEstado?.mensagem?.first_page_url)
+        if (estado?.data?.first_page_url) {
+            setNextPage(estado?.data?.first_page_url)
         }
     }
 
     const lastPageRout = () => {
-        if (dataEstado?.mensagem?.last_page_url) {
-            setNextPage(dataEstado?.mensagem?.last_page_url)
+        if (estado?.data?.last_page_url) {
+            setNextPage(estado?.data?.last_page_url)
         }
     }
 
@@ -194,6 +194,14 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
             dataContasReceberItem = dataContasReceberItem?.mensagem;
         }
 
+        if (dataContasReceberItem?.registro) {
+            dataContasReceberItem = dataContasReceberItem?.registro;
+        }
+
+        if (dataContasReceberItem?.data) {
+            dataContasReceberItem = dataContasReceberItem?.data;
+        }
+
         if (dataContasReceberItem?.data) {
             dataContasReceberItem = dataContasReceberItem?.data;
         }
@@ -256,7 +264,7 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                     } else if (atual.status == 'pago') {
                         line_style.color = 'green';
                     } else if (atual.status == 'aberto') {
-                        //line_style.color = 'green';
+
                     }
 
                     data.push(
@@ -599,6 +607,14 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
             dataContasReceberItem = dataContasReceberItem?.mensagem;
         }
 
+        if (dataContasReceberItem?.registro) {
+            dataContasReceberItem = dataContasReceberItem?.registro;
+        }
+
+        if (dataContasReceberItem?.data) {
+            dataContasReceberItem = dataContasReceberItem?.data;
+        }
+
         if (dataContasReceberItem?.data) {
             dataContasReceberItem = dataContasReceberItem?.data;
         }
@@ -736,8 +752,8 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
     }
 
     React.useEffect(() => {
-        setContasReceberItem(dataEstado)
-        setNrPageAtual(dataEstado?.mensagem?.current_page)
+        setContasReceberItem(dataEstado?.data)
+        setNrPageAtual(dataEstado?.data?.data?.current_page)
         handleTotalPages();
         handleTotalItems();
     }, [dataEstado])
@@ -820,7 +836,7 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
 
             {
                 visualizarCobrancaReceber &&
-                <Visualizar estornarContasReceberItem={estornarContasReceberItem} setEstornarContasReceberItem={setEstornarContasReceberItem} idContasReceberItem={consultaChoice} setIdContasReceberItem={setContasReceberItemChoice} callback={callBack} />
+                <Visualizar visualizarCobrancaReceber={visualizarCobrancaReceber} setVisualizarCobrancaReceber={setVisualizarCobrancaReceber} idContasReceberItem={consultaChoice} setIdContasReceberItem={setContasReceberItemChoice} callback={callBack} />
             }
 
 
@@ -829,7 +845,7 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                 visualizarMovimentacoes && defaultFiltersMovimentacoes &&
                 <Modal noBtnCancelar={false} noBtnConcluir={true} handleConcluir={() => null} title={'Contas a receber'} size="lg" propsConcluir={{}} labelConcluir={''} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={consultaChoice} showHide={() => { setVisualizarMovimentacoes(false); }}>
 
-                    <MovimentacoesFinanceiras defaultFilters={defaultFiltersMovimentacoes} visualizarMovimentacoes={visualizarMovimentacoes} setVisualizarMovimentacoes={setVisualizarMovimentacoes} setAtualizarContasReceberItem={setAtualizarContasReceberItem} setAtualizarContasReceberItem={setAtualizarContasReceberItem} idReferencia={consultaChoice} referencia={'contas_receber'} idCobrancaReceber={consultaChoice} setIdContasReceberItem={setContasReceberItemChoice} callback={callBack} />
+                    <MovimentacoesFinanceiras defaultFilters={defaultFiltersMovimentacoes} visualizarMovimentacoes={visualizarMovimentacoes} setVisualizarMovimentacoes={setVisualizarMovimentacoes} setAtualizarContasReceberItem={setAtualizarContasReceberItem} idReferencia={consultaChoice} referencia={'contas_receber'} idCobrancaReceber={consultaChoice} setIdContasReceberItem={setContasReceberItemChoice} callback={callBack} />
 
                 </Modal>
             }

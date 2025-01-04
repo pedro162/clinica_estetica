@@ -26,15 +26,13 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 	const { getToken, dataUser } = React.useContext(UserContex);
 	const [dataFiliais, setDataFiliais] = React.useState([])
 	const [dataItens, setDataitens] = React.useState([])
-	const [isOrcamento, setIsOramento] = React.useState(false)
-	const [qtdAtualizaCobrancas, setQtdAtualizaCobrancas] = React.useState(0)
 	const [dataFormaPagamento, setDataFormaPagamento] = React.useState([])
 	const [dataPlanoPagamento, setDataPlanoPagamento] = React.useState([])
 	const [dataOperadorFinanceiro, setDataOperadorFinanceiro] = React.useState([])
 	const [dataFormaPagamentoEscolhido, setDataFormaPagamentoEscolhido] = React.useState([])
-	const [idFormaPagamentoForm, setIdFormaPagamentoForm] = React.useState(0)				//--- Controla a quantidade do serviço
-	const [vrCobrancaForm, setVrCobrancaForm] = React.useState(0)					//--- Controla a quantidade do serviço
-	const [idPlanoPagamentoForm, setIdPlanoPagamentoForm] = React.useState(0)		//--- Controla a quantidade do serviço
+	const [idFormaPagamentoForm, setIdFormaPagamentoForm] = React.useState(0)
+	const [vrCobrancaForm, setVrCobrancaForm] = React.useState(0)
+	const [idPlanoPagamentoForm, setIdPlanoPagamentoForm] = React.useState(0)
 	const [idOperadorFinanceiroForm, setIdOperadorFinanceiroForm] = React.useState(0)
 	const [idFilialForm, setIdFilialForm] = React.useState(0)
 	const [nrDocForm, setNrDocForm] = React.useState('')
@@ -93,9 +91,15 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 	const dataToFormContasReceber = () => {
 		let obj = { filial_id: '', vrLiquido: '', descricao: '', documento: '', dsArquivo: '', pessoa_id: '', pessoa_name: '', pessoa_rca_id: '', forma_pagamento_id: '', plano_pagamento_id: '', operador_financeiro_id: '', active: '', deleted_at: '', created_at: '', updated_at: '' }
 
-		if (dataContasReceberChoice && dataContasReceberChoice.hasOwnProperty('mensagem')) {
+		if (dataContasReceberChoice) {
 
-			let data = dataContasReceberChoice.mensagem;
+			let data = dataContasReceberChoice
+
+			if (data?.mensagem) {
+				data = data?.mensagem
+			} else if (data?.data) {
+				data = data?.data
+			}
 
 			if (data.hasOwnProperty('filial_id')) {
 				obj.filial_id = data.filial_id;
@@ -292,16 +296,6 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 		requesFiliais();
 
 	}, []);
-
-	const handleCustomSubmit = (validateForm, submitForm) => {
-		validateForm().then((errors) => {
-			if (Object.keys(errors).length === 0) {
-				submitForm();
-			} else {
-				alert('Please fill in all required fields.');
-			}
-		});
-	};
 
 	const validationSchema = Yup.object({
 		filial_id: Yup.string().required('Filial é obrigatório'),
