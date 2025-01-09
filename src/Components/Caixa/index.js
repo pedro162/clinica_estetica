@@ -47,10 +47,6 @@ const Caixa = ({ defaultFilters, callBakSelectedItem, ignoreTableActions, ...pro
 
     const { getToken } = React.useContext(UserContex);
 
-    const alerta = (target) => {
-        console.log(target)
-    }
-
     const handleSearch = (ev) => {
         if (ev.key === "Enter") {
             requestAllCaixas();
@@ -197,8 +193,10 @@ const Caixa = ({ defaultFilters, callBakSelectedItem, ignoreTableActions, ...pro
                 resetFilter: () => { setOrdenacao(''); removeFilter('ordem') },
             };
         }
+
         return { filtros, detalhesFiltros };
     }
+
     const requestAllCaixas = async () => {
         setCaixa([])
         setNadaEncontrado(false)
@@ -212,6 +210,7 @@ const Caixa = ({ defaultFilters, callBakSelectedItem, ignoreTableActions, ...pro
         }
 
         const { response, json } = await request(url, options);
+
         if (json) {
             setCaixa(json)
             if (json?.mensagem && json?.mensagem.length > 0) {
@@ -232,7 +231,6 @@ const Caixa = ({ defaultFilters, callBakSelectedItem, ignoreTableActions, ...pro
         }
 
         requestAllCaixasEffect();
-
 
     }, [nextPage, setNextPage])
 

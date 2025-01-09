@@ -74,8 +74,18 @@ const FormCidade = ({ dataCidadeChoice, dataEstado, setIdCidade, idCidade, showM
 
     const dataToFormCidade = () => {
         let obj = { nome: '', cd_cidade: '', sigla: '', estado_id: '' }
-        if (dataCidadeChoice && dataCidadeChoice.hasOwnProperty('registro')) {
-            let data = dataCidadeChoice.registro;
+
+        let data = null;
+
+        if (dataCidadeChoice?.registro) {
+            data = dataCidadeChoice.registro;
+        }
+
+        if (dataCidadeChoice?.data) {
+            data = dataCidadeChoice.data;
+        }
+
+        if (data) {
 
             if (data.hasOwnProperty('nmCidade')) {
                 obj.nome = data.nmCidade;

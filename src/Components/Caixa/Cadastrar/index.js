@@ -1,73 +1,72 @@
 import React from 'react';
 import FormCaixa from '../FormCaixa/index.js'
-import { faHome, faSearch,faPlus } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {Col, Row, Button } from 'react-bootstrap';
+import { Col, Row, Button } from 'react-bootstrap';
 import Modal from '../../Utils/Modal/index.js'
 import useFetch from '../../../Hooks/useFetch.js';
+import { UserContex } from '../../../Context/UserContex.js'
+import { faHome, faSearch, faPlus, faCheck } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const Cadastrar = ({showModalCriarCaixa, setShowModalCriarCaixa})=>{
+const Cadastrar = ({ callback, cadastrarCaixa, setCadastrarCaixa }) => {
 
-    //const [showModalCriarCaixa, setShowModalCriarCaixa] = React.useState(false);
-    const [nome, setNome] = React.useState('Balcão')
-    const [tipo, setTipo] = React.useState('Banco')
-    const [vr_minimo, setVrMinimo] = React.useState('12,10')
-    const [vr_maximo, setVrMaximo] = React.useState('600,30')
-    const [bloquear, setBloquear] = React.useState('Não')
-    const [aceita_transferencia, setAceitaTransferencia] = React.useState('Sim')
-    const [vr_saldo_inicial, setVrSaldoInicial] = React.useState('560,65')
-    const inputEl = React.useRef(null);
+	const [showModalCriarCaixa, setShowModalCaixa] = React.useState(true)
+	const [carregando, setCarregando] = React.useState(false)
+	const [dataCaixa, setDataCaixa] = React.useState(null)
+	const [dataGrupo, setDataGrupo] = React.useState(null)
+	const { getToken, dataUser } = React.useContext(UserContex);
+	const [erroValidacao, setErroValidacao] = React.useState(null)
+	const [showModalErro, setShowModalErro] = React.useState(false)
+	const [sendForm, setSendForm] = React.useState(false)
 
-    const data = {
-    	nome,
-    	setNome,
-		tipo,
-		setTipo,
-		vr_minimo,
-		setVrMinimo,
-		vr_maximo,
-		setVrMaximo,
-		bloquear,
-		setBloquear,
-		aceita_transferencia,
-		setAceitaTransferencia,
-		vr_saldo_inicial,
-		setVrSaldoInicial,
-		inputEl
-	}
-	
-	const handleSubmit = ()=>{
+	const { data, error, request, loading } = useFetch();
+	const formRef = React.useRef();
 
-		/*let formData = {
-	    	nome,
-			tipo,
-			vr_minimo,
-			vr_maximo,
-			bloquear,
-			aceita_transferencia,
-			vr_saldo_inicial,
-			inputEl
+	const handleConclude = () => {
+		if (formRef.current) {
+			formRef.current.submitForm();
 		}
+	};
 
-		formData = JSON.stringify(formData);
-		alert(formData)*/
-		//inputEl.current.submit();
-		//alert('AQUI')
-	}
-
-	const FormModal = ()=>{
-		return(
+	const FormModal = () => {
+		return (
 			<Row>
 				<Col>
-					<FormCaixa  {...data}/>
+					<FormCaixa
+
+						{...data}
+						carregando={false}
+						dataCaixaChoice={dataCaixa}
+						setAtualizarCaixa={setCadastrarCaixa}
+						atualizarCaixa={cadastrarCaixa}
+						showModalCriarCaixa={showModalCriarCaixa}
+						setShowModalCriarCaixa={setShowModalCaixa}
+						callback={callback}
+						setSendForm={setSendForm}
+						sendForm={sendForm}
+						ref={formRef}
+						setCarregando={setCarregando}
+					/>
 				</Col>
 			</Row>
 		)
 	}
-	return(
+
+	return (
 		<>
-			<Modal  handleConcluir={()=>{handleSubmit();setShowModalCriarCaixa(); }} children={<FormModal/>} title={'Cadastrar caixa'} size="lg" labelConcluir="Concluir" dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarCaixa} showHide={setShowModalCriarCaixa}/>
-			
+			<Modal
+				handleConcluir={() => { handleConclude(); }}
+				children={<FormModal />}
+				title={'Cadastrar caixa'}
+				size="lg"
+				dialogClassName={''}
+				aria-labelledby={'aria-labelledby'}
+				labelCanelar="Fechar"
+				show={showModalCriarCaixa}
+				showHide={() => { setShowModalCaixa(false); setCadastrarCaixa(false); }}
+				propsConcluir={{ 'disabled': carregando }}
+				labelConcluir={carregando ? <><FontAwesomeIcon icon={faCheck} /> Salvando...</> : <><FontAwesomeIcon icon={faCheck} /> Concluir </>}
+			/>
+
 		</>
 	)
 }

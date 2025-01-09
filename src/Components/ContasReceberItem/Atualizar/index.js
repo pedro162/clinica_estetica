@@ -2,43 +2,36 @@ import React from 'react';
 import useFetch from '../../../Hooks/useFetch.js';
 import { TOKEN_POST, CLIENT_ID, CLIENT_SECRET, CONTAS_RECEBER_ONE_GET, GRUPOS_ALL_POST } from '../../../api/endpoints/geral.js'
 import { UserContex } from '../../../Context/UserContex.js'
-import AtualizarForm from '../FormContasReceber/index.js'
+import AtualizarForm from '../FormContasReceberItem/index.js'
 import Modal from '../../Utils/Modal/index.js'
 import Load from '../../Utils/Load/index.js'
 import { Col, Row } from 'react-bootstrap';
 import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible'
 import Swal from 'sweetalert2'
 
-const Atualizar = ({ idContasReceber, setIdContasReceber, callback, atualizarContasReceber, setAtualizarContasReceber }) => {
-	const [showModalAtualizarContasReceber, setShowModalAtualizarContasReceber] = React.useState(false)
+const Atualizar = ({ idContasReceberItem, setIdContasReceberItem, callback, atualizarContasReceberItem, setAtualizarContasReceberItem }) => {
+	const [showModalAtualizarContasReceberItem, setShowModalAtualizarContasReceberItem] = React.useState(false)
 	const [carregando, setCarregando] = React.useState(false)
-	const [dataContasReceber, setDataContasReceber] = React.useState(null)
+	const [dataContasReceberItem, setDataContasReceberItem] = React.useState(null)
 	const [dataGrupo, setDataGrupo] = React.useState(null)
 	const { getToken, dataUser } = React.useContext(UserContex);
 	const [erroValidacao, setErroValidacao] = React.useState(null)
 	const [showModalErro, setShowModalErro] = React.useState(false)
-
 	const { data, error, request, loading } = useFetch();
 
 	React.useEffect(() => {
-		const getContasReceber = async () => {
-			if (idContasReceber > 0) {
-				const { url, options } = CONTAS_RECEBER_ONE_GET(idContasReceber, getToken());
+
+		const getContasReceberItem = async () => {
+			if (idContasReceberItem > 0) {
+				const { url, options } = CONTAS_RECEBER_ONE_GET(idContasReceberItem, getToken());
 				const { response, json } = await request(url, options);
+
 				if (json) {
 
-					setDataContasReceber(json)
+					setDataContasReceberItem(json)
 
-					let data = json
-
-					if (data?.mensagem) {
-						data = json?.mensagem
-					} else if (data?.data) {
-						data = json?.data
-					}
-
+					let data = json?.mensagem
 					let erroValidaao = validarBaixa(data);
-
 					if (Array.isArray(erroValidaao) && erroValidaao.length > 0) {
 						setShowModalErro(true)
 						erroValidaao = erroValidaao.join('<br/>')
@@ -52,19 +45,18 @@ const Atualizar = ({ idContasReceber, setIdContasReceber, callback, atualizarCon
 							confirmButtonColor: "#07B201",
 						});
 					} else {
-						setDataContasReceber(json)
-						setShowModalAtualizarContasReceber(true)
+						setDataContasReceberItem(json)
+						setShowModalAtualizarContasReceberItem(true)
 					}
 				} else {
-					setDataContasReceber([])
+					setDataContasReceberItem([])
 				}
 			}
 		}
 
-		getContasReceber();
+		getContasReceberItem();
 
-	}, [idContasReceber])
-
+	}, [idContasReceberItem])
 
 	const validarBaixa = (data) => {
 		let erros = [];
@@ -84,14 +76,14 @@ const Atualizar = ({ idContasReceber, setIdContasReceber, callback, atualizarCon
 
 	return (
 		<>
-			{!dataContasReceber &&
-				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={() => null} title={'Atualizar ContasReceber'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="" show={setShowModalAtualizarContasReceber} showHide={() => { setShowModalAtualizarContasReceber(); }}>
+			{!dataContasReceberItem &&
+				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={() => null} title={'Atualizar ContasReceberItem'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="" show={setShowModalAtualizarContasReceberItem} showHide={() => { setShowModalAtualizarContasReceberItem(); }}>
 					<Load />
 				</Modal>
 			}
 
-			{dataContasReceber &&
-				<AtualizarForm setDataContasReceber={setDataContasReceber} setIdContasReceber={setIdContasReceber} idContasReceber={idContasReceber} carregando={false} dataContasReceberChoice={dataContasReceber} setAtualizarContasReceber={setAtualizarContasReceber} atualizarContasReceber={atualizarContasReceber} showModalCriarContasReceber={showModalAtualizarContasReceber} setShowModalCriarContasReceber={setShowModalAtualizarContasReceber} callback={callback} />
+			{dataContasReceberItem &&
+				<AtualizarForm setDataContasReceberItem={setDataContasReceberItem} setIdContasReceberItem={setIdContasReceberItem} idContasReceberItem={idContasReceberItem} carregando={false} dataContasReceberItemChoice={dataContasReceberItem} setAtualizarContasReceberItem={setAtualizarContasReceberItem} atualizarContasReceberItem={atualizarContasReceberItem} showModalCriarContasReceberItem={showModalAtualizarContasReceberItem} setShowModalCriarContasReceberItem={setShowModalAtualizarContasReceberItem} callback={callback} />
 			}
 		</>
 	)
