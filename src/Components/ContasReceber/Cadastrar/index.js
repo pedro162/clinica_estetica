@@ -27,6 +27,7 @@ const Cadastrar = ({ idContasReceber, setIdContasReceber, callback, atualizarCon
 				setDataGrupo(null)
 			}
 		}
+
 		if (cadastrarContasReceber == true) {
 			getGrupo();
 		}

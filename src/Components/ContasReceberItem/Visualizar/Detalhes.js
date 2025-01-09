@@ -16,11 +16,11 @@ import Swal from 'sweetalert2'
 
 import { FORMAT_CALC_COD, FORMAT_MONEY, FORMAT_DATA_PT_BR } from '../../../functions/index.js'
 
-const Detalhes = ({ dataContasReceberChoice, ...props }) => {
+const Detalhes = ({ dataContasReceberItemChoice, ...props }) => {
 
-	const dataRegistro = dataContasReceberChoice?.data
-		? dataContasReceberChoice?.data
-		: dataContasReceberChoice?.mensagem
+	const dataRegistro = dataContasReceberItemChoice?.data
+		? dataContasReceberItemChoice?.data
+		: dataContasReceberItemChoice?.mensagem
 
 	const dataReferencia = dataRegistro?.data_referencia
 
@@ -43,6 +43,8 @@ const Detalhes = ({ dataContasReceberChoice, ...props }) => {
 					</div>
 				</Col>
 			</Row>
+
+
 
 			<Row>
 				<Col>
@@ -80,5 +82,6 @@ const Detalhes = ({ dataContasReceberChoice, ...props }) => {
 		</React.Fragment>
 	)
 }
+
 
 export default Detalhes;

@@ -1,5 +1,5 @@
 import React from 'react'
-import estilos from './ContasReceber.module.css'
+import estilos from './ContasReceberItem.module.css'
 import useFetch from '../../Hooks/useFetch.js';
 import { TOKEN_POST, CLIENT_ID, CLIENT_SECRET, ORDEM_SERVICO_ALL_POST } from '../../api/endpoints/geral.js'
 import { FORMAT_DATA_PT_BR } from '../../functions/index.js'
@@ -16,35 +16,34 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from '../Utils/Modal/index.js'
 import Load from '../Utils/Load/index.js'
 import { UserContex } from '../../Context/UserContex.js'
-import FormContasReceber from './FormContasReceber/index.js'
+import FormContasReceberItem from './FormContasReceberItem/index.js'
 import Cadastrar from './Cadastrar/index.js'
 import Atualizar from './Atualizar/index.js'
 import Baixar from './Baixar/index.js'
 import Estornar from './Estornar/index.js'
 import Card from '../Utils/Card/index.js'
 import MovimentacoesFinanceiras from '../MovimentacoesFinanceiras/index.js'
-import ContasReceberItem from '../ContasReceberItem/index.js';
 import Visualizar from './Visualizar/index.js'
 import { FORMAT_CALC_COD, FORMAT_MONEY } from '../../functions/index.js'
 
 
 const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEncontrado, nextPage, setNextPage, usePagination, setUsePagination, totalPageCount, setTotalPageCount, ...props }) => {
     const { data, error, request, loading } = useFetch();
-    const [estado, setContasReceber] = React.useState([])
+    const [estado, setContasReceberItem] = React.useState([])
     const [exemplos, setExemplos] = React.useState([])
     const [exemplosTitleTable, setExemplosTitleTable] = React.useState([])
-    const [showModalCriarContasReceber, setShowModalCriarConstula] = React.useState(false)
-    const [consultaChoice, setContasReceberChoice] = React.useState(null);
-    const [atualizarContasReceber, setAtualizarContasReceber] = React.useState(false)
-    const [baixarContasReceber, setBaixarContasReceber] = React.useState(false)
-    const [estornarContasReceber, setEstornarContasReceber] = React.useState(false)
-    const [cancelarContasReceber, setCancelarContasReceber] = React.useState(false)
-    const [digitarContasReceber, setDigitarContasReceber] = React.useState(false)
-    const [cadastrarContasReceber, setCadastrarContasReceber] = React.useState(false)
-    const [incicarContasReceber, setIniciarContasReceber] = React.useState(false)
-    const [visualizarContasReceberItens, setVisualizarContasReceberItens] = React.useState(false)
+    const [showModalCriarContasReceberItem, setShowModalCriarConstula] = React.useState(false)
+    const [consultaChoice, setContasReceberItemChoice] = React.useState(null);
+    const [atualizarContasReceberItem, setAtualizarContasReceberItem] = React.useState(false)
+    const [baixarContasReceberItem, setBaixarContasReceberItem] = React.useState(false)
+    const [estornarContasReceberItem, setEstornarContasReceberItem] = React.useState(false)
+    const [cancelarContasReceberItem, setCancelarContasReceberItem] = React.useState(false)
+    const [digitarContasReceberItem, setDigitarContasReceberItem] = React.useState(false)
+    const [cadastrarContasReceberItem, setCadastrarContasReceberItem] = React.useState(false)
+    const [incicarContasReceberItem, setIniciarContasReceberItem] = React.useState(false)
+    const [visualizarMovimentacoes, setVisualizarMovimentacoes] = React.useState(false)
     const [visualizarCobrancaReceber, setVisualizarCobrancaReceber] = React.useState(false)
-    const [filtrosPadroesItens, setFiltrosPadroesItens] = React.useState({})
+    const [defaultFiltersMovimentacoes, setDefaultFiltersMovimentacoes] = React.useState({})
     const [nrPageAtual, setNrPageAtual] = React.useState(null)
     const [qtdItemsTo, setQtdItemsTo] = React.useState(null)
     const [qtdItemsTotal, setQtdItemsTotal] = React.useState(null)
@@ -96,38 +95,38 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
         switch (acao) {
             case 'editar':
                 if (consultaChoice > 0) {
-                    setAtualizarContasReceber(true);
+                    setAtualizarContasReceberItem(true);
                 } else {
-                    setAtualizarContasReceber(false);
+                    setAtualizarContasReceberItem(false);
                 }
                 break;
             case 'baixar':
                 if (consultaChoice > 0) {
-                    setBaixarContasReceber(true);
+                    setBaixarContasReceberItem(true);
                 } else {
-                    setBaixarContasReceber(false);
+                    setBaixarContasReceberItem(false);
                 }
                 break;
             case 'estornar':
                 if (consultaChoice > 0) {
-                    setEstornarContasReceber(true);
+                    setEstornarContasReceberItem(true);
                 } else {
-                    setEstornarContasReceber(false);
+                    setEstornarContasReceberItem(false);
                 }
                 break;
             case 'devolver':
                 if (consultaChoice > 0) {
-                    setDigitarContasReceber(true);
+                    setDigitarContasReceberItem(true);
                 } else {
-                    setDigitarContasReceber(false);
+                    setDigitarContasReceberItem(false);
                 }
                 break;
 
             case 'movimentacao_financeira':
                 if (consultaChoice > 0) {
-                    setVisualizarContasReceberItens(true);
+                    setVisualizarMovimentacoes(true);
                 } else {
-                    setVisualizarContasReceberItens(false);
+                    setVisualizarMovimentacoes(false);
                 }
                 break;
             case 'visualizar':
@@ -147,75 +146,76 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
 
     React.useEffect(() => {
 
-        if (cadastrarContasReceber == true) {
+        if (cadastrarContasReceberItem == true) {
             setShowModalCriarConstula(true);
         } else {
             setShowModalCriarConstula(false);
         }
 
-    }, [cadastrarContasReceber])
 
-    const atualizarContasReceberAction = (idContasReceber) => {
-        setContasReceberChoice(idContasReceber)
+    }, [cadastrarContasReceberItem])
+
+    const atualizarContasReceberItemAction = (idContasReceberItem) => {
+        setContasReceberItemChoice(idContasReceberItem)
         setAcao('editar')
-        setAtualizarContasReceber(true);
+        setAtualizarContasReceberItem(true);
     }
 
-    const visualizarContasReceberAction = (idContasReceber) => {
-        setContasReceberChoice(idContasReceber)
+    const visualizarContasReceberItemAction = (idContasReceberItem) => {
+        setContasReceberItemChoice(idContasReceberItem)
         setAcao('visualizar')
         setVisualizarCobrancaReceber(true);
     }
 
-    const baixarContasReceberAction = (idContasReceber) => {
-        setContasReceberChoice(idContasReceber)
+    const baixarContasReceberItemAction = (idContasReceberItem) => {
+        setContasReceberItemChoice(idContasReceberItem)
         setAcao('baixar')
-        setBaixarContasReceber(true);
+        setBaixarContasReceberItem(true);
     }
 
-    const estornarContasReceberAction = (idContasReceber) => {
-        setContasReceberChoice(idContasReceber)
+    const estornarContasReceberItemAction = (idContasReceberItem) => {
+        setContasReceberItemChoice(idContasReceberItem)
         setAcao('estornar')
-        setEstornarContasReceber(true);
+        setEstornarContasReceberItem(true);
     }
 
-    const visualizarContasReceberItensActions = (idContasReceber) => {
-        setContasReceberChoice(idContasReceber)
+    const visualizarMovimentacoesActions = (idContasReceberItem) => {
+        setContasReceberItemChoice(idContasReceberItem)
         setAcao('movimentacao_financeira')
-        setVisualizarContasReceberItens(true);
+        setVisualizarMovimentacoes(true);
     }
 
-    const gerarTableContasReceber = () => {
+    const gerarTableContasReceberItem = () => {
 
         let data = [];
-        let dataContasReceber = estado
+        let dataContasReceberItem = estado
 
-        if (dataContasReceber?.mensagem) {
-            dataContasReceber = dataContasReceber?.mensagem;
+        if (dataContasReceberItem?.mensagem) {
+            dataContasReceberItem = dataContasReceberItem?.mensagem;
         }
 
-        if (dataContasReceber?.registro) {
-            dataContasReceber = dataContasReceber?.registro;
+        if (dataContasReceberItem?.registro) {
+            dataContasReceberItem = dataContasReceberItem?.registro;
         }
 
-        if (dataContasReceber?.data) {
-            dataContasReceber = dataContasReceber?.data;
+        if (dataContasReceberItem?.data) {
+            dataContasReceberItem = dataContasReceberItem?.data;
         }
 
-        if (dataContasReceber?.data) {
-            dataContasReceber = dataContasReceber?.data;
+        if (dataContasReceberItem?.data) {
+            dataContasReceberItem = dataContasReceberItem?.data;
         }
 
-        if (dataContasReceber && Array.isArray(dataContasReceber) && dataContasReceber.length > 0) {
-            for (let i = 0; !(i == dataContasReceber.length); i++) {
-                let atual = dataContasReceber[i];
+        if (dataContasReceberItem && Array.isArray(dataContasReceberItem) && dataContasReceberItem.length > 0) {
+            for (let i = 0; !(i == dataContasReceberItem.length); i++) {
+                let atual = dataContasReceberItem[i];
                 if (atual) {
                     let acoesArr = [];
                     let btnEditar = true;
                     let baixar = true;
                     let btnFinalizar = true;
                     let estornar = true;
-                    let btnVisualizarItens = true;
+                    let btnVisualizarMovimentacoes = true;
                     let btnVisualizar = true;
                     let btnCotinuarDigitacao = true;
                     let btnCancelar = true;
@@ -235,23 +235,23 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                     }
 
                     if (btnEditar) {
-                        acoesArr.push({ acao: () => atualizarContasReceberAction(atual.id), label: 'Editar', propsOption: {}, propsLabel: {} })
+                        acoesArr.push({ acao: () => atualizarContasReceberItemAction(atual.id), label: 'Editar', propsOption: {}, propsLabel: {} })
                     }
 
                     if (baixar) {
-                        acoesArr.push({ acao: () => baixarContasReceberAction(atual.id), label: 'Baixar', propsOption: {}, propsLabel: {} })
+                        acoesArr.push({ acao: () => baixarContasReceberItemAction(atual.id), label: 'Baixar', propsOption: {}, propsLabel: {} })
                     }
 
                     if (estornar) {
-                        acoesArr.push({ acao: () => estornarContasReceberAction(atual.id), label: 'Estornar', propsOption: {}, propsLabel: {} })
+                        acoesArr.push({ acao: () => estornarContasReceberItemAction(atual.id), label: 'Estornar', propsOption: {}, propsLabel: {} })
                     }
 
-                    if (btnVisualizarItens) {
-                        acoesArr.push({ acao: () => { visualizarContasReceberItensActions(atual.id); setFiltrosPadroesItens({ idContasReceber: atual?.id, referencia: 'contas_receber' }) }, label: 'Contas a receber analítico', propsOption: {}, propsLabel: {} })
+                    if (btnVisualizarMovimentacoes) {
+                        acoesArr.push({ acao: () => visualizarMovimentacoesActions(atual.id), label: 'Movimentações', propsOption: {}, propsLabel: {} })
                     }
 
                     if (btnVisualizar) {
-                        acoesArr.push({ acao: () => visualizarContasReceberAction(atual.id), label: 'Visualizar', propsOption: {}, propsLabel: {} })
+                        acoesArr.push({ acao: () => visualizarContasReceberItemAction(atual.id), label: 'Visualizar', propsOption: {}, propsLabel: {} })
                     }
 
                     if (btnCancelar) {
@@ -264,7 +264,7 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                     } else if (atual.status == 'pago') {
                         line_style.color = 'green';
                     } else if (atual.status == 'aberto') {
-                        //line_style.color = 'green';
+
                     }
 
                     data.push(
@@ -457,37 +457,30 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
         return tableTitle;
     }
 
-    const gerarListMobileContasReceber = () => {
+    const gerarCardContasReceberItem = () => {
 
         let data = [];
-        let dataContasReceber = estado
+        let dataContasReceberItem = estado
 
-        if (dataContasReceber?.mensagem) {
-            dataContasReceber = dataContasReceber?.mensagem;
+        if (dataContasReceberItem?.mensagem) {
+            dataContasReceberItem = dataContasReceberItem?.mensagem;
         }
 
-        if (dataContasReceber?.registro) {
-            dataContasReceber = dataContasReceber?.registro;
+        if (dataContasReceberItem?.data) {
+            dataContasReceberItem = dataContasReceberItem?.data;
         }
 
-        if (dataContasReceber?.data) {
-            dataContasReceber = dataContasReceber?.data;
-        }
+        if (dataContasReceberItem && Array.isArray(dataContasReceberItem) && dataContasReceberItem.length > 0) {
+            for (let i = 0; !(i == dataContasReceberItem.length); i++) {
+                let atual = dataContasReceberItem[i];
 
-        if (dataContasReceber?.data) {
-            dataContasReceber = dataContasReceber?.data;
-        }
-
-        if (dataContasReceber && Array.isArray(dataContasReceber) && dataContasReceber.length > 0) {
-            for (let i = 0; !(i == dataContasReceber.length); i++) {
-                let atual = dataContasReceber[i];
-                if (atual && atual.id > 0) {
+                if (atual) {
                     let acoesArr = [];
                     let btnEditar = true;
                     let baixar = true;
                     let btnFinalizar = true;
                     let estornar = true;
-                    let btnVisualizarItens = true;
+                    let btnVisualizarMovimentacoes = true;
                     let btnVisualizar = true;
                     let btnCotinuarDigitacao = true;
                     let btnCancelar = true;
@@ -508,27 +501,175 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
 
 
                     if (btnEditar) {
-                        acoesArr.push({ acao: () => atualizarContasReceberAction(atual.id), label: 'Editar', propsOption: {}, propsLabel: {} })
+                        acoesArr.push({ acao: () => atualizarContasReceberItemAction(atual.id), label: 'Editar', propsOption: {}, propsLabel: {} })
                     }
 
                     if (baixar) {
-                        acoesArr.push({ acao: () => baixarContasReceberAction(atual.id), label: 'Baixar', propsOption: {}, propsLabel: {} })
+                        acoesArr.push({ acao: () => baixarContasReceberItemAction(atual.id), label: 'Baixar', propsOption: {}, propsLabel: {} })
                     }
 
                     if (estornar) {
-                        acoesArr.push({ acao: () => estornarContasReceberAction(atual.id), label: 'Estornar', propsOption: {}, propsLabel: {} })
+                        acoesArr.push({ acao: () => estornarContasReceberItemAction(atual.id), label: 'Estornar', propsOption: {}, propsLabel: {} })
                     }
 
                     if (baixar) {
 
                     }
 
-                    if (btnVisualizarItens) {
-                        acoesArr.push({ acao: () => { visualizarContasReceberItensActions(atual.id); setFiltrosPadroesItens({ idContasReceber: atual?.id, referencia: 'contas_receber' }) }, label: 'Contas a receber analítico', propsOption: {}, propsLabel: {} })
+                    if (btnVisualizarMovimentacoes) {
+                        acoesArr.push({ acao: () => visualizarMovimentacoesActions(atual.id), label: 'Movimentações', propsOption: {}, propsLabel: {} })
                     }
 
                     if (btnVisualizar) {
-                        acoesArr.push({ acao: () => visualizarContasReceberAction(atual.id), label: 'Visualizar', propsOption: {}, propsLabel: {} })
+                        acoesArr.push({ acao: () => visualizarContasReceberItemAction(atual.id), label: 'Visualizar', propsOption: {}, propsLabel: {} })
+                    }
+
+                    if (btnCancelar) {
+
+                    }
+
+                    data.push(
+
+                        {
+                            propsRow: { id: (atual.id) },
+                            acoes: [
+                                ...acoesArr
+                            ],
+                            title: <> <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '18pt', fontWeight: 'bolder' }} ><span><FontAwesomeIcon size={'lg'} icon={faUserCircle} /> {atual?.name} </span> </div> </>,
+                            propsContainerTitulo: { md: '11', sm: '9', xs: '9' },
+                            propsContainerButtons: { md: '1', sm: '3', xs: '3' },
+                            acoesBottomCard: [
+                                { label: '', props: { onClick: () => atualizarContasReceberItemAction(atual?.id), className: 'btn  btn-sm mx-2 btn-primary', style: { 'justifyContent': 'flex-end' } }, icon: <FontAwesomeIcon icon={faPen} /> },
+                                { label: '', props: { onClick: () => baixarContasReceberItemAction(atual?.id), className: 'btn  btn-sm mx-2 botao_success btn-success', style: { 'justifyContent': 'flex-end' } }, icon: <FontAwesomeIcon icon={faHandHoldingUsd} /> },
+                                { label: '', props: { onClick: () => estornarContasReceberItemAction(atual?.id), className: 'btn  btn-sm mx-2 btn-dark', style: { 'justifyContent': 'flex-end' } }, icon: <FontAwesomeIcon icon={faHandHolding} /> },
+                                { label: '', props: { onClick: () => atualizarContasReceberItemAction(atual?.id), className: 'btn  btn-sm mx-2 btn-secondary', style: { 'justifyContent': 'flex-end' } }, icon: <FontAwesomeIcon icon={faList} /> },
+                                { label: '', props: { onClick: () => atualizarContasReceberItemAction(atual?.id), className: 'btn  btn-sm mx-2 btn-info', style: { 'justifyContent': 'flex-end' } }, icon: <FontAwesomeIcon icon={faFile} /> },
+                                { props: { onClick: () => atualizarContasReceberItemAction(atual?.id), className: 'btn  btn-sm mx-2 btn-danger', style: { 'justifyContent': 'flex-end' } }, icon: <FontAwesomeIcon icon={faTrash} /> },
+                            ],
+                            celBodyTableArr: [
+                                [
+                                    {
+                                        title: <span style={{ fontWeight: 'bolder' }}>Aberto R$: </span>,
+                                        label: FORMAT_MONEY(atual?.vrAberto),
+                                        props: { style: { textAlign: 'left' } },
+                                        toSum: 1,
+                                        isCoin: 1,
+                                    },
+                                    {
+                                        title: <span style={{ fontWeight: 'bolder' }}>Pago R$: </span>,
+                                        label: FORMAT_MONEY(atual?.vrPago),
+                                        props: { style: { textAlign: 'left' } },
+                                        toSum: 1,
+                                        isCoin: 1,
+                                    },
+
+                                ],
+                                [
+                                    {
+                                        title: <span style={{ fontWeight: 'bolder' }}>Cobrança: </span>,
+                                        label: atual.cdCobrancaTipo,
+                                        props: { style: { textAlign: 'left' } },
+                                    },
+                                    {
+                                        title: <span style={{ fontWeight: 'bolder' }}>Vencimento: </span>,
+                                        label: FORMAT_DATA_PT_BR(atual.dtVencimento),
+                                        props: { style: { textAlign: 'left' } },
+                                    },
+                                ],
+                                [
+                                    {
+                                        title: <span style={{ fontWeight: 'bolder' }}>Status: </span>,
+                                        label: atual.status,
+                                        props: { style: { textAlign: 'center' } },
+                                    },
+                                ]
+
+
+                            ]
+                        }
+
+                    )
+
+                }
+
+            }
+        }
+
+        return data;
+    }
+
+    const gerarListMobileContasReceberItem = () => {
+
+        let data = [];
+        let dataContasReceberItem = estado
+
+        if (dataContasReceberItem?.mensagem) {
+            dataContasReceberItem = dataContasReceberItem?.mensagem;
+        }
+
+        if (dataContasReceberItem?.registro) {
+            dataContasReceberItem = dataContasReceberItem?.registro;
+        }
+
+        if (dataContasReceberItem?.data) {
+            dataContasReceberItem = dataContasReceberItem?.data;
+        }
+
+        if (dataContasReceberItem?.data) {
+            dataContasReceberItem = dataContasReceberItem?.data;
+        }
+
+        if (dataContasReceberItem && Array.isArray(dataContasReceberItem) && dataContasReceberItem.length > 0) {
+            for (let i = 0; !(i == dataContasReceberItem.length); i++) {
+                let atual = dataContasReceberItem[i];
+                if (atual && atual.id > 0) {
+                    let acoesArr = [];
+                    let btnEditar = true;
+                    let baixar = true;
+                    let btnFinalizar = true;
+                    let estornar = true;
+                    let btnVisualizarMovimentacoes = true;
+                    let btnVisualizar = true;
+                    let btnCotinuarDigitacao = true;
+                    let btnCancelar = true;
+
+                    if (atual?.status != 'pago') {
+                        estornar = false;
+                    } else if (atual?.status != 'aberto') {
+                        estornar = false;
+                        btnEditar = false;
+                    } else {
+
+                        btnCotinuarDigitacao = false;
+                        btnFinalizar = false;
+                        baixar = false;
+                        acoesArr = [];
+                        btnEditar = false;
+                    }
+
+
+                    if (btnEditar) {
+                        acoesArr.push({ acao: () => atualizarContasReceberItemAction(atual.id), label: 'Editar', propsOption: {}, propsLabel: {} })
+                    }
+
+                    if (baixar) {
+                        acoesArr.push({ acao: () => baixarContasReceberItemAction(atual.id), label: 'Baixar', propsOption: {}, propsLabel: {} })
+                    }
+
+                    if (estornar) {
+                        acoesArr.push({ acao: () => estornarContasReceberItemAction(atual.id), label: 'Estornar', propsOption: {}, propsLabel: {} })
+                    }
+
+                    if (baixar) {
+
+                    }
+
+                    if (btnVisualizarMovimentacoes) {
+                        acoesArr.push({ acao: () => { visualizarMovimentacoesActions(atual.id); setDefaultFiltersMovimentacoes({ ...atual, referencia_id: atual?.id, referencia: 'contas_receber' }) }, label: 'Movimentações', propsOption: {}, propsLabel: {} })
+                    }
+
+                    if (btnVisualizar) {
+                        acoesArr.push({ acao: () => visualizarContasReceberItemAction(atual.id), label: 'Visualizar', propsOption: {}, propsLabel: {} })
                     }
 
                     if (btnCancelar) {
@@ -556,12 +697,12 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                             propsContainerTitulo: { md: '11', sm: '9', xs: '9' },
                             propsContainerButtons: { md: '1', sm: '3', xs: '3' },
                             acoesBottomCard: [
-                                { label: '', props: { onClick: () => atualizarContasReceberAction(atual?.id), className: 'btn  btn-sm mx-2 btn-primary', style: { 'justifyContent': 'flex-end' } }, icon: <FontAwesomeIcon icon={faPen} /> },
-                                { label: '', props: { onClick: () => baixarContasReceberAction(atual?.id), className: 'btn  btn-sm mx-2 botao_success btn-success', style: { 'justifyContent': 'flex-end' } }, icon: <FontAwesomeIcon icon={faHandHoldingUsd} /> },
-                                { label: '', props: { onClick: () => estornarContasReceberAction(atual?.id), className: 'btn  btn-sm mx-2 btn-dark', style: { 'justifyContent': 'flex-end' } }, icon: <FontAwesomeIcon icon={faHandHolding} /> },
-                                { label: '', props: { onClick: () => atualizarContasReceberAction(atual?.id), className: 'btn  btn-sm mx-2 btn-secondary', style: { 'justifyContent': 'flex-end' } }, icon: <FontAwesomeIcon icon={faList} /> },
-                                { label: '', props: { onClick: () => atualizarContasReceberAction(atual?.id), className: 'btn  btn-sm mx-2 btn-info', style: { 'justifyContent': 'flex-end' } }, icon: <FontAwesomeIcon icon={faFile} /> },
-                                { props: { onClick: () => atualizarContasReceberAction(atual?.id), className: 'btn  btn-sm mx-2 btn-danger', style: { 'justifyContent': 'flex-end' } }, icon: <FontAwesomeIcon icon={faTrash} /> },
+                                { label: '', props: { onClick: () => atualizarContasReceberItemAction(atual?.id), className: 'btn  btn-sm mx-2 btn-primary', style: { 'justifyContent': 'flex-end' } }, icon: <FontAwesomeIcon icon={faPen} /> },
+                                { label: '', props: { onClick: () => baixarContasReceberItemAction(atual?.id), className: 'btn  btn-sm mx-2 botao_success btn-success', style: { 'justifyContent': 'flex-end' } }, icon: <FontAwesomeIcon icon={faHandHoldingUsd} /> },
+                                { label: '', props: { onClick: () => estornarContasReceberItemAction(atual?.id), className: 'btn  btn-sm mx-2 btn-dark', style: { 'justifyContent': 'flex-end' } }, icon: <FontAwesomeIcon icon={faHandHolding} /> },
+                                { label: '', props: { onClick: () => atualizarContasReceberItemAction(atual?.id), className: 'btn  btn-sm mx-2 btn-secondary', style: { 'justifyContent': 'flex-end' } }, icon: <FontAwesomeIcon icon={faList} /> },
+                                { label: '', props: { onClick: () => atualizarContasReceberItemAction(atual?.id), className: 'btn  btn-sm mx-2 btn-info', style: { 'justifyContent': 'flex-end' } }, icon: <FontAwesomeIcon icon={faFile} /> },
+                                { props: { onClick: () => atualizarContasReceberItemAction(atual?.id), className: 'btn  btn-sm mx-2 btn-danger', style: { 'justifyContent': 'flex-end' } }, icon: <FontAwesomeIcon icon={faTrash} /> },
                             ],
                             celBodyTableArr: [
                                 [
@@ -611,13 +752,13 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
     }
 
     React.useEffect(() => {
-        setContasReceber(dataEstado?.data)
+        setContasReceberItem(dataEstado?.data)
         setNrPageAtual(dataEstado?.data?.data?.current_page)
         handleTotalPages();
         handleTotalItems();
     }, [dataEstado])
 
-    const rowsTableArr = gerarTableContasReceber();
+    const rowsTableArr = gerarTableContasReceberItem();
     const titulosTableArr = gerarTitleTable();
 
     return (
@@ -625,9 +766,11 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
             <Row >
                 <Col xs="12" sm="12" md="12" className={'mobile_card_report py-4'} style={{ backgroundColor: '#FFF' }}>
 
+
+
                     <ListMobile
                         titulosTableArr={null}
-                        rowsTableArr={gerarListMobileContasReceber()}
+                        rowsTableArr={gerarListMobileContasReceberItem()}
                         loading={loadingData}
                         nadaEncontrado={nadaEncontrado}
                         withoutFirstCol={true}
@@ -673,34 +816,36 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
             </Row>
 
             {
-                cadastrarContasReceber && <Cadastrar cadastrarContasReceber={cadastrarContasReceber} setCadastrarContasReceber={setCadastrarContasReceber} atualizarContasReceber={atualizarContasReceber} setAtualizarContasReceber={setAtualizarContasReceber} idContasReceber={consultaChoice} setIdContasReceber={setContasReceberChoice} callback={callBack} />
+                cadastrarContasReceberItem && <Cadastrar cadastrarContasReceberItem={cadastrarContasReceberItem} setCadastrarContasReceberItem={setCadastrarContasReceberItem} atualizarContasReceberItem={atualizarContasReceberItem} setAtualizarContasReceberItem={setAtualizarContasReceberItem} idContasReceberItem={consultaChoice} setIdContasReceberItem={setContasReceberItemChoice} callback={callBack} />
             }
 
             {
-                atualizarContasReceber &&
-                <Atualizar atualizarContasReceber={atualizarContasReceber} setAtualizarContasReceber={setAtualizarContasReceber} idContasReceber={consultaChoice} setIdContasReceber={setContasReceberChoice} callback={callBack} />
+                atualizarContasReceberItem &&
+                <Atualizar atualizarContasReceberItem={atualizarContasReceberItem} setAtualizarContasReceberItem={setAtualizarContasReceberItem} idContasReceberItem={consultaChoice} setIdContasReceberItem={setContasReceberItemChoice} callback={callBack} />
             }
 
             {
-                baixarContasReceber &&
-                <Baixar baixarContasReceber={baixarContasReceber} setBaixarContasReceber={setBaixarContasReceber} idContasReceber={consultaChoice} setIdContasReceber={setContasReceberChoice} callback={callBack} />
+                baixarContasReceberItem &&
+                <Baixar baixarContasReceberItem={baixarContasReceberItem} setBaixarContasReceberItem={setBaixarContasReceberItem} idContasReceberItem={consultaChoice} setIdContasReceberItem={setContasReceberItemChoice} callback={callBack} />
             }
 
             {
-                estornarContasReceber &&
-                <Estornar estornarContasReceber={estornarContasReceber} setEstornarContasReceber={setEstornarContasReceber} idContasReceber={consultaChoice} setIdContasReceber={setContasReceberChoice} callback={callBack} />
+                estornarContasReceberItem &&
+                <Estornar estornarContasReceberItem={estornarContasReceberItem} setEstornarContasReceberItem={setEstornarContasReceberItem} idContasReceberItem={consultaChoice} setIdContasReceberItem={setContasReceberItemChoice} callback={callBack} />
             }
 
             {
                 visualizarCobrancaReceber &&
-                <Visualizar estornarContasReceber={estornarContasReceber} setEstornarContasReceber={setEstornarContasReceber} idContasReceber={consultaChoice} setIdContasReceber={setContasReceberChoice} callback={callBack} />
+                <Visualizar visualizarCobrancaReceber={visualizarCobrancaReceber} setVisualizarCobrancaReceber={setVisualizarCobrancaReceber} idContasReceberItem={consultaChoice} setIdContasReceberItem={setContasReceberItemChoice} callback={callBack} />
             }
 
-            {
-                visualizarContasReceberItens && filtrosPadroesItens &&
-                <Modal noBtnCancelar={false} noBtnConcluir={true} handleConcluir={() => null} title={'Contas a receber analítico'} size="lg" propsConcluir={{}} labelConcluir={''} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={consultaChoice} showHide={() => { setVisualizarContasReceberItens(false); }}>
 
-                    <ContasReceberItem defaultFilters={filtrosPadroesItens} visualizarContasReceberItens={visualizarContasReceberItens} setVisualizarContasReceberItens={setVisualizarContasReceberItens} setAtualizarContasReceber={setAtualizarContasReceber} idReferencia={consultaChoice} referencia={'contas_receber'} idCobrancaReceber={consultaChoice} setIdContasReceber={setContasReceberChoice} callback={callBack} />
+
+            {
+                visualizarMovimentacoes && defaultFiltersMovimentacoes &&
+                <Modal noBtnCancelar={false} noBtnConcluir={true} handleConcluir={() => null} title={'Contas a receber'} size="lg" propsConcluir={{}} labelConcluir={''} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={consultaChoice} showHide={() => { setVisualizarMovimentacoes(false); }}>
+
+                    <MovimentacoesFinanceiras defaultFilters={defaultFiltersMovimentacoes} visualizarMovimentacoes={visualizarMovimentacoes} setVisualizarMovimentacoes={setVisualizarMovimentacoes} setAtualizarContasReceberItem={setAtualizarContasReceberItem} idReferencia={consultaChoice} referencia={'contas_receber'} idCobrancaReceber={consultaChoice} setIdContasReceberItem={setContasReceberItemChoice} callback={callBack} />
 
                 </Modal>
             }
