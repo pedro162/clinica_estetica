@@ -52,17 +52,17 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
     const { getToken } = React.useContext(UserContex);
 
     const handleTotalPages = () => {
-        if (Number(estado?.data?.last_page > 0)) {
+        if (Number(estado?.data?.last_page) >= 0) {
             setTotalPageCount(estado?.data?.last_page)
         }
     }
 
     const handleTotalItems = () => {
-        if (Number(estado?.data?.to > 0)) {
+        if (Number(estado?.data?.to) >= 0) {
             setQtdItemsTo(estado?.data?.to)
         }
 
-        if (Number(estado?.data?.total > 0)) {
+        if (Number(estado?.data?.total ) >= 0) {
             setQtdItemsTotal(estado?.data?.total)
         }
     }
@@ -282,12 +282,12 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                                 },
                                 {
 
-                                    label: atual.name_filial,
+                                    label: atual?.conta_receber?.filial?.pessoa?.name,
                                     propsRow: {}
                                 },
                                 {
 
-                                    label: atual.name,
+                                    label: atual?.conta_receber?.pessoa?.name,
                                     propsRow: {}
                                 },
                                 {
@@ -297,7 +297,7 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                                 },
                                 {
 
-                                    label: atual.cdCobrancaTipo,
+                                    label: atual?.forma_pagamento?.cdCobrancaTipo,
                                     propsRow: {}
                                 },
                                 {
@@ -347,14 +347,9 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                                 },
                                 {
 
-                                    label: atual?.descricao,
+                                    label: atual?.conta_receber_id,
                                     propsRow: {}
-                                },
-                                {
-
-                                    label: atual?.dsReferencia,
-                                    propsRow: {}
-                                },
+                                }
                             ]
                         }
 
@@ -441,161 +436,14 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                 }
             },
             {
-                label: 'Histórico',
+                label: 'Cód. conta receber',
                 props: {
                     style: { minWidth: '525px' }
                 }
             },
-            {
-                label: 'Referência',
-                props: {
-                    style: { minWidth: '350px' }
-                }
-            }
         ]
 
         return tableTitle;
-    }
-
-    const gerarCardContasReceberItem = () => {
-
-        let data = [];
-        let dataContasReceberItem = estado
-
-        if (dataContasReceberItem?.mensagem) {
-            dataContasReceberItem = dataContasReceberItem?.mensagem;
-        }
-
-        if (dataContasReceberItem?.data) {
-            dataContasReceberItem = dataContasReceberItem?.data;
-        }
-
-        if (dataContasReceberItem && Array.isArray(dataContasReceberItem) && dataContasReceberItem.length > 0) {
-            for (let i = 0; !(i == dataContasReceberItem.length); i++) {
-                let atual = dataContasReceberItem[i];
-
-                if (atual) {
-                    let acoesArr = [];
-                    let btnEditar = true;
-                    let baixar = true;
-                    let btnFinalizar = true;
-                    let estornar = true;
-                    let btnVisualizarMovimentacoes = true;
-                    let btnVisualizar = true;
-                    let btnCotinuarDigitacao = true;
-                    let btnCancelar = true;
-
-                    if (atual?.status != 'pago') {
-                        estornar = false;
-                    } else if (atual?.status != 'aberto') {
-                        estornar = false;
-                        btnEditar = false;
-                    } else {
-
-                        btnCotinuarDigitacao = false;
-                        btnFinalizar = false;
-                        baixar = false;
-                        acoesArr = [];
-                        btnEditar = false;
-                    }
-
-
-                    if (btnEditar) {
-                        acoesArr.push({ acao: () => atualizarContasReceberItemAction(atual.id), label: 'Editar', propsOption: {}, propsLabel: {} })
-                    }
-
-                    if (baixar) {
-                        acoesArr.push({ acao: () => baixarContasReceberItemAction(atual.id), label: 'Baixar', propsOption: {}, propsLabel: {} })
-                    }
-
-                    if (estornar) {
-                        acoesArr.push({ acao: () => estornarContasReceberItemAction(atual.id), label: 'Estornar', propsOption: {}, propsLabel: {} })
-                    }
-
-                    if (baixar) {
-
-                    }
-
-                    if (btnVisualizarMovimentacoes) {
-                        acoesArr.push({ acao: () => visualizarMovimentacoesActions(atual.id), label: 'Movimentações', propsOption: {}, propsLabel: {} })
-                    }
-
-                    if (btnVisualizar) {
-                        acoesArr.push({ acao: () => visualizarContasReceberItemAction(atual.id), label: 'Visualizar', propsOption: {}, propsLabel: {} })
-                    }
-
-                    if (btnCancelar) {
-
-                    }
-
-                    data.push(
-
-                        {
-                            propsRow: { id: (atual.id) },
-                            acoes: [
-                                ...acoesArr
-                            ],
-                            title: <> <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '18pt', fontWeight: 'bolder' }} ><span><FontAwesomeIcon size={'lg'} icon={faUserCircle} /> {atual?.name} </span> </div> </>,
-                            propsContainerTitulo: { md: '11', sm: '9', xs: '9' },
-                            propsContainerButtons: { md: '1', sm: '3', xs: '3' },
-                            acoesBottomCard: [
-                                { label: '', props: { onClick: () => atualizarContasReceberItemAction(atual?.id), className: 'btn  btn-sm mx-2 btn-primary', style: { 'justifyContent': 'flex-end' } }, icon: <FontAwesomeIcon icon={faPen} /> },
-                                { label: '', props: { onClick: () => baixarContasReceberItemAction(atual?.id), className: 'btn  btn-sm mx-2 botao_success btn-success', style: { 'justifyContent': 'flex-end' } }, icon: <FontAwesomeIcon icon={faHandHoldingUsd} /> },
-                                { label: '', props: { onClick: () => estornarContasReceberItemAction(atual?.id), className: 'btn  btn-sm mx-2 btn-dark', style: { 'justifyContent': 'flex-end' } }, icon: <FontAwesomeIcon icon={faHandHolding} /> },
-                                { label: '', props: { onClick: () => atualizarContasReceberItemAction(atual?.id), className: 'btn  btn-sm mx-2 btn-secondary', style: { 'justifyContent': 'flex-end' } }, icon: <FontAwesomeIcon icon={faList} /> },
-                                { label: '', props: { onClick: () => atualizarContasReceberItemAction(atual?.id), className: 'btn  btn-sm mx-2 btn-info', style: { 'justifyContent': 'flex-end' } }, icon: <FontAwesomeIcon icon={faFile} /> },
-                                { props: { onClick: () => atualizarContasReceberItemAction(atual?.id), className: 'btn  btn-sm mx-2 btn-danger', style: { 'justifyContent': 'flex-end' } }, icon: <FontAwesomeIcon icon={faTrash} /> },
-                            ],
-                            celBodyTableArr: [
-                                [
-                                    {
-                                        title: <span style={{ fontWeight: 'bolder' }}>Aberto R$: </span>,
-                                        label: FORMAT_MONEY(atual?.vrAberto),
-                                        props: { style: { textAlign: 'left' } },
-                                        toSum: 1,
-                                        isCoin: 1,
-                                    },
-                                    {
-                                        title: <span style={{ fontWeight: 'bolder' }}>Pago R$: </span>,
-                                        label: FORMAT_MONEY(atual?.vrPago),
-                                        props: { style: { textAlign: 'left' } },
-                                        toSum: 1,
-                                        isCoin: 1,
-                                    },
-
-                                ],
-                                [
-                                    {
-                                        title: <span style={{ fontWeight: 'bolder' }}>Cobrança: </span>,
-                                        label: atual.cdCobrancaTipo,
-                                        props: { style: { textAlign: 'left' } },
-                                    },
-                                    {
-                                        title: <span style={{ fontWeight: 'bolder' }}>Vencimento: </span>,
-                                        label: FORMAT_DATA_PT_BR(atual.dtVencimento),
-                                        props: { style: { textAlign: 'left' } },
-                                    },
-                                ],
-                                [
-                                    {
-                                        title: <span style={{ fontWeight: 'bolder' }}>Status: </span>,
-                                        label: atual.status,
-                                        props: { style: { textAlign: 'center' } },
-                                    },
-                                ]
-
-
-                            ]
-                        }
-
-                    )
-
-                }
-
-            }
-        }
-
-        return data;
     }
 
     const gerarListMobileContasReceberItem = () => {
@@ -689,7 +537,7 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                     data.push(
 
                         {
-                            propsRow: { id: (atual.id), titleRow: atual.id + ' - ' + atual?.name, style: { ...line_style }, mainIcon: faChartLine },
+                            propsRow: { id: (atual.id), titleRow: atual.id + ' - ' + atual?.conta_receber?.pessoa?.name, style: { ...line_style }, mainIcon: faChartLine },
                             acoes: [
                                 ...acoesArr
                             ],
@@ -713,8 +561,8 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                                         toSum: 1,
                                         isCoin: 1,
                                     }, {
-                                        title: <span style={{ fontWeight: '480' }}>Aberto R$: </span>,
-                                        label: FORMAT_MONEY(atual?.vrAberto),
+                                        title: <span style={{ fontWeight: '480' }}>Valor R$: </span>,
+                                        label: FORMAT_MONEY(atual?.vrLiquido),
                                         props: { style: { textAlign: 'left', md: '4', sm: '4', xs: '4' } },
                                         toSum: 1,
                                         isCoin: 1,
@@ -752,6 +600,7 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
     }
 
     React.useEffect(() => {
+        
         setContasReceberItem(dataEstado?.data)
         setNrPageAtual(dataEstado?.data?.data?.current_page)
         handleTotalPages();
