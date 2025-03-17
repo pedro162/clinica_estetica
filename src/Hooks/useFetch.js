@@ -45,6 +45,13 @@ const useFetch = () => {
 
     }, [])
 
+    React.useEffect(() => {
+        if (error) {
+            const timer = setTimeout(() => setError(null), 2000);
+            return () => clearTimeout(timer);
+        }
+    }, [error]);
+    
     return {
         data, error, loading,
         request, setError

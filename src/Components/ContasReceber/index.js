@@ -88,7 +88,6 @@ const ContasReceber = ({ defaultFilters, ...props }) => {
         setDtFim(target.value)
     }
 
-
     const handleFiltroStatus = ({ target }) => {
         setStatus(target.value)
     }
@@ -513,7 +512,8 @@ const ContasReceber = ({ defaultFilters, ...props }) => {
         const { response, json } = await request(url, options);
 
         if (json) {
-            setContasReceber(json)
+            await setContasReceber(json)
+            
             if (json?.mensagem && json?.mensagem.length > 0) {
                 setNadaEncontrado(false)
             } else {
