@@ -25,7 +25,7 @@ const Detalhes = ({ dataContasReceberChoice, ...props }) => {
 	const dataReferencia = dataRegistro?.data_referencia
 
 	return (
-		<React.Fragment className="mt-5 p-4 border">
+		<React.Fragment >
 			<Row className="mb-4">
 				<Col>
 					<h2 className="text-center">Fatura</h2>
@@ -51,21 +51,19 @@ const Detalhes = ({ dataContasReceberChoice, ...props }) => {
 							<tr>
 								<th>Cód refeéncia</th>
 								<th>Referência</th>
-								<th>Data</th>
 								<th>Ação</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr >
-								<td>{dataRegistro?.referencia}</td>
 								<td>{dataRegistro?.referencia_id}</td>
-								<td>{FORMAT_DATA_PT_BR(dataReferencia?.created_at)}</td>
+								<td>{dataRegistro?.referencia}</td>
 								<td><Button className="btn btn-sm btn-primary">Ver</Button></td>
 							</tr>
 						</tbody>
 						<tfoot>
 							<tr>
-								<td colSpan="3" className="text-right"><strong>Total</strong></td>
+								<td colSpan="2" className="text-right"><strong>Total</strong></td>
 								<td>{FORMAT_MONEY(dataRegistro?.vrLiquido)}</td>
 							</tr>
 						</tfoot>

@@ -29,10 +29,7 @@ import { FORMAT_CALC_COD, FORMAT_MONEY } from '../../functions/index.js'
 
 
 const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEncontrado, nextPage, setNextPage, usePagination, setUsePagination, totalPageCount, setTotalPageCount, ...props }) => {
-    const { data, error, request, loading } = useFetch();
     const [estado, setContasReceber] = React.useState([])
-    const [exemplos, setExemplos] = React.useState([])
-    const [exemplosTitleTable, setExemplosTitleTable] = React.useState([])
     const [showModalCriarContasReceber, setShowModalCriarConstula] = React.useState(false)
     const [consultaChoice, setContasReceberChoice] = React.useState(null);
     const [atualizarContasReceber, setAtualizarContasReceber] = React.useState(false)
@@ -653,7 +650,7 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                         rowsTableArr={gerarTableContasReceber}
                         loading={loadingData}
                         nadaEncontrado={nadaEncontrado}
-                        botoesHeader={[/* {acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> } */]}
+                        botoesHeader={[]}
                         nextPage={nextPage}
                         setNextPage={setNextPage}
                         usePagination={usePagination}

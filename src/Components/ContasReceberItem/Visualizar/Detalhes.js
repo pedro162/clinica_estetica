@@ -31,9 +31,9 @@ const Detalhes = ({ dataContasReceberItemChoice, ...props }) => {
 					<h2 className="text-center">Fatura</h2>
 					<div className="d-flex justify-content-between">
 						<div>
-							<strong>Cliente:</strong> {dataRegistro?.pessoa?.name}<br />
-							<strong>Endereço:</strong> {dataRegistro?.pessoa?.logradouro.filter((item) => item?.importancia == 'principal')[0]?.logradouro}<br />
-							<strong>Telefone:</strong> {dataRegistro?.telefone}
+							<strong>Cliente:</strong> {dataRegistro?.conta_receber?.pessoa?.name}<br />
+							<strong>Endereço:</strong> {dataRegistro?.conta_receber?.pessoa?.logradouro.filter((item) => item?.importancia == 'principal')[0]?.logradouro}<br />
+							<strong>Telefone:</strong> {dataRegistro?.conta_receber?.pessoa?.telefone}
 						</div>
 						<div>
 							<strong>Data de Emissão:</strong> {FORMAT_DATA_PT_BR(dataRegistro?.created_at)}<br />
@@ -53,21 +53,19 @@ const Detalhes = ({ dataContasReceberItemChoice, ...props }) => {
 							<tr>
 								<th>Cód refeéncia</th>
 								<th>Referência</th>
-								<th>Data</th>
 								<th>Ação</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr >
-								<td>{dataRegistro?.referencia}</td>
-								<td>{dataRegistro?.referencia_id}</td>
-								<td>{FORMAT_DATA_PT_BR(dataReferencia?.created_at)}</td>
+								<td>{dataRegistro?.conta_receber?.referencia_id}</td>
+								<td>{dataRegistro?.conta_receber?.referencia}</td>
 								<td><Button className="btn btn-sm btn-primary">Ver</Button></td>
 							</tr>
 						</tbody>
 						<tfoot>
 							<tr>
-								<td colSpan="3" className="text-right"><strong>Total</strong></td>
+								<td colSpan="2" className="text-right"><strong>Total</strong></td>
 								<td>{FORMAT_MONEY(dataRegistro?.vrLiquido)}</td>
 							</tr>
 						</tfoot>

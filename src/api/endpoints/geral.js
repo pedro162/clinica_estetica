@@ -3722,7 +3722,7 @@ export const CONTAS_RECEBER_BAIXAR_POST = (id, data, token) => {
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
-        method: 'PUT',
+        method: 'POST',//PUT
         headers: myHeaders,
         mode: 'cors',
         cache: 'no-store',

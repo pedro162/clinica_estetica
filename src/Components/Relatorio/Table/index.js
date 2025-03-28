@@ -18,6 +18,7 @@ const Table = ({children, titulosTableArr,ignoreTableActions, rowsTableArr,loadi
 	const handleChange = (target)=>{
 		let id = target.value;
 		id = Number(id)
+
 		if(target.checked){
 			setSelecionados([...selecionados, id])
 		}else{
@@ -27,17 +28,13 @@ const Table = ({children, titulosTableArr,ignoreTableActions, rowsTableArr,loadi
 				})
 			)
 		}
-
-		
-		
 	}
 
 	const selecionarTodos = (target)=>{
 		let itens = [];
+
 		if(target){
 			if(target.checked){
-
-
 				if(bodyTable && Array.isArray(bodyTable) && bodyTable.length > 0){
 					bodyTable.map((item, index, arr)=>{
 			  			
@@ -53,6 +50,7 @@ const Table = ({children, titulosTableArr,ignoreTableActions, rowsTableArr,loadi
 			  			
 					})
 				}
+
 				setSelecionados([...itens])
 				setSelecionaTodos(true)
 			}else{
@@ -64,8 +62,6 @@ const Table = ({children, titulosTableArr,ignoreTableActions, rowsTableArr,loadi
 		}else{
 			setSelecionaTodos(false)
 		}
-		
-		
 	}
 
 	React.useEffect(()=>{
@@ -74,9 +70,11 @@ const Table = ({children, titulosTableArr,ignoreTableActions, rowsTableArr,loadi
 	}, [selecionados, selecionaTodos])
 
 	const opt = [
-			{acao:()=>alert('Aqui'), label:'Editar', propsOption:{}, propsLabel:{}}
-		]
+		{acao:()=>alert('Aqui'), label:'Editar', propsOption:{}, propsLabel:{}}
+	]
+
 	let arraySum = {};
+
 	return(
 		<>
 			<Card
@@ -179,7 +177,11 @@ const Table = ({children, titulosTableArr,ignoreTableActions, rowsTableArr,loadi
 																return <td key={indexCel+id+arrCel.length+'td'+rand} {...propsCelBodyTable} onClick={()=>{if(!ignoreTableActions){setDataMenu(acoesRowBodyTable);setShowModalOptions(true)} }}  >{labelCel}</td>
 															})
 
-														) : ('')
+														) : (
+															<td colSpan={titulosTable.length} className="text-center">
+																Nenhum registro encontrado
+															</td>
+														)
 								  					}
 								  				</tr>
 								  			)
@@ -187,7 +189,13 @@ const Table = ({children, titulosTableArr,ignoreTableActions, rowsTableArr,loadi
 
 								  		})
 
-							  		) : ('')
+							  		) : (
+										<tr>
+											<td colSpan={titulosTable.length} className="text-center">
+												Nenhum registro encontrado
+											</td>
+										</tr>
+									)
 				  					
 				  				}				    
 							  </tbody>

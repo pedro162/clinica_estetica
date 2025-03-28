@@ -28,10 +28,7 @@ import { FORMAT_CALC_COD, FORMAT_MONEY } from '../../functions/index.js'
 
 
 const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEncontrado, nextPage, setNextPage, usePagination, setUsePagination, totalPageCount, setTotalPageCount, ...props }) => {
-    const { data, error, request, loading } = useFetch();
     const [estado, setContasReceberItem] = React.useState([])
-    const [exemplos, setExemplos] = React.useState([])
-    const [exemplosTitleTable, setExemplosTitleTable] = React.useState([])
     const [showModalCriarContasReceberItem, setShowModalCriarConstula] = React.useState(false)
     const [consultaChoice, setContasReceberItemChoice] = React.useState(null);
     const [atualizarContasReceberItem, setAtualizarContasReceberItem] = React.useState(false)
@@ -151,7 +148,6 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
         } else {
             setShowModalCriarConstula(false);
         }
-
 
     }, [cadastrarContasReceberItem])
 
@@ -282,12 +278,12 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                                 },
                                 {
 
-                                    label: atual.name_filial,
+                                    label: atual?.conta_receber?.filial?.pessoa?.name,
                                     propsRow: {}
                                 },
                                 {
 
-                                    label: atual.name,
+                                    label: atual?.conta_receber?.pessoa?.name,
                                     propsRow: {}
                                 },
                                 {
@@ -297,7 +293,7 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                                 },
                                 {
 
-                                    label: atual.cdCobrancaTipo,
+                                    label: atual?.forma_pagamento?.cdCobrancaTipo,
                                     propsRow: {}
                                 },
                                 {
@@ -342,17 +338,12 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                                 },
                                 {
 
-                                    label: FORMAT_DATA_PT_BR(atual?.dtVencimento),
+                                    label: FORMAT_DATA_PT_BR(atual?.dtBaixa),
                                     propsRow: {}
                                 },
                                 {
 
                                     label: atual?.descricao,
-                                    propsRow: {}
-                                },
-                                {
-
-                                    label: atual?.dsReferencia,
                                     propsRow: {}
                                 },
                             ]
@@ -435,7 +426,7 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                 }
             },
             {
-                label: 'Vencimento',
+                label: 'Baixa',
                 props: {
                     style: { minWidth: '150px' }
                 }
@@ -446,12 +437,6 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                     style: { minWidth: '525px' }
                 }
             },
-            {
-                label: 'Referência',
-                props: {
-                    style: { minWidth: '350px' }
-                }
-            }
         ]
 
         return tableTitle;
