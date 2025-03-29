@@ -650,7 +650,7 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                     }
 
                     if (btnVisualizarMovimentacoes) {
-                        acoesArr.push({ acao: () => { visualizarMovimentacoesActions(atual.id); setDefaultFiltersMovimentacoes({ ...atual, referencia_id: atual?.id, referencia: 'contas_receber' }) }, label: 'Movimentações', propsOption: {}, propsLabel: {} })
+                        acoesArr.push({ acao: () => { visualizarMovimentacoesActions(atual.id); setDefaultFiltersMovimentacoes({ ...atual, sub_referencia_id: atual?.id, sub_referencia: 'conta_receber_items' }) }, label: 'Movimentações', propsOption: {}, propsLabel: {} })
                     }
 
                     if (btnVisualizar) {
@@ -830,7 +830,7 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                 visualizarMovimentacoes && defaultFiltersMovimentacoes &&
                 <Modal noBtnCancelar={false} noBtnConcluir={true} handleConcluir={() => null} title={'Contas a receber'} size="lg" propsConcluir={{}} labelConcluir={''} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={consultaChoice} showHide={() => { setVisualizarMovimentacoes(false); }}>
 
-                    <MovimentacoesFinanceiras defaultFilters={defaultFiltersMovimentacoes} visualizarMovimentacoes={visualizarMovimentacoes} setVisualizarMovimentacoes={setVisualizarMovimentacoes} setAtualizarContasReceberItem={setAtualizarContasReceberItem} idReferencia={consultaChoice} referencia={'contas_receber'} idCobrancaReceber={consultaChoice} setIdContasReceberItem={setContasReceberItemChoice} callback={callBack} />
+                    <MovimentacoesFinanceiras defaultFilters={defaultFiltersMovimentacoes} visualizarMovimentacoes={visualizarMovimentacoes} setVisualizarMovimentacoes={setVisualizarMovimentacoes} setAtualizarContasReceberItem={setAtualizarContasReceberItem} idSubReferencia={consultaChoice} subReferencia={'conta_receber_items'} idCobrancaReceber={consultaChoice} setIdContasReceberItem={setContasReceberItemChoice} callback={callBack} />
 
                 </Modal>
             }

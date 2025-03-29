@@ -25,8 +25,6 @@ const MovimentacoesFinanceira = ({defaultFilters, ...props})=>{
 
     const {data, error, request, loading} = useFetch();
     const [estado, setMovimentacoesFinanceira] = React.useState([])
-    const [exemplos, setExemplos] = React.useState([])
-    const [exemplosTitleTable, setExemplosTitleTable] = React.useState([])
     const [showModalCriarMovimentacoesFinanceira, setShowModalCriarConstula] = React.useState(false)
     const [consultaChoice, setMovimentacoesFinanceiraChoice] = React.useState(null);
     const [atualizarMovimentacoesFinanceira, setAtualizarMovimentacoesFinanceira] = React.useState(false)   
@@ -45,6 +43,8 @@ const MovimentacoesFinanceira = ({defaultFilters, ...props})=>{
     const [historico, setHistorico] = React.useState(null)
     const [codigoOrigem, setCodigoOrigem] = React.useState(()=>{return props?.idReferencia})
     const [origem, setOrigem] = React.useState(()=>{return props?.referencia})
+    const [codigoSubOrigem, setCodigoSubOrigem] = React.useState(()=>{return props?.idSubReferencia})
+    const [subOrigem, setSubOrigem] = React.useState(()=>{return props?.subReferencia})
     const [dtInicio, setDtInicio] = React.useState(null)
     const [dtFim, setDtFim] = React.useState(null)
     const [filtroMobile, setFiltroMobile] = React.useState(null)
@@ -71,10 +71,6 @@ const MovimentacoesFinanceira = ({defaultFilters, ...props})=>{
         
     }
 
-
-    const alerta = (target)=>{
-        console.log(target)
-    }
     const handleSearch = (ev)=>{
         if (ev.key === "Enter") {
             requestAllMovimentacoesFinanceiras();
@@ -109,26 +105,29 @@ const MovimentacoesFinanceira = ({defaultFilters, ...props})=>{
         setOrigem(target.value)
     }
 
+    const handleCodigoSubOrigemFilter = ({target})=>{
+        setCodigoSubOrigem(target.value)
+    }
+
+    const handleSubOrigemFilter = ({target})=>{
+        setSubOrigem(target.value)
+    }
+
     const handleEstornadoFilter = ({target})=>{
         setEstornado(target.value)
     }
-
 
     const handleHistoricoFilter = ({target})=>{
         setHistorico(target.value)
     }
 
-    
-
     const handleConciliadoFilter = ({target})=>{
         setConciliado(target.value)
     }
 
-
     const handleDtFimFilter = ({target})=>{
         setDtFim(target.value)
     }
-
 
     const setOrdenacaoFiltro = ({target})=>{
         
@@ -146,8 +145,11 @@ const MovimentacoesFinanceira = ({defaultFilters, ...props})=>{
     }
 
     const preparaCaixaToForm = ()=>{
-        if(dataCaixas.hasOwnProperty('mensagem') && Array.isArray(dataCaixas.mensagem) && dataCaixas.mensagem.length > 0){
-            let caixas = dataCaixas.mensagem.map(({id, name}, index, arr)=>({label:name,value:id,props:{}}))
+        let cashierData = dataCaixas?.mensagem
+        cashierData = cashierData ? cashierData : dataCaixas?.data?.data
+
+        if(cashierData && Array.isArray(cashierData) && cashierData.length > 0){
+            let caixas = cashierData.map(({id, name}, index, arr)=>({label:name,value:id,props:{}}))
             caixas.unshift({label:'Selecione...',value:'',props:{selected:'selected', disabled:'disabled'}})
             
             return caixas;
@@ -238,14 +240,40 @@ const MovimentacoesFinanceira = ({defaultFilters, ...props})=>{
             type:'select',
             options:[
                 {label:'Selecione...',valor:'',props:{selected:'selected'}},
-                {label:'Contas a receber',valor:'contas_receber',props:{}},
-                {label:'Contas a pagar',valor:'contas_pagar',props:{}},
+                {label:'Contas a receber',valor:'conta_receber',props:{}},
+                {label:'Contas a receber item',valor:'conta_receber_items',props:{}},
+                {label:'Contas a pagar',valor:'conta_pagars',props:{}},
+                {label:'Contas a pagar item',valor:'conta_pagar_items',props:{}},
             ], 
             hasLabel: true,
             contentLabel:'Origem',
             atributsFormLabel:{},
             atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
             atributsFormControl:{'type':'text', size:"sm",'name':'origem', value:origem, onChange:handleOrigemFilter,    onBlur:handleOrigemFilter, onKeyUp:handleSearch},
+
+        },
+        {
+            type:'text',
+            options:[], 
+            hasLabel: true,
+            contentLabel:'Cod. suborigem',
+            atributsFormLabel:{},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'codigo_suborigem':codigoSubOrigem, value:codigoSubOrigem,onChange:handleCodigoSubOrigemFilter, onBlur:handleCodigoSubOrigemFilter, onKeyUp:handleSearch},
+
+        },
+        {
+            type:'select',
+            options:[
+                {label:'Selecione...',valor:'',props:{selected:'selected'}},
+                {label:'Contas a receber item',valor:'conta_receber_items',props:{}},
+                {label:'Contas a pagar item',valor:'conta_pagar_items',props:{}},
+            ], 
+            hasLabel: true,
+            contentLabel:'Suborigem',
+            atributsFormLabel:{},
+            atributsContainer:{xs:"12", sm:"12", md:"2",className:'mb-2'},
+            atributsFormControl:{'type':'text', size:"sm",'name':'suborigem', value:subOrigem, onChange:handleSubOrigemFilter, onBlur:handleSubOrigemFilter, onKeyUp:handleSearch},
 
         },
         {
@@ -331,7 +359,6 @@ const MovimentacoesFinanceira = ({defaultFilters, ...props})=>{
         }else{
             setShowModalCriarConstula(false);
         }
-
         
     }, [cadastrarMovimentacoesFinanceira])
 
@@ -340,12 +367,13 @@ const MovimentacoesFinanceira = ({defaultFilters, ...props})=>{
         setAcao('editar')
         setAtualizarMovimentacoesFinanceira(true);
     }
+
     const cancelarMovimentacoesFinanceiraAction = (idMovimentacoesFinanceira)=>{
         setMovimentacoesFinanceiraChoice(idMovimentacoesFinanceira)
         setAcao('cancelar')
         setCancelarMovimentacoesFinanceira(true);
     }
-    //cancelarMovimentacoesFinanceira, setCancelarMovimentacoesFinanceira
+    
     const novaMovimentacoesFinanceira = (idMovimentacoesFinanceira)=>{
         setMovimentacoesFinanceiraChoice(idMovimentacoesFinanceira)
         setAcao('consultar')
@@ -376,11 +404,10 @@ const MovimentacoesFinanceira = ({defaultFilters, ...props})=>{
             return updatedFilters;
         });
     }
-    //------------
+    
     const montarFiltro = ()=>{
         let filtros = {}
         let detalhesFiltros = {}
-
 
         if(usePagination){
             filtros['usePaginate'] = 1;
@@ -396,7 +423,6 @@ const MovimentacoesFinanceira = ({defaultFilters, ...props})=>{
             };
         }
 
-
         if(codigoFilial){
             filtros['filial_id'] = codigoFilial;
             detalhesFiltros['filial_id'] = {
@@ -406,7 +432,6 @@ const MovimentacoesFinanceira = ({defaultFilters, ...props})=>{
             };
         }
 
-
         if(codigoCaixa){
             filtros['caixa_id'] = codigoCaixa;
             detalhesFiltros['caixa_id'] = {
@@ -415,8 +440,6 @@ const MovimentacoesFinanceira = ({defaultFilters, ...props})=>{
                 resetFilter:()=>{setCodigoCaixa('');removeFilter('caixa_id')},
             };
         }
-
-
 
         if(estornado){
             filtros['estornado'] = estornado;
@@ -432,7 +455,7 @@ const MovimentacoesFinanceira = ({defaultFilters, ...props})=>{
             detalhesFiltros['conciliado'] = {
                 label:'conciliado',
                 value:conciliado,
-                resetFilter:()=>{setEstornado('');removeFilter('conciliado')},
+                resetFilter:()=>{setConciliado('');removeFilter('conciliado')},
             };
         }
 
@@ -454,6 +477,23 @@ const MovimentacoesFinanceira = ({defaultFilters, ...props})=>{
             };
         }
 
+        if(codigoSubOrigem){
+            filtros['sub_referencia_id'] = codigoSubOrigem;
+            detalhesFiltros['sub_referencia_id'] = {
+                label:'Cód. subreferência',
+                value:codigoSubOrigem,
+                resetFilter:()=>{setCodigoSubOrigem('');removeFilter('sub_referencia_id')},
+            };
+        }
+
+        if(subOrigem){
+            filtros['sub_referencia'] = subOrigem;
+            detalhesFiltros['sub_referencia'] = {
+                label:'Subreferência',
+                value:subOrigem,
+                resetFilter:()=>{setSubOrigem('');removeFilter('sub_referencia')},
+            };
+        }
 
         if(historico){
             filtros['historico'] = historico;
@@ -464,36 +504,34 @@ const MovimentacoesFinanceira = ({defaultFilters, ...props})=>{
             };
         }
 
-
-        if(dtInicio){
-            filtros['dt_inicio'] = dtInicio;
-            detalhesFiltros['dt_inicio'] = {
-                label:'dt_inicio',
-                value:dtInicio,
-                resetFilter:()=>{setDtInicio('');removeFilter('dt_inicio')},
-            };
-        }
-
-
-        if(dtFim){
-            filtros['dt_fim'] = dtFim;
-            detalhesFiltros['dt_fim'] = {
-                label:'dt_fim',
-                value:dtFim,
-                resetFilter:()=>{setDtFim('');removeFilter('dt_fim')},
-            };
-        }
-
         if(dtInicio && dtFim){
 
-            filtros['dt_periodo'] = dtInicio+','+dtInicio;
+            filtros['dt_periodo'] = dtInicio+','+dtFim;
             detalhesFiltros['dt_periodo'] = {
                 label:'dt_periodo',
-                value:dtInicio+','+dtInicio,
+                value:dtInicio+','+dtFim,
                 resetFilter:()=>{setDtInicio('');setDtFim('');removeFilter('dt_periodo')},
             };
-        }
-        
+        }else{
+
+            if(dtInicio){
+                filtros['dt_inicio'] = dtInicio;
+                detalhesFiltros['dt_inicio'] = {
+                    label:'dt_inicio',
+                    value:dtInicio,
+                    resetFilter:()=>{setDtInicio('');removeFilter('dt_inicio')},
+                };
+            }
+
+            if(dtFim){
+                filtros['dt_fim'] = dtFim;
+                detalhesFiltros['dt_fim'] = {
+                    label:'dt_fim',
+                    value:dtFim,
+                    resetFilter:()=>{setDtFim('');removeFilter('dt_fim')},
+                };
+            }
+        }        
 
         if(filtroMobile){
             filtros['historico'] = filtroMobile;
@@ -578,10 +616,13 @@ const MovimentacoesFinanceira = ({defaultFilters, ...props})=>{
         let {filtros, detalhesFiltros} = await montarFiltro();
         await setAppliedFilters(detalhesFiltros)
         let {url, options} = CONTAS_MOVIMENTACOES_FINANCEIRAS_ALL_POST({...filtros}, getToken());
+        
         if(nextPage){
             url = nextPage;
         }
+        
         const {response, json} = await request(url, options);
+        
         if(json){
             setMovimentacoesFinanceira(json)
 
@@ -593,9 +634,7 @@ const MovimentacoesFinanceira = ({defaultFilters, ...props})=>{
 
         }else{
             setNadaEncontrado(true)
-        }
-
-            
+        }            
     }
 
     const requestAllFilials = async() =>{
@@ -603,11 +642,10 @@ const MovimentacoesFinanceira = ({defaultFilters, ...props})=>{
 
         let {url, options} = FILIAIS_ALL_POST({}, getToken());
         const {response, json} = await request(url, options);
+        
         if(json){            
             setDataFiliais(json)
-        }
-
-            
+        }            
     }
 
     const requestAllCaixas = async() =>{
@@ -617,9 +655,7 @@ const MovimentacoesFinanceira = ({defaultFilters, ...props})=>{
         const {response, json} = await request(url, options);
         if(json){            
             setDataCaixas(json)
-        }
-
-            
+        }            
     }
 
     React.useEffect(()=>{
@@ -633,16 +669,19 @@ const MovimentacoesFinanceira = ({defaultFilters, ...props})=>{
             await requestAllFilials()
             await requestAllCaixas();
         }
+
+        requestDataConfigEffect()        
+    }, [])
+
+    React.useEffect(()=>{
+
         const requestAllMovimentacoesFinanceirasEffect = async() =>{       
            await requestAllMovimentacoesFinanceiras();
         }
 
-        requestDataConfigEffect()
         requestAllMovimentacoesFinanceirasEffect();
 
-        
     }, [filtroDebitos, filtroCreditos, filtroEstornadas, filtroConciliadas, nextPage, setNextPage, defaultFilters])
-
 
     React.useEffect(()=>{
         let {filtros, detalhesFiltros} = montarFiltro();
@@ -734,8 +773,6 @@ const MovimentacoesFinanceira = ({defaultFilters, ...props})=>{
                                             </div>
                                         </Row>
                                     </Col>
-                                    
-                                    
                                 </Row>
                                
                                 <Row className={'my-2'}>
@@ -808,7 +845,6 @@ const MovimentacoesFinanceira = ({defaultFilters, ...props})=>{
             {
                 type !='external' && cadastrarMovimentacoesFinanceira && <Cadastrar cadastrarMovimentacoesFinanceira={cadastrarMovimentacoesFinanceira} setCadastrarMovimentacoesFinanceira={setCadastrarMovimentacoesFinanceira} atualizarMovimentacoesFinanceira={atualizarMovimentacoesFinanceira} setAtualizarMovimentacoesFinanceira={setAtualizarMovimentacoesFinanceira}  idMovimentacoesFinanceira={consultaChoice} setIdMovimentacoesFinanceira={setMovimentacoesFinanceiraChoice} callback={requestAllMovimentacoesFinanceiras} />
             }
-            
            
          </>
 
