@@ -28,15 +28,13 @@ const Header = (props) => {
             </Navbar>
 
         )
-    }
-
+    } 
 
     const { type, is_system, tenant_id } = dataUser ? dataUser : {};
 
     if (type == 'external') {
         return <ExternalHeader />;
     }
-
 
     const handleLinkClick = () => {
         const navbarToggler = document.querySelector('.navbar-toggler');
@@ -61,9 +59,6 @@ const Header = (props) => {
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} onClick={handleLinkClick} to="/configuracoes/cidade" >Cidade</Link></NavDropdown.Item>
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} onClick={handleLinkClick} to="/configuracoes/sistema" >Sistema</Link></NavDropdown.Item>
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} onClick={handleLinkClick} to="/configuracoes/construtor/ficha" >Templates de fichas</Link></NavDropdown.Item>
-
-                            {/* <NavDropdown.Divider />
-                                <NavDropdown.Item className={[estilos.itemMenu]} as='div'>Separated link</NavDropdown.Item> */}
                         </NavDropdown>
                         <NavDropdown title="Financeiro" id="collasible-nav-dropdown">
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} onClick={handleLinkClick} to="/financeiro/contas_receber" >Contas a receber</Link></NavDropdown.Item>
@@ -72,19 +67,9 @@ const Header = (props) => {
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} onClick={handleLinkClick} to="/financeiro/caixa" >Caixas</Link></NavDropdown.Item>
 
                         </NavDropdown>
-                        {/*<NavDropdown title="Produtos" id="collasible-nav-dropdown">
-                                                    <NavDropdown.Item className={[estilos.itemMenu]} as='div'>Produtos</NavDropdown.Item>
-                                                    <NavDropdown.Item className={[estilos.itemMenu]} as='div'>Categorias</NavDropdown.Item>
-                                                    <NavDropdown.Item className={[estilos.itemMenu]} as='div'>Embalagens</NavDropdown.Item>
-                                                    <NavDropdown.Item className={[estilos.itemMenu]} as='div'>Unidades</NavDropdown.Item>
-                                                </NavDropdown>
-                                                <NavDropdown title="Estoque" id="collasible-nav-dropdown">
-                                                    <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Estoque</NavDropdown.Item>
-                                                </NavDropdown>*/}
                         <NavDropdown title="Serviço" id="collasible-nav-dropdown">
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} onClick={handleLinkClick} to="/ordem/servico/painel" >Ordem de serviço</Link></NavDropdown.Item>
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} onClick={handleLinkClick} to="/servico/painel" >Serviço</Link></NavDropdown.Item>
-                            {/* <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Categoria de serviço</NavDropdown.Item> */}
                         </NavDropdown>
                         <NavDropdown title="Clientes" id="collasible-nav-dropdown">
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link style={{ width: '100%', height: '100%' }} onClick={handleLinkClick} to="/clientes/painel" >Clientes</Link></NavDropdown.Item>
@@ -93,9 +78,6 @@ const Header = (props) => {
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} onClick={handleLinkClick} to="/fichas/index" >Fichas</Link></NavDropdown.Item>
 
                         </NavDropdown>
-                        {/* <NavDropdown title="Fornecedores" id="collasible-nav-dropdown">
-                            <NavDropdown.Item className={[estilos.itemMenu]} as='div' >Fornecedores</NavDropdown.Item>
-                        </NavDropdown> */}
                         <NavDropdown title="Profissonais" id="collasible-nav-dropdown">
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} onClick={handleLinkClick} to="/especialidades/painel" >Especialidades</Link></NavDropdown.Item>
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} onClick={handleLinkClick} to="/profissionais/painel" >Profissionais</Link></NavDropdown.Item>
@@ -106,8 +88,6 @@ const Header = (props) => {
                         <NavDropdown title="Agenda" id="collasible-nav-dropdown">
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} onClick={handleLinkClick} to="/agenda/painel" >Lidata da agenda</Link></NavDropdown.Item>
                             <NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} onClick={handleLinkClick} to="/agenda/calendario" >Calendario de agenda</Link></NavDropdown.Item>
-                            {/*<NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} onClick={handleLinkClick} to="/agenda/eventos/painel" >Evento de agenda</Link></NavDropdown.Item>*/}
-                            {/*<NavDropdown.Item className={[estilos.itemMenu]} as='div' ><Link className={[estilos.link]} onClick={handleLinkClick} to="/categoria/eventos/painel" >Categoria de eventos</Link></NavDropdown.Item>*/}
 
                         </NavDropdown>
                         {/* <NavDropdown title="Fiscal" id="collasible-nav-dropdown">
