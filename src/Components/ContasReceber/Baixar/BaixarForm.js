@@ -152,7 +152,7 @@ const BaixarForm = ({ dataContasReceberChoice, setDataContasReceber, setIdContas
 			vrMulta = 0;
 		}
 	
-		let vrBaixar = FORMAT_CALC_COD(data?.vrLiquido);
+		let vrBaixar = FORMAT_CALC_COD(data?.vrLiquido - data?.vrPago);
 		let subTotal = vrBaixar + vrMulta + vrJuros + vrAcrescimo;
 	
 		if (vrDesconto >= subTotal) {
@@ -166,7 +166,7 @@ const BaixarForm = ({ dataContasReceberChoice, setDataContasReceber, setIdContas
 		obj.vr_juros = vrJuros;
 		obj.vr_multa = vrMulta;
 		obj.vr_acrescimo = vrAcrescimo;
-		obj.vr_total = data?.vrLiquido;
+		obj.vr_total = data?.vrLiquido - data?.vrPago;
 	
 		return obj;
 	};
@@ -579,7 +579,6 @@ const BaixarForm = ({ dataContasReceberChoice, setDataContasReceber, setIdContas
 																	value: values.vr_final,
 																	className: `${estilos.input}`,
 																	size: "sm",
-																	readonly: 'readonly',
 																},
 																atributsContainer: {
 																	className: ''

@@ -321,6 +321,20 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                                 },
                                 {
 
+                                    label: FORMAT_MONEY(atual?.vrJuros),
+                                    propsRow: {},
+                                    toSum: 1,
+                                    isCoin: 1,
+                                },
+                                {
+
+                                    label: FORMAT_MONEY(atual?.vrTaxa),
+                                    propsRow: {},
+                                    toSum: 1,
+                                    isCoin: 1,
+                                },
+                                {
+
                                     label: FORMAT_MONEY(atual?.vrPago),
                                     propsRow: {},
                                     toSum: 1,
@@ -410,6 +424,18 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
             },
             {
                 label: 'Valor devolvido',
+                props: {
+                    style: { minWidth: '150px' }
+                }
+            },
+            {
+                label: 'Juros pagos',
+                props: {
+                    style: { minWidth: '150px' }
+                }
+            },
+            {
+                label: 'Multa paga',
                 props: {
                     style: { minWidth: '150px' }
                 }

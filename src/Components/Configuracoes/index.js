@@ -97,6 +97,25 @@ const Configuracoes = ({ defaultFilters, ...props }) => {
                             </div>
                             <div class="col-md-4">
                                 <div class="p-4 bg-light rounded shadow">
+                                    <h3 class="h4 mb-4">Configurações financeiras</h3>
+                                    <ul class="list-unstyled">
+                                        <li class="mb-2">
+                                            <Link className={'text-primary text-decoration-underline'} to={'/financeiro/caixa'}>Caixas</Link>
+                                        </li>
+                                        <li class="mb-2">
+                                            <Link className={'text-primary text-decoration-underline'} to={'/configuracoes/construtor/ficha'}>Formas de pagamento</Link>
+                                        </li>
+                                        <li class="mb-2">
+                                            <Link className={'text-primary text-decoration-underline'} to={'/configuracoes/filial'}>Planos de pagamento</Link>
+                                        </li>
+                                        <li class="mb-2">
+                                            <Link className={'text-primary text-decoration-underline'} to={'/configuracoes/construtor/ficha'}>Operadores financeiros</Link>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="p-4 bg-light rounded shadow">
                                     <h3 class="h4 mb-4">Outras configurações</h3>
                                     <ul class="list-unstyled">
                                         <li class="mb-2">
