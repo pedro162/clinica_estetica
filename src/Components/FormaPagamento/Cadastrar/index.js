@@ -1,53 +1,72 @@
 import React from 'react';
-import useFetch from '../../../Hooks/useFetch.js';
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CONSULTA_ONE_GET, GRUPOS_ALL_POST} from '../../../api/endpoints/geral.js'
-import {UserContex} from '../../../Context/UserContex.js'
 import FormFormaPagamento from '../FormFormaPagamento/index.js'
-import Pesquisar from '../Pesquisar/index.js'
+import { Col, Row, Button } from 'react-bootstrap';
 import Modal from '../../Utils/Modal/index.js'
-import Load from '../../Utils/Load/index.js'
+import useFetch from '../../../Hooks/useFetch.js';
+import { UserContex } from '../../../Context/UserContex.js'
+import { faHome, faSearch, faPlus, faCheck } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const Cadastrar = ({idFormaPagamento, setIdFormaPagamento, callback, atualizarFormaPagamento, setAtualizarFormaPagamento, cadastrarFormaPagamento, setCadastrarFormaPagamento})=>{
+const Cadastrar = ({ callback, cadastrarFormaPagamento, setCadastrarFormaPagamento }) => {
 
-    
-    const [showModalAtualizarFormaPagamento, setShowModalAtualizarFormaPagamento] = React.useState(false)
-    const [carregando, setCarregando] = React.useState(false)
-    const [dataFormaPagamento, setDataFormaPagamento] = React.useState(null)
-    const [dataGrupo, setDataGrupo] = React.useState(null)
-	const {getToken, dataUser} = React.useContext(UserContex);
+	const [showModalCriarFormaPagamento, setShowModalFormaPagamento] = React.useState(true)
+	const [carregando, setCarregando] = React.useState(false)
+	const [dataFormaPagamento, setDataFormaPagamento] = React.useState(null)
+	const [dataGrupo, setDataGrupo] = React.useState(null)
+	const { getToken, dataUser } = React.useContext(UserContex);
+	const [erroValidacao, setErroValidacao] = React.useState(null)
+	const [showModalErro, setShowModalErro] = React.useState(false)
+	const [sendForm, setSendForm] = React.useState(false)
 
-	const {data, error, request, loading} = useFetch();
+	const { data, error, request, loading } = useFetch();
+	const formRef = React.useRef();
 
-	React.useEffect(()=>{
-		
-		const getGrupo = async ()=>{
-			const {url, options} = GRUPOS_ALL_POST({}, getToken());
-	        const {response, json} = await request(url, options);
-
-	        if(json){
-	            setDataGrupo(json)
-	            setShowModalAtualizarFormaPagamento(true)
-	        }else{
-	        	setDataGrupo(null)
-	        }
+	const handleConclude = () => {
+		if (formRef.current) {
+			formRef.current.submitForm();
 		}
+	};
 
-		if(cadastrarFormaPagamento == true){
-			getGrupo();
-		}
-				
-	}, [cadastrarFormaPagamento])
+	const FormModal = () => {
+		return (
+			<Row>
+				<Col>
+					<FormFormaPagamento
 
-	return(
+						{...data}
+						carregando={carregando}
+						dataFormaPagamentoChoice={dataFormaPagamento}
+						setAtualizarFormaPagamento={setCadastrarFormaPagamento}
+						atualizarFormaPagamento={cadastrarFormaPagamento}
+						showModalCriarFormaPagamento={showModalCriarFormaPagamento}
+						setShowModalCriarFormaPagamento={setShowModalFormaPagamento}
+						callback={callback}
+						setSendForm={setSendForm}
+						sendForm={sendForm}
+						ref={formRef}
+						setCarregando={setCarregando}
+					/>
+				</Col>
+			</Row>
+		)
+	}
+
+	return (
 		<>
-			{! dataGrupo &&
-				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={()=>null}  title={'Cadastrar forma de pagamento'} size="log" propsConcluir={{}} labelConcluir={''} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="" show={setShowModalAtualizarFormaPagamento} showHide={()=>{setShowModalAtualizarFormaPagamento();}}>
-					<Load/>
-				</Modal>
-			}
-			{dataGrupo &&
-				<FormFormaPagamento dataGrupo={dataGrupo} setIdFormaPagamento={setIdFormaPagamento} idFormaPagamento={idFormaPagamento} carregando={false} dataFormaPagamentoChoice={dataFormaPagamento} setAtualizarFormaPagamento={setAtualizarFormaPagamento} atualizarFormaPagamento={atualizarFormaPagamento} showModalCriarFormaPagamento={showModalAtualizarFormaPagamento} setShowModalCriarFormaPagamento={()=>{setShowModalAtualizarFormaPagamento();setCadastrarFormaPagamento()}} callback={callback} />
-			}
+			<Modal
+				handleConcluir={() => { handleConclude(); }}
+				children={<FormModal />}
+				title={'Cadastrar caixa'}
+				size="lg"
+				dialogClassName={''}
+				aria-labelledby={'aria-labelledby'}
+				labelCanelar="Fechar"
+				show={showModalCriarFormaPagamento}
+				showHide={() => { setShowModalFormaPagamento(false); setCadastrarFormaPagamento(false); }}
+				propsConcluir={{ 'disabled': carregando }}
+				labelConcluir={carregando ? <><FontAwesomeIcon icon={faCheck} /> Salvando...</> : <><FontAwesomeIcon icon={faCheck} /> Concluir </>}
+			/>
+
 		</>
 	)
 }

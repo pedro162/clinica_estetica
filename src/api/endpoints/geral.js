@@ -1439,11 +1439,6 @@ export const PROFISSIONAIS_DELETE_POST = (id, token) => {
     }
 
 }
-//------------
-
-
-
-
 
 //--- CONSULTA  ----------------------------------
 export const CONSULTA_ALL_POST = (data, token) => {
@@ -1468,6 +1463,7 @@ export const CONSULTA_ALL_POST = (data, token) => {
     }
 
 }
+
 export const CONSULTA_ONE_GET = (id, token) => {
 
     var myHeaders = new Headers();
@@ -2750,7 +2746,6 @@ export const AGENDA_CANCELAR_POST = (id, data, token) => {
 
 }
 
-
 //--- Forma de pagamento  ----------------------------------
 export const FORMA_PAGAMENTOALL_POST = (data, token) => {
 
@@ -2774,6 +2769,7 @@ export const FORMA_PAGAMENTOALL_POST = (data, token) => {
     }
 
 }
+
 export const FORMA_PAGAMENTO_ONE_GET = (id, token) => {
 
     var myHeaders = new Headers();

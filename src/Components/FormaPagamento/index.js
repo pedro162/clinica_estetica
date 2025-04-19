@@ -1,7 +1,7 @@
 import React from 'react';
 import estilos from './FormaPagamento.module.css'
 import useFetch from '../../Hooks/useFetch.js';
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CONSULTA_ALL_POST, FILIAIS_ALL_POST, RECORD_NUMBER_PER_REQUEST} from '../../api/endpoints/geral.js'
+import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, FORMA_PAGAMENTOALL_POST, FILIAIS_ALL_POST, RECORD_NUMBER_PER_REQUEST} from '../../api/endpoints/geral.js'
 import {FORMAT_DATA_PT_BR} from '../../functions/index.js'
 import {IS_MOBILE, MOBILE_WITH, isMobileYet, WINDOW_WIDTH} from '../../var/index.js'
 import {Col, Row, Button } from 'react-bootstrap';
@@ -15,9 +15,8 @@ import Load from '../Utils/Load/index.js'
 import {UserContex} from '../../Context/UserContex.js'
 import FormFormaPagamento from './FormFormaPagamento/index.js'
 import Cadastrar from './Cadastrar/index.js'
-import CadastroExterno from './Cadastrar/CadastroExterno.js'
 import Atualizar from './Atualizar/index.js'
-import Cancelar from './Cancelar/index.js'
+import Cancelar from './Excluir/index.js'
 import Include from './include.js';
 import FormControlInput from '../FormControl/index.js'
 import { Link } from 'react-router-dom/cjs/react-router-dom.min';
@@ -27,8 +26,6 @@ const FormaPagamento = (props)=>{
 
     const {data, error, request, loading} = useFetch();
     const [estado, setFormaPagamento] = React.useState([])
-    const [exemplos, setExemplos] = React.useState([])
-    const [exemplosTitleTable, setExemplosTitleTable] = React.useState([])
     const [showModalCriarFormaPagamento, setShowModalCriarConstula] = React.useState(false)
     const [consultaChoice, setFormaPagamentoChoice] = React.useState(null);
     const [atualizarFormaPagamento, setAtualizarFormaPagamento] = React.useState(false)   
@@ -306,7 +303,7 @@ const FormaPagamento = (props)=>{
 
         let {filtros, detalhesFiltros} = montarFiltro();
         setAppliedFilters(detalhesFiltros)
-        let {url, options} = CONSULTA_ALL_POST({...filtros}, getToken());
+        let {url, options} = FORMA_PAGAMENTOALL_POST({...filtros}, getToken());
         
         if(nextPage){
             url = nextPage;
@@ -413,43 +410,8 @@ const FormaPagamento = (props)=>{
                                             <Col xs="1" sm="1" md="1" style={{textAlign:'left', alignItems:'center', justifyContent:'center', margin:'auto',padding:'0'}} >
                                                 <FontAwesomeIcon onClick={()=>{requestAllFormaPagamentos();}} size={'lg'} icon={faSearch}/>
                                             </Col>
-                                        
-                                            
                                          </Row>
-
-                                         <Row className={'mt-2'}>
-                                            <div  style={{display:'flex', flexDirection:'collumn', flexWrap:'wrap'}}>
-                                               {(filtroAbertas ? <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroAbertas(false);}} ><FontAwesomeIcon icon={faTimes} /> Pendentes</Button> : '')}
-                                                {(filtroConcluidas ? <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroConcluidas(false);}} ><FontAwesomeIcon icon={faTimes} /> Concluídas</Button> : '')}
-                                                {(filtroCanceladas ? <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroCanceladas(false);}} ><FontAwesomeIcon icon={faTimes} /> Canceladas</Button> : '')}
-                                                {(filtroRemarcadas ? <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroRemarcadas(false);}} ><FontAwesomeIcon icon={faTimes} /> Canceladas</Button> : '')}
-                                                
-                                            </div>
-                                        </Row>
                                     </Col>
-                                    
-                                    
-                                </Row>
-                               
-                                <Row className={'my-2'}>
-                                    <Col>
-                                        <Row>
-                                            <Col><span style={{fontWeight:'bolder', fontSize:'14pt'}} >Filtros</span></Col>
-                                        </Row>
-
-                                        <div>
-                                             <hr style={{margin:'0',padding:'0'}}/>  
-                                        </div>
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <div style={{display:'flex', flexDirection:'collumn', flexWrap:'wrap'}}>
-                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroAbertas(true);}} ><FontAwesomeIcon icon={faSearch} /> Pendentes</Button>
-                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroConcluidas(true);}} ><FontAwesomeIcon icon={faSearch} /> Concluídas</Button>
-                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroCanceladas(true);}} ><FontAwesomeIcon icon={faSearch} /> Canceladas</Button>
-                                        <Button style={{borderRadius:'50px', marginBottom:'10px',marginRight:'0.4rem'}} className={'btn btn-sm btn-secondary'} onClick={()=>{setFiltroRemarcadas(true);}} ><FontAwesomeIcon icon={faSearch} /> Remarcadas</Button>
-                                    </div>
-                                    
                                 </Row>
 
                                  <Row className={'my-2'}>
@@ -501,11 +463,7 @@ const FormaPagamento = (props)=>{
             </Row>
 
             {
-                type =='external' && cadastrarFormaPagamento && <CadastroExterno cadastrarFormaPagamento={cadastrarFormaPagamento} setCadastrarFormaPagamento={setCadastrarFormaPagamento} atualizarFormaPagamento={atualizarFormaPagamento} setAtualizarFormaPagamento={setAtualizarFormaPagamento}  idFormaPagamento={consultaChoice} setIdFormaPagamento={setFormaPagamentoChoice} callback={requestAllFormaPagamentos} />
-            }
-
-            {
-                type !='external' && cadastrarFormaPagamento && <Cadastrar cadastrarFormaPagamento={cadastrarFormaPagamento} setCadastrarFormaPagamento={setCadastrarFormaPagamento} atualizarFormaPagamento={atualizarFormaPagamento} setAtualizarFormaPagamento={setAtualizarFormaPagamento}  idFormaPagamento={consultaChoice} setIdFormaPagamento={setFormaPagamentoChoice} callback={requestAllFormaPagamentos} />
+                cadastrarFormaPagamento && <Cadastrar cadastrarFormaPagamento={cadastrarFormaPagamento} setCadastrarFormaPagamento={setCadastrarFormaPagamento} atualizarFormaPagamento={atualizarFormaPagamento} setAtualizarFormaPagamento={setAtualizarFormaPagamento}  idFormaPagamento={consultaChoice} setIdFormaPagamento={setFormaPagamentoChoice} callback={requestAllFormaPagamentos} />
             }
             
            

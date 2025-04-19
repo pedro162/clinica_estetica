@@ -15,7 +15,8 @@ import {UserContex} from '../../Context/UserContex.js'
 import FormFormaPagamento from './FormFormaPagamento/index.js'
 import Cadastrar from './Cadastrar/index.js'
 import Atualizar from './Atualizar/index.js'
-import Cancelar from './Cancelar/index.js'
+import Excluir from './Excluir/index.js'
+import Visualizar from './Visualizar/index.js'
 import ListMobile from '../Relatorio/ListMobile/index.js'
 
 
@@ -23,15 +24,13 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
 
     const {data, error, request, loading} = useFetch();
     const [estado, setFormaPagamento] = React.useState([])
-    const [exemplos, setExemplos] = React.useState([])
-    const [exemplosTitleTable, setExemplosTitleTable] = React.useState([])
     const [showModalCriarFormaPagamento, setShowModalCriarConstula] = React.useState(false)
     const [consultaChoice, setFormaPagamentoChoice] = React.useState(null);
     const [atualizarFormaPagamento, setAtualizarFormaPagamento] = React.useState(false)   
-    const [cancelarFormaPagamento, setCancelarFormaPagamento] = React.useState(false)    
+    const [cancelarFormaPagamento, setExcluirFormaPagamento] = React.useState(false)      
+    const [visualizarFormaPagamento, setVisualizarFormaPagamento] = React.useState(false)    
     const [cadastrarFormaPagamento, setCadastrarFormaPagamento] = React.useState(false) 
     const [acao, setAcao] = React.useState(null)
-    const [pessoa, setPessoa] = React.useState('')
     const [nrPageAtual, setNrPageAtual] = React.useState(null)
     const [qtdItemsTo, setQtdItemsTo] = React.useState(null)
     const [qtdItemsTotal, setQtdItemsTotal] = React.useState(null)
@@ -39,43 +38,43 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
     const {getToken, dataUser} = React.useContext(UserContex);
     const {type, is_system, tenant_id} = dataUser ? dataUser : {};
     
-    const handleTotalPages=()=>{
-        if(Number(dataEstado?.mensagem?.last_page > 0)){
-            setTotalPageCount(dataEstado?.mensagem?.last_page)
+    const handleTotalPages = () => {
+        if (Number(dataEstado?.data?.data?.last_page > 0)) {
+            setTotalPageCount(dataEstado?.data?.data?.last_page)
         }
     }
 
-    const handleTotalItems=()=>{
-        if(Number(dataEstado?.mensagem?.to > 0)){
-            setQtdItemsTo(dataEstado?.mensagem?.to)
+    const handleTotalItems = () => {
+        if (Number(estado?.data?.to > 0)) {
+            setQtdItemsTo(estado?.data?.to)
         }
 
-        if(Number(dataEstado?.mensagem?.total > 0)){
-            setQtdItemsTotal(dataEstado?.mensagem?.total)
-        }
-    }
-
-    const nextPageRout = ()=>{       
-        if(dataEstado?.mensagem?.next_page_url){
-            setNextPage(dataEstado?.mensagem?.next_page_url)
+        if (Number(estado?.data?.total > 0)) {
+            setQtdItemsTotal(estado?.data?.total)
         }
     }
 
-    const previousPageRout = ()=>{       
-        if(dataEstado?.mensagem?.prev_page_url){
-            setNextPage(dataEstado?.mensagem?.prev_page_url)
+    const nextPageRout = () => {
+        if (estado?.data?.next_page_url) {
+            setNextPage(estado?.data?.next_page_url)
         }
     }
 
-    const firstPageRout = ()=>{       
-        if(dataEstado?.mensagem?.first_page_url){
-            setNextPage(dataEstado?.mensagem?.first_page_url)
+    const previousPageRout = () => {
+        if (estado?.data?.prev_page_url) {
+            setNextPage(estado?.data?.prev_page_url)
         }
     }
 
-    const lastPageRout = ()=>{       
-        if(dataEstado?.mensagem?.last_page_url){
-            setNextPage(dataEstado?.mensagem?.last_page_url)
+    const firstPageRout = () => {
+        if (estado?.data?.first_page_url) {
+            setNextPage(estado?.data?.first_page_url)
+        }
+    }
+
+    const lastPageRout = () => {
+        if (estado?.data?.last_page_url) {
+            setNextPage(estado?.data?.last_page_url)
         }
     }
 
@@ -88,13 +87,20 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                     setAtualizarFormaPagamento(false);
                 }
                 break;
-            case 'cancelar':
+            case 'excluir':
                 if(consultaChoice > 0){
-                    setCancelarFormaPagamento(true);
+                    setExcluirFormaPagamento(true);
                 }else{
-                    setCancelarFormaPagamento(false);
+                    setExcluirFormaPagamento(false);
                 }
                 break;
+                case 'visualizar':
+                    if(consultaChoice > 0){
+                        setVisualizarFormaPagamento(true);
+                    }else{
+                        setVisualizarFormaPagamento(false);
+                    }
+                    break;
             default://
                 
                 break;
@@ -117,11 +123,19 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
         setFormaPagamentoChoice(idFormaPagamento)
         setAcao('editar')
         setAtualizarFormaPagamento(true);
+
     }
+
     const cancelarFormaPagamentoAction = (idFormaPagamento)=>{
         setFormaPagamentoChoice(idFormaPagamento)
-        setAcao('cancelar')
-        setCancelarFormaPagamento(true);
+        setAcao('excluir')
+        setExcluirFormaPagamento(true);
+    }
+
+    const visualizarFormaPagamentoAction = (idFormaPagamento)=>{
+        setFormaPagamentoChoice(idFormaPagamento)
+        setAcao('visualizar')
+        setVisualizarFormaPagamento(true);
     }
 
     const novaFormaPagamento = (idFormaPagamento)=>{
@@ -135,11 +149,19 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
         let data = [];
         let dataFormaPagamento = estado
 
-        if(dataFormaPagamento?.mensagem){
+        if (dataFormaPagamento?.mensagem) {
             dataFormaPagamento = dataFormaPagamento?.mensagem;
         }
 
-        if(dataFormaPagamento?.data){
+        if (dataFormaPagamento?.registro) {
+            dataFormaPagamento = dataFormaPagamento?.registro;
+        }
+
+        if (dataFormaPagamento?.data) {
+            dataFormaPagamento = dataFormaPagamento?.data;
+        }
+
+        if (dataFormaPagamento?.data) {
             dataFormaPagamento = dataFormaPagamento?.data;
         }
 
@@ -149,57 +171,30 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                 if(atual){
                     let line_style = {}
                     let acoesArr = [];
-                    let btnCancelar         = true;
+                    let btnExcluir         = true;
                     let btnEditar           = true;
                     let btnExames           = true;
                     let btnDiagnostico      = true;
                     let btnFicha            = true;
                     let btnDetalhes         = true;
-                    let btnGerarFinanceiro  = true;
-
-                    if(atual.status == 'cancelado'){
-                        btnCancelar         = false;
-                        btnEditar           = false;
-                        btnGerarFinanceiro  = false;
-                        line_style.color    = 'red';
-                    }
-
-                    if(atual.status == 'finalizado'){
-                        btnCancelar = false;
-                        btnEditar   = false;
-                        line_style.color = 'green';
-                    }
+                    
 
                     if(type=='external'){
-                        btnGerarFinanceiro  = false;
+                        btnExcluir  = false;
                         btnEditar           = false;
                         
-                    }
-
-                    if(btnGerarFinanceiro){
-                        acoesArr.push({acao:()=>atualizarFormaPagamentoAction(atual.id), label:'Gerar financeiro', propsOption:{}, propsLabel:{}})
                     }
 
                     if(btnEditar){
                         acoesArr.push({acao:()=>atualizarFormaPagamentoAction(atual.id), label:'Editar', propsOption:{}, propsLabel:{}})
                     }
 
-                    if(btnCancelar){
-                        acoesArr.push({acao:()=>cancelarFormaPagamentoAction(atual.id), label:'Cancelar', propsOption:{}, propsLabel:{}})
-                    }
-
-                    if(btnExames){
-                        
-                    }
-
-                    if(btnDiagnostico){
-                        
-                    }
-                    if(btnFicha){
-                        
+                    if(btnExcluir){
+                        acoesArr.push({acao:()=>cancelarFormaPagamentoAction(atual.id), label:'Excluir', propsOption:{}, propsLabel:{}})
                     }
 
                     if(btnDetalhes){
+                        acoesArr.push({acao:()=>visualizarFormaPagamentoAction(atual.id), label:'Visualizar', propsOption:{}, propsLabel:{}})
                     }
 
                     data.push(
@@ -261,45 +256,56 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
     const gerarListMobileRelatorio = ()=>{
        
         let data = [];
+        let dataFormaPagamento = estado
 
-        let dataClientes = estado
-
-        if(dataClientes?.mensagem){
-            dataClientes = dataClientes?.mensagem;
+        if (dataFormaPagamento?.mensagem) {
+            dataFormaPagamento = dataFormaPagamento?.mensagem;
         }
 
-        if(dataClientes?.data){
-            dataClientes = dataClientes?.data;
+        if (dataFormaPagamento?.registro) {
+            dataFormaPagamento = dataFormaPagamento?.registro;
         }
 
-        if(dataClientes && Array.isArray(dataClientes) && dataClientes.length > 0){
-            for(let i=0; !(i == dataClientes.length); i++){
-                let atual = dataClientes[i];
+        if (dataFormaPagamento?.data) {
+            dataFormaPagamento = dataFormaPagamento?.data;
+        }
+
+        if (dataFormaPagamento?.data) {
+            dataFormaPagamento = dataFormaPagamento?.data;
+        }
+
+        if(dataFormaPagamento && Array.isArray(dataFormaPagamento) && dataFormaPagamento.length > 0){
+            for(let i=0; !(i == dataFormaPagamento.length); i++){
+                let atual = dataFormaPagamento[i];
                 if(atual){
 
                     let line_style = {}
                     let acoesArr = [];
-                    let btnEditar           = true;
-                    let btnGerarFinanceiro  = true;
+                    let btnEditar  = true;
+                    let btnExcluir  = true;
+                    let btnDetalhes  = true;
 
                     if(type=='external'){
-                        btnGerarFinanceiro  = false;
-                        btnEditar           = false;
-                        
-                    }
-
-                    if(btnGerarFinanceiro){
-                        acoesArr.push({acao:()=>atualizarFormaPagamentoAction(atual.id), label:'Gerar financeiro', propsOption:{}, propsLabel:{}})
+                        btnExcluir  = false;
+                        btnEditar   = false;                        
                     }
 
                     if(btnEditar){
                         acoesArr.push({acao:()=>atualizarFormaPagamentoAction(atual.id), label:'Editar', propsOption:{}, propsLabel:{}})
                     }
 
+                    if(btnExcluir){
+                        acoesArr.push({acao:()=>cancelarFormaPagamentoAction(atual.id), label:'Excluir', propsOption:{}, propsLabel:{}})
+                    }
+
+                    if(btnDetalhes){
+                        acoesArr.push({acao:()=>visualizarFormaPagamentoAction(atual.id), label:'Visualizar', propsOption:{}, propsLabel:{}})
+                    }
+
                     data.push(
 
                         {
-                            propsRow:{id:(atual.id), titleRow: atual?.id+' - '+atual?.name_pessoa, style:{...line_style}},
+                            propsRow:{id:(atual.id), titleRow: atual?.id+' - '+atual?.name, style:{...line_style}},
                             acoes:[
                                 ...acoesArr
                             ],
@@ -313,30 +319,16 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                                 [
                                     
                                     {
-                                        title:<span style={{fontWeight:'480'}}>Prioridade: </span>,
-                                        label:atual?.prioridade,
-                                        props:{style:{textAlign:'left', fontWeight:'bolder'}, md:'1', sm:'3', xs:'3'},
+                                        title:<span style={{fontWeight:'480'}}>Código: </span>,
+                                        label:atual?.cdCobrancaTipo,
+                                        props:{style:{textAlign:'left', fontWeight:'bolder'}, md:'6', sm:'6', xs:'6'},
                                         toSum:0,
                                         isCoin:0,
                                     },
                                     {
-                                        title:<span style={{fontWeight:'480'}}>Status: </span>,
-                                        label:atual?.status,
-                                        props:{style:{textAlign:'left', fontWeight:'bolder'}, md:'1', sm:'3', xs:'3'},
-                                        toSum:0,
-                                        isCoin:0,
-                                    },
-                                    {
-                                        title:<span style={{fontWeight:'480'}}>Profissional: </span>,
-                                        label:atual?.name_profissional,
-                                        props:{style:{textAlign:'left'}, md:'1', sm:'3', xs:'3'},
-                                        toSum:0,
-                                        isCoin:0,
-                                    },
-                                    {
-                                        title:<span style={{fontWeight:'480'}}>DT início: </span>,
-                                        label:(FORMAT_DATA_PT_BR(atual?.dt_inicio)+" "+atual.hr_inicio),
-                                        props:{style:{textAlign:'left'}, md:'1', sm:'3', xs:'3'},
+                                        title:<span style={{fontWeight:'480'}}>Tipo: </span>,
+                                        label:atual?.tpPagamento,
+                                        props:{style:{textAlign:'left', fontWeight:'bolder'}, md:'6', sm:'6', xs:'6'},
                                         toSum:0,
                                         isCoin:0,
                                     },
@@ -359,10 +351,10 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
     }
 
     React.useEffect(()=>{
-        setFormaPagamento(dataEstado)
-        setNrPageAtual(dataEstado?.mensagem?.current_page)
-        handleTotalPages()
-        handleTotalItems()
+        setFormaPagamento(dataEstado?.data)
+        setNrPageAtual(dataEstado?.data?.data?.current_page)
+        handleTotalPages();
+        handleTotalItems();
     }, [dataEstado])
     
     const rowsTableArr = gerarTableFormaPagamento();    
@@ -427,7 +419,12 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
 
             {
                 cancelarFormaPagamento &&
-                <Cancelar cancelarFormaPagamento={cancelarFormaPagamento} setCancelarFormaPagamento={setCancelarFormaPagamento}  idFormaPagamento={consultaChoice} setIdFormaPagamento={setFormaPagamentoChoice} callback={requestAllFormaPagamentos} />
+                <Excluir cancelarFormaPagamento={cancelarFormaPagamento} setExcluirFormaPagamento={setExcluirFormaPagamento}  idFormaPagamento={consultaChoice} setIdFormaPagamento={setFormaPagamentoChoice} callback={requestAllFormaPagamentos} />
+            }
+
+            {
+                visualizarFormaPagamento &&
+                <Visualizar visualizarFormaPagamento={visualizarFormaPagamento} setVisualizarFormaPagamento={setVisualizarFormaPagamento}  idFormaPagamento={consultaChoice} setIdFormaPagamento={setFormaPagamentoChoice} callback={requestAllFormaPagamentos} />
             }
            
          </>

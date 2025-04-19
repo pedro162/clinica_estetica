@@ -12,3 +12,7 @@
 .bodyCard{
     overflow: auto !important;
 }
+
+.card{
+	border: #DADFE3 solid 1px !important;
+}

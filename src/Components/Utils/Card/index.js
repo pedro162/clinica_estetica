@@ -10,7 +10,7 @@ const Card =({children, title, acoesBottomCard, propsContainerTitulo, propsConta
 	}
 	return(
 		<>
-			<CartBootstrap {...propsCard} >
+			<CartBootstrap {...propsCard}  className={[estilos.card]}>
 				<CartBootstrap.Header className={[estilos.headerCard]} {...propsHeader}>
 					<Row style={{}}>
 						<Col  {...propsContainerTitulo} >

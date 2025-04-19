@@ -1,216 +1,190 @@
-import React from 'react';
+import React, { forwardRef, useImperativeHandle } from 'react';
 import { Formik, ErrorMessage, Field } from 'formik';
 import FormControlInput from '../../FormControl/index.js'
 import FormControlSelect from '../../FormControl/Select.js'
 import { Col, Row } from 'react-bootstrap';
 import Button from '../../FormControl/Button.js';
 import estilos from './FormFormaPagamento.module.css'
-import Modal from '../../Utils/Modal/index.js'
 import useFetch from '../../../Hooks/useFetch.js';
 import { UserContex } from '../../../Context/UserContex.js'
-import Required from '../../FormControl/Required.js';
-import Load from '../../Utils/Load/index.js'
-import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible.js'
 import Swal from 'sweetalert2'
+import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible'
+import { TOKEN_POST, CLIENT_ID, CLIENT_SECRET, FILIAIS_ALL_POST, FORMA_PAGAMENTO_UPDATE_POST, FORMA_PAGAMENTO_SAVE_POST } from '../../../api/endpoints/geral.js'
 
-import { TOKEN_POST, CLIENT_ID, CLIENT_SECRET, CONSULTA_SAVE_POST, CONSULTA_ALL_POST, CONSULTA_UPDATE_POST, CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST } from '../../../api/endpoints/geral.js'
-
-
-const FormFormaPagamento = ({ dataFormaPagamentoChoice, setIdFormaPagamento, idFormaPagamento, showModalCriarFormaPagamento, setShowModalCriarFormaPagamento, callback, atualizarFormaPagamento, setAtualizarFormaPagamento, carregando }) => {
+const FormFormaPagamento = forwardRef(({
+	name,
+	setname,
+	tipo,
+	setTipo,
+	hasOperadorFinanceiro,
+	setVrMinimo,
+	id,
+	setVrMaximo,
+	cdCobrancaTipo,
+	setcdCobrancaTipo,
+	tpPagamento,
+	setAceitaTransferencia,
+	hasEntrada,
+	setVrSaldoInicial,
+	carregando,
+	setAtualizarFormaPagamento,
+	callback,
+	setShowModalCriarFormaPagamento,
+	showModalCriarFormaPagamento,
+	idFormaPagamento,
+	setIdFormaPagamento,
+	dataFormaPagamentoChoice,
+	atualizarFormaPagamento,
+	setCarregando,
+	...props
+}, ref) => {
 
 	const { data, error, request, loading } = useFetch();
 	const dataRequest = useFetch();
-
 	const { getToken, dataUser } = React.useContext(UserContex);
+	const [dataFiliais, setDataFiliais] = React.useState([])
+	const [dataItens, setDataitens] = React.useState([])
 	const [dataFormaPagamento, setDataFormaPagamento] = React.useState([])
+	const [dataPlanoPagamento, setDataPlanoPagamento] = React.useState([])
+	const [dataOperadorFinanceiro, setDataOperadorFinanceiro] = React.useState([])
+	const [dataFormaPagamentoEscolhido, setDataFormaPagamentoEscolhido] = React.useState([])
+	const [idFormaPagamentoForm, setIdFormaPagamentoForm] = React.useState(0)
+	const [vrCobrancaForm, setVrCobrancaForm] = React.useState(0)
+	const [idPlanoPagamentoForm, setIdPlanoPagamentoForm] = React.useState(0)
+	const [idOperadorFinanceiroForm, setIdOperadorFinanceiroForm] = React.useState(0)
+	const [idFilialForm, setIdFilialForm] = React.useState(0)
+	const [nrDocForm, setNrDocForm] = React.useState('')
+	const [idPessoaForm, setIdPessoaForm] = React.useState(0)
+
+	const formikRef = React.useRef();
 
 	const sendData = async ({
-		name,
-		historico,
-		pessoa_id,
-		dt_inicio,
-		hr_inicio,
-		prioridade,
-		status,
-		profissional_id,
-		filial_id,
-		dt_fim,
-		hr_fim,
-		name_atendido,
-		tipo,
+		...params
 	}) => {
-
-
 		const data = {
-			'name': name,
-			'historico': historico,
-			'pessoa_id': pessoa_id,
-			'dt_inicio': dt_inicio,
-			'hr_inicio': hr_inicio,
-			'prioridade': prioridade,
-			'status': status,
-			'profissional_id': profissional_id,
-			'filial_id': filial_id,
-			'dt_fim': dt_fim,
-			'hr_fim': hr_fim,
-			'name_atendido': name_atendido,
-			'tipo': tipo,
+			...params,
 		}
 
-		if (atualizarFormaPagamento == true) {
-			const { url, options } = CONSULTA_UPDATE_POST(idFormaPagamento, data, getToken());
-			const { response, json } = await request(url, options);
-			
-			if (json) {
+		let data_config = idFormaPagamento && idFormaPagamento > 0
+			? FORMA_PAGAMENTO_UPDATE_POST(idFormaPagamento, data, getToken())
+			: FORMA_PAGAMENTO_SAVE_POST(data, getToken());
 
-				callback();
-				setShowModalCriarFormaPagamento();
-				setAtualizarFormaPagamento(false);
-				setIdFormaPagamento(null);
+		const { url, options } = data_config;
+		const { response, json } = await request(url, options);
 
-				Swal.fire({
-					icon: "success",
-					title: "",
-					text: 'Registrado com sucesso',
-					footer: '',
-					confirmButtonColor: "#07B201",
-				});
-			}
+		if (json && !error) {
+			callback();
+			setShowModalCriarFormaPagamento();
+			setAtualizarFormaPagamento(false);
+			setIdFormaPagamento(null);
 
-		} else {
-
-			const { url, options } = CONSULTA_SAVE_POST(data, getToken());
-			const { response, json } = await request(url, options);
-			
-			if (json) {
-				
-				callback();
-				setShowModalCriarFormaPagamento();
-				setAtualizarFormaPagamento(false);
-
-				Swal.fire({
-					icon: "success",
-					title: "",
-					text: 'Registrado com sucesso',
-					footer: '',
-					confirmButtonColor: "#07B201",
-				});
-			}
-
+			Swal.fire({
+				icon: "success",
+				title: "",
+				text: 'Registrado com sucesso',
+				footer: '',
+				confirmButtonColor: "#07B201",
+			});
 		}
 	}
 
-	const requestAllFormaPagamentos = async () => {
+	const validate = (values) => {
+		const errors = {};
+		if (!values.name) errors.name = 'Obrigatório';
+		if (!values.tipo) errors.tipo = 'Obrigatório';
+		if (!values.hasOperadorFinanceiro) errors.hasOperadorFinanceiro = 'Obrigatório';
+		if (!values.cdCobrancaTipo) errors.cdCobrancaTipo = 'Obrigatório';
+		if (!values.tpPagamento) errors.tpPagamento = 'Obrigatório';
+		if (!values.hasLimiteDeCredito) errors.hasLimiteDeCredito = 'Obrigatório';
+		if (!values.hasAcertoCaixa) errors.hasAcertoCaixa = 'Obrigatório';
+		if (!values.hasEntrada) errors.hasEntrada = 'Obrigatório';
+		return errors;
+	};
 
-		const { url, options } = CONSULTA_ALL_POST({}, getToken());
-		const { response, json } = await dataRequest.request(url, options);
-		
-		if (json) {
-			setDataFormaPagamento(json)
-		} else {
+	useImperativeHandle(ref, () => ({
+		submitForm: () => {
+			formikRef.current.handleSubmit();
+		},
+	}));
 
-			setDataFormaPagamento([]);
-		}
-	}
+	React.useRef(() => {
+		setCarregando(loading)
+	}, [loading, setCarregando]);
 
 	const dataToFormFormaPagamento = () => {
-		let obj = {
-			name: '', historico: '', pessoa_id: '', dt_inicio: '', hr_inicio: '', prioridade: '', status: '', profissional_id: '',
-			filial_id: '', dt_fim: '', hr_fim: '', name_atendido: '', tipo: ''
-		}
+		let obj = { hasEntrada: '', hasAcertoCaixa: '', hasAcertoBalcao: 'no', hasLimiteDeCredito: '', name: '', tipo: '', hasOperadorFinanceiro: '', id: '', cdCobrancaTipo: '', tpPagamento: '', hasEntrada: '', active: '', deleted_at: '', created_at: '', updated_at: '' }
 
-		if (dataFormaPagamentoChoice && dataFormaPagamentoChoice.hasOwnProperty('mensagem')) {
-			let data = dataFormaPagamentoChoice.mensagem;
+		if (dataFormaPagamentoChoice) {
+
+			let data = dataFormaPagamentoChoice
+
+			if (data?.mensagem) {
+				data = data?.mensagem
+			} else if (data?.data) {
+				data = data?.data
+			}
+
+			if (data.hasOwnProperty('hasEntrada')) {
+				obj.hasEntrada = data.hasEntrada;
+			}
+
+			if (data.hasOwnProperty('hasAcertoCaixa')) {
+				obj.hasAcertoCaixa = data.hasAcertoCaixa;
+			}
+
+			if (data.hasOwnProperty('hasAcertoBalcao')) {
+				obj.hasAcertoBalcao = data.hasAcertoBalcao;
+			}
+
+			if (data.hasOwnProperty('hasLimiteDeCredito')) {
+				obj.hasLimiteDeCredito = data.hasLimiteDeCredito;
+			}
 
 			if (data.hasOwnProperty('name')) {
 				obj.name = data.name;
 			}
 
-			if (data.hasOwnProperty('historico')) {
-				obj.historico = data.historico;
-			}
-
-			if (data.hasOwnProperty('dt_inicio')) {
-				obj.dt_inicio = data.dt_inicio;
-			}
-
-			if (data.hasOwnProperty('hr_inicio')) {
-				obj.hr_inicio = data.hr_inicio;
-			}
-
-			if (data.hasOwnProperty('prioridade')) {
-				obj.prioridade = data.prioridade;
-			}
-
-			if (data.hasOwnProperty('status')) {
-				obj.status = data.status;
-			}
-
-			if (data.hasOwnProperty('filial_id')) {
-				obj.filial_id = data.filial_id;
-			}
-
-			if (data.hasOwnProperty('pessoa_id')) {
-				obj.pessoa_id = data.pessoa_id;
-			}
-
-			if (data.hasOwnProperty('profissional_id')) {
-				obj.profissional_id = data.profissional_id;
-			}
-
-			if (data.hasOwnProperty('pessoa')) {
-				if (data.pessoa.hasOwnProperty('id')) {
-					obj.pessoa_id = data.pessoa.id;
-				}
-
-			}
-
-			if (data.hasOwnProperty('profissional')) {
-				if (data.profissional.hasOwnProperty('id')) {
-					obj.profissional_id = data.profissional.id;
-				}
-
-			}
-
-			if (data.hasOwnProperty('dt_fim')) {
-				obj.dt_fim = data.dt_fim;
-			}
-
-			if (data.hasOwnProperty('hr_fim')) {
-				obj.hr_fim = data.hr_fim;
-			}
-
-			if (data.hasOwnProperty('name_atendido')) {
-				obj.name_atendido = data.name_atendido;
+			if (data.hasOwnProperty('hasComissao')) {
+				obj.hasComissao = data.hasComissao;
 			}
 
 			if (data.hasOwnProperty('tipo')) {
 				obj.tipo = data.tipo;
 			}
 
+			if (data.hasOwnProperty('hasOperadorFinanceiro')) {
+				obj.hasOperadorFinanceiro = data.hasOperadorFinanceiro;
+			}
+
+			if (data.hasOwnProperty('id')) {
+				obj.id = data.id;
+			}
+
+			if (data.hasOwnProperty('cdCobrancaTipo')) {
+				obj.cdCobrancaTipo = data.cdCobrancaTipo;
+			}
+
+			if (data.hasOwnProperty('tpPagamento')) {
+				obj.tpPagamento = data.tpPagamento;
+			}
+
+			if (data.hasOwnProperty('hasEntrada')) {
+				obj.hasEntrada = data.hasEntrada;
+			}
 
 		}
 
 		return obj;
 	}
 
-	React.useEffect(() => {
-		const requesPais = async () => {
-			await requestAllFormaPagamentos();
-		}
-
-		requesPais();
-
-	}, []);
-
-
-	if (error) {
+	if(error){
 		Swal.fire({
 			icon: "error",
 			title: "Oops...",
 			text: error,
 			footer: '',
 			confirmButtonColor: "#07B201",
+			//width:'20rem',
 		});
 	}
 
@@ -218,62 +192,14 @@ const FormFormaPagamento = ({ dataFormaPagamentoChoice, setIdFormaPagamento, idF
 
 		<>
 			<Formik
-
-				initialValues={{ ...dataToFormFormaPagamento() }}
-				validate={
-					values => {
-
-						const errors = {}
-
-						if (!atualizarFormaPagamento) {
-
-							if (!values.pessoa_id) {
-								errors.pessoa_id = "Obrigatório"
-							}
-
-							if (!values.name_atendido) {
-								errors.name_atendido = "Obrigatório"
-							}
-
-							if (!values.filial_id) {
-								errors.filial_id = "Obrigatório"
-							}
-						}
-						if (!values.historico) {
-							errors.historico = "Obrigatório"
-						}
-
-
-						if (!values.dt_inicio) {
-							errors.dt_inicio = "Obrigatório"
-						}
-
-						if (!values.hr_inicio) {
-							errors.hr_inicio = "Obrigatório"
-						}
-
-						if (!values.prioridade) {
-							errors.prioridade = "Obrigatório"
-						}
-
-
-						if (!values.tipo) {
-							errors.tipo = "Obrigatório"
-						}
-
-
-						if (!values.profissional_id) {
-							errors.profissional_id = "Obrigatório"
-						}
-
-						return errors;
-					}
-				}
-
+				innerRef={formikRef}
+				initialValues={dataToFormFormaPagamento()}
+				enableReinitialize={true}
+				validate={validate}
 				onSubmit={async (values, { setSubmitting }) => {
-					
 					await sendData({ ...values });
 				}}
+
 			>
 				{
 					(
@@ -288,554 +214,315 @@ const FormFormaPagamento = ({ dataFormaPagamentoChoice, setIdFormaPagamento, idF
 						}
 					) => (
 
-						<Modal handleConcluir={() => { handleSubmit(); }} title={(atualizarFormaPagamento == true ? 'Atualizar' : 'Cadastrar') + ' Atendimento'} size="lg" propsConcluir={{ 'disabled': loading }} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarFormaPagamento} showHide={() => { setShowModalCriarFormaPagamento(); setAtualizarFormaPagamento(false); setIdFormaPagamento(null); }}>
+						<form onSubmit={handleSubmit} id="formFormaPagamento" >
+							<Row className="my-3">
+								<Col xs="12" sm="12" md="12">
+									<span className="label_title_grup_forms" >Dados básicos</span>
+								</Col>
+							</Row>
 							{
-
-								carregando && carregando == true
-									?
-									(<Load />)
-									:
-									(
-										<form onSubmit={handleSubmit}>
-											<Row className="my-3">
-												<Col xs="12" sm="12" md="12">
-													<span className="label_title_grup_forms">Dados básicos</span>
-												</Col>
-											</Row>
-
-											{
-												error && <Row className="my-3">
-													<Col xs="12" sm="12" md="12">
-														<AlertaDismissible title="Atenção:" message={error} variant={"danger"} />
-													</Col>
-												</Row>
-											}
-
-											{
-												!atualizarFormaPagamento ? (
-													<>
-														<Row className="mb-1">
-															<Col xs="12" sm="12" md="6">
-																<Field
-																	data={
-																		{
-																			hasLabel: true,
-																			contentLabel: 'Pessoa *',
-																			atributsFormLabel: {
-
-																			},
-																			atributsFormControl: {
-																				type: 'text',
-																				name: 'pessoa_id',
-																				placeholder: 'Ex: fulano de tal',
-																				id: 'pessoa_id',
-																				name_cod: 'pessoa_id',
-																				name_desacription: 'pessoa_name',
-																				onChange: handleChange,
-																				onBlur: handleBlur,
-																				value: values.pessoa_id,
-																				className: `${estilos.input}`,
-																				size: "sm"
-																			},
-																			atributsContainer: {
-																				className: ''
-																			},
-																			hookToLoadFromDescription: CLIENTES_ALL_POST,
-																		}
-																	}
-																	component={Required}
-
-																>   </Field>
-																<ErrorMessage className="alerta_error_form_label" name="pessoa_id" component="div" />
-															</Col>
-
-															<Col xs="12" sm="12" md="6">
-																<Field
-																	data={
-																		{
-																			hasLabel: true,
-																			contentLabel: 'Pessoa do contato *',
-																			atributsFormLabel: {
-
-																			},
-																			atributsFormControl: {
-																				type: 'text',
-																				name: 'name_atendido',
-																				placeholder: 'Ex: fulano de tal',
-																				id: 'name_atendido',
-																				name_cod: 'name_atendido',
-																				name_desacription: 'pessoa_name',
-																				onChange: handleChange,
-																				onBlur: handleBlur,
-																				value: values.name_atendido,
-																				className: `${estilos.input}`,
-																				size: "sm"
-																			},
-																			atributsContainer: {
-																				className: ''
-																			},
-																			hookToLoadFromDescription: CLIENTES_ALL_POST,
-																		}
-																	}
-																	component={FormControlInput}
-																>   </Field>
-																<ErrorMessage className="alerta_error_form_label" name="name_atendido" component="div" />
-															</Col>
-														</Row>
-
-														<Row className="mb-1">
-
-															<Col xs="12" sm="12" md="6">
-																<Field
-																	data={
-																		{
-																			hasLabel: true,
-																			contentLabel: 'Filial *',
-																			atributsFormLabel: {
-
-																			},
-																			atributsFormControl: {
-																				type: 'text',
-																				name: 'filial_id',
-																				placeholder: 'Ex: fulano de tal',
-																				id: 'filial_id',
-																				name_cod: 'filial_id',
-																				name_desacription: 'filial_name',
-																				onChange: handleChange,
-																				onBlur: handleBlur,
-																				value: values.filial_id,
-																				className: `${estilos.input}`,
-																				size: "sm"
-																			},
-																			atributsContainer: {
-																				className: ''
-																			},
-																			hookToLoadFromDescription: CLIENTES_ALL_POST,
-																		}
-																	}
-																	component={Required}
-																>   </Field>
-																<ErrorMessage className="alerta_error_form_label" name="filial_id" component="div" />
-															</Col>
-															<Col>
-																<Field
-																	data={
-																		{
-																			hasLabel: true,
-																			contentLabel: 'Tipo',
-																			atributsFormLabel: {
-
-																			},
-																			atributsFormControl: {
-																				type: 'text',
-																				name: 'tipo',
-																				placeholder: 'Informe a tipo',
-																				id: 'tipo',
-																				onChange: handleChange,
-																				onBlur: handleBlur,
-																				value: values.tipo,
-																				className: estilos.input,
-																				size: "sm"
-																			},
-																			options: [{ label: 'Selecione...', valor: '', props: { selected: 'selected', disabled: 'disabled' } }, { label: 'Procedimento', valor: 'procedimento', props: {} }, { label: 'Avaliacao', valor: 'avaliacao', props: {} }, { label: 'FormaPagamento', valor: 'consulta', props: {} }, { label: 'Retorno', valor: 'retorno', props: {} }],
-																			atributsContainer: {
-																				className: ''
-																			}
-																		}
-																	}
-
-																	component={FormControlSelect}
-																></Field>
-																<ErrorMessage className="alerta_error_form_label" name="tipo" component="div" />
-															</Col>
-
-														</Row>
-
-														<Row className="mb-1">
-															<Col xs="12" sm="12" md="6">
-																<Field
-																	data={
-																		{
-																			hasLabel: true,
-																			contentLabel: 'Profissional *',
-																			atributsFormLabel: {
-
-																			},
-																			atributsFormControl: {
-																				type: 'text',
-																				name: 'profissional_id',
-																				placeholder: 'Ex: fulano de tal',
-																				id: 'profissional_id',
-																				name_cod: 'profissional_id',
-																				name_desacription: 'profissional_name',
-																				onChange: handleChange,
-																				onBlur: handleBlur,
-																				value: values.profissional_id,
-																				className: `${estilos.input}`,
-																				size: "sm"
-																			},
-																			atributsContainer: {
-																				className: ''
-																			},
-																			hookToLoadFromDescription: PROFISSIONAIS_ALL_POST,
-																		}
-																	}
-																	component={Required}
-																>   </Field>
-																<ErrorMessage className="alerta_error_form_label" name="profissional_id" component="div" />
-															</Col>
-
-															<Col xs="12" sm="12" md="6">
-																<Field
-																	data={
-																		{
-																			hasLabel: true,
-																			contentLabel: 'Prioridade',
-																			atributsFormLabel: {
-
-																			},
-																			atributsFormControl: {
-																				type: 'text',
-																				name: 'prioridade',
-																				placeholder: 'Informe a prioridade',
-																				id: 'prioridade',
-																				onChange: handleChange,
-																				onBlur: handleBlur,
-																				value: values.prioridade,
-																				className: estilos.input,
-																				size: "sm"
-																			},
-																			options: [{ label: 'Selecione...', valor: '', props: { selected: 'selected', disabled: 'disabled' } }, { label: 'Baixa', valor: 'baixa', props: {} }, { label: 'Normal', valor: 'normal', props: {} }, { label: 'Média', valor: 'media', props: {} }, { label: 'Alta', valor: 'alta', props: {} }, { label: 'Urgente', valor: 'urgente', props: {} }],
-																			atributsContainer: {
-																				className: ''
-																			}
-																		}
-																	}
-
-																	component={FormControlSelect}
-																></Field>
-																<ErrorMessage className="alerta_error_form_label" name="prioridade" component="div" />
-															</Col>
-														</Row>
-														<Row>
-
-															<Col xs="12" sm="12" md="6">
-																<Field
-																	data={
-																		{
-																			hasLabel: true,
-																			contentLabel: 'Data iníco',
-																			atributsFormLabel: {
-
-																			},
-																			atributsFormControl: {
-																				type: 'date',
-																				name: 'dt_inicio',
-																				placeholder: 'DD/MM/AAAA',
-																				id: 'dt_inicio',
-																				onChange: handleChange,
-																				onBlur: handleBlur,
-																				value: values.dt_inicio,
-																				className: estilos.input,
-																				size: "sm"
-																			},
-																			options: [],
-																			atributsContainer: {
-																				className: ''
-																			}
-																		}
-																	}
-
-																	component={FormControlInput}
-																></Field>
-																<ErrorMessage className="alerta_error_form_label" name="dt_inicio" component="div" />
-															</Col>
-
-															<Col xs="12" sm="12" md="6">
-																<Field
-																	data={
-																		{
-																			hasLabel: true,
-																			contentLabel: 'Horário início',
-																			atributsFormLabel: {
-
-																			},
-																			atributsFormControl: {
-																				type: 'time',
-																				name: 'hr_inicio',
-																				placeholder: 'HH:ii',
-																				id: 'hr_inicio',
-																				onChange: handleChange,
-																				onBlur: handleBlur,
-																				value: values.hr_inicio,
-																				className: estilos.input,
-																				size: "sm"
-																			},
-																			options: [],
-																			atributsContainer: {
-																				className: ''
-																			}
-																		}
-																	}
-
-																	component={FormControlInput}
-																></Field>
-																<ErrorMessage className="alerta_error_form_label" name="hr_inicio" component="div" />
-															</Col>
-														</Row>
-
-														<Row>
-
-															<Col xs="12" sm="12" md="12">
-																<Field
-																	data={
-																		{
-																			hasLabel: true,
-																			contentLabel: 'Observação',
-																			atributsFormLabel: {
-
-																			},
-																			atributsFormControl: {
-																				type: 'text',
-																				name: 'historico',
-																				placeholder: 'Observação',
-																				id: 'historico',
-																				onChange: handleChange,
-																				onBlur: handleBlur,
-																				value: values.historico,
-																				className: estilos.input,
-																				size: "sm"
-																			},
-																			options: [],
-																			atributsContainer: {
-																				className: ''
-																			}
-																		}
-																	}
-
-																	component={FormControlInput}
-																></Field>
-																<ErrorMessage className="alerta_error_form_label" name="historico" component="div" />
-															</Col>
-														</Row>
-													</>
-												)
-
-													:
-													(
-														<>
-
-															<Row className="mb-1">
-																<Col xs="12" sm="12" md="6">
-																	<Field
-																		data={
-																			{
-																				hasLabel: true,
-																				contentLabel: 'Profissional *',
-																				atributsFormLabel: {
-
-																				},
-																				atributsFormControl: {
-																					type: 'text',
-																					name: 'profissional_id',
-																					placeholder: 'Ex: fulano de tal',
-																					id: 'profissional_id',
-																					name_cod: 'profissional_id',
-																					name_desacription: 'profissional_name',
-																					onChange: handleChange,
-																					onBlur: handleBlur,
-																					value: values.profissional_id,
-																					className: `${estilos.input}`,
-																					size: "sm"
-																				},
-																				atributsContainer: {
-																					className: ''
-																				},
-																				hookToLoadFromDescription: PROFISSIONAIS_ALL_POST,
-																			}
-																		}
-																		component={Required}
-																	>   </Field>
-																	<ErrorMessage className="alerta_error_form_label" name="profissional_id" component="div" />
-																</Col>
-
-																<Col xs="12" sm="12" md="6">
-																	<Field
-																		data={
-																			{
-																				hasLabel: true,
-																				contentLabel: 'Prioridade',
-																				atributsFormLabel: {
-
-																				},
-																				atributsFormControl: {
-																					type: 'text',
-																					name: 'prioridade',
-																					placeholder: 'Informe a prioridade',
-																					id: 'prioridade',
-																					onChange: handleChange,
-																					onBlur: handleBlur,
-																					value: values.prioridade,
-																					className: estilos.input,
-																					size: "sm"
-																				},
-																				options: [{ label: 'Selecione...', valor: '', props: { selected: 'selected', disabled: 'disabled' } }, { label: 'Baixa', valor: 'baixa', props: {} }, { label: 'Normal', valor: 'normal', props: {} }, { label: 'Média', valor: 'media', props: {} }, { label: 'Alta', valor: 'alta', props: {} }, { label: 'Urgente', valor: 'urgente', props: {} }],
-																				atributsContainer: {
-																					className: ''
-																				}
-																			}
-																		}
-
-																		component={FormControlSelect}
-																	></Field>
-																	<ErrorMessage className="alerta_error_form_label" name="prioridade" component="div" />
-																</Col>
-															</Row>
-															<Row>
-
-																<Col xs="12" sm="12" md="6">
-																	<Field
-																		data={
-																			{
-																				hasLabel: true,
-																				contentLabel: 'Data iníco',
-																				atributsFormLabel: {
-
-																				},
-																				atributsFormControl: {
-																					type: 'date',
-																					name: 'dt_inicio',
-																					placeholder: 'DD/MM/AAAA',
-																					id: 'dt_inicio',
-																					onChange: handleChange,
-																					onBlur: handleBlur,
-																					value: values.dt_inicio,
-																					className: estilos.input,
-																					size: "sm"
-																				},
-																				options: [],
-																				atributsContainer: {
-																					className: ''
-																				}
-																			}
-																		}
-
-																		component={FormControlInput}
-																	></Field>
-																	<ErrorMessage className="alerta_error_form_label" name="dt_inicio" component="div" />
-																</Col>
-
-																<Col xs="12" sm="12" md="6">
-																	<Field
-																		data={
-																			{
-																				hasLabel: true,
-																				contentLabel: 'Horário início',
-																				atributsFormLabel: {
-
-																				},
-																				atributsFormControl: {
-																					type: 'time',
-																					name: 'hr_inicio',
-																					placeholder: 'HH:ii',
-																					id: 'hr_inicio',
-																					onChange: handleChange,
-																					onBlur: handleBlur,
-																					value: values.hr_inicio,
-																					className: estilos.input,
-																					size: "sm"
-																				},
-																				options: [],
-																				atributsContainer: {
-																					className: ''
-																				}
-																			}
-																		}
-
-																		component={FormControlInput}
-																	></Field>
-																	<ErrorMessage className="alerta_error_form_label" name="hr_inicio" component="div" />
-																</Col>
-															</Row>
-
-															<Row>
-																<Col xs="12" sm="12" md="6">
-																	<Field
-																		data={
-																			{
-																				hasLabel: true,
-																				contentLabel: 'Tipo',
-																				atributsFormLabel: {
-
-																				},
-																				atributsFormControl: {
-																					type: 'text',
-																					name: 'tipo',
-																					placeholder: 'Informe a tipo',
-																					id: 'tipo',
-																					onChange: handleChange,
-																					onBlur: handleBlur,
-																					value: values.tipo,
-																					className: estilos.input,
-																					size: "sm"
-																				},
-																				options: [{ label: 'Selecione...', valor: '', props: { selected: 'selected', disabled: 'disabled' } }, { label: 'Serviço', valor: 'servico', props: {} }, { label: 'Avaliacao', valor: 'avaliacao', props: {} }, { label: 'FormaPagamento', valor: 'consulta', props: {} }, { label: 'Retorno', valor: 'retorno', props: {} }],
-																				atributsContainer: {
-																					className: ''
-																				}
-																			}
-																		}
-
-																		component={FormControlSelect}
-																	></Field>
-																	<ErrorMessage className="alerta_error_form_label" name="tipo" component="div" />
-																</Col>
-																<Col xs="12" sm="12" md="6">
-																	<Field
-																		data={
-																			{
-																				hasLabel: true,
-																				contentLabel: 'Observação',
-																				atributsFormLabel: {
-
-																				},
-																				atributsFormControl: {
-																					type: 'text',
-																					name: 'historico',
-																					placeholder: 'Observação',
-																					id: 'historico',
-																					onChange: handleChange,
-																					onBlur: handleBlur,
-																					value: values.historico,
-																					className: estilos.input,
-																					size: "sm"
-																				},
-																				options: [],
-																				atributsContainer: {
-																					className: ''
-																				}
-																			}
-																		}
-
-																		component={FormControlInput}
-																	></Field>
-																	<ErrorMessage className="alerta_error_form_label" name="historico" component="div" />
-																</Col>
-															</Row>
-														</>
-													)
-
-											}
-										</form>
-
-									)
+								error && <Row className="my-3">
+									<Col xs="12" sm="12" md="12">
+										<AlertaDismissible title="Atenção:" message={error} variant={"danger"} />
+									</Col>
+								</Row>
 							}
-						</Modal>
+							<Row className="mb-3">
+								<Col xs="12" sm="12" md="6">
+									<Field
+										data={
+											{
+												hasLabel: true,
+												contentLabel: 'Nome *',
+												atributsFormLabel: {
+
+												},
+												atributsFormControl: {
+													tipo: 'text',
+													name: 'name',
+													placeholder: '',
+													id: 'name',
+													onChange: handleChange,
+													onBlur: handleBlur,
+													value: values.name,
+													className: `${estilos.input}`,
+													size: "sm"
+												},
+												atributsContainer: {
+													className: ''
+												}
+											}
+										}
+
+										component={FormControlInput}
+									></Field>
+									<ErrorMessage className="alerta_error_form_label" name="name" component="div" />
+								</Col>
+								<Col xs="12" sm="12" md="6">
+									<Field
+										data={
+											{
+												hasLabel: true,
+												contentLabel: 'Código *',
+												atributsFormLabel: {
+
+												},
+												atributsFormControl: {
+													tipo: 'text',
+													name: 'cdCobrancaTipo',
+													placeholder: '',
+													id: 'nacdCobrancaTipoe',
+													onChange: handleChange,
+													onBlur: handleBlur,
+													value: values.cdCobrancaTipo,
+													className: `${estilos.input}`,
+													size: "sm"
+												},
+												atributsContainer: {
+													className: ''
+												}
+											}
+										}
+
+										component={FormControlInput}
+									></Field>
+									<ErrorMessage className="alerta_error_form_label" name="cdCobrancaTipo" component="div" />
+								</Col>
+							</Row>
+							<Row className="mb-3">
+								<Col xs="12" sm="12" md="6">
+									<Field
+										data={
+											{
+												hasLabel: true,
+												contentLabel: 'Tipo *',
+												atributsFormLabel: {
+
+												},
+												atributsFormControl: {
+													tipo: 'text',
+													name: 'tipo',
+													placeholder: '',
+													id: 'tipo',
+													onChange: handleChange,
+													onBlur: handleBlur,
+													value: values.tipo,
+													className: estilos.input,
+													size: "sm",
+												},
+												options: [{ label: 'Selecione', valor: '', props: { selected: 'selected', disabled: 'disabled' } }, { label: 'Cartão de crédito', valor: 'cartao_credito', props: { selected: '' } }, { label: 'Cartão de débito', valor: 'cartao_debito', props: {} }, { label: 'Boleto', valor: 'boleto', props: {}}, { label: 'Dinheiro', valor: 'dinheiro', props: {} }],
+												atributsContainer: {
+													className: ''
+												}
+											}
+										}
+
+										component={FormControlSelect}
+									></Field>
+									<ErrorMessage className="alerta_error_form_label" name="tipo" component="div" />
+								</Col>
+
+								<Col xs="12" sm="12" md="6">
+									<Field
+										data={
+											{
+												hasLabel: true,
+												contentLabel: 'Tipo de pagamento *',
+												atributsFormLabel: {
+
+												},
+												atributsFormControl: {
+													tipo: 'text',
+													name: 'tpPagamento',
+													placeholder: '',
+													id: 'tpPagamento',
+													onChange: handleChange,
+													onBlur: handleBlur,
+													value: values.tpPagamento,
+													className: estilos.input,
+													size: "sm"
+												},
+												options: [{ label: 'Selecione', valor: '', props: { selected: 'selected', disabled: 'disabled' } }, { label: 'A prazo', valor: 'a prazo', props: { selected: '' } }, { label: 'Avista', valor: 'a vista', props: {} }],
+												atributsContainer: {
+													className: ''
+												}
+											}
+										}
+
+										component={FormControlSelect}
+									></Field>
+									<ErrorMessage className="alerta_error_form_label" name="tpPagamento" component="div" />
+								</Col>
+							</Row>
+							<Row className="mb-3">
+								<Col xs="12" sm="12" md="6">
+									<Field
+										data={
+											{
+												hasLabel: true,
+												contentLabel: 'Tem comissão *',
+												atributsFormLabel: {
+
+												},
+												atributsFormControl: {
+													tipo: 'text',
+													name: 'hasComissao',
+													placeholder: '',
+													id: 'hasComissao',
+													onChange: handleChange,
+													onBlur: handleBlur,
+													value: values.hasComissao,
+													className: estilos.input,
+													size: "sm"
+												},
+												options: [{ label: 'Selecione', valor: '', props: { selected: 'selected', disabled: 'disabled' } }, { label: 'Sim', valor: 'yes', props: { selected: '' } }, { label: 'Não', valor: 'no', props: {} }],
+												atributsContainer: {
+													className: ''
+												}
+											}
+										}
+
+										component={FormControlSelect}
+									></Field>
+									<ErrorMessage className="alerta_error_form_label" name="hasComissao" component="div" />
+								</Col>
+
+								<Col xs="12" sm="12" md="6">
+									<Field
+										data={
+											{
+												hasLabel: true,
+												contentLabel: 'Tem limite de crédito *',
+												atributsFormLabel: {
+
+												},
+												atributsFormControl: {
+													tipo: 'text',
+													name: 'hasLimiteDeCredito',
+													placeholder: '',
+													id: 'hasLimiteDeCredito',
+													onChange: handleChange,
+													onBlur: handleBlur,
+													value: values.hasLimiteDeCredito,
+													className: estilos.input,
+													size: "sm"
+												},
+												options: [{ label: 'Selecione', valor: '', props: { selected: 'selected', disabled: 'disabled' } }, { label: 'Sim', valor: 'yes', props: { selected: '' } }, { label: 'Não', valor: 'no', props: {} }],
+												atributsContainer: {
+													className: ''
+												}
+											}
+										}
+
+										component={FormControlSelect}
+									></Field>
+									<ErrorMessage className="alerta_error_form_label" name="hasLimiteDeCredito" component="div" />
+								</Col>
+							</Row>
+							<Row className="mb-3">
+								<Col xs="12" sm="12" md="6">
+									<Field
+										data={
+											{
+												hasLabel: true,
+												contentLabel: 'Tem acerto de caixa *',
+												atributsFormLabel: {
+
+												},
+												atributsFormControl: {
+													tipo: 'text',
+													name: 'hasAcertoCaixa',
+													placeholder: '',
+													id: 'hasAcertoCaixa',
+													onChange: handleChange,
+													onBlur: handleBlur,
+													value: values.hasAcertoCaixa,
+													className: estilos.input,
+													size: "sm"
+												},
+												options: [{ label: 'Selecione', valor: '', props: { selected: 'selected', disabled: 'disabled' } }, { label: 'Sim', valor: 'yes', props: { selected: '' } }, { label: 'Não', valor: 'no', props: {} }],
+												atributsContainer: {
+													className: ''
+												}
+											}
+										}
+
+										component={FormControlSelect}
+									></Field>
+									<ErrorMessage className="alerta_error_form_label" name="hasAcertoCaixa" component="div" />
+								</Col>
+								<Col xs="12" sm="12" md="6">
+									<Field
+										data={
+											{
+												hasLabel: true,
+												contentLabel: 'Tem entrada *',
+												atributsFormLabel: {
+
+												},
+												atributsFormControl: {
+													tipo: 'text',
+													name: 'hasEntrada',
+													placeholder: '',
+													id: 'hasEntrada',
+													onChange: handleChange,
+													onBlur: handleBlur,
+													value: values.hasEntrada,
+													className: estilos.input,
+													size: "sm"
+												},
+												options: [{ label: 'Selecione', valor: '', props: { selected: 'selected', disabled: 'disabled' } }, { label: 'Sim', valor: 'yes', props: { selected: '' } }, { label: 'Não', valor: 'no', props: {} }],
+												atributsContainer: {
+													className: ''
+												}
+											}
+										}
+
+										component={FormControlSelect}
+									></Field>
+									<ErrorMessage className="alerta_error_form_label" name="hasEntrada" component="div" />
+								</Col>
+							</Row>
+							<Row className="mb-3">								
+								<Col xs="12" sm="12" md="6">
+									<Field
+										data={
+											{
+												hasLabel: true,
+												contentLabel: 'Tem operador financeiro *',
+												atributsFormLabel: {
+
+												},
+												atributsFormControl: {
+													tipo: 'text',
+													name: 'hasOperadorFinanceiro',
+													placeholder: '',
+													id: 'hasOperadorFinanceiro',
+													onChange: handleChange,
+													onBlur: handleBlur,
+													value: values.hasOperadorFinanceiro,
+													className: estilos.input,
+													size: "sm"
+												},
+												options: [{ label: 'Selecione', valor: '', props: { selected: 'selected', disabled: 'disabled' } }, { label: 'Sim', valor: 'yes', props: { selected: '' } }, { label: 'Não', valor: 'no', props: {} }],
+												atributsContainer: {
+													className: ''
+												}
+											}
+										}
+
+										component={FormControlSelect}
+									></Field>
+									<ErrorMessage className="alerta_error_form_label" name="hasOperadorFinanceiro" component="div" />
+								</Col>
+							</Row>
+
+						</form>
 					)
 				}
 			</Formik>
 		</>
 	)
-}
+})
 
 export default FormFormaPagamento;
