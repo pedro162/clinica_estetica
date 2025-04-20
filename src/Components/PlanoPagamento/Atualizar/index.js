@@ -1,21 +1,21 @@
 import React from 'react';
 import useFetch from '../../../Hooks/useFetch.js';
-import { TOKEN_POST, CLIENT_ID, CLIENT_SECRET, FORMA_PAGAMENTO_ONE_GET, GRUPOS_ALL_POST } from '../../../api/endpoints/geral.js'
+import { TOKEN_POST, CLIENT_ID, CLIENT_SECRET, PLANO_PAGAMENTO_ONE_GET, GRUPOS_ALL_POST } from '../../../api/endpoints/geral.js'
 import { UserContex } from '../../../Context/UserContex.js'
-import AtualizarForm from '../FormFormaPagamento/index.js'
+import AtualizarForm from '../FormPlanoPagamento/index.js'
 import Modal from '../../Utils/Modal/index.js'
 import Load from '../../Utils/Load/index.js'
 import { Col, Row } from 'react-bootstrap';
-import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible'
+import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible.js'
 import Swal from 'sweetalert2'
 import { faHome, faSearch, faPlus, faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const Atualizar = ({ idFormaPagamento, setIdFormaPagamento, callback, atualizarFormaPagamento, setAtualizarFormaPagamento }) => {
+const Atualizar = ({ idPlanoPagamento, setIdPlanoPagamento, callback, atualizarPlanoPagamento, setAtualizarPlanoPagamento }) => {
 
-	const [showModalAtualizarFormaPagamento, setShowModalFormaPagamento] = React.useState(false)
+	const [showModalAtualizarPlanoPagamento, setShowModalPlanoPagamento] = React.useState(false)
 	const [carregando, setCarregando] = React.useState(false)
-	const [dataFormaPagamento, setDataFormaPagamento] = React.useState(null)
+	const [dataPlanoPagamento, setDataPlanoPagamento] = React.useState(null)
 	const [dataGrupo, setDataGrupo] = React.useState(null)
 	const { getToken, dataUser } = React.useContext(UserContex);
 	const [erroValidacao, setErroValidacao] = React.useState(null)
@@ -27,14 +27,14 @@ const Atualizar = ({ idFormaPagamento, setIdFormaPagamento, callback, atualizarF
 
 	React.useEffect(() => {
 
-		const getFormaPagamento = async () => {
-			if (idFormaPagamento > 0) {
-				const { url, options } = FORMA_PAGAMENTO_ONE_GET(idFormaPagamento, getToken());
+		const getPlanoPagamento = async () => {
+			if (idPlanoPagamento > 0) {
+				const { url, options } = PLANO_PAGAMENTO_ONE_GET(idPlanoPagamento, getToken());
 				const { response, json } = await request(url, options);
 
 				if (json) {
 
-					setDataFormaPagamento(json)
+					setDataPlanoPagamento(json)
 
 					let data = json
 
@@ -50,8 +50,8 @@ const Atualizar = ({ idFormaPagamento, setIdFormaPagamento, callback, atualizarF
 						setShowModalErro(true)
 						erroValidaao = erroValidaao.join('<br/>')
 						setErroValidacao(erroValidaao)
-						setAtualizarFormaPagamento(false)
-						setIdFormaPagamento(null)
+						setAtualizarPlanoPagamento(false)
+						setIdPlanoPagamento(null)
 
 						Swal.fire({
 							icon: "error",
@@ -61,20 +61,20 @@ const Atualizar = ({ idFormaPagamento, setIdFormaPagamento, callback, atualizarF
 							confirmButtonColor: "#07B201",
 						});
 					} else {
-						setDataFormaPagamento(json)
-						setShowModalFormaPagamento(true)
+						setDataPlanoPagamento(json)
+						setShowModalPlanoPagamento(true)
 					}
 				} else {
-					setDataFormaPagamento([])
-					setAtualizarFormaPagamento(false)
-					setIdFormaPagamento(null)
+					setDataPlanoPagamento([])
+					setAtualizarPlanoPagamento(false)
+					setIdPlanoPagamento(null)
 				}
 			}
 		}
 
-		getFormaPagamento();
+		getPlanoPagamento();
 
-	}, [idFormaPagamento])
+	}, [idPlanoPagamento])
 
 
 	const validarAtualizacao = (data) => {
@@ -105,15 +105,15 @@ const Atualizar = ({ idFormaPagamento, setIdFormaPagamento, callback, atualizarF
 				<Col>
 					<AtualizarForm
 						{...data}
-						setDataFormaPagamento={setDataFormaPagamento}
-						setIdFormaPagamento={setIdFormaPagamento}
-						idFormaPagamento={idFormaPagamento}
+						setDataPlanoPagamento={setDataPlanoPagamento}
+						setIdPlanoPagamento={setIdPlanoPagamento}
+						idPlanoPagamento={idPlanoPagamento}
 						carregando={false}
-						dataFormaPagamentoChoice={dataFormaPagamento}
-						setAtualizarFormaPagamento={setAtualizarFormaPagamento}
-						atualizarFormaPagamento={atualizarFormaPagamento}
-						showModalCriarFormaPagamento={showModalAtualizarFormaPagamento}
-						setShowModalCriarFormaPagamento={setShowModalFormaPagamento}
+						dataPlanoPagamentoChoice={dataPlanoPagamento}
+						setAtualizarPlanoPagamento={setAtualizarPlanoPagamento}
+						atualizarPlanoPagamento={atualizarPlanoPagamento}
+						showModalCriarPlanoPagamento={showModalAtualizarPlanoPagamento}
+						setShowModalCriarPlanoPagamento={setShowModalPlanoPagamento}
 						callback={callback}
 						setSendForm={setSendForm}
 						sendForm={sendForm}
@@ -137,23 +137,23 @@ const Atualizar = ({ idFormaPagamento, setIdFormaPagamento, callback, atualizarF
 
 	return (
 		<>
-			{!dataFormaPagamento &&
-				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={() => null} title={'Atualizar Forma de Pagamento'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="" show={true} showHide={() => { setShowModalFormaPagamento(); }}>
+			{!dataPlanoPagamento &&
+				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={() => null} title={'Atualizar Plano de Pagamento'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="" show={true} showHide={() => { setShowModalPlanoPagamento(); }}>
 					<Load />
 				</Modal>
 			}
 
-			{dataFormaPagamento &&
+			{dataPlanoPagamento &&
 				<Modal
 					handleConcluir={() => { handleConclude(); }}
 					children={<FormModal />}
-					title={'Atualizar forma de pagamento'}
+					title={'Cadastrar plano de pagamento'}
 					size="lg"
 					dialogClassName={''}
 					aria-labelledby={'aria-labelledby'}
 					labelCanelar="Fechar"
-					show={showModalAtualizarFormaPagamento}
-					showHide={() => { setShowModalFormaPagamento(false); setAtualizarFormaPagamento(false); setIdFormaPagamento(null) }}
+					show={showModalAtualizarPlanoPagamento}
+					showHide={() => { setShowModalPlanoPagamento(false); setAtualizarPlanoPagamento(false); setIdPlanoPagamento(null) }}
 					propsConcluir={{ 'disabled': carregando }}
 					labelConcluir={carregando ? <><FontAwesomeIcon icon={faCheck} /> Salvando...</> : <><FontAwesomeIcon icon={faCheck} /> Concluir </>}
 				/>

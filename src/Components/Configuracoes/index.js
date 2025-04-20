@@ -106,7 +106,7 @@ const Configuracoes = ({ defaultFilters, ...props }) => {
                                             <Link className={'text-primary text-decoration-underline'} to={'/financeiro/formas-pagamento'}>Formas de pagamento</Link>
                                         </li>
                                         <li class="mb-2">
-                                            <Link className={'text-primary text-decoration-underline'} to={'/configuracoes/filial'}>Planos de pagamento</Link>
+                                            <Link className={'text-primary text-decoration-underline'} to={'/financeiro/planos-pagamento'}>Planos de pagamento</Link>
                                         </li>
                                         <li class="mb-2">
                                             <Link className={'text-primary text-decoration-underline'} to={'/configuracoes/construtor/ficha'}>Operadores financeiros</Link>

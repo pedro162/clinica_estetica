@@ -5,7 +5,8 @@ import {
   Home, NotFound, Login, ProtectedRoute, PainelInicial, Clientes, Grupos, ContasReceber, Caixa, Filial, Parametro, Pais, Estado, Cidade, Agenda, AgendaEvento, CategoriaEvento, Especialidade, Profissionais, Consulta, ConstrutorFicha, ConstrutorFichaItem, Servico,
   OrdemServico, ClientesFichas, MovimentacoesFinanceiras, MenuBotoes, PainelHome, CadastrarExternoSimples, SendMessageWhatsApp, SendEmail, Configuracoes,
   ContasReceberItem,
-  FormaPagamento
+  FormaPagamento,
+  PlanoPagamento
 } from './View/index.js'
 import { Router, Route, Switch } from 'react-router'
 import { history } from './history.js'
@@ -93,6 +94,11 @@ function App() {
                 <ProtectedRoute
                   exact path="/financeiro/formas-pagamento"
                   component={FormaPagamento}
+                />
+
+                <ProtectedRoute
+                  exact path="/financeiro/planos-pagamento"
+                  component={PlanoPagamento}
                 />
 
                 <ProtectedRoute

@@ -178,7 +178,7 @@ const Table = ({children, titulosTableArr,ignoreTableActions, rowsTableArr,loadi
 															})
 
 														) : (
-															<td colSpan={titulosTable.length} className="text-center">
+															<td colSpan={titulosTable.length + 1} className="text-center">
 																Nenhum registro encontrado
 															</td>
 														)
@@ -191,7 +191,7 @@ const Table = ({children, titulosTableArr,ignoreTableActions, rowsTableArr,loadi
 
 							  		) : (
 										<tr>
-											<td colSpan={titulosTable.length} className="text-center">
+											<td colSpan={titulosTable.length + 1} className="text-center">
 												Nenhum registro encontrado
 											</td>
 										</tr>
