@@ -512,10 +512,12 @@ const ContasReceberItem = ({ defaultFilters, ...props }) => {
         let { filtros, detalhesFiltros } = await montarFiltro();
         setAppliedFilters(detalhesFiltros)
         let { url, options } = await CONTAS_RECEBER_ITEM_ALL_POST({ ...filtros }, getToken());
+        
         if (nextPage) {
             url = nextPage;
         }
         const { response, json } = await request(url, options);
+
         if (json) {
             setContasReceberItem(json)
             if (json?.mensagem && json?.mensagem.length > 0) {
