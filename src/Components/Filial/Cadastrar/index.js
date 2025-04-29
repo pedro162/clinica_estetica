@@ -40,11 +40,6 @@ const Cadastrar = ({idFilial, setIdFilial, callback, atualizarCadastro, setAtual
 		
 	}, [cadastrarFilial])
 
-	/*
-		atualizarCadastro && 
-                <Atualizar setCarregandoDadosCliente={null} atualizarCadastro={setAtualizarCadastro} idFilial={clientChoice} setDataFilial={null} setShowModalCriarFilial={setShowModalAtualizarFilial} />
-	*/
-	//<Pesquisar idFilial={idFilial} setDataFilial={setDataFilial} setCarregandoDadosCliente={setCarregando} />
 	return(
 		<>
 			

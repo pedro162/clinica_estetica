@@ -1,8 +1,8 @@
 .estiloItemMenu{
 	text-align: center !important;
 	font-weight: bolder;
-	color: #07B201 !important;
-	background: #F7F7F7 !important;
+	color: #1a1a1a !important;
+	background: #f4f6f8 !important;
 	padding: 2px 50px !important;
 	width: 100% !important;
 	cursor: pointer !important;
@@ -13,6 +13,13 @@
 }
 
 .estiloItemMenu:hover{
-	color: #F7F7F7 !important;
-	background: #07B201 !important;
+	background-color: #aee6f9 !important; /* azul bebê leve */
+	border-color: #74d4f2 !important;
+	color: #1a1a1a !important;
+}
+
+.estiloItemMenu:focus,
+.estiloItemMenu:focus-visible {
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(116, 212, 242, 0.4) !important; /* foco em azul bebê translúcido */
 }
