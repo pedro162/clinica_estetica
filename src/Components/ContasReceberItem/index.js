@@ -209,7 +209,7 @@ const ContasReceberItem = ({ defaultFilters, ...props }) => {
             contentLabel: 'Cód. contas a receber',
             atributsFormLabel: {},
             atributsContainer: { xs: "12", sm: "12", md: "4", className: 'mb-2' },
-            atributsFormControl: { 'type': 'text', size: "sm", 'referencia_id': idContasReceber, value: idContasReceber, onChange: setIdReferencia, onBlur: setIdReferencia, onKeyUp: handleSearch },
+            atributsFormControl: { 'type': 'text', size: "sm", 'conta_receber_id': idContasReceber, value: idContasReceber, onChange: setIdReferencia, onBlur: setIdReferencia, onKeyUp: handleSearch },
 
         },
         {
@@ -412,11 +412,11 @@ const ContasReceberItem = ({ defaultFilters, ...props }) => {
 
 
         if (idContasReceber) {
-            filtros['referencia_id'] = idContasReceber;
-            detalhesFiltros['referencia_id'] = {
+            filtros['conta_receber_id'] = idContasReceber;
+            detalhesFiltros['conta_receber_id'] = {
                 label: 'Cód. conta receber',
                 value: idContasReceber,
-                resetFilter: () => { setIdContasReceber(''); removeFilter('referencia_id'); },
+                resetFilter: () => { setIdContasReceber(''); removeFilter('conta_receber_id'); },
             };
         }
 
@@ -515,10 +515,12 @@ const ContasReceberItem = ({ defaultFilters, ...props }) => {
         let { filtros, detalhesFiltros } = await montarFiltro();
         setAppliedFilters(detalhesFiltros)
         let { url, options } = await CONTAS_RECEBER_ITEM_ALL_POST({ ...filtros }, getToken());
+        
         if (nextPage) {
             url = nextPage;
         }
         const { response, json } = await request(url, options);
+
         if (json) {
             setContasReceberItem(json)
             if (json?.mensagem && json?.mensagem.length > 0) {
