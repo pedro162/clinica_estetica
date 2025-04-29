@@ -277,7 +277,7 @@ const Required = ({ data, url_btn, callback_selected, props_btn_search, label_bt
                             atributsFormControl: {
                                 type: 'text',
                                 name: name_description,
-                                placeholder: 'fulano de tal',
+                                placeholder: atributsFormControlForm?.placeholder,
                                 id: name_description,
                                 onChange: (ev) => handleChangeDescription(ev),
                                 onBlur: (ev) => handleBlurDescription(ev),

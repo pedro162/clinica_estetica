@@ -11,16 +11,16 @@ import Swal from 'sweetalert2'
 import { TOKEN_POST, CLIENT_ID, CLIENT_SECRET, FILIAIS_ALL_POST, CAIXA_UPDATE_POST, CAIXA_SAVE_POST } from '../../../api/endpoints/geral.js'
 
 const FormCaixa = forwardRef(({
-	nome,
-	setNome,
+	name,
+	setname,
 	type,
 	setTipo,
 	vrMin,
 	setVrMinimo,
 	vrMax,
 	setVrMaximo,
-	bloquear,
-	setBloquear,
+	status_bloqueio,
+	setstatus_bloqueio,
 	aceita_transferencia,
 	setAceitaTransferencia,
 	vr_saldo_inicial,
@@ -83,7 +83,7 @@ const FormCaixa = forwardRef(({
 			Swal.fire({
 				icon: "success",
 				title: "",
-				text: 'Reigistrado com sucesso',
+				text: 'Registrado com sucesso',
 				footer: '',
 				confirmButtonColor: "#07B201",
 			});
@@ -92,13 +92,12 @@ const FormCaixa = forwardRef(({
 
 	const validate = (values) => {
 		const errors = {};
-		if (!values.nome) errors.nome = 'Obrigatório';
+		if (!values.name) errors.name = 'Obrigatório';
 		if (!values.type) errors.type = 'Obrigatório';
 		if (!values.vrMin) errors.vrMin = 'Obrigatório';
 		if (!values.vrMax) errors.vrMax = 'Obrigatório';
-		if (!values.bloquear) errors.bloquear = 'Obrigatório';
+		if (!values.status_bloqueio) errors.status_bloqueio = 'Obrigatório';
 		if (!values.aceita_transferencia) errors.aceita_transferencia = 'Obrigatório';
-		if (!values.vr_saldo_inicial) errors.vr_saldo_inicial = 'Obrigatório';
 		return errors;
 	};
 
@@ -113,7 +112,7 @@ const FormCaixa = forwardRef(({
 	}, [loading, setCarregando]);
 
 	const dataToFormCaixa = () => {
-		let obj = { filial_id: '', nome: '', type: '', vrMin: '', vrMax: '', bloquear: '', aceita_transferencia: '', vr_saldo_inicial: '', active: '', deleted_at: '', created_at: '', updated_at: '' }
+		let obj = { filial_id: '', name: '', type: '', vrMin: '', vrMax: '', status_bloqueio: '', aceita_transferencia: '', vr_saldo_inicial: '', active: '', deleted_at: '', created_at: '', updated_at: '' }
 
 		if (dataCaixaChoice) {
 
@@ -129,8 +128,8 @@ const FormCaixa = forwardRef(({
 				obj.filial_id = data.filial_id;
 			}
 
-			if (data.hasOwnProperty('nome')) {
-				obj.nome = data.nome;
+			if (data.hasOwnProperty('name')) {
+				obj.name = data.name;
 			}
 
 			if (data.hasOwnProperty('status')) {
@@ -149,8 +148,8 @@ const FormCaixa = forwardRef(({
 				obj.vrMax = data.vrMax;
 			}
 
-			if (data.hasOwnProperty('bloquear')) {
-				obj.bloquear = data.bloquear;
+			if (data.hasOwnProperty('status_bloqueio')) {
+				obj.status_bloqueio = data.status_bloqueio;
 			}
 
 			if (data.hasOwnProperty('aceita_transferencia')) {
@@ -161,10 +160,6 @@ const FormCaixa = forwardRef(({
 				obj.vr_saldo_inicial = data.vr_saldo_inicial;
 			}
 
-		}
-
-		if (idPessoaForm > 0) {
-			obj.bloquear = idPessoaForm;
 		}
 
 		if (idFilialForm > 0) {
@@ -213,10 +208,10 @@ const FormCaixa = forwardRef(({
 			<Formik
 				innerRef={formikRef}
 				initialValues={dataToFormCaixa()}
+				enableReinitialize={true}
 				validate={validate}
-				onSubmit={(values, { setSubmitting }) => {
-					sendData(values.nome, values.type)
-					setSubmitting(false);
+				onSubmit={async (values, { setSubmitting }) => {
+					await sendData({ ...values });
 				}}
 
 			>
@@ -251,12 +246,12 @@ const FormCaixa = forwardRef(({
 												},
 												atributsFormControl: {
 													type: 'text',
-													name: 'nome',
+													name: 'name',
 													placeholder: '',
-													id: 'nome',
+													id: 'name',
 													onChange: handleChange,
 													onBlur: handleBlur,
-													value: values.nome,
+													value: values.name,
 													className: `${estilos.input}`,
 													size: "sm"
 												},
@@ -268,7 +263,7 @@ const FormCaixa = forwardRef(({
 
 										component={FormControlInput}
 									></Field>
-									<ErrorMessage className="alerta_error_form_label" name="nome" component="div" />
+									<ErrorMessage className="alerta_error_form_label" name="name" component="div" />
 								</Col>
 
 								<Col xs="12" sm="12" md="6">
@@ -356,13 +351,14 @@ const FormCaixa = forwardRef(({
 													className: estilos.input,
 													size: "sm"
 												},
+												options: [{ label: 'Selecione', valor: '', props: { selected: 'selected', disabled: 'disabled' } }, { label: 'Sim', valor: 'yes', props: { selected: '' } }, { label: 'Não', valor: 'no', props: {} }],
 												atributsContainer: {
 													className: ''
 												}
 											}
 										}
 
-										component={FormControlInput}
+										component={FormControlSelect}
 									></Field>
 									<ErrorMessage className="alerta_error_form_label" name="aceita_transferencia" component="div" />
 								</Col>
@@ -436,30 +432,31 @@ const FormCaixa = forwardRef(({
 										data={
 											{
 												hasLabel: true,
-												contentLabel: 'Bloquear *',
+												contentLabel: 'Status bloqueio *',
 												atributsFormLabel: {
 
 												},
 												atributsFormControl: {
 													type: 'text',
-													name: 'bloquear',
+													name: 'status_bloqueio',
 													placeholder: '',
-													id: 'bloquear',
+													id: 'status_bloqueio',
 													onChange: handleChange,
 													onBlur: handleBlur,
-													value: values.bloquear,
+													value: values.status_bloqueio,
 													className: estilos.input,
 													size: "sm"
 												},
+												options: [{ label: 'Selecione', valor: '', props: { selected: 'selected', disabled: 'disabled' } }, { label: 'Bloqueado', valor: 'bloqueado', props: { selected: '' } }, { label: 'Liberado', valor: 'liberado', props: {} }],
 												atributsContainer: {
 													className: ''
 												}
 											}
 										}
 
-										component={FormControlInput}
+										component={FormControlSelect}
 									></Field>
-									<ErrorMessage className="alerta_error_form_label" name="bloquear" component="div" />
+									<ErrorMessage className="alerta_error_form_label" name="status_bloqueio" component="div" />
 								</Col>
 								<Col xs="12" sm="12" md="6">
 									<Field

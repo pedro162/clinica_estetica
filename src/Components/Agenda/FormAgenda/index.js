@@ -60,7 +60,7 @@ const FormAgenda = ({dataAgendaChoice, dataEstado, setIdAgenda, idAgenda, showMo
                 Swal.fire({
                   icon: "success",
                   title: "",
-                  text: 'Reigistrado com sucesso',
+                  text: 'Registrado com sucesso',
                   footer: '',//'<a href="#">Why do I have this issue?</a>'
                   confirmButtonColor: "#07B201",
                 });
@@ -86,7 +86,7 @@ const FormAgenda = ({dataAgendaChoice, dataEstado, setIdAgenda, idAgenda, showMo
                 Swal.fire({
                   icon: "success",
                   title: "",
-                  text: 'Reigistrado com sucesso',
+                  text: 'Registrado com sucesso',
                   footer: '',//'<a href="#">Why do I have this issue?</a>'
                   confirmButtonColor: "#07B201",
                 });

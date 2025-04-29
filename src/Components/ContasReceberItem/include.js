@@ -28,10 +28,7 @@ import { FORMAT_CALC_COD, FORMAT_MONEY } from '../../functions/index.js'
 
 
 const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEncontrado, nextPage, setNextPage, usePagination, setUsePagination, totalPageCount, setTotalPageCount, ...props }) => {
-    const { data, error, request, loading } = useFetch();
     const [estado, setContasReceberItem] = React.useState([])
-    const [exemplos, setExemplos] = React.useState([])
-    const [exemplosTitleTable, setExemplosTitleTable] = React.useState([])
     const [showModalCriarContasReceberItem, setShowModalCriarConstula] = React.useState(false)
     const [consultaChoice, setContasReceberItemChoice] = React.useState(null);
     const [atualizarContasReceberItem, setAtualizarContasReceberItem] = React.useState(false)
@@ -151,7 +148,6 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
         } else {
             setShowModalCriarConstula(false);
         }
-
 
     }, [cadastrarContasReceberItem])
 
@@ -342,14 +338,14 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                                 },
                                 {
 
-                                    label: FORMAT_DATA_PT_BR(atual?.dtVencimento),
+                                    label: FORMAT_DATA_PT_BR(atual?.dtBaixa),
                                     propsRow: {}
                                 },
                                 {
 
                                     label: atual?.conta_receber_id,
                                     propsRow: {}
-                                }
+                                },
                             ]
                         }
 
@@ -430,7 +426,7 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                 }
             },
             {
-                label: 'Vencimento',
+                label: 'Baixa',
                 props: {
                     style: { minWidth: '150px' }
                 }
@@ -513,7 +509,7 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                     }
 
                     if (btnVisualizarMovimentacoes) {
-                        acoesArr.push({ acao: () => { visualizarMovimentacoesActions(atual.id); setDefaultFiltersMovimentacoes({ ...atual, referencia_id: atual?.id, referencia: 'contas_receber' }) }, label: 'Movimentações', propsOption: {}, propsLabel: {} })
+                        acoesArr.push({ acao: () => { visualizarMovimentacoesActions(atual.id); setDefaultFiltersMovimentacoes({ ...atual, sub_referencia_id: atual?.id, sub_referencia: 'conta_receber_items' }) }, label: 'Movimentações', propsOption: {}, propsLabel: {} })
                     }
 
                     if (btnVisualizar) {
@@ -694,7 +690,7 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                 visualizarMovimentacoes && defaultFiltersMovimentacoes &&
                 <Modal noBtnCancelar={false} noBtnConcluir={true} handleConcluir={() => null} title={'Contas a receber'} size="lg" propsConcluir={{}} labelConcluir={''} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={consultaChoice} showHide={() => { setVisualizarMovimentacoes(false); }}>
 
-                    <MovimentacoesFinanceiras defaultFilters={defaultFiltersMovimentacoes} visualizarMovimentacoes={visualizarMovimentacoes} setVisualizarMovimentacoes={setVisualizarMovimentacoes} setAtualizarContasReceberItem={setAtualizarContasReceberItem} idReferencia={consultaChoice} referencia={'contas_receber'} idCobrancaReceber={consultaChoice} setIdContasReceberItem={setContasReceberItemChoice} callback={callBack} />
+                    <MovimentacoesFinanceiras defaultFilters={defaultFiltersMovimentacoes} visualizarMovimentacoes={visualizarMovimentacoes} setVisualizarMovimentacoes={setVisualizarMovimentacoes} setAtualizarContasReceberItem={setAtualizarContasReceberItem} idSubReferencia={consultaChoice} subReferencia={'conta_receber_items'} idCobrancaReceber={consultaChoice} setIdContasReceberItem={setContasReceberItemChoice} callback={callBack} />
 
                 </Modal>
             }

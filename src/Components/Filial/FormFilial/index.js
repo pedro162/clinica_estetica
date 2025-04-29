@@ -51,7 +51,7 @@ const FormFilial = ({dataFilialChoice, dataEstado, setIdFilial, idFilial, showMo
                   icon: "success",
                   title: "",
                   text: 'Registrado com sucesso',
-                  footer: '',//'<a href="#">Why do I have this issue?</a>'
+                  footer: '',
                   confirmButtonColor: "#07B201",
                 });
             }
@@ -71,7 +71,7 @@ const FormFilial = ({dataFilialChoice, dataEstado, setIdFilial, idFilial, showMo
                   icon: "success",
                   title: "",
                   text: 'Registrado com sucesso',
-                  footer: '',//'<a href="#">Why do I have this issue?</a>'
+                  footer: '',
                   confirmButtonColor: "#07B201",
                 });
             }
@@ -145,7 +145,7 @@ const FormFilial = ({dataFilialChoice, dataEstado, setIdFilial, idFilial, showMo
             icon: "error",
             title: "Oops...",
             text: error,
-            footer: '',//'<a href="#">Why do I have this issue?</a>'
+            footer: '',
             confirmButtonColor: "#07B201",
             //width:'20rem',
         });

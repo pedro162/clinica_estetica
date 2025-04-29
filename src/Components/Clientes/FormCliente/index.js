@@ -93,7 +93,7 @@ const FormCliente = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, sho
                 Swal.fire({
                   icon: "success",
                   title: "",
-                  text: 'Reigistrado com sucesso',
+                  text: 'Registrado com sucesso',
                   footer: '',//'<a href="#">Why do I have this issue?</a>'
                   confirmButtonColor: "#07B201",
                 });
@@ -119,7 +119,7 @@ const FormCliente = ({dataClienteChoice, dataGrupo, setIdcliente, idCliente, sho
                 Swal.fire({
                   icon: "success",
                   title: "",
-                  text: 'Reigistrado com sucesso',
+                  text: 'Registrado com sucesso',
                   footer: '',//'<a href="#">Why do I have this issue?</a>'
                   confirmButtonColor: "#07B201",
                 });

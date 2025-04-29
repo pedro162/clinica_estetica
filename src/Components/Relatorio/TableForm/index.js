@@ -8,7 +8,7 @@ import { faHome, faSearch, faPlus, faTrash } from "@fortawesome/free-solid-svg-i
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../../functions/index.js'
 
-const TableForm = ({children, titulosTableArr, rowsTableArr,loading, hasActionsCol, hasTrashAction ,propsTrash ,... props})=>{
+const TableForm = ({children, titulosTableArr, rowsTableArr,loading, hasActionsCol, hasTrashAction ,propsTrash, nadaEncontrado ,... props})=>{
 	const titulosTable = titulosTableArr ? titulosTableArr : []
 	const bodyTable =  rowsTableArr ? rowsTableArr : []
 	const [selecionados, setSelecionados] = React.useState([])
@@ -194,7 +194,11 @@ const TableForm = ({children, titulosTableArr, rowsTableArr,loading, hasActionsC
 
                             })
 
-                        ) : ('')
+                        ) : (
+                            <td colSpan={titulosTable.length} className="text-center">
+                                Nenhum registro encontrado
+                            </td>
+                        )
                         
                     }				    
                 </tbody>
