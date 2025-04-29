@@ -68,7 +68,7 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 			Swal.fire({
 				icon: "success",
 				title: "",
-				text: 'Reigistrado com sucesso',
+				text: 'Registrado com sucesso',
 				footer: '',
 				confirmButtonColor: "#07B201",
 			});

@@ -92,7 +92,6 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
         setPessoa(target.value)
     }
 
-
     React.useEffect(()=>{
         switch(acao){
             case 'editar':
@@ -154,7 +153,7 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
         setAcao('cancelar')
         setCancelarMovimentacoesFinanceira(true);
     }
-    //cancelarMovimentacoesFinanceira, setCancelarMovimentacoesFinanceira
+    
     const novaMovimentacoesFinanceira = (idMovimentacoesFinanceira)=>{
         setMovimentacoesFinanceiraChoice(idMovimentacoesFinanceira)
         setAcao('consultar')
@@ -177,6 +176,7 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
        
         let data = [];
         let dataMovimentacoesFinanceira = estado
+
         if(dataMovimentacoesFinanceira?.mensagem){
             dataMovimentacoesFinanceira = dataMovimentacoesFinanceira?.mensagem;
         }
@@ -184,6 +184,7 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
         if(dataMovimentacoesFinanceira?.data){
             dataMovimentacoesFinanceira = dataMovimentacoesFinanceira?.data;
         }
+
         if(dataMovimentacoesFinanceira && Array.isArray(dataMovimentacoesFinanceira) && dataMovimentacoesFinanceira.length > 0){
             for(let i=0; !(i == dataMovimentacoesFinanceira.length); i++){
                 let atual = dataMovimentacoesFinanceira[i];
@@ -203,15 +204,10 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                         acoesArr.push({acao:()=>visualizarMovimentacoesFinanceiraAction(atual.id), label:'Detalhes', propsOption:{}, propsLabel:{}})
                     }
 
-
                     if(btnOrigem){
                         acoesArr.push({acao:()=>visualizarOrigemMovimentacoesFinanceiraAction(atual.id), label:'Origem', propsOption:{}, propsLabel:{}})
                     }
 
-
-
-                    
-                    //'remarcado','finalizado','cancelado','pendente'
                     data.push(
 
                         {
@@ -337,11 +333,11 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
         return tableTitle;
     }
    
-
     const gerarListMobileRelatorio = ()=>{
        
         let data = [];
         let dataClientes = estado
+
         if(dataClientes?.mensagem){
             dataClientes = dataClientes?.mensagem;
         }
@@ -349,9 +345,11 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
         if(dataClientes?.data){
             dataClientes = dataClientes?.data;
         }
+
         if(dataClientes && Array.isArray(dataClientes) && dataClientes.length > 0){
             for(let i=0; !(i == dataClientes.length); i++){
                 let atual = dataClientes[i];
+
                 if(atual){
 
                     let line_style = {}
@@ -368,7 +366,6 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                     if(btnDetalhes){
                         acoesArr.push({acao:()=>visualizarMovimentacoesFinanceiraAction(atual.id), label:'Detalhes', propsOption:{}, propsLabel:{}})
                     }
-
 
                     if(btnOrigem){
                         acoesArr.push({acao:()=>visualizarOrigemMovimentacoesFinanceiraAction(atual.id), label:'Origem', propsOption:{}, propsLabel:{}})
@@ -436,19 +433,14 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
         return data;
     }
 
-    //------------
-
     const requestAllMovimentacoesFinanceiras = async() =>{
        
         const {url, options} = CONSULTA_ALL_POST({'name_pessoa':pessoa}, getToken());
-
-
         const {response, json} = await request(url, options);
+
         if(json){
             //setMovimentacoesFinanceira(json)
         }
-
-            
     }
 
     React.useEffect(()=>{
@@ -458,9 +450,9 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
         handleTotalItems();
     }, [dataEstado])
     
-
     const rowsTableArr = gerarTableMovimentacoesFinanceira();    
     const titulosTableArr = gerarTitleTable();
+
     return(
         <>
             <Row>

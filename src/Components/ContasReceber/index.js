@@ -88,7 +88,6 @@ const ContasReceber = ({ defaultFilters, ...props }) => {
         setDtFim(target.value)
     }
 
-
     const handleFiltroStatus = ({ target }) => {
         setStatus(target.value)
     }
@@ -513,7 +512,8 @@ const ContasReceber = ({ defaultFilters, ...props }) => {
         const { response, json } = await request(url, options);
 
         if (json) {
-            setContasReceber(json)
+            await setContasReceber(json)
+            
             if (json?.mensagem && json?.mensagem.length > 0) {
                 setNadaEncontrado(false)
             } else {
@@ -532,7 +532,7 @@ const ContasReceber = ({ defaultFilters, ...props }) => {
         const { response, json } = await request(url, options);
 
         if (json) {
-            setDataFiliais(json)
+            await setDataFiliais(json)
         }
     }
 
@@ -541,11 +541,17 @@ const ContasReceber = ({ defaultFilters, ...props }) => {
         const requestDataConfigEffect = async () => {
             await requestAllFilials()
         }
+        
+        requestDataConfigEffect();
+
+    }, [])
+
+
+    React.useEffect(() => {
         const requestAllContasRecebersEffect = async () => {
             await requestAllContasRecebers();
         }
 
-        requestDataConfigEffect();
         requestAllContasRecebersEffect();
 
     }, [filtroAvencer, filtroVencidas, filtroPagas, filtroAbertas, nextPage, setNextPage, defaultFilters])

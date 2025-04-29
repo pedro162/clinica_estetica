@@ -29,10 +29,7 @@ import { FORMAT_CALC_COD, FORMAT_MONEY } from '../../functions/index.js'
 
 
 const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEncontrado, nextPage, setNextPage, usePagination, setUsePagination, totalPageCount, setTotalPageCount, ...props }) => {
-    const { data, error, request, loading } = useFetch();
     const [estado, setContasReceber] = React.useState([])
-    const [exemplos, setExemplos] = React.useState([])
-    const [exemplosTitleTable, setExemplosTitleTable] = React.useState([])
     const [showModalCriarContasReceber, setShowModalCriarConstula] = React.useState(false)
     const [consultaChoice, setContasReceberChoice] = React.useState(null);
     const [atualizarContasReceber, setAtualizarContasReceber] = React.useState(false)
@@ -53,8 +50,8 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
     const { getToken } = React.useContext(UserContex);
 
     const handleTotalPages = () => {
-        if (Number(estado?.data?.last_page > 0)) {
-            setTotalPageCount(estado?.data?.last_page)
+        if (Number(dataEstado?.data?.data?.last_page > 0)) {
+            setTotalPageCount(dataEstado?.data?.data?.last_page)
         }
     }
 
@@ -185,7 +182,7 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
         setVisualizarContasReceberItens(true);
     }
 
-    const gerarTableContasReceber = () => {
+    const gerarTableContasReceber = React.useMemo(() => {
 
         let data = [];
         let dataContasReceber = estado
@@ -259,6 +256,7 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                     }
 
                     let line_style = {}
+                    
                     if (atual.status == 'devolvido') {
                         line_style.color = 'red';
                     } else if (atual.status == 'pago') {
@@ -323,6 +321,20 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                                 },
                                 {
 
+                                    label: FORMAT_MONEY(atual?.vrJuros),
+                                    propsRow: {},
+                                    toSum: 1,
+                                    isCoin: 1,
+                                },
+                                {
+
+                                    label: FORMAT_MONEY(atual?.vrTaxa),
+                                    propsRow: {},
+                                    toSum: 1,
+                                    isCoin: 1,
+                                },
+                                {
+
                                     label: FORMAT_MONEY(atual?.vrPago),
                                     propsRow: {},
                                     toSum: 1,
@@ -366,9 +378,9 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
         }
 
         return data;
-    }
+    }, [estado])
 
-    const gerarTitleTable = () => {
+    const gerarTitleTable = React.useMemo(() => {
         let tableTitle = [
             {
                 label: 'Código',
@@ -417,6 +429,18 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                 }
             },
             {
+                label: 'Juros pagos',
+                props: {
+                    style: { minWidth: '150px' }
+                }
+            },
+            {
+                label: 'Multa paga',
+                props: {
+                    style: { minWidth: '150px' }
+                }
+            },
+            {
                 label: 'Valor pago',
                 props: {
                     style: { minWidth: '150px' }
@@ -455,7 +479,7 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
         ]
 
         return tableTitle;
-    }
+    }, []);
 
     const gerarListMobileContasReceber = () => {
 
@@ -617,9 +641,6 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
         handleTotalItems();
     }, [dataEstado])
 
-    const rowsTableArr = gerarTableContasReceber();
-    const titulosTableArr = gerarTitleTable();
-
     return (
         <>
             <Row >
@@ -651,11 +672,11 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
 
                 <Col xs="12" sm="12" md="12" className={'default_card_report'}>
                     <Table
-                        titulosTableArr={titulosTableArr}
-                        rowsTableArr={rowsTableArr}
+                        titulosTableArr={gerarTitleTable}
+                        rowsTableArr={gerarTableContasReceber}
                         loading={loadingData}
                         nadaEncontrado={nadaEncontrado}
-                        botoesHeader={[/* {acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> } */]}
+                        botoesHeader={[]}
                         nextPage={nextPage}
                         setNextPage={setNextPage}
                         usePagination={usePagination}
