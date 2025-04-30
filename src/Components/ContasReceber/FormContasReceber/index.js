@@ -88,7 +88,7 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 		}
 	}
 
-	const dataToFormContasReceber = () => {
+	const dataToFormContasReceber = React.useMemo(() => {
 		let obj = { filial_id: '', vrLiquido: '', descricao: '', documento: '', dsArquivo: '', pessoa_id: '', pessoa_name: '', pessoa_rca_id: '', forma_pagamento_id: '', plano_pagamento_id: '', operador_financeiro_id: '', active: '', deleted_at: '', created_at: '', updated_at: '' }
 
 		if (dataContasReceberChoice) {
@@ -160,9 +160,9 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 		}
 
 		return obj;
-	}
+	}, [dataContasReceberChoice, idPessoaForm, idFilialForm])
 
-	const preparaFilialToForm = () => {
+	const preparaFilialToForm = React.useMemo(() => {
 		if (dataFiliais.hasOwnProperty('mensagem') && Array.isArray(dataFiliais.mensagem) && dataFiliais.mensagem.length > 0) {
 			let filiais = dataFiliais.mensagem.map(({ id, name_filial }, index, arr) => ({ label: name_filial, valor: id, props: {} }))
 			filiais.unshift({ label: 'Selecione...', valor: '', props: { selected: 'selected', disabled: 'disabled' } })
@@ -171,7 +171,7 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 		}
 
 		return []
-	}
+	}, [dataFiliais])
 
 	const getFormaPagamentoAll = async () => {
 
@@ -182,6 +182,9 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 
 			if (json && json.hasOwnProperty('mensagem')) {
 				let data = json.mensagem;
+				setDataFormaPagamento(data)
+			}else if(json && json.hasOwnProperty('data')){
+				let data = json.data?.data;
 				setDataFormaPagamento(data)
 			} else {
 				setDataFormaPagamento([])
@@ -206,7 +209,10 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 			if (json && json.hasOwnProperty('mensagem')) {
 				let data = json.mensagem;
 				setDataPlanoPagamento(data)
-			} else {
+			}else if(json && json.hasOwnProperty('data')){
+				let data = json.data?.data;
+				setDataPlanoPagamento(data)
+			}else {
 				setDataPlanoPagamento([])
 			}
 
@@ -229,6 +235,9 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 			if (json && json.hasOwnProperty('mensagem')) {
 				let data = json.mensagem;
 				setDataOperadorFinanceiro(data)
+			}else if(json && json.hasOwnProperty('data')){
+				let data = json.data?.data;
+				setDataOperadorFinanceiro(data)
 			} else {
 				setDataOperadorFinanceiro([])
 			}
@@ -238,7 +247,7 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 		}
 	}
 
-	const preparaFormaPagamentoToForm = () => {
+	const preparaFormaPagamentoToForm = React.useMemo(() => {
 		if (dataFormaPagamento && Array.isArray(dataFormaPagamento) && dataFormaPagamento.length > 0) {
 			let formaPgto = dataFormaPagamento.map(({ id, name }, index, arr) => ({ label: name, valor: id, props: {} }))
 			formaPgto.unshift({ label: 'Selecione...', valor: '0', props: { selected: 'selected', } })
@@ -246,7 +255,7 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 		}
 
 		return []
-	}
+	}, [dataFormaPagamento])
 
 	const preparaPlanoPagamentoToForm = () => {
 		if (dataPlanoPagamento && Array.isArray(dataPlanoPagamento) && dataPlanoPagamento.length > 0) {
@@ -307,7 +316,7 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 		<>
 			<Formik
 
-				initialValues={{ ...dataToFormContasReceber() }}
+				initialValues={{ ...dataToFormContasReceber }}
 				enableReinitialize={true}
 				validate={
 					values => {
@@ -426,7 +435,7 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 																				className: estilos.input,
 																				size: "sm"
 																			},
-																			options: preparaFilialToForm(),
+																			options: preparaFilialToForm,
 																			atributsContainer: {
 																				className: ''
 																			}
@@ -570,7 +579,7 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 																				className: estilos.input,
 																				size: "sm",
 																			},
-																			options: preparaFormaPagamentoToForm(),
+																			options: preparaFormaPagamentoToForm,
 																			atributsContainer: {
 																				className: ''
 																			}

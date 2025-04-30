@@ -30,7 +30,7 @@ const useFetch = () => {
                 if(json?.errors){
                     for(let prop in json.errors){
                         if(json.errors[prop].length > 0){
-                            message += json.errors[prop][0] + ', ';
+                            message += json.errors[prop] + ', ';
                         }
                     }
                     

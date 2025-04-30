@@ -92,7 +92,7 @@ const Baixar = ({ idContasReceber, setIdContasReceber, callback, BaixarContasRec
 	return (
 		<>
 			{!dataContasReceber &&
-				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={() => null} title={'Baixar ContasReceber'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="" show={showModalBaixarContasReceber} showHide={() => { setShowModalBaixarContasReceber(); }}>
+				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={() => null} title={'Baixar ContasReceber'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="" show={true} showHide={() => { setShowModalBaixarContasReceber(); }}>
 					<Load />
 				</Modal>
 			}
