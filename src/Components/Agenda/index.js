@@ -446,7 +446,7 @@ const Agenda = ({defaultFilters, ...props})=>{
                 {mostarFiltros && 
                     (
                         <>
-                            <Col  xs="12" sm="12" md="12" className={'default_card_report'}>
+                            <Col  xs="12" sm="12" md="12" className={'default_card_report mb-4'}>
                                 <Filter
                                     filtersArr={filtersArr}
                                     actionsArr={acoesBottomCard}
