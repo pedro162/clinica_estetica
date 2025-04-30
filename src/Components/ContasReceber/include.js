@@ -231,6 +231,10 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                         btnEditar = false;
                     }
 
+                    if (atual?.status == 'pago') {
+                        baixar = false;
+                    }
+
                     if (btnEditar) {
                         acoesArr.push({ acao: () => atualizarContasReceberAction(atual.id), label: 'Editar', propsOption: {}, propsLabel: {} })
                     }

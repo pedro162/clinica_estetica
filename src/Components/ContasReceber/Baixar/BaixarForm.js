@@ -167,7 +167,11 @@ const BaixarForm = ({ dataContasReceberChoice, setDataContasReceber, setIdContas
 		obj.vr_multa = vrMulta;
 		obj.vr_acrescimo = vrAcrescimo;
 		obj.vr_total = data?.vrLiquido - data?.vrPago;
-	
+		
+		if(idCaixaForm > 0){
+			obj.caixa_id = idCaixaForm;
+		}
+
 		return obj;
 	};
 
@@ -344,7 +348,7 @@ const BaixarForm = ({ dataContasReceberChoice, setDataContasReceber, setIdContas
 																}
 															}
 														}
-														ComponentFilter={<Caixa />}
+														ComponentFilter={Caixa}
 														titleCompontent={'Caixa'}
 														component={Required}
 													>   </Field>

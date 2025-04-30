@@ -155,9 +155,6 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 		saldo 			= vrOs - totCob;
 		let saldoAbs 	= Math.abs(saldo);
 
-		//console.log('VAlor vrOs: '+vrOs)
-		//console.log('Total cobranças: '+totCob)
-		//---Não tem mais saldo
 		if(! (saldoAbs > 0.02)){
 			saldo = 0;
 			
@@ -165,29 +162,21 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 			
 			saldo = 0;
 		}
-		//console.log('Saldo calculado: '+saldo)
+
 		return saldo;
 	}
-
-	
 
 	const getOrdemServico = async (idOrdemServico)=>{
 		if(idOrdemServico > 0){
 			const {url, options} = ORDEM_SERVICO_ONE_GET(idOrdemServico, getToken());
 			const {response, json} = await request(url, options);
-			
-			console.log('Data venda99999999 --------------------')
-		console.log(json)
-		console.log('Data venda99999999 ------------------------')
+	
 			if(json){
 				
 				setDataOrdemServico(json)
 				setDataOrdemServicoGlobal(json)
-				if(json && json.hasOwnProperty('mensagem')){
-					let data = json.mensagem;
-					setDataCobrancas(data?.cobranca)
-					
-				}
+				let data = json?.mensagem ? json?.mensagem : json?.data?.data;
+				setDataCobrancas(data?.cobranca)
 				 
 			}else{
 				setDataOrdemServico([])
@@ -196,10 +185,7 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 		}
 	}
 	React.useEffect(()=>{
-		
-		getOrdemServico(idOrdemServico);
-		console.log('================ qtdAtualizaCobrancas '+qtdAtualizaCobrancas+' ========================================')
-		
+		getOrdemServico(idOrdemServico);		
 	}, [idOrdemServico, qtdAtualizaCobrancas])
 	
 	const getFormaPagamentoOrdem = async (idFormaPagamento)=>{
@@ -208,16 +194,9 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 			const {url, options} = FORMA_PAGAMENTO_ONE_GET(idFormaPagamento, getToken());
 			const {response, json} = await request(url, options);
 			
-			if(json){
-				
-				if(json && json.hasOwnProperty('mensagem')){
-					let data = json.mensagem;
-					//console.log("Item escolhido: ",data)
-					setDataFormaPagamentoEscolhido(data)
-				}else{
-					setDataFormaPagamentoEscolhido([])
-				}
-				 
+			if(json){				
+				let data = json?.mensagem ? json?.mensagem : json?.data?.data;
+				setDataFormaPagamentoEscolhido(data)
 			}else{
 				setDataFormaPagamentoEscolhido([])
 			}
@@ -230,14 +209,8 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 		const {response, json} = await request(url, options);
 		
 		if(json){
-				
-			if(json && json.hasOwnProperty('mensagem')){
-				let data = json.mensagem;
-				//console.log("Formas de pagamento: ",data)
-				setDataFormaPagamento(data)
-			}else{
-				setDataFormaPagamento([])
-			}
+			let data = json?.mensagem ? json?.mensagem : json?.data?.data;
+			setDataFormaPagamento(data)
 			 
 		}else{
 			setDataFormaPagamento([])
@@ -255,9 +228,8 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 		
 		if(json){
 				
-			if(json && json.hasOwnProperty('mensagem')){
-				let data = json.mensagem;
-				//console.log("Planos de pagamento: ",data)
+			if(json){
+				let data = json?.mensagem ? json?.mensagem : json?.data?.data;
 				setDataPlanoPagamento(data)
 			}else{
 				setDataPlanoPagamento([])
@@ -277,21 +249,15 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 		const {url, options} = OPERADOR_FINANCEIROALL_POST({forma_pagamento_id:idFormaPagamentoForm}, getToken());
 		const {response, json} = await request(url, options);
 		
-		if(json){
-				
-			if(json && json.hasOwnProperty('mensagem')){
-				let data = json.mensagem;
-				//console.log("Operadores financeiros: ",data)
-				setDataOperadorFinanceiro(data)
-			}else{
-				setDataOperadorFinanceiro([])
-			}
+		if(json){				
+			let data = json?.mensagem ? json?.mensagem : json?.data?.data;
+			setDataOperadorFinanceiro(data)
 			 
 		}else{
 			setDataOperadorFinanceiro([])
 		}
 	}
-	//
+	
 	React.useEffect(()=>{
 		if(idServicoEscolhido && idServicoEscolhido > 0){
 			getFormaPagamentoOrdem(idServicoEscolhido)
@@ -299,9 +265,6 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 			setDataServicoItemEscolhido([])
 		}else{
 			setDataFormaPagamentoEscolhido([])
-			//getFormaPagamentoOrdem(null)
-			//setIdCobrancaEscolhidaOrdemServico(null)
-			//setDataServicoItemEscolhido([])
 		}
 
 	}, [idServicoEscolhido])
@@ -314,32 +277,14 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 			const {response, json} = await request(url, options);
 			
 			if(json){
+				let data = json?.mensagem ? json?.mensagem : json?.data?.data;
 				
-				if(json && json.hasOwnProperty('mensagem')){
-					let data = json.mensagem;
-					//console.log("Item ordem serviço escolhido: ",data)
-					let {id, servico_id, servico} = data
-					
-					//setDataServicoItemEscolhido(data)
-
-					//console.log('servico_id:',servico_id)
-					/* data.id = servico_id;
-					data.os_item_id = id;
-					data.name = servico?.name;
-					data.vrServico = servico?.vrServico; */
-					
-					//console.log('Dados para formulário =======================================')
-					//console.log(data)
-					//console.log('Dados para formulário =======================================')
-					setDataFormaPagamentoEscolhido(data)
-					setIdFormaPagamentoForm(data?.forma_pagamento_id)
-					setIdPlanoPagamentoForm(data?.plano_pagamento_id)//
-					setIdOperadorFinanceiroForm(data?.operador_financeiro_id)
-					setNrDocForm(data?.nr_doc)
-				}else{
-					setDataServicoItemEscolhido([])
-					setDataFormaPagamentoEscolhido([])
-				}
+				let {id, servico_id, servico} = data
+				setDataFormaPagamentoEscolhido(data)
+				setIdFormaPagamentoForm(data?.forma_pagamento_id)
+				setIdPlanoPagamentoForm(data?.plano_pagamento_id)//
+				setIdOperadorFinanceiroForm(data?.operador_financeiro_id)
+				setNrDocForm(data?.nr_doc)
 				 
 			}else{
 				setDataServicoItemEscolhido([])
@@ -353,12 +298,8 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 	}
 
 	React.useEffect(()=>{
-		/* if(idCobrancaEcolhidaOrdemServico > 0){
-			getItemCobrancaOrdemServico(idCobrancaEcolhidaOrdemServico)
-		} */
 		getItemCobrancaOrdemServico(idCobrancaEcolhidaOrdemServico)
 	}, [idCobrancaEcolhidaOrdemServico])
-
 
 	const dataToFormOrdemServicoCobrancas = ()=>{
     	let obj = {vr_saldo:'', vr_cobranca:'', id:'', operador_financeiro_id:'', forma_pagamento_id:'', plano_pagamento_id:'', bandeira_cartao_id:'',}
@@ -398,7 +339,6 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 				obj.nr_doc = data.nr_doc;
     		}
            
-			
     	}
 
     	return obj;
@@ -418,13 +358,6 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 
 	React.useEffect(()=>{
 		
-		/* if(vrCobrancaForm){
-			console.log('aqui bonitinho========================================')
-			setDataFormaPagamentoEscolhido({...dataFormaPagamentoEscolhido, vrItem:vrCobrancaForm, pct_desconto:0})
-		} */
-		console.log('================= vr_cobranca ======================')
-		console.log(vrCobrancaForm)
-		console.log('================= vr_cobranca end ======================')
 		setDataFormaPagamentoEscolhido({...dataFormaPagamentoEscolhido, ...calcularCobranca({vrCobrancaForm}) })
 
 	}, [vrCobrancaForm])
@@ -432,8 +365,6 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 	const calcularCobranca = ({idFormaPagamentoForm, vrCobrancaForm, idPlanoPagamentoForm, idOperadorFinanceiroForm, dtVencimentoManualForm, nrDocForm})=>{
 		let obj = {vr_saldo:'', name:'', forma_pagamento_id:'', operador_financeiro_id:'', plano_pagamento_id:'', vr_cobranca:'', nr_doc:'', ...dataFormaPagamentoEscolhido}
 		let data = dataFormaPagamentoEscolhido;
-		console.log('vrCobrancaForm cobrança ===========================')
-		console.table(vrCobrancaForm)//
 
 		if(data.hasOwnProperty('id')){
 			obj.id = data.id;
@@ -481,8 +412,6 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 
 		}else if(data.hasOwnProperty('vr_acrescimo')){
 			obj.vr_acrescimo = data.vr_acrescimo;
-			console.log('data cobrança ===========================')
-			//console.table(data)//
 		}else{
 			obj.vr_acrescimo 		= idFormaPagamentoForm
 		}
@@ -520,22 +449,8 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 
 		obj.vr_saldo 	= calcularSaldoCobranca();
 
-		console.log('Calcular cobrança ===========================')
-		console.table(obj)//
-		
-		
-		
-		
-
     	return obj;
 	}
-
-	const handleChangePctDesconto = (value)=>{
-		
-	}
-
-
-	
 
 	React.useEffect(()=>{
 		getFormaPagamentoAll();
@@ -544,23 +459,16 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
 	React.useEffect(()=>{
 		getOperadorFinanceiroAll()
 		getPlanoPagamentoAll();
-		//idFormaPagamentoForm 
-		//alert(idFormaPagamentoForm)
 		setDataFormaPagamentoEscolhido({...dataFormaPagamentoEscolhido, ...calcularCobranca({idFormaPagamentoForm}) })
 	}, [idFormaPagamentoForm]);
 
-	
-
-
-	
 	const preparaFormaPagamentoToForm = ()=>{
     	if(dataFormaPagamento && Array.isArray(dataFormaPagamento) && dataFormaPagamento.length > 0){
     		let formaPgto = dataFormaPagamento.map(({id, name}, index, arr)=>({label:name,valor:id,props:{}}))
-    		//formaPgto.unshift({label:'Teste',valor:'2',props:{selected:'selected'}})
 			formaPgto.unshift({label:'Selecione...',valor:'0',props:{selected:'selected', }})
-    		//console.table(formaPgto)
     		return formaPgto;
     	}
+
     	return []
     }
 
@@ -568,7 +476,6 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
     	if(dataPlanoPagamento && Array.isArray(dataPlanoPagamento) && dataPlanoPagamento.length > 0){
     		let formaPgto = dataPlanoPagamento.map(({id, name}, index, arr)=>({label:name,valor:id,props:{}}))
     		formaPgto.unshift({label:'Selecione...',valor:'',props:{selected:'selected', }})
-    		//console.table(formaPgto)
     		return formaPgto;
     	}
     	return []
@@ -578,12 +485,11 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
     	if(dataOperadorFinanceiro && Array.isArray(dataOperadorFinanceiro) && dataOperadorFinanceiro.length > 0){
     		let formaPgto = dataOperadorFinanceiro.map(({id, name}, index, arr)=>({label:name,valor:id,props:{}}))
     		formaPgto.unshift({label:'Selecione...',valor:'',props:{selected:'selected', }})
-    		//console.table(formaPgto)
     		return formaPgto;
     	}
     	return []
     }
-	//dataPlanoPagamento, setDataPlanoPagamento
+	
 	const excluirItem = async (idItem)=>{
 
 		if(idItem > 0){
@@ -612,14 +518,13 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
             for(let i=0; !(i == dataRegistro.length); i++){
                 let atual = dataRegistro[i];
 				let indexAtual = (i+1);
+
                 if(atual){
-						//grupo, posicao
+					
 					let acoesArr = [];
+
 					if(atual?.id > 0){
 						acoesArr.push({acao:()=>{
-								///setGrupo(atual?.grupo);
-								//setPosicao(atual?.posicao);
-								//setIdGrupo(atual?.id)
 								setIdCobrancaEscolhidaOrdemServico(atual?.id)
 							}, label:'Editar', propsOption:{'className':'btn btn-sm'}, propsLabel:{}})
 					}
@@ -702,8 +607,6 @@ const FormOrdemServicoCobrancas = ({dataOrdemServicoChoice, setDataOrdemServicoG
     const rowsTableArr 		= gerarTableOrdemServico();    
     const titulosTableArr 	= gerarTitleCobTable();
 	const dataFormSev 		= calcularCobranca({})
-	console.log('Cobrança adicionada')
-	console.table(dataFormSev)
 	const readonlyFields = idCobrancaEcolhidaOrdemServico > 0 ? {readonly:'readonly', disabled:'disabled'} : {}
 	return(
 
