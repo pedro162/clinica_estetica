@@ -147,7 +147,6 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
         } else {
             setShowModalCriarConstula(false);
         }
-
     }, [cadastrarContasReceberItem])
 
     const atualizarContasReceberItemAction = (idContasReceberItem) => {
