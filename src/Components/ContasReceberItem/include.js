@@ -147,10 +147,6 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
         } else {
             setShowModalCriarConstula(false);
         }
-<<<<<<< HEAD
-=======
-
->>>>>>> AM-2025-01_Release
     }, [cadastrarContasReceberItem])
 
     const atualizarContasReceberItemAction = (idContasReceberItem) => {
