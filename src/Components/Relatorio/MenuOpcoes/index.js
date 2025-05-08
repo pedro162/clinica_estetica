@@ -16,10 +16,6 @@ const MenuOpcoes = ({opcoes, showModal, setShowModal, props})=>{
 		{'acao':()=>alert('aqui'), label:'Cadastrar', propsOption:{}, propsLabel:{}}
 	]
 	
-	console.log('------------')
-	console.log(opcoes)
-	console.log('------------')
-
 	return(
 		<>
 			<Modal noBtnConcluir={true}  title={'Menu de opções'} size="xs" propsConcluir={{}} labelConcluir={'TEste'} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModal} showHide={setShowModal} >

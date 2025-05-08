@@ -8,7 +8,6 @@ import Button from '../FormControl/Button.js';
 const FormLogin = ({logar, loading, data, error,...props})=>{
     const userLogar = (user, password)=>{
         logar(user, password)
-
     }
 
     return(
@@ -32,10 +31,6 @@ const FormLogin = ({logar, loading, data, error,...props})=>{
                 }
 
                 onSubmit={(values, {setSubmitting})=>{
-                    /*setTimeout(() => {
-                        alert(JSON.stringify(values, null, 2));
-                        setSubmitting(false);
-                      }, 400);*/
                       userLogar(values.user, values.password)
                 }}
             >

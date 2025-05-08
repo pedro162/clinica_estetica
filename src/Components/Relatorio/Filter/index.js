@@ -68,7 +68,6 @@ const Filter = ({filtersArr, actionsArr, botoesHeader, mostarFiltros,setMostarFi
 										options
 
 							 		}
-									//
 									
 									switch(type.trim()){
 										case 'text':
@@ -105,8 +104,6 @@ const Filter = ({filtersArr, actionsArr, botoesHeader, mostarFiltros,setMostarFi
 
 											}
 											
-
-											
 										break;
 										case 'checkbox':
 
@@ -120,10 +117,7 @@ const Filter = ({filtersArr, actionsArr, botoesHeader, mostarFiltros,setMostarFi
 											return (<Col {...atributsContainer}><FormControlInput key={index} data={dados} /></Col>)
 										break;
 
-									}
-
-
-									
+									}								
 
 							 	}) 
 							:
