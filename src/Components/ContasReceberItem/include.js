@@ -430,12 +430,6 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                 }
             },
             {
-                label: 'Baixa',
-                props: {
-                    style: { minWidth: '150px' }
-                }
-            },
-            {
                 label: 'Conta receber',
                 props: {
                     style: { minWidth: '150px' }
