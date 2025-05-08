@@ -8,7 +8,6 @@ import FormControlInput from '../FormControl/index.js'
 import Table from '../Relatorio/Table/index.js'
 import CardMobile from '../Relatorio/CardMobile/index.js'
 import ListMobile from '../Relatorio/ListMobile/index.js'
-
 import Filter from '../Relatorio/Filter/index.js'
 import Breadcrumbs from '../Helper/Breadcrumbs.js'
 import { faHome, faSearch, faPlus, faPen, faHandHoldingUsd, faList, faFile, faTrash, faHandHolding, faUser, faUserCircle, faEllipsisH, faChartLine } from "@fortawesome/free-solid-svg-icons";
@@ -148,7 +147,6 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
         } else {
             setShowModalCriarConstula(false);
         }
-
     }, [cadastrarContasReceberItem])
 
     const atualizarContasReceberItemAction = (idContasReceberItem) => {
@@ -432,9 +430,9 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                 }
             },
             {
-                label: 'Cód. conta receber',
+                label: 'Conta receber',
                 props: {
-                    style: { minWidth: '525px' }
+                    style: { minWidth: '150px' }
                 }
             },
         ]
@@ -491,7 +489,6 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                         btnEditar = false;
                     }
 
-
                     if (btnEditar) {
                         acoesArr.push({ acao: () => atualizarContasReceberItemAction(atual.id), label: 'Editar', propsOption: {}, propsLabel: {} })
                     }
@@ -504,20 +501,12 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                         acoesArr.push({ acao: () => estornarContasReceberItemAction(atual.id), label: 'Estornar', propsOption: {}, propsLabel: {} })
                     }
 
-                    if (baixar) {
-
-                    }
-
                     if (btnVisualizarMovimentacoes) {
                         acoesArr.push({ acao: () => { visualizarMovimentacoesActions(atual.id); setDefaultFiltersMovimentacoes({ ...atual, sub_referencia_id: atual?.id, sub_referencia: 'conta_receber_items' }) }, label: 'Movimentações', propsOption: {}, propsLabel: {} })
                     }
 
                     if (btnVisualizar) {
                         acoesArr.push({ acao: () => visualizarContasReceberItemAction(atual.id), label: 'Visualizar', propsOption: {}, propsLabel: {} })
-                    }
-
-                    if (btnCancelar) {
-
                     }
 
                     let line_style = {}
@@ -552,7 +541,7 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                                 [
                                     {
                                         title: <span style={{ fontWeight: '480' }}>Cód. pessoa: </span>,
-                                        label: atual?.pessoa_id,
+                                        label: atual?.conta_receber?.pessoa?.id,
                                         props: { style: { textAlign: 'left', md: '1', sm: '1', xs: '1' } },
                                         toSum: 1,
                                         isCoin: 1,
@@ -571,8 +560,8 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                                         isCoin: 1,
                                     },
                                     {
-                                        title: <span style={{ fontWeight: '480' }}>Vencimento </span>,
-                                        label: FORMAT_DATA_PT_BR(atual.dtVencimento),
+                                        title: <span style={{ fontWeight: '480' }}>Pagamento </span>,
+                                        label: FORMAT_DATA_PT_BR(atual.dtPagamento),
                                         props: { style: { textAlign: 'left', md: '4', sm: '4', xs: '4' } },
                                         toSum: 1,
                                         isCoin: 1,
@@ -610,9 +599,6 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
         <>
             <Row >
                 <Col xs="12" sm="12" md="12" className={'mobile_card_report py-4'} style={{ backgroundColor: '#FFF' }}>
-
-
-
                     <ListMobile
                         titulosTableArr={null}
                         rowsTableArr={gerarListMobileContasReceberItem()}
@@ -643,7 +629,7 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                         rowsTableArr={rowsTableArr}
                         loading={loadingData}
                         nadaEncontrado={nadaEncontrado}
-                        botoesHeader={[/* {acao:()=>setMostarFiltros(mostar=>!mostar), label:'', propsAcoes:{className:'btn btn-sm btn-secondary', style:{'justifyContent': 'flex-end'}}, icon:<FontAwesomeIcon icon={faSearch} /> } */]}
+                        botoesHeader={[]}
                         nextPage={nextPage}
                         setNextPage={setNextPage}
                         usePagination={usePagination}
