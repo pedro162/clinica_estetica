@@ -65,7 +65,7 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 		const { url, options } = data_config;
 		const { response, json } = await request(url, options);
 
-		if (json) {
+		if (json || !error) {
 			callback();
 			setShowModalCriarContasReceber();
 			setAtualizarContasReceber(false);
