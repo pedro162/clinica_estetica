@@ -16,14 +16,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 const FormEmail = ({idPessoa, noUseModal, formikRef, setCarregando, dataEmailChoice, dataEstado, setIdEmail, idEmail, showModalCriarEmail, setShowModalCriarEmail, callback, atualizarCadastro, setAtualizarCadastro, carregando})=>{
     
     const [carregandoDadosChoice, setCarregandoDadosChoice] = React.useState(false)
-    //dataEstado={dataEstado} setIdEmail={setIdEmail} idEmail={idEmail} carregando={false} dataEmailChoice={dataEmail} setAtualizarCadastro={setAtualizarCadastro} atualizarCadastro={atualizarCadastro} showModalCriarEmail={showModalAtualizarEmail} setShowModalCriarEmail={()=>{setShowModalAtualizarEmail();setCadastrarEmail()}} callback={callback} 
 	const {data, error, request, loading} = useFetch();
 	const fetchToEmail = useFetch();
 
 	const {getToken, dataUser} = React.useContext(UserContex);
-	const userLogar =  ()=>{
-        console.log('Aqui............')
-    }
 
     const sendData = async ({
     		mensagem,
@@ -38,12 +34,12 @@ const FormEmail = ({idPessoa, noUseModal, formikRef, setCarregando, dataEmailCho
             title:email_assunto,
             pessoa_id:idPessoa,  
     		data_file
-
     	}
 
         if(atualizarCadastro == true){
             const {url, options} = NOTIFICATION_UPDATE_POST(idEmail, data, getToken());
             const {response, json} = await request(url, options);
+
             if(json){                
                 callback();
                 setShowModalCriarEmail();
@@ -54,16 +50,15 @@ const FormEmail = ({idPessoa, noUseModal, formikRef, setCarregando, dataEmailCho
                   icon: "success",
                   title: "",
                   text: 'Registrado com sucesso',
-                  footer: '',//'<a href="#">Why do I have this issue?</a>'
+                  footer: '',
                   confirmButtonColor: "#07B201",
                 });
             }
 
         }else{
-
-
         	const {url, options} = NOTIFICATION_EMAIL_SAVE_POST(data, getToken());
             const {response, json} = await request(url, options);
+
             if(json){            	
             	callback();
             	setShowModalCriarEmail();
@@ -73,7 +68,7 @@ const FormEmail = ({idPessoa, noUseModal, formikRef, setCarregando, dataEmailCho
                   icon: "success",
                   title: "",
                   text: 'Registrado com sucesso',
-                  footer: '',//'<a href="#">Why do I have this issue?</a>'
+                  footer: '',
                   confirmButtonColor: "#07B201",
                 });
             }
@@ -81,7 +76,6 @@ const FormEmail = ({idPessoa, noUseModal, formikRef, setCarregando, dataEmailCho
         }
 
     }
-
 
     const dataToFormEmail = ()=>{
     	let obj = {mensagem:'', data_file:'', email_dest:'', email_assunto:''}
@@ -106,7 +100,6 @@ const FormEmail = ({idPessoa, noUseModal, formikRef, setCarregando, dataEmailCho
 
     	}
     	
-    	//console.log(obj)
     	return obj;
     }
     
@@ -117,7 +110,7 @@ const FormEmail = ({idPessoa, noUseModal, formikRef, setCarregando, dataEmailCho
             icon: "error",
             title: "Oops...",
             text: error,
-            footer: '',//'<a href="#">Why do I have this issue?</a>'
+            footer: '',
             confirmButtonColor: "#07B201",
             //width:'20rem',
         });

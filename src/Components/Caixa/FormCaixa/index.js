@@ -75,10 +75,11 @@ const FormCaixa = forwardRef(({
 		setCarregando(false);
 
 		if (json) {
-			callback();
-			setShowModalCriarCaixa();
-			setAtualizarCaixa(false);
-			setIdCaixa(null);
+			callback && callback();
+			setShowModalCriarCaixa && setShowModalCriarCaixa(false);
+			setAtualizarCaixa && setAtualizarCaixa(false);
+			
+			setIdCaixa && setIdCaixa(null);
 
 			Swal.fire({
 				icon: "success",
@@ -202,6 +203,16 @@ const FormCaixa = forwardRef(({
 
 	}, []);
 
+	if (error) {
+		Swal.fire({
+			icon: "error",
+			title: "Oops...",
+			text: error,
+			footer: '',
+			confirmButtonColor: "#07B201",
+		});
+	}
+
 	return (
 
 		<>
@@ -286,7 +297,11 @@ const FormCaixa = forwardRef(({
 													className: estilos.input,
 													size: "sm",
 												},
-												options: [{ label: 'Selecione', valor: '', props: { selected: 'selected', disabled: 'disabled' } }, { label: 'Banco', valor: 'banco', props: { selected: '' } }, { label: 'Balcão', valor: 'convencional', props: {} }],
+												options: [
+													{ label: 'Selecione', valor: '', props: { selected: 'selected', disabled: 'disabled' } }
+													,{ label: 'Banco', valor: 'banco', props: { selected: '' } },
+													{ label: 'Balcão', valor: 'convencional', props: {} }
+												],
 												atributsContainer: {
 													className: ''
 												}
@@ -407,7 +422,7 @@ const FormCaixa = forwardRef(({
 												atributsFormControl: {
 													type: 'text',
 													name: 'vrMax',
-													placeholder: 'fulano de tal',
+													placeholder: '',
 													id: 'vrMax',
 													onChange: handleChange,
 													onBlur: handleBlur,
