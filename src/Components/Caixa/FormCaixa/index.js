@@ -12,15 +12,15 @@ import { TOKEN_POST, CLIENT_ID, CLIENT_SECRET, FILIAIS_ALL_POST, CAIXA_UPDATE_PO
 
 const FormCaixa = forwardRef(({
 	name,
-	setNome,
+	setname,
 	type,
 	setTipo,
 	vrMin,
 	setVrMinimo,
 	vrMax,
 	setVrMaximo,
-	bloquear,
-	setBloquear,
+	status_bloqueio,
+	setstatus_bloqueio,
 	aceita_transferencia,
 	setAceitaTransferencia,
 	vr_saldo_inicial,
@@ -97,9 +97,8 @@ const FormCaixa = forwardRef(({
 		if (!values.type) errors.type = 'Obrigatório';
 		if (!values.vrMin) errors.vrMin = 'Obrigatório';
 		if (!values.vrMax) errors.vrMax = 'Obrigatório';
-		if (!values.bloquear) errors.bloquear = 'Obrigatório';
+		if (!values.status_bloqueio) errors.status_bloqueio = 'Obrigatório';
 		if (!values.aceita_transferencia) errors.aceita_transferencia = 'Obrigatório';
-		if (!values.vr_saldo_inicial) errors.vr_saldo_inicial = 'Obrigatório';
 		return errors;
 	};
 
@@ -114,12 +113,7 @@ const FormCaixa = forwardRef(({
 	}, [loading, setCarregando]);
 
 	const dataToFormCaixa = () => {
-		let obj = { filial_id: '', name: '',
-			type: '', vrMin: '', vrMax: '',
-			bloquear: '', aceita_transferencia: '',
-			vr_saldo_inicial: '', active: '', deleted_at: '',
-			created_at: '', updated_at: ''
-		}
+		let obj = { filial_id: '', name: '', type: '', vrMin: '', vrMax: '', status_bloqueio: '', aceita_transferencia: '', vr_saldo_inicial: '', active: '', deleted_at: '', created_at: '', updated_at: '' }
 
 		if (dataCaixaChoice) {
 
@@ -155,8 +149,8 @@ const FormCaixa = forwardRef(({
 				obj.vrMax = data.vrMax;
 			}
 
-			if (data.hasOwnProperty('bloquear')) {
-				obj.bloquear = data.bloquear;
+			if (data.hasOwnProperty('status_bloqueio')) {
+				obj.status_bloqueio = data.status_bloqueio;
 			}
 
 			if (data.hasOwnProperty('aceita_transferencia')) {
@@ -167,10 +161,6 @@ const FormCaixa = forwardRef(({
 				obj.vr_saldo_inicial = data.vr_saldo_inicial;
 			}
 
-		}
-
-		if (idPessoaForm > 0) {
-			obj.bloquear = idPessoaForm;
 		}
 
 		if (idFilialForm > 0) {
@@ -229,10 +219,10 @@ const FormCaixa = forwardRef(({
 			<Formik
 				innerRef={formikRef}
 				initialValues={dataToFormCaixa()}
+				enableReinitialize={true}
 				validate={validate}
-				onSubmit={(values, { setSubmitting }) => {
-					sendData({...values})
-					setSubmitting(false);
+				onSubmit={async (values, { setSubmitting }) => {
+					await sendData({ ...values });
 				}}
 
 			>
@@ -376,11 +366,7 @@ const FormCaixa = forwardRef(({
 													className: estilos.input,
 													size: "sm"
 												},
-												options: [
-													{ label: 'Selecione', valor: '', props: { selected: 'selected', disabled: 'disabled' } }
-													,{ label: 'Sim', valor: 'yes', props: { selected: '' } },
-													{ label: 'Não', valor: 'no', props: {} }
-												],
+												options: [{ label: 'Selecione', valor: '', props: { selected: 'selected', disabled: 'disabled' } }, { label: 'Sim', valor: 'yes', props: { selected: '' } }, { label: 'Não', valor: 'no', props: {} }],
 												atributsContainer: {
 													className: ''
 												}
@@ -461,26 +447,22 @@ const FormCaixa = forwardRef(({
 										data={
 											{
 												hasLabel: true,
-												contentLabel: 'Bloqueado *',
+												contentLabel: 'Status bloqueio *',
 												atributsFormLabel: {
 
 												},
 												atributsFormControl: {
 													type: 'text',
-													name: 'bloquear',
+													name: 'status_bloqueio',
 													placeholder: '',
-													id: 'bloquear',
+													id: 'status_bloqueio',
 													onChange: handleChange,
 													onBlur: handleBlur,
-													value: values.bloquear,
+													value: values.status_bloqueio,
 													className: estilos.input,
 													size: "sm"
 												},
-												options: [
-													{ label: 'Selecione', valor: '', props: { selected: 'selected', disabled: 'disabled' } }
-													,{ label: 'Sim', valor: 'yes', props: { selected: '' } },
-													{ label: 'Não', valor: 'no', props: {} }
-												],
+												options: [{ label: 'Selecione', valor: '', props: { selected: 'selected', disabled: 'disabled' } }, { label: 'Bloqueado', valor: 'bloqueado', props: { selected: '' } }, { label: 'Liberado', valor: 'liberado', props: {} }],
 												atributsContainer: {
 													className: ''
 												}
@@ -489,7 +471,7 @@ const FormCaixa = forwardRef(({
 
 										component={FormControlSelect}
 									></Field>
-									<ErrorMessage className="alerta_error_form_label" name="bloquear" component="div" />
+									<ErrorMessage className="alerta_error_form_label" name="status_bloqueio" component="div" />
 								</Col>
 								<Col xs="12" sm="12" md="6">
 									<Field

@@ -4,7 +4,7 @@ export const CLIENT_SECRET = 'Ko9WDBtcRdD0O0RfnK8rzSHs88ODPVcjDUeeba8D';//'PxXWy
 export const RECORD_NUMBER_PER_REQUEST = 10;
 const SANDBOX = false;
 //http://1.josepedro.tmp.k8.com.br/api//
-const BASE_URL = (SANDBOX === true) ? "http://18.190.121.1:80" : 'http://192.168.100.5:8081';//192.168.100.5:8081//192.168.100.111:8081///api//http://192.168.100.5:3000/ ////O laravel tem que roda no http://192.168.100.5:8081
+const BASE_URL = (SANDBOX === true) ? "http://18.190.121.1:80" : 'http://192.168.100.5:8001';//192.168.100.5:8081//192.168.100.111:8081///api//http://192.168.100.5:3000/ ////O laravel tem que roda no http://192.168.100.5:8081
 
 export const TOKEN_POST = (data) => {
 
@@ -1439,11 +1439,6 @@ export const PROFISSIONAIS_DELETE_POST = (id, token) => {
     }
 
 }
-//------------
-
-
-
-
 
 //--- CONSULTA  ----------------------------------
 export const CONSULTA_ALL_POST = (data, token) => {
@@ -1468,6 +1463,7 @@ export const CONSULTA_ALL_POST = (data, token) => {
     }
 
 }
+
 export const CONSULTA_ONE_GET = (id, token) => {
 
     var myHeaders = new Headers();
@@ -2750,7 +2746,6 @@ export const AGENDA_CANCELAR_POST = (id, data, token) => {
 
 }
 
-
 //--- Forma de pagamento  ----------------------------------
 export const FORMA_PAGAMENTOALL_POST = (data, token) => {
 
@@ -2774,6 +2769,7 @@ export const FORMA_PAGAMENTOALL_POST = (data, token) => {
     }
 
 }
+
 export const FORMA_PAGAMENTO_ONE_GET = (id, token) => {
 
     var myHeaders = new Headers();
@@ -3722,7 +3718,7 @@ export const CONTAS_RECEBER_BAIXAR_POST = (id, data, token) => {
     myHeaders.append("Authorization", 'Bearer ' + token);
 
     var myInit = {
-        method: 'PUT',
+        method: 'POST',//PUT
         headers: myHeaders,
         mode: 'cors',
         cache: 'no-store',

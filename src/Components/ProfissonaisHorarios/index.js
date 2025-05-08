@@ -272,7 +272,7 @@ const AgendaEvento = (props)=>{
                     ]}
             />
             <Row>
-                <Col  xs="12" sm="12" md="3">
+                <Col  xs="12" sm="12" md="3" className={'mb-4'}>
                     <Filter
                         filtersArr={filtersArr}
                         actionsArr={acoesBottomCard}

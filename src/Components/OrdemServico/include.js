@@ -24,7 +24,6 @@ import Finalizar from './Finalizar/index.js'
 import {FORMAT_CALC_COD, FORMAT_MONEY} from '../../functions/index.js'
 import { Button } from 'bootstrap';
 import reactDom from 'react-dom';
-//
 
 const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncontrado, idOrdemCriada, nextPage, setNextPage, usePagination, setUsePagination, totalPageCount, setTotalPageCount, ...props})=>{
     const {data, error, request, loading} = useFetch();
@@ -308,19 +307,7 @@ const Include = ({dataEstado, loadingData, callBack, setMostarFiltros, nadaEncon
         setFinalizarOrdemServico(true);
     }
 
-
-    //finalizarOrdemServico, setFinalizarOrdemServico
-    
-
     React.useEffect(()=>{
-        /**
-         * consultaChoice, setOrdemServicoChoice] = React.useState(()=>{
-        return idOrdemCriada;
-    }
-         */
-        console.log('Ordem criada..............')
-        console.log(idOrdemCriada)
-        console.log('Ordem criada..............')
         idOrdemCriada && idOrdemCriada > 0 && atualizarOrdemServicoAction(idOrdemCriada)
 
     }, [idOrdemCriada])

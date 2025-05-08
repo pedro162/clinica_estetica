@@ -24,8 +24,6 @@ const ContasReceberItem = ({ defaultFilters, ...props }) => {
 
     const { data, error, request, loading } = useFetch();
     const [estado, setContasReceberItem] = React.useState([])
-    const [exemplos, setExemplos] = React.useState([])
-    const [exemplosTitleTable, setExemplosTitleTable] = React.useState([])
     const [showModalCriarContasReceberItem, setShowModalCriarConstula] = React.useState(false)
     const [consultaChoice, setContasReceberItemChoice] = React.useState(null);
     const [atualizarContasReceberItem, setAtualizarContasReceberItem] = React.useState(false)
@@ -212,7 +210,7 @@ const ContasReceberItem = ({ defaultFilters, ...props }) => {
         },
         {
             type: 'select',
-            options: [{ 'label': 'Selecione...', 'value': '' }, { 'label': 'Criação', 'value': 'criacao' }, { 'label': 'Vencimento', 'value': 'vencimento' }],
+            options: [{ 'label': 'Selecione...', 'value': '' }, { 'label': 'Criação', 'value': 'created_at' }, { 'label': 'Baixa', 'value': 'dtBaixa' }],
             hasLabel: true,
             contentLabel: 'Tipo exercício',
             atributsFormLabel: {},
@@ -567,13 +565,18 @@ const ContasReceberItem = ({ defaultFilters, ...props }) => {
         const requestDataConfigEffect = async () => {
             await requestAllFilials()
         }
+
+        requestDataConfigEffect();
+
+    }, [])
+
+    React.useEffect(() => {
+
         const requestAllContasReceberItemsEffect = async () => {
             await requestAllContasReceberItems();
         }
 
-        requestDataConfigEffect();
         requestAllContasReceberItemsEffect();
-
 
     }, [filtroAvencer, filtroVencidas, filtroPagas, filtroAbertas, nextPage, setNextPage, defaultFilters])
 
@@ -608,7 +611,7 @@ const ContasReceberItem = ({ defaultFilters, ...props }) => {
                 {
                     (
                         <>
-                            <Col xs="12" sm="12" md="13" className={'default_card_report'}>
+                            <Col xs="12" sm="12" md="13" className={'default_card_report mb-4'}>
                                 <Filter
                                     filtersArr={filtersArr}
                                     actionsArr={acoesBottomCard}

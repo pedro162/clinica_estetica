@@ -27,13 +27,8 @@ const CardMobile = ({children, titulosTableArr, rowsTableArr,loading, nadaEncont
 					return item != id
 				})
 			)
-		}
-
-		
-		
+		}		
 	}
-
-	console.log(selecionados)
 
 	const selecionarTodos = (target)=>{
 		let itens = [];

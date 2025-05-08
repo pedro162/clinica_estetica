@@ -317,7 +317,7 @@ const OrdemServico = (props)=>{
         setAcao('cancelar')
         setCancelarOrdemServico(true);
     }
-    //cancelarOrdemServico, setCancelarOrdemServico
+
     const novaOrdemServico = (idOrdemServico)=>{
         setOrdemServicoChoice(idOrdemServico)
         setAcao('consultar')
@@ -355,7 +355,7 @@ const OrdemServico = (props)=>{
             return updatedFilters;
         });
     }
-    //------------
+    
     const montarFiltro = ()=>{
         let filtros = {nr_itens_per_page:qtdItemsPerPage, usePaginate:1}
         let detalhesFiltros = {}
@@ -424,7 +424,7 @@ const OrdemServico = (props)=>{
             }else{
                 filtros['status'] = 'concluido,';
             }
-            //filtros['status'] += 'concluido,';
+            
             detalhesFiltros['status'] = {
                 label:'Status',
                 value:filtroMobile,
@@ -438,7 +438,7 @@ const OrdemServico = (props)=>{
             }else{
                 filtros['status'] = 'cancelado,';
             }
-            //filtros['status'] += 'cancelado,';
+            
             detalhesFiltros['status'] = {
                 label:'Status',
                 value:filtroMobile,
@@ -499,24 +499,23 @@ const OrdemServico = (props)=>{
                 resetFilter:()=>{setOrdenacao('');removeFilter('ordem')},
             };
         }
-
-
-
+        
         return {filtros, detalhesFiltros};
     }
 
     const requestAllOrdemServicos = async() =>{
-        //setMostarFiltros(false)
         setOrdemServico([])
 
         let {filtros, detalhesFiltros} = montarFiltro();
         setAppliedFilters(detalhesFiltros)
         let {url, options} = ORDEM_SERVICO_ALL_POST({...filtros}, getToken());
+        
         if(nextPage){
             url = nextPage;
         }
 
         const {response, json} = await request(url, options);
+
         if(json){
             setOrdemServico(json)
             if( json?.mensagem && json?.mensagem.length > 0){
@@ -530,12 +529,12 @@ const OrdemServico = (props)=>{
         }
     }
 
-
     const requestAllFilials = async() =>{
         setDataFiliais([])
 
         let {url, options} = FILIAIS_ALL_POST({}, getToken());
         const {response, json} = await request(url, options);
+
         if(json){            
             setDataFiliais(json)
         }            
@@ -551,7 +550,6 @@ const OrdemServico = (props)=>{
         }            
     }
 
-
     React.useEffect(()=>{
 
         const requestDataConfigEffect = async() =>{
@@ -565,8 +563,6 @@ const OrdemServico = (props)=>{
 
         requestDataConfigEffect();
         requestAllOrdemServicosEffect();
-
-        
     }, [filtroConcluidas, filtroCanceladas, filtroAbertas, nextPage, setNextPage])
 
     React.useEffect(()=>{
@@ -608,7 +604,7 @@ const OrdemServico = (props)=>{
                 {
                     (
                         <>
-                            <Col  xs="12" sm="12" md="12" className={'default_card_report'}>
+                            <Col  xs="12" sm="12" md="12" className={'default_card_report mb-4'}>
                                 <Filter
                                     filtersArr={filtersArr}
                                     actionsArr={acoesBottomCard}
