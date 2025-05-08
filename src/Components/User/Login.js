@@ -10,12 +10,8 @@ const Login = (props)=>{
     const {userLogin, error, data, loading} = React.useContext(UserContex);
     
     const logar= (user, password)=>{
-
-        //alert('Usuario:' +user+' Senha: '+password)
         userLogin(user, password)
-
     }
-    
 
     return(
         <Container fluid className={[estilos.container_login]}  >

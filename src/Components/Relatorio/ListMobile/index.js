@@ -29,14 +29,8 @@ const ListMobile = ({children, titulosTableArr, ignoreTableActions, rowsTableArr
 				})
 			)
 		}
-
-		
-		
 	}
-    //nadaEncontrado={nadaEncontrado}           
-	//
-	console.log(selecionados)
-
+    
 	const selecionarTodos = (target)=>{
 		let itens = [];
 		if(target){
@@ -69,8 +63,6 @@ const ListMobile = ({children, titulosTableArr, ignoreTableActions, rowsTableArr
 		}else{
 			setSelecionaTodos(false)
 		}
-		
-		
 	}
 
 	React.useEffect(()=>{
@@ -80,13 +72,13 @@ const ListMobile = ({children, titulosTableArr, ignoreTableActions, rowsTableArr
 
 	const opt = [
 			{acao:()=>alert('Aqui'), label:'Editar', propsOption:{}, propsLabel:{}}
-		]
+	]
+	
 	let arraySum = {};
+
 	if( loading){
 		return	(
-			<Load/>
-
-						
+			<Load/>			
 		)
 	}
 
@@ -94,7 +86,6 @@ const ListMobile = ({children, titulosTableArr, ignoreTableActions, rowsTableArr
 	if(!withoutFirstCol){
 		nrColList = 12
 	}
-
 	
 	return(
 		<>
@@ -113,14 +104,14 @@ const ListMobile = ({children, titulosTableArr, ignoreTableActions, rowsTableArr
 				  				let propsContainerButtons 	= item.hasOwnProperty('propsContainerButtons') 	? item.propsContainerButtons: {};
 				  				let acoesBottomCard 		= item.hasOwnProperty('acoesBottomCard') 		? item.acoesBottomCard: [];
 
-
 				  				let titleRow 				= propsRowBodyTable.hasOwnProperty('titleRow') 		? propsRowBodyTable.titleRow: '';//onClick
 				  				let style 					= propsRowBodyTable.hasOwnProperty('style') 		? propsRowBodyTable.style: {};
 				  				let onClickRow 					= propsRowBodyTable.hasOwnProperty('onClick') 		? propsRowBodyTable.onClick: ()=>null;
 				  				let mainIcon 				= propsRowBodyTable.hasOwnProperty('mainIcon') 		? propsRowBodyTable.mainIcon: faUserCircle;
 
 				  				id = Number(id);
-				  				let titleCard 			= item?.title
+				  				let titleCard = item?.title
+
 				  				if(!titleCard){
 				  					titleCard = ''
 				  				}
@@ -148,7 +139,6 @@ const ListMobile = ({children, titulosTableArr, ignoreTableActions, rowsTableArr
                                                 	<Row className={'mb-1'}>
                                                         <span style={{fontSize:'14pt', fontWeight:'bolder'}} >{titleRow}</span>
                                                     </Row>
-
                                        
                                             	{
 							  						celBodyTableArr && Array.isArray(celBodyTableArr) && celBodyTableArr.length > 0 ? (
@@ -177,7 +167,6 @@ const ListMobile = ({children, titulosTableArr, ignoreTableActions, rowsTableArr
 																								arraySum[indexCel]['isCoin'] = isCoin;
 																							}
 																							if(toSum){
-																								//arraySum[indexCel]['valor'] += Number(FORMAT_CALC_COD(labelCel))
 																								arraySum[indexCel]['valor'] = Number(FORMAT_CALC_COD(labelCel)) + Number(FORMAT_CALC_COD(arraySum[indexCel]['valor']))
 																							}else{
 																								arraySum[indexCel]['valor'] = ''
@@ -188,7 +177,6 @@ const ListMobile = ({children, titulosTableArr, ignoreTableActions, rowsTableArr
 																								arraySum[indexCel]['isCoin'] = isCoin;
 																							}
 																							if(toSum){
-																								//arraySum[indexCel]['valor'] += Number(FORMAT_CALC_COD(labelCel))
 																								arraySum[indexCel]['valor'] = Number(FORMAT_CALC_COD(labelCel)) + Number(FORMAT_CALC_COD(arraySum[indexCel]['valor']))
 																							}else{
 																								arraySum[indexCel]['valor'] = ''
@@ -196,7 +184,6 @@ const ListMobile = ({children, titulosTableArr, ignoreTableActions, rowsTableArr
 
 																						}
 																						
-
 																						let propsCelBodyTable 	= itemCel.hasOwnProperty('props') ? itemCel.props : {};
 																						return <Col key={indexCel} {...propsCelBodyTable}><span>{title}</span> {labelCel}</Col>
 																					})
@@ -244,9 +231,6 @@ const ListMobile = ({children, titulosTableArr, ignoreTableActions, rowsTableArr
 								</>
 								
 							)
-
-
-
 					}
                 </Col>
                

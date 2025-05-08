@@ -19,14 +19,11 @@ export const UserStorange = ({children})=>{
 
      const getDataUser = React.useCallback(async ()=>{
         
-
         try{
-
             
            await getUser();
 
         }catch(err){
-            
 
         }finally{
 
@@ -35,8 +32,7 @@ export const UserStorange = ({children})=>{
 
     }, [])
 
-    const userLogout = ()=>{
-        
+    const userLogout = ()=>{        
       
         try{
 
@@ -53,8 +49,6 @@ export const UserStorange = ({children})=>{
     const getUser = async ()=>{
        
         try{
-
-            //console.log(getToken())
             setLoginUser(isAuthenticated)
 
             if(isAuthenticated && getToken() && String(getToken()).length > 0){
@@ -66,8 +60,6 @@ export const UserStorange = ({children})=>{
                 }
             }
 
-            
-
         }catch(er){
             console.log(er)
         }
@@ -75,7 +67,7 @@ export const UserStorange = ({children})=>{
 
     const userLogin = async (username, password)=>{
         try{
-            let token = 'asdf123';
+            let token = '';
             let dtaToken = {};
             if(sandBox === false){
 
@@ -102,33 +94,12 @@ export const UserStorange = ({children})=>{
                     
                 }
 
-            }
-           
-                   
+            }      
 
         }catch(er){
             console.log(er)
         }
     }
-
-    /*
-     const requestToken = async() =>{
-       
-           const {url, options} = TOKEN_POST({
-                'grant_type':'password',
-                'client_id': CLIENT_ID,
-                'client_secret':CLIENT_SECRET,
-                'username':'admin@gmail.com',
-                'password':'123456'
-             });
-
-
-            const {response, json} = await request(url, options);
-
-            
-        }
-
-    */
 
     React.useEffect(()=>{
         getDataUser()
@@ -147,7 +118,7 @@ export const UserStorange = ({children})=>{
         return () => {
           window.removeEventListener('resize', handleResize);
         };
-      }, []); // O segundo parâmetro vazio assegura que o efeito é executado apenas uma vez durante a montagem do componente
+      }, []);
 
 
     return(
