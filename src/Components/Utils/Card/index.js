@@ -3,11 +3,11 @@ import { Container, Col, Row, Card as CartBootstrap, Button } from 'react-bootst
 import estilos from './Card.module.css'
 
 const Card =({children, title, acoesBottomCard, propsContainerTitulo, propsContainerButtons, propsCard, botoesHeader, propsHeader, noFooter, noBody,...props})=>{
-	//console.log('Acoes de relatorio')
-	//console.log(botoesHeader)
+	
 	if(!propsHeader){
 		propsHeader = {}
 	}
+
 	return(
 		<>
 			<CartBootstrap {...propsCard}  className={[estilos.card]}>
@@ -40,8 +40,7 @@ const Card =({children, title, acoesBottomCard, propsContainerTitulo, propsConta
 							)
 							:
 							(null)
-						}
-					
+						}					
 
 					</Row>
 				</CartBootstrap.Header>
@@ -49,7 +48,6 @@ const Card =({children, title, acoesBottomCard, propsContainerTitulo, propsConta
 				    {children}				
 				</CartBootstrap.Body>}
 				{!noFooter && (
-
 
 					<CartBootstrap.Footer bg="light" className={[{'text-muted':'text-muted'}, estilos.headerFooter]} >
 						{

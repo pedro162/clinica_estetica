@@ -65,7 +65,7 @@ function App() {
                   exact path="/clientes/painel"
                   component={Clientes}
                 />
-                CadastrarCliente
+                
                 <ProtectedRoute
                   exact path="/grupos/painel"
                   component={Grupos}
