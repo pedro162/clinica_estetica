@@ -11,7 +11,7 @@ import Swal from 'sweetalert2'
 import { TOKEN_POST, CLIENT_ID, CLIENT_SECRET, FILIAIS_ALL_POST, CAIXA_UPDATE_POST, CAIXA_SAVE_POST } from '../../../api/endpoints/geral.js'
 
 const FormCaixa = forwardRef(({
-	nome,
+	name,
 	setNome,
 	type,
 	setTipo,
@@ -75,15 +75,16 @@ const FormCaixa = forwardRef(({
 		setCarregando(false);
 
 		if (json) {
-			callback();
-			setShowModalCriarCaixa();
-			setAtualizarCaixa(false);
-			setIdCaixa(null);
+			callback && callback();
+			setShowModalCriarCaixa && setShowModalCriarCaixa(false);
+			setAtualizarCaixa && setAtualizarCaixa(false);
+			
+			setIdCaixa && setIdCaixa(null);
 
 			Swal.fire({
 				icon: "success",
 				title: "",
-				text: 'Reigistrado com sucesso',
+				text: 'Registrado com sucesso',
 				footer: '',
 				confirmButtonColor: "#07B201",
 			});
@@ -92,7 +93,7 @@ const FormCaixa = forwardRef(({
 
 	const validate = (values) => {
 		const errors = {};
-		if (!values.nome) errors.nome = 'Obrigatório';
+		if (!values.name) errors.name = 'Obrigatório';
 		if (!values.type) errors.type = 'Obrigatório';
 		if (!values.vrMin) errors.vrMin = 'Obrigatório';
 		if (!values.vrMax) errors.vrMax = 'Obrigatório';
@@ -113,7 +114,12 @@ const FormCaixa = forwardRef(({
 	}, [loading, setCarregando]);
 
 	const dataToFormCaixa = () => {
-		let obj = { filial_id: '', nome: '', type: '', vrMin: '', vrMax: '', bloquear: '', aceita_transferencia: '', vr_saldo_inicial: '', active: '', deleted_at: '', created_at: '', updated_at: '' }
+		let obj = { filial_id: '', name: '',
+			type: '', vrMin: '', vrMax: '',
+			bloquear: '', aceita_transferencia: '',
+			vr_saldo_inicial: '', active: '', deleted_at: '',
+			created_at: '', updated_at: ''
+		}
 
 		if (dataCaixaChoice) {
 
@@ -129,8 +135,8 @@ const FormCaixa = forwardRef(({
 				obj.filial_id = data.filial_id;
 			}
 
-			if (data.hasOwnProperty('nome')) {
-				obj.nome = data.nome;
+			if (data.hasOwnProperty('name')) {
+				obj.name = data.name;
 			}
 
 			if (data.hasOwnProperty('status')) {
@@ -207,6 +213,16 @@ const FormCaixa = forwardRef(({
 
 	}, []);
 
+	if (error) {
+		Swal.fire({
+			icon: "error",
+			title: "Oops...",
+			text: error,
+			footer: '',
+			confirmButtonColor: "#07B201",
+		});
+	}
+
 	return (
 
 		<>
@@ -215,7 +231,7 @@ const FormCaixa = forwardRef(({
 				initialValues={dataToFormCaixa()}
 				validate={validate}
 				onSubmit={(values, { setSubmitting }) => {
-					sendData(values.nome, values.type)
+					sendData({...values})
 					setSubmitting(false);
 				}}
 
@@ -251,12 +267,12 @@ const FormCaixa = forwardRef(({
 												},
 												atributsFormControl: {
 													type: 'text',
-													name: 'nome',
+													name: 'name',
 													placeholder: '',
-													id: 'nome',
+													id: 'name',
 													onChange: handleChange,
 													onBlur: handleBlur,
-													value: values.nome,
+													value: values.name,
 													className: `${estilos.input}`,
 													size: "sm"
 												},
@@ -268,7 +284,7 @@ const FormCaixa = forwardRef(({
 
 										component={FormControlInput}
 									></Field>
-									<ErrorMessage className="alerta_error_form_label" name="nome" component="div" />
+									<ErrorMessage className="alerta_error_form_label" name="name" component="div" />
 								</Col>
 
 								<Col xs="12" sm="12" md="6">
@@ -291,7 +307,11 @@ const FormCaixa = forwardRef(({
 													className: estilos.input,
 													size: "sm",
 												},
-												options: [{ label: 'Selecione', valor: '', props: { selected: 'selected', disabled: 'disabled' } }, { label: 'Banco', valor: 'banco', props: { selected: '' } }, { label: 'Balcão', valor: 'convencional', props: {} }],
+												options: [
+													{ label: 'Selecione', valor: '', props: { selected: 'selected', disabled: 'disabled' } }
+													,{ label: 'Banco', valor: 'banco', props: { selected: '' } },
+													{ label: 'Balcão', valor: 'convencional', props: {} }
+												],
 												atributsContainer: {
 													className: ''
 												}
@@ -356,13 +376,18 @@ const FormCaixa = forwardRef(({
 													className: estilos.input,
 													size: "sm"
 												},
+												options: [
+													{ label: 'Selecione', valor: '', props: { selected: 'selected', disabled: 'disabled' } }
+													,{ label: 'Sim', valor: 'yes', props: { selected: '' } },
+													{ label: 'Não', valor: 'no', props: {} }
+												],
 												atributsContainer: {
 													className: ''
 												}
 											}
 										}
 
-										component={FormControlInput}
+										component={FormControlSelect}
 									></Field>
 									<ErrorMessage className="alerta_error_form_label" name="aceita_transferencia" component="div" />
 								</Col>
@@ -411,7 +436,7 @@ const FormCaixa = forwardRef(({
 												atributsFormControl: {
 													type: 'text',
 													name: 'vrMax',
-													placeholder: 'fulano de tal',
+													placeholder: '',
 													id: 'vrMax',
 													onChange: handleChange,
 													onBlur: handleBlur,
@@ -436,7 +461,7 @@ const FormCaixa = forwardRef(({
 										data={
 											{
 												hasLabel: true,
-												contentLabel: 'Bloquear *',
+												contentLabel: 'Bloqueado *',
 												atributsFormLabel: {
 
 												},
@@ -451,13 +476,18 @@ const FormCaixa = forwardRef(({
 													className: estilos.input,
 													size: "sm"
 												},
+												options: [
+													{ label: 'Selecione', valor: '', props: { selected: 'selected', disabled: 'disabled' } }
+													,{ label: 'Sim', valor: 'yes', props: { selected: '' } },
+													{ label: 'Não', valor: 'no', props: {} }
+												],
 												atributsContainer: {
 													className: ''
 												}
 											}
 										}
 
-										component={FormControlInput}
+										component={FormControlSelect}
 									></Field>
 									<ErrorMessage className="alerta_error_form_label" name="bloquear" component="div" />
 								</Col>

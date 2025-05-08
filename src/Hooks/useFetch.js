@@ -19,7 +19,7 @@ const useFetch = () => {
             if (response.status !== 204) {
                 json = await response.json();
             } else {
-                json = {}
+                json = null
             }
 
             if (response.ok == false) {
