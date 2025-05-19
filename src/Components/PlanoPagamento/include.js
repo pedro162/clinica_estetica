@@ -211,6 +211,51 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                                 },
                                 {
 
+                                    label:atual?.descricao,
+                                    propsRow:{}
+                                },
+                                {
+
+                                    label:atual?.qtdParcelas,
+                                    propsRow:{}
+                                },
+                                {
+
+                                    label:atual?.qtdMinParcelas,
+                                    propsRow:{}
+                                },
+                                {
+
+                                    label:atual?.diasmedios,
+                                    propsRow:{}
+                                },
+                                {
+
+                                    label:atual?.qtd_dias_pri_parcela,
+                                    propsRow:{}
+                                },
+                                {
+
+                                    label:atual?.qtdDiasIntervaloParcelas,
+                                    propsRow:{}
+                                },
+                                {
+
+                                    label:atual?.exbibe_balcao === 'yes' ? 'Sim' : 'Não',
+                                    propsRow:{}
+                                },
+                                {
+
+                                    label:atual?.gerarDuplicataManual === 'yes' ? 'Sim' : 'Não',
+                                    propsRow:{}
+                                },
+                                {
+
+                                    label:atual?.isAberto === 'yes' ? 'Sim' : 'Não',
+                                    propsRow:{}
+                                },
+                                {
+
                                     label:String(FORMAT_DATA_PT_BR(atual.created_at)).length > 0 && FORMAT_DATA_PT_BR(atual.created_at),
                                     propsRow:{}
                                 },
@@ -235,11 +280,47 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
             },
             {
                 label:'Nome',
-                props:{ style:{minWidth:'50px'}}
+                props:{ style:{minWidth:'225px'}}
+            },
+            {
+                label:'Descrição',
+                props:{ style:{minWidth:'225px'}}
+            },
+            {
+                label:'QTD parcelas',
+                props:{ style:{minWidth:'225px'}}
+            },
+            {
+                label:'QTD mínima de parcelas',
+                props:{ style:{minWidth:'225px'}}
+            },
+            {
+                label:'QTD dias médios',
+                props:{ style:{minWidth:'225px'}}
+            },
+            {
+                label:'QTD dias para primeira parcelas',
+                props:{ style:{minWidth:'325px'}}
+            },
+            {
+                label:'QTD dias intervalo entre parcelas',
+                props:{ style:{minWidth:'325px'}}
+            },
+            {
+                label:'Exibe no balcão',
+                props:{ style:{minWidth:'325px'}}
+            },
+            {
+                label:'Gera duplicata manual',
+                props:{ style:{minWidth:'325px'}}
+            },
+            {
+                label:'Aberto',
+                props:{ style:{minWidth:'325px'}}
             },
             {
                 label:'Data criação',
-                props:{ style:{minWidth:'50px'}}
+                props:{ style:{minWidth:'225px'}}
             }
         ]
 
@@ -313,15 +394,15 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                                 [
                                     
                                     {
-                                        title:<span style={{fontWeight:'480'}}>Código: </span>,
-                                        label:atual?.cdCobrancaTipo,
+                                        title:<span style={{fontWeight:'480'}}>QTD parcelas: </span>,
+                                        label:atual?.qtdParcelas,
                                         props:{style:{textAlign:'left', fontWeight:'bolder'}, md:'6', sm:'6', xs:'6'},
                                         toSum:0,
                                         isCoin:0,
                                     },
                                     {
-                                        title:<span style={{fontWeight:'480'}}>Tipo: </span>,
-                                        label:atual?.tpPagamento,
+                                        title:<span style={{fontWeight:'480'}}>Dias médios: </span>,
+                                        label:atual?.diasmedios,
                                         props:{style:{textAlign:'left', fontWeight:'bolder'}, md:'6', sm:'6', xs:'6'},
                                         toSum:0,
                                         isCoin:0,
