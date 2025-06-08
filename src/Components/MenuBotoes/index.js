@@ -1,45 +1,13 @@
 import React from 'react';
 import estilos from './MenuBotoes.module.css'
-import useFetch from '../../Hooks/useFetch.js';
 import { Link } from 'react-router-dom/cjs/react-router-dom.min';
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, AGENDA_ALL_POST} from '../../api/endpoints/geral.js'
 import {Col, Row, Button } from 'react-bootstrap';
-import Table from '../Relatorio/Table/index.js'
-import Filter from '../Relatorio/Filter/index.js'
-import Breadcrumbs from '../Helper/Breadcrumbs.js'
 import { faHome, faSearch, faCog, faFlag, faBuilding, faGlobe, faPlus, faCity, faTimes, faHandHolding, faUser, faUsers, faFolderOpen, faClone, faFileAlt, faTasks, faUserMd, faList, faCalendarAlt,faCoins, faPuzzlePiece } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Modal from '../Utils/Modal/index.js'
-import Load from '../Utils/Load/index.js'
 import {UserContex} from '../../Context/UserContex.js'
-import FormControlInput from '../FormControl/index.js'
 
 
 const MenuBotoes = (props)=>{
-
-    const {data, error, request, loading} = useFetch();
-    const [agenda, setAgenda] = React.useState([])
-    const [exemplos, setExemplos] = React.useState([])
-    const [exemplosTitleTable, setExemplosTitleTable] = React.useState([])
-    const [showModalCriarCliente, setShowModalCriarCliente] = React.useState(false)
-    const [showModalAtualizarCliente, setShowModalAtualizarCliente] = React.useState(false)
-    const [clientChoice, setClienteChoice] = React.useState(null);
-    const [atualizarCadastro, setAtualizarCadastro] = React.useState(false)    
-    const [cadastrarCliente, setCadastrarCliente] = React.useState(false)    
-    const [dataGrupo, setDataGrupo] = React.useState(null)
-    const [tpView, setTpView] = React.useState('mes')//mes//semana 
-    const [mostarFiltros, setMostarFiltros] = React.useState(true) 
-    const [filtroMobile, setFiltroMobile] = React.useState(null)
-    const [acao, setAcao] = React.useState(null)
-    const [pessoa, setPessoa] = React.useState('')
-    const [ordenacao, setOrdenacao] = React.useState('')
-    const [nadaEncontrado, setNadaEncontrado] = React.useState(false)
-
-
-    const [filtroAbertas, setFiltroAbertas] = React.useState(false)
-    const [filtroConcluidas, setFiltroConcluidas] = React.useState(false)
-    const [filtroCanceladas, setFiltroCanceladas] = React.useState(false)
-
     const {getToken, dataUser, isMobile, historyUser} = React.useContext(UserContex);
 
     const {type, is_system, tenant_id} = dataUser ? dataUser : {};
