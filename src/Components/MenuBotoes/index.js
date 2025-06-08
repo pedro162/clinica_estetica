@@ -10,8 +10,7 @@ const MenuBotoes = (props)=>{
     const {getToken, dataUser, isMobile, historyUser} = React.useContext(UserContex);
     const {type, is_system, tenant_id} = dataUser ? dataUser : {};
     
-    let botoesRotas = [//financeiro/caixa
-        
+    let botoesRotas = [        
         {
             'label':'Agenda',
             'iconLabel':<FontAwesomeIcon icon={faCalendarAlt} />,
@@ -76,7 +75,7 @@ const MenuBotoes = (props)=>{
     ]
 
     if(type=='external'){
-        botoesRotas = [//financeiro/caixa
+        botoesRotas = [
         
             {
                 'label':'Agenda',
@@ -103,8 +102,7 @@ const MenuBotoes = (props)=>{
     }
 
     return(
-        <>
-            
+        <>            
             <Row className={estilos.estilo_container_botoes_menu}>
                 <Col>
                     <Row style={{marginTop:'20pt'}}>
