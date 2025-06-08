@@ -6,10 +6,8 @@ import { faHome, faSearch, faCog, faFlag, faBuilding, faGlobe, faPlus, faCity, f
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {UserContex} from '../../Context/UserContex.js'
 
-
 const MenuBotoes = (props)=>{
     const {getToken, dataUser, isMobile, historyUser} = React.useContext(UserContex);
-
     const {type, is_system, tenant_id} = dataUser ? dataUser : {};
     
     let botoesRotas = [//financeiro/caixa
