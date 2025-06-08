@@ -1,8 +1,8 @@
 import React from 'react';
-import estilos from './PlanoPagamento.module.css'
+import estilos from './OperadorFinanceiro.module.css'
 import useFetch from '../../Hooks/useFetch.js';
 import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, CONSULTA_ALL_POST} from '../../api/endpoints/geral.js'
-import {FORMAT_DATA_PT_BR} from '../../functions/index.js'
+import {FORMAT_DATA_PT_BR, FORMAT_MONEY} from '../../functions/index.js'
 import {Col, Row } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
@@ -12,7 +12,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from '../Utils/Modal/index.js'
 import Load from '../Utils/Load/index.js'
 import {UserContex} from '../../Context/UserContex.js'
-import FormPlanoPagamento from './FormPlanoPagamento/index.js'
+import FormOperadorFinanceiro from './FormOperadorFinanceiro/index.js'
 import Cadastrar from './Cadastrar/index.js'
 import Atualizar from './Atualizar/index.js'
 import Excluir from './Excluir/index.js'
@@ -20,16 +20,16 @@ import Visualizar from './Visualizar/index.js'
 import ListMobile from '../Relatorio/ListMobile/index.js'
 
 
-const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFiltros, idPlanoPagamentoCriada,nextPage, setNextPage, usePagination, setUsePagination, totalPageCount,setTotalPageCount, requestAllPlanoPagamentos, ...props})=>{
+const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFiltros, idOperadorFinanceiroCriada,nextPage, setNextPage, usePagination, setUsePagination, totalPageCount,setTotalPageCount, requestAllOperadorFinanceiros, ...props})=>{
 
     const {data, error, request, loading} = useFetch();
-    const [estado, setPlanoPagamento] = React.useState([])
-    const [showModalCriarPlanoPagamento, setShowModalCriarConstula] = React.useState(false)
-    const [consultaChoice, setPlanoPagamentoChoice] = React.useState(null);
-    const [atualizarPlanoPagamento, setAtualizarPlanoPagamento] = React.useState(false)   
-    const [cancelarPlanoPagamento, setExcluirPlanoPagamento] = React.useState(false)      
-    const [visualizarPlanoPagamento, setVisualizarPlanoPagamento] = React.useState(false)    
-    const [cadastrarPlanoPagamento, setCadastrarPlanoPagamento] = React.useState(false) 
+    const [estado, setOperadorFinanceiro] = React.useState([])
+    const [showModalCriarOperadorFinanceiro, setShowModalCriarConstula] = React.useState(false)
+    const [consultaChoice, setOperadorFinanceiroChoice] = React.useState(null);
+    const [atualizarOperadorFinanceiro, setAtualizarOperadorFinanceiro] = React.useState(false)   
+    const [cancelarOperadorFinanceiro, setExcluirOperadorFinanceiro] = React.useState(false)      
+    const [visualizarOperadorFinanceiro, setVisualizarOperadorFinanceiro] = React.useState(false)    
+    const [cadastrarOperadorFinanceiro, setCadastrarOperadorFinanceiro] = React.useState(false) 
     const [acao, setAcao] = React.useState(null)
     const [nrPageAtual, setNrPageAtual] = React.useState(null)
     const [qtdItemsTo, setQtdItemsTo] = React.useState(null)
@@ -82,23 +82,23 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
         switch(acao){
             case 'editar':
                 if(consultaChoice > 0){
-                    setAtualizarPlanoPagamento(true);
+                    setAtualizarOperadorFinanceiro(true);
                 }else{
-                    setAtualizarPlanoPagamento(false);
+                    setAtualizarOperadorFinanceiro(false);
                 }
                 break;
             case 'excluir':
                 if(consultaChoice > 0){
-                    setExcluirPlanoPagamento(true);
+                    setExcluirOperadorFinanceiro(true);
                 }else{
-                    setExcluirPlanoPagamento(false);
+                    setExcluirOperadorFinanceiro(false);
                 }
                 break;
                 case 'visualizar':
                     if(consultaChoice > 0){
-                        setVisualizarPlanoPagamento(true);
+                        setVisualizarOperadorFinanceiro(true);
                     }else{
-                        setVisualizarPlanoPagamento(false);
+                        setVisualizarOperadorFinanceiro(false);
                     }
                     break;
             default://
@@ -111,57 +111,56 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
 
     React.useEffect(()=>{
 
-        if(cadastrarPlanoPagamento == true){
+        if(cadastrarOperadorFinanceiro == true){
             setShowModalCriarConstula(true);
         }else{
             setShowModalCriarConstula(false);
         }
         
-    }, [cadastrarPlanoPagamento])
+    }, [cadastrarOperadorFinanceiro])
 
-    const atualizarPlanoPagamentoAction = (idPlanoPagamento)=>{
-        setPlanoPagamentoChoice(idPlanoPagamento)
+    const atualizarOperadorFinanceiroAction = (idOperadorFinanceiro)=>{
+        setOperadorFinanceiroChoice(idOperadorFinanceiro)
         setAcao('editar')
-        setAtualizarPlanoPagamento(true);
-
+        setAtualizarOperadorFinanceiro(true);
     }
 
-    const cancelarPlanoPagamentoAction = (idPlanoPagamento)=>{
-        setPlanoPagamentoChoice(idPlanoPagamento)
+    const cancelarOperadorFinanceiroAction = (idOperadorFinanceiro)=>{
+        setOperadorFinanceiroChoice(idOperadorFinanceiro)
         setAcao('excluir')
-        setExcluirPlanoPagamento(true);
+        setExcluirOperadorFinanceiro(true);
     }
 
-    const visualizarPlanoPagamentoAction = (idPlanoPagamento)=>{
-        setPlanoPagamentoChoice(idPlanoPagamento)
+    const visualizarOperadorFinanceiroAction = (idOperadorFinanceiro)=>{
+        setOperadorFinanceiroChoice(idOperadorFinanceiro)
         setAcao('visualizar')
-        setVisualizarPlanoPagamento(true);
+        setVisualizarOperadorFinanceiro(true);
     }
 
-    const gerarTablePlanoPagamento = ()=>{
+    const gerarTableOperadorFinanceiro = ()=>{
        
         let data = [];
-        let dataPlanoPagamento = estado
+        let dataOperadorFinanceiro = estado
 
-        if (dataPlanoPagamento?.mensagem) {
-            dataPlanoPagamento = dataPlanoPagamento?.mensagem;
+        if (dataOperadorFinanceiro?.mensagem) {
+            dataOperadorFinanceiro = dataOperadorFinanceiro?.mensagem;
         }
 
-        if (dataPlanoPagamento?.registro) {
-            dataPlanoPagamento = dataPlanoPagamento?.registro;
+        if (dataOperadorFinanceiro?.registro) {
+            dataOperadorFinanceiro = dataOperadorFinanceiro?.registro;
         }
 
-        if (dataPlanoPagamento?.data) {
-            dataPlanoPagamento = dataPlanoPagamento?.data;
+        if (dataOperadorFinanceiro?.data) {
+            dataOperadorFinanceiro = dataOperadorFinanceiro?.data;
         }
 
-        if (dataPlanoPagamento?.data) {
-            dataPlanoPagamento = dataPlanoPagamento?.data;
+        if (dataOperadorFinanceiro?.data) {
+            dataOperadorFinanceiro = dataOperadorFinanceiro?.data;
         }
 
-        if(dataPlanoPagamento && Array.isArray(dataPlanoPagamento) && dataPlanoPagamento.length > 0){
-            for(let i=0; !(i == dataPlanoPagamento.length); i++){
-                let atual = dataPlanoPagamento[i];
+        if(dataOperadorFinanceiro && Array.isArray(dataOperadorFinanceiro) && dataOperadorFinanceiro.length > 0){
+            for(let i=0; !(i == dataOperadorFinanceiro.length); i++){
+                let atual = dataOperadorFinanceiro[i];
                 if(atual){
                     let line_style = {}
                     let acoesArr = [];
@@ -180,15 +179,15 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                     }
 
                     if(btnEditar){
-                        acoesArr.push({acao:()=>atualizarPlanoPagamentoAction(atual.id), label:'Editar', propsOption:{}, propsLabel:{}})
+                        acoesArr.push({acao:()=>atualizarOperadorFinanceiroAction(atual.id), label:'Editar', propsOption:{}, propsLabel:{}})
                     }
 
                     if(btnExcluir){
-                        acoesArr.push({acao:()=>cancelarPlanoPagamentoAction(atual.id), label:'Excluir', propsOption:{}, propsLabel:{}})
+                        acoesArr.push({acao:()=>cancelarOperadorFinanceiroAction(atual.id), label:'Excluir', propsOption:{}, propsLabel:{}})
                     }
 
                     if(btnDetalhes){
-                        acoesArr.push({acao:()=>visualizarPlanoPagamentoAction(atual.id), label:'Visualizar', propsOption:{}, propsLabel:{}})
+                        acoesArr.push({acao:()=>visualizarOperadorFinanceiroAction(atual.id), label:'Visualizar', propsOption:{}, propsLabel:{}})
                     }
 
                     data.push(
@@ -206,52 +205,62 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                                 },
                                 {
 
-                                    label:atual?.name,
+                                    label:atual?.pessoa?.name,
                                     propsRow:{}
                                 },
                                 {
 
-                                    label:atual?.descricao,
+                                    label:atual?.filial_id,
                                     propsRow:{}
                                 },
                                 {
 
-                                    label:atual?.qtdParcelas,
+                                    label:FORMAT_MONEY(atual?.vrTarifa, 2, ',', '.'),
                                     propsRow:{}
                                 },
                                 {
 
-                                    label:atual?.qtdMinParcelas,
+                                    label:FORMAT_MONEY(atual?.vrDesconto, 2, ',', '.'),
                                     propsRow:{}
                                 },
                                 {
 
-                                    label:atual?.diasmedios,
+                                    label:atual?.vrPorcentagemDesconto,
                                     propsRow:{}
                                 },
                                 {
 
-                                    label:atual?.qtd_dias_pri_parcela,
+                                    label:atual?.nrRemessaAtual,
                                     propsRow:{}
                                 },
                                 {
 
-                                    label:atual?.qtdDiasIntervaloParcelas,
+                                    label:atual?.nrNossoNumero,
                                     propsRow:{}
                                 },
                                 {
 
-                                    label:atual?.exibe_balcao === 'yes' ? 'Sim' : 'Não',
+                                    label:atual?.qtdDiasProtesto,
                                     propsRow:{}
                                 },
                                 {
 
-                                    label:atual?.gerarDuplicataManual === 'yes' ? 'Sim' : 'Não',
+                                    label:atual?.tpLocalAtualizacaoBoleto,
                                     propsRow:{}
                                 },
                                 {
 
-                                    label:atual?.isAberto === 'yes' ? 'Sim' : 'Não',
+                                    label:atual?.isAssumeDuplicata === 'yes' ? 'Sim' : 'Não',
+                                    propsRow:{}
+                                },
+                                {
+
+                                    label:atual?.isPadrao === 'yes' ? 'Sim' : 'Não',
+                                    propsRow:{}
+                                },
+                                {
+
+                                    label:atual?.isLiberado === 'yes' ? 'Sim' : 'Não',
                                     propsRow:{}
                                 },
                                 {
@@ -283,39 +292,47 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                 props:{ style:{minWidth:'225px'}}
             },
             {
-                label:'Descrição',
+                label:'Filial',
                 props:{ style:{minWidth:'225px'}}
             },
             {
-                label:'QTD parcelas',
+                label:'Valor tarifa',
                 props:{ style:{minWidth:'225px'}}
             },
             {
-                label:'QTD mínima de parcelas',
+                label:'Valor desconto',
                 props:{ style:{minWidth:'225px'}}
             },
             {
-                label:'QTD dias médios',
+                label:'Percentual desconto',
                 props:{ style:{minWidth:'225px'}}
             },
             {
-                label:'QTD dias para primeira parcelas',
+                label:'Nº remessa atual',
                 props:{ style:{minWidth:'325px'}}
             },
             {
-                label:'QTD dias intervalo entre parcelas',
+                label:'Nosso número atual',
                 props:{ style:{minWidth:'325px'}}
             },
             {
-                label:'Exibe no balcão',
+                label:'Dias para protesto',
                 props:{ style:{minWidth:'325px'}}
             },
             {
-                label:'Gera duplicata manual',
+                label:'Atualização de boleto',
                 props:{ style:{minWidth:'325px'}}
             },
             {
-                label:'Aberto',
+                label:'Assume duplicata',
+                props:{ style:{minWidth:'325px'}}
+            },
+            {
+                label:'Operador padrão',
+                props:{ style:{minWidth:'325px'}}
+            },
+            {
+                label:'Liberado para uso',
                 props:{ style:{minWidth:'325px'}}
             },
             {
@@ -331,27 +348,27 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
     const gerarListMobileRelatorio = ()=>{
        
         let data = [];
-        let dataPlanoPagamento = estado
+        let dataOperadorFinanceiro = estado
 
-        if (dataPlanoPagamento?.mensagem) {
-            dataPlanoPagamento = dataPlanoPagamento?.mensagem;
+        if (dataOperadorFinanceiro?.mensagem) {
+            dataOperadorFinanceiro = dataOperadorFinanceiro?.mensagem;
         }
 
-        if (dataPlanoPagamento?.registro) {
-            dataPlanoPagamento = dataPlanoPagamento?.registro;
+        if (dataOperadorFinanceiro?.registro) {
+            dataOperadorFinanceiro = dataOperadorFinanceiro?.registro;
         }
 
-        if (dataPlanoPagamento?.data) {
-            dataPlanoPagamento = dataPlanoPagamento?.data;
+        if (dataOperadorFinanceiro?.data) {
+            dataOperadorFinanceiro = dataOperadorFinanceiro?.data;
         }
 
-        if (dataPlanoPagamento?.data) {
-            dataPlanoPagamento = dataPlanoPagamento?.data;
+        if (dataOperadorFinanceiro?.data) {
+            dataOperadorFinanceiro = dataOperadorFinanceiro?.data;
         }
 
-        if(dataPlanoPagamento && Array.isArray(dataPlanoPagamento) && dataPlanoPagamento.length > 0){
-            for(let i=0; !(i == dataPlanoPagamento.length); i++){
-                let atual = dataPlanoPagamento[i];
+        if(dataOperadorFinanceiro && Array.isArray(dataOperadorFinanceiro) && dataOperadorFinanceiro.length > 0){
+            for(let i=0; !(i == dataOperadorFinanceiro.length); i++){
+                let atual = dataOperadorFinanceiro[i];
                 if(atual){
 
                     let line_style = {}
@@ -366,21 +383,21 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                     }
 
                     if(btnEditar){
-                        acoesArr.push({acao:()=>atualizarPlanoPagamentoAction(atual.id), label:'Editar', propsOption:{}, propsLabel:{}})
+                        acoesArr.push({acao:()=>atualizarOperadorFinanceiroAction(atual.id), label:'Editar', propsOption:{}, propsLabel:{}})
                     }
 
                     if(btnExcluir){
-                        acoesArr.push({acao:()=>cancelarPlanoPagamentoAction(atual.id), label:'Excluir', propsOption:{}, propsLabel:{}})
+                        acoesArr.push({acao:()=>cancelarOperadorFinanceiroAction(atual.id), label:'Excluir', propsOption:{}, propsLabel:{}})
                     }
 
                     if(btnDetalhes){
-                        acoesArr.push({acao:()=>visualizarPlanoPagamentoAction(atual.id), label:'Visualizar', propsOption:{}, propsLabel:{}})
+                        acoesArr.push({acao:()=>visualizarOperadorFinanceiroAction(atual.id), label:'Visualizar', propsOption:{}, propsLabel:{}})
                     }
 
                     data.push(
 
                         {
-                            propsRow:{id:(atual.id), titleRow: atual?.id+' - '+atual?.name, style:{...line_style}},
+                            propsRow:{id:(atual.id), titleRow: atual?.id+' - '+atual?.pessoa?.name, style:{...line_style}},
                             acoes:[
                                 ...acoesArr
                             ],
@@ -394,15 +411,15 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                                 [
                                     
                                     {
-                                        title:<span style={{fontWeight:'480'}}>QTD parcelas: </span>,
-                                        label:atual?.qtdParcelas,
+                                        title:<span style={{fontWeight:'480'}}>Filial: </span>,
+                                        label:atual?.filial_id,
                                         props:{style:{textAlign:'left', fontWeight:'bolder'}, md:'6', sm:'6', xs:'6'},
                                         toSum:0,
                                         isCoin:0,
                                     },
                                     {
-                                        title:<span style={{fontWeight:'480'}}>Dias médios: </span>,
-                                        label:atual?.diasmedios,
+                                        title:<span style={{fontWeight:'480'}}>Padrão: </span>,
+                                        label:atual?.isPadrao === 'yes' ? 'Sim' : 'Não',
                                         props:{style:{textAlign:'left', fontWeight:'bolder'}, md:'6', sm:'6', xs:'6'},
                                         toSum:0,
                                         isCoin:0,
@@ -426,13 +443,13 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
     }
 
     React.useEffect(()=>{
-        setPlanoPagamento(dataEstado?.data)
+        setOperadorFinanceiro(dataEstado?.data)
         setNrPageAtual(dataEstado?.data?.data?.current_page)
         handleTotalPages();
         handleTotalItems();
     }, [dataEstado])
     
-    const rowsTableArr = gerarTablePlanoPagamento();    
+    const rowsTableArr = gerarTableOperadorFinanceiro();    
     const titulosTableArr = gerarTitleTable();
 
     return(
@@ -484,22 +501,22 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                 </Col>
             </Row>
             {
-                cadastrarPlanoPagamento && <Cadastrar cadastrarPlanoPagamento={cadastrarPlanoPagamento} setCadastrarPlanoPagamento={setCadastrarPlanoPagamento} atualizarPlanoPagamento={atualizarPlanoPagamento} setAtualizarPlanoPagamento={setAtualizarPlanoPagamento}  idPlanoPagamento={consultaChoice} setIdPlanoPagamento={setPlanoPagamentoChoice} callback={requestAllPlanoPagamentos} />
+                cadastrarOperadorFinanceiro && <Cadastrar cadastrarOperadorFinanceiro={cadastrarOperadorFinanceiro} setCadastrarOperadorFinanceiro={setCadastrarOperadorFinanceiro} atualizarOperadorFinanceiro={atualizarOperadorFinanceiro} setAtualizarOperadorFinanceiro={setAtualizarOperadorFinanceiro}  idOperadorFinanceiro={consultaChoice} setIdOperadorFinanceiro={setOperadorFinanceiroChoice} callback={requestAllOperadorFinanceiros} />
             }
             
             {
-                atualizarPlanoPagamento &&
-                <Atualizar atualizarPlanoPagamento={atualizarPlanoPagamento} setAtualizarPlanoPagamento={setAtualizarPlanoPagamento}  idPlanoPagamento={consultaChoice} setIdPlanoPagamento={setPlanoPagamentoChoice} callback={requestAllPlanoPagamentos} />
+                atualizarOperadorFinanceiro &&
+                <Atualizar atualizarOperadorFinanceiro={atualizarOperadorFinanceiro} setAtualizarOperadorFinanceiro={setAtualizarOperadorFinanceiro}  idOperadorFinanceiro={consultaChoice} setIdOperadorFinanceiro={setOperadorFinanceiroChoice} callback={requestAllOperadorFinanceiros} />
             }
 
             {
-                cancelarPlanoPagamento &&
-                <Excluir cancelarPlanoPagamento={cancelarPlanoPagamento} setExcluirPlanoPagamento={setExcluirPlanoPagamento}  idPlanoPagamento={consultaChoice} setIdPlanoPagamento={setPlanoPagamentoChoice} callback={requestAllPlanoPagamentos} />
+                cancelarOperadorFinanceiro &&
+                <Excluir cancelarOperadorFinanceiro={cancelarOperadorFinanceiro} setExcluirOperadorFinanceiro={setExcluirOperadorFinanceiro}  idOperadorFinanceiro={consultaChoice} setIdOperadorFinanceiro={setOperadorFinanceiroChoice} callback={requestAllOperadorFinanceiros} />
             }
 
             {
-                visualizarPlanoPagamento &&
-                <Visualizar visualizarPlanoPagamento={visualizarPlanoPagamento} setVisualizarPlanoPagamento={setVisualizarPlanoPagamento}  idPlanoPagamento={consultaChoice} setIdPlanoPagamento={setPlanoPagamentoChoice} callback={requestAllPlanoPagamentos} />
+                visualizarOperadorFinanceiro &&
+                <Visualizar visualizarOperadorFinanceiro={visualizarOperadorFinanceiro} setVisualizarOperadorFinanceiro={setVisualizarOperadorFinanceiro}  idOperadorFinanceiro={consultaChoice} setIdOperadorFinanceiro={setOperadorFinanceiroChoice} callback={requestAllOperadorFinanceiros} />
             }
            
          </>

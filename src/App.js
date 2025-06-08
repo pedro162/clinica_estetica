@@ -6,7 +6,8 @@ import {
   OrdemServico, ClientesFichas, MovimentacoesFinanceiras, MenuBotoes, PainelHome, CadastrarExternoSimples, SendMessageWhatsApp, SendEmail, Configuracoes,
   ContasReceberItem,
   FormaPagamento,
-  PlanoPagamento
+  PlanoPagamento,
+  OperadorFinanceiro
 } from './View/index.js'
 import { Router, Route, Switch } from 'react-router'
 import { history } from './history.js'
@@ -99,6 +100,11 @@ function App() {
                 <ProtectedRoute
                   exact path="/financeiro/planos-pagamento"
                   component={PlanoPagamento}
+                />
+
+                <ProtectedRoute
+                  exact path="/financeiro/operadores-financeiros"
+                  component={OperadorFinanceiro}
                 />
 
                 <ProtectedRoute
