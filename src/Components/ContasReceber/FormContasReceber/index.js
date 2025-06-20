@@ -183,7 +183,7 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 			if (json && json.hasOwnProperty('mensagem')) {
 				let data = json.mensagem;
 				setDataFormaPagamento(data)
-			}else if(json && json.hasOwnProperty('data')){
+			} else if (json && json.hasOwnProperty('data')) {
 				let data = json.data?.data;
 				setDataFormaPagamento(data)
 			} else {
@@ -209,10 +209,10 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 			if (json && json.hasOwnProperty('mensagem')) {
 				let data = json.mensagem;
 				setDataPlanoPagamento(data)
-			}else if(json && json.hasOwnProperty('data')){
+			} else if (json && json.hasOwnProperty('data')) {
 				let data = json.data?.data;
 				setDataPlanoPagamento(data)
-			}else {
+			} else {
 				setDataPlanoPagamento([])
 			}
 
@@ -235,7 +235,7 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 			if (json && json.hasOwnProperty('mensagem')) {
 				let data = json.mensagem;
 				setDataOperadorFinanceiro(data)
-			}else if(json && json.hasOwnProperty('data')){
+			} else if (json && json.hasOwnProperty('data')) {
 				let data = json.data?.data;
 				setDataOperadorFinanceiro(data)
 			} else {
@@ -317,7 +317,7 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 			<Formik
 
 				initialValues={{ ...dataToFormContasReceber }}
-				enableReinitialize={true}
+				enableReinitialize={false}
 				validate={
 					values => {
 
@@ -374,7 +374,8 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 							handleChange,
 							handleBlur,
 							handleSubmit,
-							isSubmitting
+							isSubmitting,
+							setFieldValue
 						}
 					) => (
 
@@ -475,8 +476,7 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 																			hookToLoadFromDescription: CLIENTES_ALL_POST,
 																			callbackDataItemChoice: (param) => {
 																				let { label, value } = param
-
-																				setIdPessoaForm(value)
+																				setFieldValue('pessoa_id', value)
 																			}
 																		}
 																	}
@@ -516,6 +516,10 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 																				className: ''
 																			},
 																			hookToLoadFromDescription: CAIXA_ALL_POST,
+																			callbackDataItemChoice: (param) => {
+																				let { label, value } = param
+																				setFieldValue('caixa_id', value)
+																			}
 																		}
 																	}
 																	ComponentFilter={Caixa}
