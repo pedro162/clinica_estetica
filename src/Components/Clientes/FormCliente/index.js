@@ -9,10 +9,13 @@ import Modal from '../../Utils/Modal/index.js'
 import useFetch from '../../../Hooks/useFetch.js';
 import { UserContex } from '../../../Context/UserContex.js'
 import Load from '../../Utils/Load/index.js'
-import { TOKEN_POST, CLIENT_ID, CLIENT_SECRET, CLIENTES_SAVE_POST, CLIENTES_UPDATE_POST, CLIENTES_ONE_GET } from '../../../api/endpoints/geral.js'
+import { TOKEN_POST, CLIENT_ID, CLIENT_SECRET, CLIENTES_SAVE_POST, CLIENTES_UPDATE_POST, CLIENTES_ONE_GET, PAIS_ALL_POST, ESTADO_ALL_POST } from '../../../api/endpoints/geral.js'
 import Atualizar from '../Atualizar/index.js'
 import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible'
 import Swal from 'sweetalert2'
+import Required from '../../FormControl/Required.js';
+import Estado from '../../Estado/index.js';
+import Pais from '../../Pais/index.js';
 
 const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, showModalCriarCliente, setShowModalCriarCliente, callback, atualizarCadastro, setAtualizarCadastro, carregando }) => {
 
@@ -20,11 +23,7 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 
 	const { data, error, request, loading } = useFetch();
 	const fetchToClient = useFetch();
-
 	const { getToken, dataUser } = React.useContext(UserContex);
-	const userLogar = () => {
-		console.log('Aqui............')
-	}
 
 	const sendData = async ({
 		nome,
@@ -34,6 +33,7 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 		cep,
 		pais,
 		uf,
+		cidade,
 		logradouro,
 		complemento,
 		numero,
@@ -44,46 +44,60 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 		tp_email,
 		email,
 		bairro,
-		groupo_id,
+		grupo_id,
 		nascimento_fundacao,
 	}) => {
 
 		const data = {
 			'name': nome,
-			'name_opcional': sobrenome,
 			'documento': documento,
-			'documento_complementar': doc_complementar,
-			'nascimento_fundacao': nascimento_fundacao,
 			'sexo': 'm',
 			'email': email,
-			'cep': cep,
-			'logradouro': logradouro,
-			'numero': numero,
-			'tipo': 'casa',
-			'complemento': complemento,
-			'bairro': bairro,
-			'cidade': 'São luis',
-			'estado': uf,
-			'bloco': null,
-			'celular_1': celular,
-			'celular_2': celular,
-			'telefone': telefone,
-			'idUser': 1,
-			'groupo_id': groupo_id,
-			'pais_id': pais,
+			'tipo': 'fisica',
+			'grupo_id': grupo_id,
+			'active': 'yes',
+			'endereco': {
+				'cep': cep,
+				'logradouro': logradouro,
+				'complemento': complemento,
+				'bairro': bairro,
+				'cidade': cidade,
+				'estado': uf,
+				'pais_id': pais,
+				'numero': numero,
+			},
+			'contatos': [
+				{
+					'tipo': 'celular',
+					'valor': celular,
+					'importancia': tp_celular,
 
+				},
+				{
+					'tipo': 'fixo',
+					'valor': telefone,
+					'importancia': tp_telefone,
+				},
+			],
+		}
+
+		if (nascimento_fundacao && String(nascimento_fundacao).trim() != '') {
+			data.nascimento_fundacao = nascimento_fundacao;
+		}
+
+		if (doc_complementar && String(doc_complementar).trim() != '') {
+			data.documento_complementar = doc_complementar;
+		}
+
+		if (sobrenome && String(sobrenome).trim() != '') {
+			data.name_opcional = sobrenome;
 		}
 
 		if (atualizarCadastro == true) {
 			const { url, options } = CLIENTES_UPDATE_POST(idCliente, data, getToken());
-
-
 			const { response, json } = await request(url, options);
-			console.log('Save clients here')
-			console.log(json)
-			if (json) {
-				console.log('Response Save clients here')
-				console.log(json)
+
+			if (json && !error) {
 
 				callback();
 				setShowModalCriarCliente();
@@ -94,23 +108,17 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 					icon: "success",
 					title: "",
 					text: 'Registrado com sucesso',
-					footer: '',//'<a href="#">Why do I have this issue?</a>'
+					footer: '',
 					confirmButtonColor: "#07B201",
 				});
 			}
 
 		} else {
 
-
 			const { url, options } = CLIENTES_SAVE_POST(data, getToken());
-
-
 			const { response, json } = await request(url, options);
-			console.log('Save clients here')
-			console.log(json)
-			if (json) {
-				console.log('Response Save clients here')
-				console.log(json)
+
+			if (json && !error) {
 
 				callback();
 				setShowModalCriarCliente();
@@ -120,7 +128,7 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 					icon: "success",
 					title: "",
 					text: 'Registrado com sucesso',
-					footer: '',//'<a href="#">Why do I have this issue?</a>'
+					footer: '',
 					confirmButtonColor: "#07B201",
 				});
 			}
@@ -128,9 +136,8 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 		}
 	}
 
-
 	const dataToFormCliente = () => {
-		let obj = { nome: '', sobrenome: '', documento: '', doc_complementar: '', cep: '', pais: '', uf: '', logradouro: '', complemento: '', numero: '', telefone: '', celular: '', tp_telefone: '', tp_celular: '', tp_email: '', nascimento_fundacao: '', groupo_id: '', bairro: '' }
+		let obj = { nome: '', sobrenome: '', documento: '', doc_complementar: '', cep: '', pais: '', uf: '', cidade: '', logradouro: '', complemento: '', numero: '', telefone: '', celular: '', tp_telefone: '', tp_celular: '', tp_email: '', nascimento_fundacao: '', grupo_id: '', bairro: '' }
 
 		let data = dataClienteChoice;
 
@@ -141,7 +148,6 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 		if (dataClienteChoice?.data) {
 			data = dataClienteChoice?.data;
 		}
-
 
 		if (data) {
 			if (data.hasOwnProperty('name')) {
@@ -185,6 +191,7 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 							obj.complemento = atual.complemento;
 							obj.numero = atual.numero;
 							obj.bairro = atual.bairro;
+							obj.cidade = atual.cidade;
 
 							if (atual.hasOwnProperty('estado_logradouro')) {
 								obj.pais = atual.estado_logradouro?.pais?.id;
@@ -205,13 +212,10 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 						obj.bairro = atual.bairro;
 
 						if (atual.hasOwnProperty('estado_logradouro')) {
-							obj.pais = atual.estado_logradouro?.pais?.id;;
-
+							obj.pais = atual.estado_logradouro?.pais?.id;
 						}
-
 					}
 				}
-
 			}
 
 			if (data.hasOwnProperty('grupo')) {
@@ -219,12 +223,11 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 					for (let i = 0; !(i == data.grupo.length); i++) {
 						let atual = data.grupo[i];
 						if (atual.hasOwnProperty('id') && atual.id > 0) {
-							obj.groupo_id = atual.id;
+							obj.grupo_id = atual.id;
 
 						}
 					}
 				}
-
 			}
 
 			if (data.hasOwnProperty('telefone')) {
@@ -248,33 +251,17 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 				}
 
 			}
-
-
 		}
-		console.log('dados para formulario ----------')
-		//console.log(obj)
+
 		return obj;
 	}
 
-	/* if(atualizarCadastro){
-		 return(
-			 <Modal  handleConcluir={()=>null}  title={'Cadastrar Cliente ..'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarCliente} showHide={()=>{setShowModalCriarCliente();}}>
-				 {carregandoDadosChoice && <Load/>}
-				 <Atualizar
-					 idCliente={idCliente} 
-					 setDataCliente={setDataClienteChoice}
-					 setCarregandoDadosCliente={setCarregandoDadosChoice}
-				 />
-			  </Modal>
-		 )
-	 }
-	*/
 	const preparaGrupoToForm = () => {
 		let grupoFormat = [{ label: 'Selecione...', valor: '', props: { selected: 'selected', disabled: 'disabled' } }]
+
 		if (dataGrupo && dataGrupo.hasOwnProperty('registro')) {
 
 			if (Array.isArray(dataGrupo.registro) && dataGrupo.registro.length > 0) {
-
 
 				for (let i = 0; !(i == dataGrupo.registro.length); i++) {
 					let atual = dataGrupo.registro[i];
@@ -284,14 +271,8 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 						{ label: name, valor: id, props: {} }
 					)
 				}
-
 			}
-
 		}
-
-		console.log('-------------grupo agui----------------------')
-		console.log(dataGrupo)
-		console.log('-------------grupo agui----------------------')
 
 		return grupoFormat;
 	}
@@ -301,12 +282,11 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 			icon: "error",
 			title: "Oops...",
 			text: error,
-			footer: '',//'<a href="#">Why do I have this issue?</a>'
+			footer: '',
 			confirmButtonColor: "#07B201",
 			//width:'20rem',
 		});
 	}
-
 
 	return (
 
@@ -346,6 +326,10 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 
 						if (!values.uf) {
 							errors.uf = "Obrigatório"
+						}
+
+						if (!values.cidade) {
+							errors.cidade = "Obrigatório"
 						}
 
 						if (!values.logradouro) {
@@ -392,8 +376,8 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 							//errors.nascimento_fundacao="Obrigatório"
 						}
 
-						if (!values.groupo_id) {
-							errors.groupo_id = "Obrigatório"
+						if (!values.grupo_id) {
+							errors.grupo_id = "Obrigatório"
 						}
 
 						return errors;
@@ -401,11 +385,6 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 				}
 
 				onSubmit={async (values, { setSubmitting }) => {
-					/*setTimeout(() => {
-						alert(JSON.stringify(values, null, 2));
-						setSubmitting(false);
-					  }, 400);*/
-					//alert(values.nome)
 					await sendData({ ...values });
 				}}
 			>
@@ -418,14 +397,14 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 							handleChange,
 							handleBlur,
 							handleSubmit,
-							isSubmitting
+							isSubmitting,
+							setFieldValue
 						}
 					) => (
 
 						<Modal handleConcluir={() => { handleSubmit(); }} title={(atualizarCadastro == true ? 'Atualizar' : 'Cadastrar') + ' Cliente'} size="lg" propsConcluir={{ 'disabled': loading }} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarCliente} showHide={() => { setShowModalCriarCliente(); setAtualizarCadastro(false); setIdcliente(null); }}>
 
 							{
-
 								carregando && carregando == true
 									?
 									(<Load />)
@@ -614,12 +593,12 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 																},
 																atributsFormControl: {
 																	type: 'text',
-																	name: 'groupo_id',
+																	name: 'grupo_id',
 																	placeholder: 'fulano de tal',
-																	id: 'groupo_id',
+																	id: 'grupo_id',
 																	onChange: handleChange,
 																	onBlur: handleBlur,
-																	value: values.groupo_id,
+																	value: values.grupo_id,
 																	className: estilos.input,
 																	size: "sm"
 																},
@@ -632,141 +611,13 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 
 														component={FormControlSelect}
 													></Field>
-													<ErrorMessage className="alerta_error_form_label" name="groupo_id" component="div" />
+													<ErrorMessage className="alerta_error_form_label" name="grupo_id" component="div" />
 												</Col>
 											</Row>
 
 											<Row className="my-3">
 												<Col xs="12" sm="12" md="12">
 													<span className="label_title_grup_forms">Dados de endereço</span>
-												</Col>
-											</Row>
-											<Row className="mb-1">
-												<Col xs="12" sm="12" md="6">
-													<Field
-														data={
-															{
-																hasLabel: true,
-																contentLabel: 'Cep *',
-																atributsFormLabel: {
-
-																},
-																atributsFormControl: {
-																	type: 'text',
-																	name: 'cep',
-																	placeholder: 'fulano de tal',
-																	id: 'cep',
-																	onChange: handleChange,
-																	onBlur: handleBlur,
-																	value: values.cep,
-																	className: estilos.input,
-																	size: "sm"
-																},
-																atributsContainer: {
-																	className: ''
-																}
-															}
-														}
-
-														component={FormControlInput}
-													></Field>
-													<ErrorMessage className="alerta_error_form_label" name="cep" component="div" />
-												</Col>
-
-												<Col xs="12" sm="12" md="6">
-													<Field
-														data={
-															{
-																hasLabel: true,
-																contentLabel: 'Pais *',
-																atributsFormLabel: {
-
-																},
-																atributsFormControl: {
-																	type: 'text',
-																	name: 'pais',
-																	placeholder: 'fulano de tal',
-																	id: 'pais',
-																	onChange: handleChange,
-																	onBlur: handleBlur,
-																	value: values.pais,
-																	className: estilos.input,
-																	size: "sm"
-																},
-																options: [{ label: 'Selecione...', valor: '', props: { selected: 'selected', disabled: 'disabled' } }, { label: 'Brasil', valor: '1', props: {} }, { label: 'Argentina', valor: '2', props: {} }],
-																atributsContainer: {
-																	className: ''
-																}
-															}
-														}
-
-														component={FormControlSelect}
-													></Field>
-													<ErrorMessage className="alerta_error_form_label" name="pais" component="div" />
-												</Col>
-											</Row>
-											<Row className="mb-1">
-												<Col xs="12" sm="12" md="6">
-													<Field
-														data={
-															{
-																hasLabel: true,
-																contentLabel: 'Estado *',
-																atributsFormLabel: {
-
-																},
-																atributsFormControl: {
-																	type: 'text',
-																	name: 'uf',
-																	placeholder: 'fulano de tal',
-																	id: 'uf',
-																	onChange: handleChange,
-																	onBlur: handleBlur,
-																	value: values.uf,
-																	className: estilos.input,
-																	size: "sm"
-																},
-																options: [{ label: 'Selecione...', valor: '', props: { selected: 'selected', disabled: 'disabled' } }, { label: 'Maranhão', valor: '1', props: {} }, { label: 'São paulo', valor: '2', props: {} }],
-																atributsContainer: {
-																	className: ''
-																}
-															}
-														}
-
-														component={FormControlSelect}
-													></Field>
-													<ErrorMessage className="alerta_error_form_label" name="uf" component="div" />
-												</Col>
-
-												<Col xs="12" sm="12" md="6">
-													<Field
-														data={
-															{
-																hasLabel: true,
-																contentLabel: 'Bairro *',
-																atributsFormLabel: {
-
-																},
-																atributsFormControl: {
-																	type: 'text',
-																	name: 'bairro',
-																	placeholder: 'fulano de tal',
-																	id: 'bairro',
-																	onChange: handleChange,
-																	onBlur: handleBlur,
-																	value: values.bairro,
-																	className: estilos.input,
-																	size: "sm"
-																},
-																atributsContainer: {
-																	className: ''
-																}
-															}
-														}
-
-														component={FormControlInput}
-													></Field>
-													<ErrorMessage className="alerta_error_form_label" name="bairro" component="div" />
 												</Col>
 											</Row>
 											<Row className="mb-1">
@@ -806,6 +657,38 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 														data={
 															{
 																hasLabel: true,
+																contentLabel: 'Bairro *',
+																atributsFormLabel: {
+
+																},
+																atributsFormControl: {
+																	type: 'text',
+																	name: 'bairro',
+																	placeholder: 'fulano de tal',
+																	id: 'bairro',
+																	onChange: handleChange,
+																	onBlur: handleBlur,
+																	value: values.bairro,
+																	className: estilos.input,
+																	size: "sm"
+																},
+																atributsContainer: {
+																	className: ''
+																}
+															}
+														}
+
+														component={FormControlInput}
+													></Field>
+													<ErrorMessage className="alerta_error_form_label" name="bairro" component="div" />
+												</Col>
+											</Row>
+											<Row className="mb-1">
+												<Col xs="12" sm="12" md="6">
+													<Field
+														data={
+															{
+																hasLabel: true,
 																contentLabel: 'Complemento *',
 																atributsFormLabel: {
 
@@ -830,6 +713,36 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 														component={FormControlInput}
 													></Field>
 													<ErrorMessage className="alerta_error_form_label" name="complemento" component="div" />
+												</Col>
+												<Col xs="12" sm="12" md="6">
+													<Field
+														data={
+															{
+																hasLabel: true,
+																contentLabel: 'Cep *',
+																atributsFormLabel: {
+
+																},
+																atributsFormControl: {
+																	type: 'text',
+																	name: 'cep',
+																	placeholder: 'fulano de tal',
+																	id: 'cep',
+																	onChange: handleChange,
+																	onBlur: handleBlur,
+																	value: values.cep,
+																	className: estilos.input,
+																	size: "sm"
+																},
+																atributsContainer: {
+																	className: ''
+																}
+															}
+														}
+
+														component={FormControlInput}
+													></Field>
+													<ErrorMessage className="alerta_error_form_label" name="cep" component="div" />
 												</Col>
 											</Row>
 											<Row className="mb-1">
@@ -862,6 +775,111 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 														component={FormControlInput}
 													></Field>
 													<ErrorMessage className="alerta_error_form_label" name="numero" component="div" />
+												</Col>
+												<Col xs="12" sm="12" md="6">
+													<Field
+														data={
+															{
+																hasLabel: true,
+																contentLabel: 'Cidade *',
+																atributsFormLabel: {
+
+																},
+																atributsFormControl: {
+																	type: 'text',
+																	name: 'cidade',
+																	placeholder: 'Cidade',
+																	id: 'cidade',
+																	onChange: handleChange,
+																	onBlur: handleBlur,
+																	value: values.cidade,
+																	className: estilos.input,
+																	size: "sm"
+																},
+																options: [],
+																atributsContainer: {
+																	className: ''
+																}
+															}
+														}
+
+														component={FormControlInput}
+													></Field>
+													<ErrorMessage className="alerta_error_form_label" name="cidade" component="div" />
+												</Col>
+											</Row>
+											<Row className="mb-1">
+												<Col xs="12" sm="12" md="6">
+													<Field
+														data={
+															{
+																hasLabel: true,
+																contentLabel: 'Estado *',
+																atributsFormLabel: {
+
+																},
+																atributsFormControl: {
+																	type: 'text',
+																	name: 'uf',
+																	placeholder: 'fulano de tal',
+																	id: 'uf',
+																	onChange: handleChange,
+																	onBlur: handleBlur,
+																	value: values.uf,
+																	className: estilos.input,
+																	size: "sm"
+																},
+																options: [],
+																atributsContainer: {
+																	className: ''
+																},
+																hookToLoadFromDescription: ESTADO_ALL_POST,
+																callbackDataItemChoice: (param) => {
+																	let { label, value } = param
+																	setFieldValue('uf', value)
+																}
+															}
+														}
+														ComponentFilter={Estado}
+														component={Required}
+													></Field>
+													<ErrorMessage className="alerta_error_form_label" name="uf" component="div" />
+												</Col>
+												<Col xs="12" sm="12" md="6">
+													<Field
+														data={
+															{
+																hasLabel: true,
+																contentLabel: 'Pais *',
+																atributsFormLabel: {
+
+																},
+																atributsFormControl: {
+																	type: 'text',
+																	name: 'pais',
+																	placeholder: 'fulano de tal',
+																	id: 'pais',
+																	onChange: handleChange,
+																	onBlur: handleBlur,
+																	value: values.pais,
+																	className: estilos.input,
+																	size: "sm"
+																},
+																options: [],
+																atributsContainer: {
+																	className: ''
+																},
+																hookToLoadFromDescription: PAIS_ALL_POST,
+																callbackDataItemChoice: (param) => {
+																	let { label, value } = param
+																	setFieldValue('pais', value)
+																}
+															}
+														}
+														ComponentFilter={Pais}
+														component={Required}
+													></Field>
+													<ErrorMessage className="alerta_error_form_label" name="pais" component="div" />
 												</Col>
 											</Row>
 											<Row className="my-3">
@@ -910,7 +928,7 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 
 																},
 																atributsFormControl: {
-																	type: 'text',
+																	type: 'select',
 																	name: 'tp_telefone',
 																	placeholder: 'fulano de tal',
 																	id: 'tp_telefone',
@@ -920,13 +938,17 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 																	className: estilos.input,
 																	size: "sm"
 																},
+																options: [
+																	{ label: 'Selecione...', valor: '', props: { selected: 'selected', disabled: 'disabled' } },
+																	{ label: 'Principal', valor: 'principal', props: {} }, { label: 'Secundário', valor: 'secundario', props: {} }
+																],
 																atributsContainer: {
 																	className: ''
 																}
 															}
 														}
 
-														component={FormControlInput}
+														component={FormControlSelect}
 													></Field>
 													<ErrorMessage className="alerta_error_form_label" name="tp_telefone" component="div" />
 												</Col>
@@ -944,7 +966,7 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 																atributsFormControl: {
 																	type: 'text',
 																	name: 'celular',
-																	placeholder: 'fulano de tal',
+																	placeholder: '99999999999',
 																	id: 'celular',
 																	onChange: handleChange,
 																	onBlur: handleBlur,
@@ -974,7 +996,7 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 																atributsFormControl: {
 																	type: 'text',
 																	name: 'tp_celular',
-																	placeholder: 'fulano de tal',
+																	placeholder: 'Tipo de celular',
 																	id: 'tp_celular',
 																	onChange: handleChange,
 																	onBlur: handleBlur,
@@ -982,13 +1004,17 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 																	className: estilos.input,
 																	size: "sm"
 																},
+																options: [
+																	{ label: 'Selecione...', valor: '', props: { selected: 'selected', disabled: 'disabled' } },
+																	{ label: 'Principal', valor: 'principal', props: {} }, { label: 'Secundário', valor: 'secundario', props: {} }
+																],
 																atributsContainer: {
 																	className: ''
 																}
 															}
 														}
 
-														component={FormControlInput}
+														component={FormControlSelect}
 													></Field>
 													<ErrorMessage className="alerta_error_form_label" name="tp_celular" component="div" />
 												</Col>
@@ -1025,39 +1051,6 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 													></Field>
 													<ErrorMessage className="alerta_error_form_label" name="email" component="div" />
 												</Col>
-
-												<Col xs="12" sm="12" md="6">
-													<Field
-														data={
-															{
-																hasLabel: true,
-																contentLabel: 'Tipo de email',
-																atributsFormLabel: {
-
-																},
-																atributsFormControl: {
-																	type: 'text',
-																	name: 'tp_email',
-																	placeholder: 'fulano de tal',
-																	id: 'tp_email',
-																	onChange: handleChange,
-																	onBlur: handleBlur,
-																	value: values.tp_email,
-																	className: estilos.input,
-																	size: "sm"
-																},
-																atributsContainer: {
-																	className: ''
-																}
-															}
-														}
-
-														component={FormControlInput}
-													></Field>
-													<ErrorMessage className="alerta_error_form_label" name="tp_email" component="div" />
-												</Col>
-
-
 											</Row>
 
 										</form>
