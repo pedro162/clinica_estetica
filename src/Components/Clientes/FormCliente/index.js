@@ -46,39 +46,50 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 		bairro,
 		grupo_id,
 		nascimento_fundacao,
+		sexo,
 	}) => {
 
 		const data = {
 			'name': nome,
 			'documento': documento,
-			'sexo': 'm',
-			'email': email,
+			'sexo': sexo ? sexo : 'm',
+			'email': email ? email : '',
 			'tipo': 'fisica',
 			'grupo_id': grupo_id,
 			'active': 'yes',
 			'endereco': {
 				'cep': cep,
 				'logradouro': logradouro,
-				'complemento': complemento,
+				'complemento': complemento && String(complemento).length > 0 ? complemento : '',
 				'bairro': bairro,
 				'cidade': cidade,
 				'estado': uf,
 				'pais_id': pais,
 				'numero': numero,
-			},
-			'contatos': [
-				{
-					'tipo': 'celular',
-					'valor': celular,
-					'importancia': tp_celular,
+			}
+		}
 
-				},
-				{
-					'tipo': 'fixo',
-					'valor': telefone,
-					'importancia': tp_telefone,
-				},
-			],
+		let contatos = [];
+
+		if (telefone) {
+			contatos.push({
+				'tipo': 'fixo',
+				'valor': telefone,
+				'importancia': 'principal',
+			})
+		}
+
+		if (celular) {
+			contatos.push({
+				'tipo': 'celular',
+				'valor': celular,
+				'importancia': 'principal',
+
+			})
+		}
+
+		if (contatos.length > 0) {
+			data['contatos'] = contatos;
 		}
 
 		if (nascimento_fundacao && String(nascimento_fundacao).trim() != '') {
@@ -137,7 +148,7 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 	}
 
 	const dataToFormCliente = () => {
-		let obj = { nome: '', sobrenome: '', documento: '', doc_complementar: '', cep: '', pais: '', uf: '', cidade: '', logradouro: '', complemento: '', numero: '', telefone: '', celular: '', tp_telefone: '', tp_celular: '', tp_email: '', nascimento_fundacao: '', grupo_id: '', bairro: '' }
+		let obj = { nome: '', sobrenome: '', sexo: '', documento: '', doc_complementar: '', cep: '', pais: '', uf: '', cidade: '', logradouro: '', complemento: '', numero: '', telefone: '', celular: '', tp_telefone: '', tp_celular: '', tp_email: '', nascimento_fundacao: '', grupo_id: '', bairro: '' }
 
 		let data = dataClienteChoice;
 
@@ -157,9 +168,15 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 			if (data.hasOwnProperty('name_opcional')) {
 				obj.sobrenome = data.name_opcional;
 			}
+
+			if (data?.sexo) {
+				obj.sexo = data.sexo;
+			}
+
 			if (data.hasOwnProperty('documento')) {
 				obj.documento = data.documento;
 			}
+
 			if (data.hasOwnProperty('documento_complementar')) {
 				obj.doc_complementar = data.documento_complementar;
 			}
@@ -305,7 +322,7 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 						}
 
 						if (!values.sobrenome) {
-							errors.sobrenome = "Obrigatório"
+							//errors.sobrenome = "Obrigatório"
 						}
 
 						if (!values.documento) {
@@ -314,6 +331,10 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 
 						if (!values.doc_complementar) {
 							//errors.doc_complementar="Obrigatório"
+						}
+
+						if (!values.sexo) {
+							errors.sexo = "Obrigatório"
 						}
 
 						if (!values.cep) {
@@ -346,7 +367,7 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 
 
 						if (!values.telefone) {
-							//errors.telefone="Obrigatório"
+							//errors.telefone = "Obrigatório"
 						}
 
 						if (!values.celular) {
@@ -358,7 +379,7 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 						}
 
 						if (!values.tp_celular) {
-							errors.tp_celular = "Obrigatório"
+							//errors.tp_celular = "Obrigatório"
 						}
 
 						if (!values.tp_email) {
@@ -614,6 +635,43 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 													<ErrorMessage className="alerta_error_form_label" name="grupo_id" component="div" />
 												</Col>
 											</Row>
+											<Row className="mb-1">
+												<Col xs="12" sm="12" md="6">
+													<Field
+														data={
+															{
+																hasLabel: true,
+																contentLabel: 'Sexo * ',
+																atributsFormLabel: {
+
+																},
+																atributsFormControl: {
+																	type: 'text',
+																	name: 'sexo',
+																	placeholder: 'Sexo',
+																	id: 'sexo',
+																	onChange: handleChange,
+																	onBlur: handleBlur,
+																	value: values.sexo,
+																	className: estilos.input,
+																	size: "sm"
+																},
+																options: [
+																	{ label: 'Selecione...', valor: '', props: { selected: 'selected', disabled: 'disabled' } },
+																	{ label: 'Mascuilino', valor: 'm' },
+																	{ label: 'Feminino', valor: 'f' },
+																],
+																atributsContainer: {
+																	className: ''
+																}
+															}
+														}
+
+														component={FormControlSelect}
+													></Field>
+													<ErrorMessage className="alerta_error_form_label" name="sexo" component="div" />
+												</Col>
+											</Row>
 
 											<Row className="my-3">
 												<Col xs="12" sm="12" md="12">
@@ -689,7 +747,7 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 														data={
 															{
 																hasLabel: true,
-																contentLabel: 'Complemento *',
+																contentLabel: 'Complemento / Ponto de referência',
 																atributsFormLabel: {
 
 																},
@@ -893,7 +951,7 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 														data={
 															{
 																hasLabel: true,
-																contentLabel: 'Telefone *',
+																contentLabel: 'Telefone',
 																atributsFormLabel: {
 
 																},
@@ -918,42 +976,6 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 													></Field>
 													<ErrorMessage className="alerta_error_form_label" name="telefone" component="div" />
 												</Col>
-												<Col xs="12" sm="12" md="6">
-													<Field
-														data={
-															{
-																hasLabel: true,
-																contentLabel: 'Tipo de telefone *',
-																atributsFormLabel: {
-
-																},
-																atributsFormControl: {
-																	type: 'select',
-																	name: 'tp_telefone',
-																	placeholder: 'fulano de tal',
-																	id: 'tp_telefone',
-																	onChange: handleChange,
-																	onBlur: handleBlur,
-																	value: values.tp_telefone,
-																	className: estilos.input,
-																	size: "sm"
-																},
-																options: [
-																	{ label: 'Selecione...', valor: '', props: { selected: 'selected', disabled: 'disabled' } },
-																	{ label: 'Principal', valor: 'principal', props: {} }, { label: 'Secundário', valor: 'secundario', props: {} }
-																],
-																atributsContainer: {
-																	className: ''
-																}
-															}
-														}
-
-														component={FormControlSelect}
-													></Field>
-													<ErrorMessage className="alerta_error_form_label" name="tp_telefone" component="div" />
-												</Col>
-											</Row>
-											<Row className="mb-1">
 												<Col xs="12" sm="12" md="6">
 													<Field
 														data={
@@ -984,42 +1006,7 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 													></Field>
 													<ErrorMessage className="alerta_error_form_label" name="celular" component="div" />
 												</Col>
-												<Col xs="12" sm="12" md="6">
-													<Field
-														data={
-															{
-																hasLabel: true,
-																contentLabel: 'Tipo de celular *',
-																atributsFormLabel: {
-
-																},
-																atributsFormControl: {
-																	type: 'text',
-																	name: 'tp_celular',
-																	placeholder: 'Tipo de celular',
-																	id: 'tp_celular',
-																	onChange: handleChange,
-																	onBlur: handleBlur,
-																	value: values.tp_celular,
-																	className: estilos.input,
-																	size: "sm"
-																},
-																options: [
-																	{ label: 'Selecione...', valor: '', props: { selected: 'selected', disabled: 'disabled' } },
-																	{ label: 'Principal', valor: 'principal', props: {} }, { label: 'Secundário', valor: 'secundario', props: {} }
-																],
-																atributsContainer: {
-																	className: ''
-																}
-															}
-														}
-
-														component={FormControlSelect}
-													></Field>
-													<ErrorMessage className="alerta_error_form_label" name="tp_celular" component="div" />
-												</Col>
 											</Row>
-
 											<Row className="mb-1">
 												<Col xs="12" sm="12" md="6">
 													<Field

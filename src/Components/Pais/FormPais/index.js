@@ -76,8 +76,15 @@ const FormPais = ({ dataPaisChoice, dataGrupo, setIdPais, idPais, showModalCriar
 
 	const dataToFormPais = () => {
 		let obj = { namenome: '', nome: '', cod_pais: '', padrao: '' }
-		if (dataPaisChoice && dataPaisChoice.hasOwnProperty('mensagem')) {
-			let data = dataPaisChoice.mensagem;
+
+		if (dataPaisChoice) {
+			let data = dataPaisChoice;
+
+			if (data?.mensagem) {
+				data = data?.mensagem
+			} else if (data?.data) {
+				data = data?.data
+			}
 
 			if (data.hasOwnProperty('name')) {
 				obj.name = obj.namenome = obj.nome = data.name;
@@ -166,7 +173,7 @@ const FormPais = ({ dataPaisChoice, dataGrupo, setIdPais, idPais, showModalCriar
 						}
 					) => (
 
-						<Modal handleConcluir={() => { handleSubmit(); }} title={'Cadastrar Pais'} size="lg" propsConcluir={{ 'disabled': loading }} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarPais} showHide={() => { setShowModalCriarPais(); setAtualizarCadastro(false); setIdPais(null); }}>
+						<Modal handleConcluir={() => { handleSubmit(); }} title={dataPaisChoice ? 'Editar Pais' : 'Cadastrar Pais'} size="lg" propsConcluir={{ 'disabled': loading }} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarPais} showHide={() => { setShowModalCriarPais(); setAtualizarCadastro(false); setIdPais(null); }}>
 
 							<form onSubmit={handleSubmit}>
 								<Row className="my-3">
