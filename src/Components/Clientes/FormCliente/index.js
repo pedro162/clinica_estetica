@@ -457,7 +457,7 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 																atributsFormControl: {
 																	type: 'text',
 																	name: 'nome',
-																	placeholder: 'fulano de tal',
+																	placeholder: 'Nome',
 																	id: 'nome',
 																	onChange: handleChange,
 																	onBlur: handleBlur,
@@ -488,7 +488,7 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 																atributsFormControl: {
 																	type: 'text',
 																	name: 'sobrenome',
-																	placeholder: 'fulano de tal',
+																	placeholder: 'Sobrenome',
 																	id: 'sobrenome',
 																	onChange: handleChange,
 																	onBlur: handleBlur,
@@ -521,7 +521,7 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 																atributsFormControl: {
 																	type: 'text',
 																	name: 'documento',
-																	placeholder: 'fulano de tal',
+																	placeholder: '000.000.000-00',
 																	id: 'documento',
 																	onChange: handleChange,
 																	onBlur: handleBlur,
@@ -552,7 +552,7 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 																atributsFormControl: {
 																	type: 'text',
 																	name: 'doc_complementar',
-																	placeholder: 'fulano de tal',
+																	placeholder: 'RG',
 																	id: 'doc_complementar',
 																	onChange: handleChange,
 																	onBlur: handleBlur,
@@ -584,7 +584,7 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 																atributsFormControl: {
 																	type: 'date',
 																	name: 'nascimento_fundacao',
-																	placeholder: 'fulano de tal',
+																	placeholder: '00/00/0000',
 																	id: 'nascimento_fundacao',
 																	onChange: handleChange,
 																	onBlur: handleBlur,
@@ -615,7 +615,7 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 																atributsFormControl: {
 																	type: 'text',
 																	name: 'grupo_id',
-																	placeholder: 'fulano de tal',
+																	placeholder: 'Grupo',
 																	id: 'grupo_id',
 																	onChange: handleChange,
 																	onBlur: handleBlur,
@@ -691,7 +691,7 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 																atributsFormControl: {
 																	type: 'text',
 																	name: 'logradouro',
-																	placeholder: 'fulano de tal',
+																	placeholder: 'Logradouro',
 																	id: 'logradouro',
 																	onChange: handleChange,
 																	onBlur: handleBlur,
@@ -722,7 +722,7 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 																atributsFormControl: {
 																	type: 'text',
 																	name: 'bairro',
-																	placeholder: 'fulano de tal',
+																	placeholder: 'Bairro',
 																	id: 'bairro',
 																	onChange: handleChange,
 																	onBlur: handleBlur,
@@ -754,7 +754,7 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 																atributsFormControl: {
 																	type: 'text',
 																	name: 'complemento',
-																	placeholder: 'fulano de tal',
+																	placeholder: 'Complemento',
 																	id: 'complemento',
 																	onChange: handleChange,
 																	onBlur: handleBlur,
@@ -784,7 +784,7 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 																atributsFormControl: {
 																	type: 'text',
 																	name: 'cep',
-																	placeholder: 'fulano de tal',
+																	placeholder: 'Cep',
 																	id: 'cep',
 																	onChange: handleChange,
 																	onBlur: handleBlur,
@@ -816,7 +816,7 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 																atributsFormControl: {
 																	type: 'text',
 																	name: 'numero',
-																	placeholder: 'fulano de tal',
+																	placeholder: 'Número',
 																	id: 'numero',
 																	onChange: handleChange,
 																	onBlur: handleBlur,
@@ -879,7 +879,7 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 																atributsFormControl: {
 																	type: 'text',
 																	name: 'uf',
-																	placeholder: 'fulano de tal',
+																	placeholder: 'Estado',
 																	id: 'uf',
 																	onChange: handleChange,
 																	onBlur: handleBlur,
@@ -915,7 +915,7 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 																atributsFormControl: {
 																	type: 'text',
 																	name: 'pais',
-																	placeholder: 'fulano de tal',
+																	placeholder: 'Pais',
 																	id: 'pais',
 																	onChange: handleChange,
 																	onBlur: handleBlur,
@@ -958,7 +958,7 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 																atributsFormControl: {
 																	type: 'text',
 																	name: 'telefone',
-																	placeholder: 'fulano de tal',
+																	placeholder: '99999999999',
 																	id: 'telefone',
 																	onChange: handleChange,
 																	onBlur: handleBlur,
@@ -1020,7 +1020,7 @@ const FormCliente = ({ dataClienteChoice, dataGrupo, setIdcliente, idCliente, sh
 																atributsFormControl: {
 																	type: 'text',
 																	name: 'email',
-																	placeholder: 'fulano de tal',
+																	placeholder: 'email@exemplo.com',
 																	id: 'email',
 																	onChange: handleChange,
 																	onBlur: handleBlur,
