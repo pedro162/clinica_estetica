@@ -43,9 +43,15 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 		...params
 	}) => {
 
-		const data = {
+		let data = {
 			...params,
 			vrBruto: params?.vrLiquido
+		}
+
+		for (let prop in data) {
+			if (data[prop] == '') {
+				delete data[prop]
+			}
 		}
 
 		let data_config = {}
@@ -269,7 +275,7 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 
 	const preparaOperadorFinanceiroToForm = () => {
 		if (dataOperadorFinanceiro && Array.isArray(dataOperadorFinanceiro) && dataOperadorFinanceiro.length > 0) {
-			let formaPgto = dataOperadorFinanceiro.map(({ id, name }, index, arr) => ({ label: name, valor: id, props: {} }))
+			let formaPgto = dataOperadorFinanceiro.map(({ id, pessoa }, index, arr) => ({ label: pessoa?.name, valor: id, props: {} }))
 			formaPgto.unshift({ label: 'Selecione...', valor: '', props: { selected: 'selected', } })
 			return formaPgto;
 		}
@@ -348,7 +354,7 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 						}
 
 						if (!values.operador_financeiro_id) {
-							errors.operador_financeiro_id = "Obrigatório"
+							//errors.operador_financeiro_id = "Obrigatório"
 						}
 
 						if (!values.documento) {
@@ -533,6 +539,7 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 																<Field
 																	data={
 																		{
+																			hasNumberFormat: true,
 																			hasLabel: true,
 																			contentLabel: 'Valor *',
 																			atributsFormLabel: {
@@ -548,7 +555,7 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 																				onChange: handleChange,
 																				onBlur: handleBlur,
 																				value: values.vrLiquido,
-																				className: `${estilos.input}`,
+																				className: estilos.input,
 																				size: "sm",
 																			},
 																			atributsContainer: {
