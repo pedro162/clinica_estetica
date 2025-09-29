@@ -260,19 +260,18 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                     }
 
                     let line_style = {}
-                    
+                    let style_class = ''
+
                     if (atual.status == 'devolvido') {
-                        line_style.color = 'red';
+                        style_class = estilos.color_red;
                     } else if (atual.status == 'pago') {
-                        line_style.color = 'green';
-                    } else if (atual.status == 'aberto') {
-                        //line_style.color = 'green';
+                        style_class = estilos.color_green;
                     }
 
                     data.push(
 
                         {
-                            propsRow: { id: (atual.id), style: { ...line_style } },
+                            propsRow: { id: (atual.id), style: { ...line_style }, className: style_class },
                             acoes: [
                                 ...acoesArr
                             ],
@@ -280,96 +279,96 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                                 {
 
                                     label: atual.id,
-                                    propsRow: {}
+                                    props: { className: style_class }
                                 },
                                 {
 
                                     label: atual.name_filial,
-                                    propsRow: {}
+                                    props: { className: style_class }
                                 },
                                 {
 
                                     label: atual.name,
-                                    propsRow: {}
+                                    props: { className: style_class }
                                 },
                                 {
 
                                     label: atual.status,
-                                    propsRow: {}
+                                    props: { className: style_class }
                                 },
                                 {
 
                                     label: atual.cdCobrancaTipo,
-                                    propsRow: {}
+                                    props: { className: style_class }
                                 },
                                 {
 
                                     label: FORMAT_MONEY(atual?.vrBruto),
-                                    propsRow: {},
+                                    props: { className: style_class },
                                     toSum: 1,
                                     isCoin: 1,
                                 },
                                 {
 
                                     label: FORMAT_MONEY(atual?.vrLiquido),
-                                    propsRow: {},
+                                    props: { className: style_class },
                                     toSum: 1,
                                     isCoin: 1,
                                 },
                                 {
 
                                     label: FORMAT_MONEY(atual?.vrDevolvido),
-                                    propsRow: {},
+                                    props: { className: style_class },
                                     toSum: 1,
                                     isCoin: 1,
                                 },
                                 {
 
                                     label: FORMAT_MONEY(atual?.vrJuros),
-                                    propsRow: {},
+                                    props: { className: style_class },
                                     toSum: 1,
                                     isCoin: 1,
                                 },
                                 {
 
                                     label: FORMAT_MONEY(atual?.vrTaxa),
-                                    propsRow: {},
+                                    props: { className: style_class },
                                     toSum: 1,
                                     isCoin: 1,
                                 },
                                 {
 
                                     label: FORMAT_MONEY(atual?.vrPago),
-                                    propsRow: {},
+                                    props: { className: style_class },
                                     toSum: 1,
                                     isCoin: 1,
                                 },
                                 {
 
                                     label: FORMAT_MONEY(atual?.vrAberto),
-                                    propsRow: {},
+                                    props: { className: style_class },
                                     toSum: 1,
                                     isCoin: 1,
                                 },
                                 {
 
                                     label: FORMAT_DATA_PT_BR(atual?.created_at),
-                                    propsRow: {}
+                                    props: { className: style_class }
                                 },
                                 {
 
                                     label: FORMAT_DATA_PT_BR(atual?.dtVencimento),
-                                    propsRow: {}
+                                    props: { className: style_class }
                                 },
                                 {
 
                                     label: atual?.descricao,
-                                    propsRow: {}
+                                    props: { className: style_class }
                                 },
                                 {
 
                                     label: atual?.dsReferencia,
-                                    propsRow: {}
+                                    props: { className: style_class }
                                 },
                             ]
                         }

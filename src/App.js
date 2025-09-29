@@ -7,7 +7,8 @@ import {
   ContasReceberItem,
   FormaPagamento,
   PlanoPagamento,
-  OperadorFinanceiro
+  OperadorFinanceiro,
+  CartaoCreditoBandeira
 } from './View/index.js'
 import { Router, Route, Switch } from 'react-router'
 import { history } from './history.js'
@@ -66,7 +67,7 @@ function App() {
                   exact path="/clientes/painel"
                   component={Clientes}
                 />
-                
+
                 <ProtectedRoute
                   exact path="/grupos/painel"
                   component={Grupos}
@@ -105,6 +106,11 @@ function App() {
                 <ProtectedRoute
                   exact path="/financeiro/operadores-financeiros"
                   component={OperadorFinanceiro}
+                />
+
+                <ProtectedRoute
+                  exact path="/financeiro/bandeiras-cartoes"
+                  component={CartaoCreditoBandeira}
                 />
 
                 <ProtectedRoute

@@ -59,7 +59,7 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
             setQtdItemsTo(estado?.data?.to)
         }
 
-        if (Number(estado?.data?.total ) >= 0) {
+        if (Number(estado?.data?.total) >= 0) {
             setQtdItemsTotal(estado?.data?.total)
         }
     }
@@ -255,12 +255,12 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                     }
 
                     let line_style = {}
-                    if (atual.status == 'devolvido') {
-                        line_style.color = 'red';
-                    } else if (atual.status == 'pago') {
-                        line_style.color = 'green';
-                    } else if (atual.status == 'aberto') {
+                    let style_class = ''
 
+                    if (atual.status == 'devolvido') {
+                        style_class = estilos.color_red;
+                    } else if (atual.status == 'pago') {
+                        style_class = estilos.color_green;
                     }
 
                     data.push(
@@ -274,77 +274,77 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                                 {
 
                                     label: atual.id,
-                                    propsRow: {}
+                                    props: { className: style_class }
                                 },
                                 {
 
                                     label: atual?.conta_receber?.filial?.pessoa?.name,
-                                    propsRow: {}
+                                    props: { className: style_class }
                                 },
                                 {
 
                                     label: atual?.conta_receber?.pessoa?.name,
-                                    propsRow: {}
+                                    props: { className: style_class }
                                 },
                                 {
 
                                     label: atual.status,
-                                    propsRow: {}
+                                    props: { className: style_class }
                                 },
                                 {
 
                                     label: atual?.forma_pagamento?.cdCobrancaTipo,
-                                    propsRow: {}
+                                    props: { className: style_class }
                                 },
                                 {
 
                                     label: FORMAT_MONEY(atual?.vrBruto),
-                                    propsRow: {},
+                                    props: { className: style_class },
                                     toSum: 1,
                                     isCoin: 1,
                                 },
                                 {
 
                                     label: FORMAT_MONEY(atual?.vrLiquido),
-                                    propsRow: {},
+                                    props: { className: style_class },
                                     toSum: 1,
                                     isCoin: 1,
                                 },
                                 {
 
                                     label: FORMAT_MONEY(atual?.vrDevolvido),
-                                    propsRow: {},
+                                    props: { className: style_class },
                                     toSum: 1,
                                     isCoin: 1,
                                 },
                                 {
 
                                     label: FORMAT_MONEY(atual?.vrPago),
-                                    propsRow: {},
+                                    props: { className: style_class },
                                     toSum: 1,
                                     isCoin: 1,
                                 },
                                 {
 
                                     label: FORMAT_MONEY(atual?.vrAberto),
-                                    propsRow: {},
+                                    props: { className: style_class },
                                     toSum: 1,
                                     isCoin: 1,
                                 },
                                 {
 
                                     label: FORMAT_DATA_PT_BR(atual?.created_at),
-                                    propsRow: {}
+                                    props: { className: style_class }
                                 },
                                 {
 
                                     label: FORMAT_DATA_PT_BR(atual?.dtBaixa),
-                                    propsRow: {}
+                                    props: { className: style_class }
                                 },
                                 {
 
                                     label: atual?.conta_receber_id,
-                                    propsRow: {}
+                                    props: { className: style_class }
                                 },
                             ]
                         }
@@ -596,7 +596,7 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
     }
 
     React.useEffect(() => {
-        
+
         setContasReceberItem(dataEstado?.data)
         setNrPageAtual(dataEstado?.data?.data?.current_page)
         handleTotalPages();
