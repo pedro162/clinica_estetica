@@ -95,6 +95,9 @@ const Configuracoes = ({ defaultFilters, ...props }) => {
                                         <li class="mb-2">
                                             <Link className={'text-primary text-decoration-underline'} to={'/grupos/painel'}>Grupos</Link>
                                         </li>
+                                        <li class="mb-2">
+                                            <Link className={'text-primary text-decoration-underline'} to={'/profissionais/painel'}>Especialidades</Link>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
