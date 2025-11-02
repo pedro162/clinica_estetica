@@ -443,7 +443,7 @@ const PlanoPagamento = (props)=>{
                     </div>
                 </Col>
 
-                 <Col  xs="12" sm="12" md={12}>
+                 <Col  xs="12" sm="12" md={'12'}>
                     <Include
                         dataEstado={estado}
                         loadingData={loading}

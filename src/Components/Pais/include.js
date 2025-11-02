@@ -21,7 +21,7 @@ import { Button } from 'bootstrap';
 import reactDom from 'react-dom';
 //
 
-const Include = ({ dataEstado, loadingData, requestAllParametros, callBack, setMostarFiltros, nadaEncontrado, idPaisCriada, nextPage, setNextPage, usePagination, setUsePagination, totalPageCount, setTotalPageCount, ...props }) => {
+const Include = ({ dataEstado, callBakSelectedItem, ignoreTableActions, loadingData, requestAllParametros, callBack, setMostarFiltros, nadaEncontrado, idPaisCriada, nextPage, setNextPage, usePagination, setUsePagination, totalPageCount, setTotalPageCount, ...props }) => {
     const { data, error, request, loading } = useFetch();
     const [estado, setPais] = React.useState([])
     const [exemplos, setExemplos] = React.useState([])
@@ -44,43 +44,44 @@ const Include = ({ dataEstado, loadingData, requestAllParametros, callBack, setM
     const [qtdItemsTotal, setQtdItemsTotal] = React.useState(null)
 
     const { getToken } = React.useContext(UserContex);
+
     const handleTotalPages = () => {
-        if (Number(dataEstado?.mensagem?.last_page > 0)) {
-            setTotalPageCount(dataEstado?.mensagem?.last_page)
+        if (Number(dataEstado?.data?.data?.last_page > 0)) {
+            setTotalPageCount(dataEstado?.data?.data?.last_page)
         }
     }
 
     const handleTotalItems = () => {
-        if (Number(dataEstado?.mensagem?.to > 0)) {
-            setQtdItemsTo(dataEstado?.mensagem?.to)
+        if (Number(estado?.data?.to > 0)) {
+            setQtdItemsTo(estado?.data?.to)
         }
 
-        if (Number(dataEstado?.mensagem?.total > 0)) {
-            setQtdItemsTotal(dataEstado?.mensagem?.total)
+        if (Number(estado?.data?.total > 0)) {
+            setQtdItemsTotal(estado?.data?.total)
         }
     }
 
     const nextPageRout = () => {
-        if (dataEstado?.mensagem?.next_page_url) {
-            setNextPage(dataEstado?.mensagem?.next_page_url)
+        if (estado?.data?.next_page_url) {
+            setNextPage(estado?.data?.next_page_url)
         }
     }
 
     const previousPageRout = () => {
-        if (dataEstado?.mensagem?.prev_page_url) {
-            setNextPage(dataEstado?.mensagem?.prev_page_url)
+        if (estado?.data?.prev_page_url) {
+            setNextPage(estado?.data?.prev_page_url)
         }
     }
 
     const firstPageRout = () => {
-        if (dataEstado?.mensagem?.first_page_url) {
-            setNextPage(dataEstado?.mensagem?.first_page_url)
+        if (estado?.data?.first_page_url) {
+            setNextPage(estado?.data?.first_page_url)
         }
     }
 
     const lastPageRout = () => {
-        if (dataEstado?.mensagem?.last_page_url) {
-            setNextPage(dataEstado?.mensagem?.last_page_url)
+        if (estado?.data?.last_page_url) {
+            setNextPage(estado?.data?.last_page_url)
         }
     }
 
@@ -131,6 +132,14 @@ const Include = ({ dataEstado, loadingData, requestAllParametros, callBack, setM
             dataPais = dataPais?.mensagem;
         }
 
+        if (dataPais?.registro) {
+            dataPais = dataPais?.registro;
+        }
+
+        if (dataPais?.data) {
+            dataPais = dataPais?.data;
+        }
+
         if (dataPais?.data) {
             dataPais = dataPais?.data;
         }
@@ -148,7 +157,7 @@ const Include = ({ dataEstado, loadingData, requestAllParametros, callBack, setM
                     data.push(
 
                         {
-                            propsRow: { id: (atual.id), style: { ...line_style } },
+                            propsRow: { id: (atual.id), style: { ...line_style }, onClick: () => callBakSelectedItem && callBakSelectedItem(atual.id) },
                             acoes: [
                                 ...acoesArr
                             ],
@@ -170,7 +179,7 @@ const Include = ({ dataEstado, loadingData, requestAllParametros, callBack, setM
                                 },
                                 {
 
-                                    label: atual.padrao,
+                                    label: atual.padrao == 'yes' ? 'Sim' : 'Não',
                                     propsRow: {}
                                 },
 
@@ -193,6 +202,14 @@ const Include = ({ dataEstado, loadingData, requestAllParametros, callBack, setM
             dataPais = dataPais?.mensagem;
         }
 
+        if (dataPais?.registro) {
+            dataPais = dataPais?.registro;
+        }
+
+        if (dataPais?.data) {
+            dataPais = dataPais?.data;
+        }
+
         if (dataPais?.data) {
             dataPais = dataPais?.data;
         }
@@ -211,7 +228,7 @@ const Include = ({ dataEstado, loadingData, requestAllParametros, callBack, setM
                     data.push(
 
                         {
-                            propsRow: { id: (atual.id), titleRow: atual.id + ' - ' + atual?.nmPais, style: { ...line_style }, mainIcon: faFileAlt },
+                            propsRow: { id: (atual.id), titleRow: atual.id + ' - ' + atual?.nmPais, style: { ...line_style }, mainIcon: faFileAlt, onClick: () => callBakSelectedItem && callBakSelectedItem(atual.id) },
                             acoes: [
                                 ...acoesArr
                             ],
@@ -279,8 +296,8 @@ const Include = ({ dataEstado, loadingData, requestAllParametros, callBack, setM
     }
 
     React.useEffect(() => {
-        setPais(dataEstado)
-        setNrPageAtual(dataEstado?.mensagem?.current_page)
+        setPais(dataEstado?.data)
+        setNrPageAtual(dataEstado?.data?.data?.current_page)
         handleTotalPages();
         handleTotalItems();
     }, [dataEstado])
@@ -312,6 +329,7 @@ const Include = ({ dataEstado, loadingData, requestAllParametros, callBack, setM
                         totalPageCount={totalPageCount}
                         qtdItemsTo={qtdItemsTo}
                         qtdItemsTotal={qtdItemsTotal}
+                        ignoreTableActions={ignoreTableActions}
                     />
                 </Col>
 
@@ -334,6 +352,7 @@ const Include = ({ dataEstado, loadingData, requestAllParametros, callBack, setM
                         totalPageCount={totalPageCount}
                         qtdItemsTo={qtdItemsTo}
                         qtdItemsTotal={qtdItemsTotal}
+                        ignoreTableActions={ignoreTableActions}
                     />
                 </Col>
             </Row>

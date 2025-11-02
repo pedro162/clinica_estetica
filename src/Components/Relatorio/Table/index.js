@@ -146,14 +146,13 @@ const Table = ({children, titulosTableArr,ignoreTableActions, rowsTableArr,loadi
 
 																let labelCel = itemCel.hasOwnProperty('label') ? itemCel.label :'';
 																let toSum = itemCel.hasOwnProperty('toSum') ? itemCel.toSum :0;
-																//, 
+																
 																let isCoin              = itemCel.hasOwnProperty('isCoin') ? itemCel.isCoin :0;
 																if(arraySum[indexCel] && arraySum[indexCel].hasOwnProperty("isCoin")){
 																	if(isCoin){
 																		arraySum[indexCel]['isCoin'] = isCoin;
 																	}
 																	if(toSum){
-																		//arraySum[indexCel]['valor'] += Number(FORMAT_CALC_COD(labelCel))
 																		arraySum[indexCel]['valor'] = Number(FORMAT_CALC_COD(labelCel)) + Number(FORMAT_CALC_COD(arraySum[indexCel]['valor']))
 																	}else{
 																		arraySum[indexCel]['valor'] = ''
@@ -164,7 +163,6 @@ const Table = ({children, titulosTableArr,ignoreTableActions, rowsTableArr,loadi
 																		arraySum[indexCel]['isCoin'] = isCoin;
 																	}
 																	if(toSum){
-																		//arraySum[indexCel]['valor'] += Number(FORMAT_CALC_COD(labelCel))
 																		arraySum[indexCel]['valor'] = Number(FORMAT_CALC_COD(labelCel)) + Number(FORMAT_CALC_COD(arraySum[indexCel]['valor']))
 																	}else{
 																		arraySum[indexCel]['valor'] = ''

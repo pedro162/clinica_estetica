@@ -1,10 +1,10 @@
 
-export const CLIENT_ID = 4;//3;//
-export const CLIENT_SECRET = 'Ko9WDBtcRdD0O0RfnK8rzSHs88ODPVcjDUeeba8D';//'PxXWykq33uGGN779ofMq0qnVeoN6GiiimUd4dtYz';//
+export const CLIENT_ID = '9fa6ef85-6076-4f5d-a1c8-cc7af6f8425b';//4/3;//
+export const CLIENT_SECRET = '7DLXPLdX3TGFStbXfyqJ7qrYWYbZ6bN3MFs1aUkr';//Ko9WDBtcRdD0O0RfnK8rzSHs88ODPVcjDUeeba8D//'PxXWykq33uGGN779ofMq0qnVeoN6GiiimUd4dtYz';//
 export const RECORD_NUMBER_PER_REQUEST = 10;
 const SANDBOX = false;
 //http://1.josepedro.tmp.k8.com.br/api//
-const BASE_URL = (SANDBOX === true) ? "http://18.190.121.1:80" : 'http://192.168.100.5:8001';//192.168.100.5:8081//192.168.100.111:8081///api//http://192.168.100.5:3000/ ////O laravel tem que roda no http://192.168.100.5:8081
+export const BASE_URL = (SANDBOX === true) ? "http://18.190.121.1:80" : 'http://192.168.100.5:8001';//192.168.100.5:8081//192.168.100.111:8081///api//http://192.168.100.5:3000/ ////O laravel tem que roda no http://192.168.100.5:8081
 
 export const TOKEN_POST = (data) => {
 

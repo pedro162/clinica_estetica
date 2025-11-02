@@ -170,7 +170,7 @@ const Details = ({dataPlanoPagamentoChoice, setIdPlanoPagamento, idPlanoPagament
 
                                 <div className="mb-3">
                                     <strong className="text-muted">Exibe no balcão:</strong>
-                                    <div>{dataPlanotCancel?.exbibe_balcao === 'yes' ? 'Sim' : 'Não'}</div>
+                                    <div>{dataPlanotCancel?.exibe_balcao === 'yes' ? 'Sim' : 'Não'}</div>
                                 </div>
 
                                 <div className="mb-3">

@@ -15,6 +15,7 @@ import Swal from 'sweetalert2'
 import * as Yup from 'yup';
 import { TOKEN_POST, CLIENT_ID, CLIENT_SECRET, ORDEM_SERVICO_SAVE_POST, SERVICO_ALL_POST, SERVICO_UPDATE_POST, CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST, RCA_ALL_POST, FILIAIS_ALL_POST } from '../../../api/endpoints/geral.js'
 import Profissionais from '../../Profissionais/index.js';
+import Filial from '../../Filial/index.js';
 
 
 const FormOrdemServicoIniciar = ({ dataOrdemServicoChoice, setIdOrdemServico, idOrdemServico, showModalCriarOrdemServico, setShowModalCriarOrdemServico, callback, atualizarOrdemServico, setAtualizarOrdemServico, carregando }) => {
@@ -23,7 +24,6 @@ const FormOrdemServicoIniciar = ({ dataOrdemServicoChoice, setIdOrdemServico, id
 	const dataRequest = useFetch();
 
 	const { getToken, dataUser } = React.useContext(UserContex);
-	const [dataFiliais, setDataFiliais] = React.useState([])
 	const [dataRca, setDataRca] = React.useState([])
 	const [idPessoaForm, setIdPessoaForm] = React.useState(0)
 	const [idProfissionalForm, setIdProfissionalForm] = React.useState(0)
@@ -35,8 +35,6 @@ const FormOrdemServicoIniciar = ({ dataOrdemServicoChoice, setIdOrdemServico, id
 		profissional_id,
 		name_pessoa_contato
 	}) => {
-
-
 		const data = {
 			rca_id,
 			filial_id,
@@ -46,8 +44,8 @@ const FormOrdemServicoIniciar = ({ dataOrdemServicoChoice, setIdOrdemServico, id
 		}
 
 		const { url, options } = ORDEM_SERVICO_SAVE_POST(data, getToken());
-
 		const { response, json } = await request(url, options);
+
 		if (json) {
 
 			callback();
@@ -59,24 +57,10 @@ const FormOrdemServicoIniciar = ({ dataOrdemServicoChoice, setIdOrdemServico, id
 				icon: "success",
 				title: "",
 				text: 'Registrado com sucesso',
-				footer: '',//'<a href="#">Why do I have this issue?</a>'
+				footer: '',
 				confirmButtonColor: "#07B201",
 			});
 		}
-	}
-
-	const requestAllFiliais = async () => {
-
-		const { url, options } = FILIAIS_ALL_POST({}, getToken());
-		const { response, json } = await dataRequest.request(url, options);
-		if (json) {
-			setDataFiliais(json)
-		} else {
-
-			setDataFiliais([]);
-		}
-
-
 	}
 
 	const requestAllRca = async () => {
@@ -90,8 +74,6 @@ const FormOrdemServicoIniciar = ({ dataOrdemServicoChoice, setIdOrdemServico, id
 			setDataRca([]);
 		}
 	}
-
-
 
 	const dataToFormOrdemServicoIniciar = () => {
 		let obj = { name: '', vrDesconto: '', rca_id: '', filial_id: '', pessoa_id: '', profissional_id: '', name_pessoa_contato: '' }
@@ -138,25 +120,6 @@ const FormOrdemServicoIniciar = ({ dataOrdemServicoChoice, setIdOrdemServico, id
 
 	}, []);
 
-	const preparaFilialToForm = () => {
-		if (dataFiliais.hasOwnProperty('mensagem') && Array.isArray(dataFiliais.mensagem) && dataFiliais.mensagem.length > 0) {
-			let filiais = dataFiliais.mensagem.map(({ id, name_filial }, index, arr) => ({ label: name_filial, valor: id, props: {} }))
-			filiais.unshift({ label: 'Selecione...', valor: '', props: { selected: 'selected', disabled: 'disabled' } })
-
-			return filiais;
-		}
-		return []
-	}
-
-	React.useEffect(() => {
-		const requesFiliais = async () => {
-			await requestAllFiliais();
-		}
-
-		requesFiliais();
-
-	}, []);
-
 	if (error) {
 		Swal.fire({
 			icon: "error",
@@ -182,7 +145,7 @@ const FormOrdemServicoIniciar = ({ dataOrdemServicoChoice, setIdOrdemServico, id
 			<Formik
 
 				initialValues={{ ...dataToFormOrdemServicoIniciar() }}
-				enableReinitialize={true}
+				enableReinitialize={false}
 				validate={
 					values => {
 
@@ -222,7 +185,8 @@ const FormOrdemServicoIniciar = ({ dataOrdemServicoChoice, setIdOrdemServico, id
 							handleChange,
 							handleBlur,
 							handleSubmit,
-							isSubmitting
+							isSubmitting,
+							setFieldValue
 						}
 					) => (
 
@@ -268,14 +232,21 @@ const FormOrdemServicoIniciar = ({ dataOrdemServicoChoice, setIdOrdemServico, id
 																	className: estilos.input,
 																	size: "sm"
 																},
-																options: preparaFilialToForm(),
+																options: [],
 																atributsContainer: {
 																	className: ''
+																},
+																hookToLoadFromDescription: FILIAIS_ALL_POST,
+																callbackDataItemChoice: (param) => {
+																	let { label, value } = param
+																	setFieldValue('filial_id', value)
 																}
 															}
 														}
 
-														component={FormControlSelect}
+														ComponentFilter={Filial}
+														componentTitle={'Escolha uma filial'}
+														component={Required}
 													></Field>
 													<ErrorMessage className="alerta_error_form_label" name="filial_id" component="div" />
 
@@ -310,8 +281,7 @@ const FormOrdemServicoIniciar = ({ dataOrdemServicoChoice, setIdOrdemServico, id
 																hookToLoadFromDescription: CLIENTES_ALL_POST,
 																callbackDataItemChoice: (param) => {
 																	let { label, value } = param
-
-																	setIdPessoaForm(value)
+																	setFieldValue('pessoa_id', value)
 																}
 															}
 														}
@@ -385,8 +355,7 @@ const FormOrdemServicoIniciar = ({ dataOrdemServicoChoice, setIdOrdemServico, id
 																hookToLoadFromDescription: PROFISSIONAIS_ALL_POST,
 																callbackDataItemChoice: (param) => {
 																	let { label, value } = param
-
-																	setIdProfissionalForm(value)
+																	setFieldValue('profissional_id', value)
 																}
 															}
 														}
