@@ -1,8 +1,8 @@
 import React from 'react';
 import estilos from './Grupos.module.css'
 import useFetch from '../../Hooks/useFetch.js';
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, GRUPOS_ALL_POST} from '../../api/endpoints/geral.js'
-import {Col, Row } from 'react-bootstrap';
+import { TOKEN_POST, CLIENT_ID, CLIENT_SECRET, GRUPOS_ALL_POST } from '../../api/endpoints/geral.js'
+import { Col, Row } from 'react-bootstrap';
 import Table from '../Relatorio/Table/index.js'
 import Filter from '../Relatorio/Filter/index.js'
 import Breadcrumbs from '../Helper/Breadcrumbs.js'
@@ -12,13 +12,13 @@ import Modal from '../Utils/Modal/index.js'
 import Load from '../Utils/Load/index.js'
 import Cadastrar from './Cadastrar/index.js'
 import Atualizar from './Atualizar/index.js'
-import {UserContex} from '../../Context/UserContex.js'
+import { UserContex } from '../../Context/UserContex.js'
 import FormGrupo from './FormGrupo/index.js'
 
 
-const Grupos = (props)=>{
+const Grupos = (props) => {
 
-	const {data, error, request, loading} = useFetch();
+    const { data, error, request, loading } = useFetch();
     const [grupos, setGrupos] = React.useState([])
     const [exemplos, setExemplos] = React.useState([])
     const [exemplosTitleTable, setExemplosTitleTable] = React.useState([])
@@ -28,136 +28,136 @@ const Grupos = (props)=>{
     const [atualizarCadastro, setAtualizarCadastro] = React.useState(false)
 
 
-    const {getToken} = React.useContext(UserContex);
+    const { getToken } = React.useContext(UserContex);
 
-    const alerta = (target)=>{
+    const alerta = (target) => {
         console.log(target)
     }
     const filtersArr = [
         {
-            type:'text',
-            options:[], 
+            type: 'text',
+            options: [],
             hasLabel: true,
-            contentLabel:'Teste',
-            atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"12",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name':'nome',onChange:alerta,    onBlur:alerta},
+            contentLabel: 'Teste',
+            atributsFormLabel: {},
+            atributsContainer: { xs: "12", sm: "12", md: "12", className: 'mb-2' },
+            atributsFormControl: { 'type': 'text', size: "sm", 'name': 'nome', onChange: alerta, onBlur: alerta },
 
         },
         {
-            type:'radio',
-            options:[
+            type: 'radio',
+            options: [
                 {
                     hasLabel: true,
-                    contentLabel:'Teste Radio 01',
-                    atributsFormLabel:{},
-                    atributsFormControl:{'type':'radio', value:'12', size:"sm",'checked':true,'name':'nome',onChange:alerta,    onBlur:alerta},
+                    contentLabel: 'Teste Radio 01',
+                    atributsFormLabel: {},
+                    atributsFormControl: { 'type': 'radio', value: '12', size: "sm", 'checked': true, 'name': 'nome', onChange: alerta, onBlur: alerta },
                 },
                 {
                     hasLabel: true,
-                    contentLabel:'Teste Radio',
-                    atributsFormLabel:{},
-                    atributsFormControl:{'type':'radio', value:'12', size:"sm",'checked':true,'name':'nome',onChange:alerta,    onBlur:alerta},
+                    contentLabel: 'Teste Radio',
+                    atributsFormLabel: {},
+                    atributsFormControl: { 'type': 'radio', value: '12', size: "sm", 'checked': true, 'name': 'nome', onChange: alerta, onBlur: alerta },
                 }
-            ],  
+            ],
             hasLabel: true,
-            contentLabel:'Teste',
-            atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"12",className:'mb-2',},
-            atributsFormControl:{},
+            contentLabel: 'Teste',
+            atributsFormLabel: {},
+            atributsContainer: { xs: "12", sm: "12", md: "12", className: 'mb-2', },
+            atributsFormControl: {},
 
         }
-        ,{
-            type:'checkbox',
-            options:[], 
+        , {
+            type: 'checkbox',
+            options: [],
             hasLabel: true,
-            contentLabel:'Teste',
-            atributsFormLabel:{},
-            atributsContainer:{ xs:"12", sm:"12", md:"6",className:'mb-2'},
-            atributsFormControl:{'type':'checkbox', value:'12',size:"sm",'checked':false,'name':'nome',onChange:alerta, onBlur:alerta},
+            contentLabel: 'Teste',
+            atributsFormLabel: {},
+            atributsContainer: { xs: "12", sm: "12", md: "6", className: 'mb-2' },
+            atributsFormControl: { 'type': 'checkbox', value: '12', size: "sm", 'checked': false, 'name': 'nome', onChange: alerta, onBlur: alerta },
 
         }
     ]
 
-    const acoesBottomCard=[{
-            label:'Pesquisar',
-            icon:<FontAwesomeIcon icon={faSearch} />,
-            props:{onClick:()=>requestAllClients(), className:'btn btn-sm botao_success'}
-        },
-        {
-            label:'Cadastrar',
-            icon:<FontAwesomeIcon icon={faPlus} />,
-            props:{onClick:()=>setShowModalCriarGrupo(true), className:'btn btn-sm mx-2 btn-secondary'}
-        }
+    const acoesBottomCard = [{
+        label: 'Pesquisar',
+        icon: <FontAwesomeIcon icon={faSearch} />,
+        props: { onClick: () => requestAllClients(), className: 'btn btn-sm botao_success' }
+    },
+    {
+        label: 'Cadastrar',
+        icon: <FontAwesomeIcon icon={faPlus} />,
+        props: { onClick: () => setShowModalCriarGrupo(true), className: 'btn btn-sm mx-2 btn-secondary' }
+    }
     ];
-    const gerarExemplos = ()=>{
-         let exemplos = [];
-        for(let i=0; !(i == 10); i++){
+    const gerarExemplos = () => {
+        let exemplos = [];
+        for (let i = 0; !(i == 10); i++) {
             exemplos.push(
 
-                    {
-                        propsRow:{id:(i+1)},
-                        celBodyTableArr:[
-                            {
+                {
+                    propsRow: { id: (i + 1) },
+                    celBodyTableArr: [
+                        {
 
-                                label:'1',
-                                propsRow:{}
-                            },
-                            {
+                            label: '1',
+                            propsRow: {}
+                        },
+                        {
 
-                                label:'Teste',
-                                propsRow:{}
-                            },
-                            {
+                            label: 'Teste',
+                            propsRow: {}
+                        },
+                        {
 
-                                label:'Testando',
-                                propsRow:{}
-                            },
-                        ]
-                    }
+                            label: 'Testando',
+                            propsRow: {}
+                        },
+                    ]
+                }
 
-                )
+            )
 
         }
 
         return exemplos;
     }
 
-    const gerarTableGrupos = ()=>{
-       
+    const gerarTableGrupos = () => {
+
         let data = [];
         let dataGrupos = grupos.registro
-        if(dataGrupos && Array.isArray(dataGrupos) && dataGrupos.length > 0){
-            for(let i=0; !(i == dataGrupos.length); i++){
+        if (dataGrupos && Array.isArray(dataGrupos) && dataGrupos.length > 0) {
+            for (let i = 0; !(i == dataGrupos.length); i++) {
                 let atual = dataGrupos[i];
-                if(atual){
+                if (atual) {
 
 
                     data.push(
 
                         {
-                            propsRow:{id:(atual.id)},
-                            acoes:[
-                                {acao:()=>setGrupoChoice(atual.id), label:'Editar', propsOption:{}, propsLabel:{}},
-                                {acao:()=>alert('Agenda qui: '+(atual.id)), label:'Agenda', propsOption:{}, propsLabel:{}},
-                                {acao:()=>alert('Histórico de atentimentos: '+(atual.id)), label:'Histórico de atendimentos', propsOption:{}, propsLabel:{}},
-                                {acao:()=>alert('Central do Grupo: '+(atual.id)), label:'Central do Grupo', propsOption:{}, propsLabel:{}},
+                            propsRow: { id: (atual.id) },
+                            acoes: [
+                                { acao: () => setGrupoChoice(atual.id), label: 'Editar', propsOption: {}, propsLabel: {} },
+                                { acao: () => setGrupoChoice(atual.id), label: 'Agenda', propsOption: {}, propsLabel: {} },
+                                { acao: () => setGrupoChoice(atual.id), label: 'Histórico de atendimentos', propsOption: {}, propsLabel: {} },
+                                { acao: () => setGrupoChoice(atual.id), label: 'Central do Grupo', propsOption: {}, propsLabel: {} },
                             ],
-                            celBodyTableArr:[
+                            celBodyTableArr: [
                                 {
 
-                                    label:atual.id,
-                                    propsRow:{}
+                                    label: atual.id,
+                                    propsRow: {}
                                 },
                                 {
 
-                                    label:atual.name,
-                                    propsRow:{}
+                                    label: atual.name,
+                                    propsRow: {}
                                 },
                                 {
 
-                                    label:atual.descricao,
-                                    propsRow:{}
+                                    label: atual.descricao,
+                                    propsRow: {}
                                 },
                             ]
                         }
@@ -172,119 +172,82 @@ const Grupos = (props)=>{
         return data;
     }
 
-    const gerarTitleTable = ()=>{
+    const gerarTitleTable = () => {
         let tableTitle = [
             {
-                label:'Código',
-                props:{}
+                label: 'Código',
+                props: {}
             },
             {
-                label:'Nome',
-                props:{}
+                label: 'Nome',
+                props: {}
             },
             {
-                label:'Descrição',
-                props:{}
+                label: 'Descrição',
+                props: {}
             },
         ]
 
         return tableTitle;
     }
-    //------------
-   /* React.useEffect( ()=>{
-        const requestToken = async() =>{
-       
-           const {url, options} = TOKEN_POST({
-                'grant_type':'password',
-                'client_id': CLIENT_ID,
-                'client_secret':CLIENT_SECRET,
-                'username':'admin@gmail.com',
-                'password':'123456'
-             });
 
+    const requestAllClients = async () => {
 
-            const {response, json} = await request(url, options);
+        const { url, options } = GRUPOS_ALL_POST({}, getToken());
+        const { response, json } = await request(url, options);
 
-            
+        if (json) {
+            setGrupos(json)
         }
 
-        requestToken();
-        
-    }, []);*/
-
-    //----
-	/*React.useEffect(()=>{
-
-        setExemplos(gerarExemplos());
-        setExemplosTitleTable(gerarTitleTable());
-
-    }, [])*/
-
-    const requestAllClients = async() =>{
-       
-        const {url, options} = GRUPOS_ALL_POST({}, getToken());
-
-
-        const {response, json} = await request(url, options);
-        console.log('All clients here')
-        console.log(json)
-        if(json){
-               setGrupos(json)
-        }
-
-            
     }
 
-    React.useEffect(()=>{
+    React.useEffect(() => {
 
-        const requestAllClientsEffect = async() =>{
-       
-           await requestAllClients();
-
-            
+        const requestAllClientsEffect = async () => {
+            await requestAllClients();
         }
 
         requestAllClientsEffect();
-
-        
     }, [])
 
-    React.useEffect(()=>{
+    React.useEffect(() => {
 
-        if(clientChoice > 0){
+        if (clientChoice > 0) {
             setAtualizarCadastro(true);
-        }else{
+        } else {
             setAtualizarCadastro(false);
         }
 
-        
+
     }, [clientChoice])
 
-    
-    const rowsTableArr = gerarTableGrupos();    
+
+    const rowsTableArr = gerarTableGrupos();
     const titulosTableArr = gerarTitleTable();
-	return(
-		<>
+
+    return (
+        <>
             <Breadcrumbs
                 items={[
-                        {
-                            props:{},
-                            label:'Início'
-                        },
-                        {
-                            props:{},
-                            label:'Grupos'
-                        }
-                    ]}
+                    {
+                        props: {},
+                        label: 'Início'
+                    },
+                    {
+                        props: {},
+                        label: 'Grupos'
+                    }
+                ]}
             />
             <Row>
-                <Col  xs="12" sm="12" md="3">
+                <Col xs="12" sm="12" md="3">
                     <Filter
                         filtersArr={filtersArr}
                         actionsArr={acoesBottomCard}
                     />
                 </Col>
-                <Col  xs="12" sm="12" md="9">
+                <Col xs="12" sm="12" md="9">
                     <Table
                         titulosTableArr={titulosTableArr}
                         rowsTableArr={rowsTableArr}
@@ -293,15 +256,15 @@ const Grupos = (props)=>{
                     />
                 </Col>
             </Row>
-            <FormGrupo dataGrupoChoice={[]}  atualizarCadastro={false} setAtualizarCadastro={setAtualizarCadastro}  idGrupo={null} setIdGrupo={setGrupoChoice}  showModalCriarGrupo={showModalCriarGrupo} setShowModalCriarGrupo={setShowModalCriarGrupo} callback={requestAllClients} />
-            
+            <FormGrupo dataGrupoChoice={[]} atualizarCadastro={false} setAtualizarCadastro={setAtualizarCadastro} idGrupo={null} setIdGrupo={setGrupoChoice} showModalCriarGrupo={showModalCriarGrupo} setShowModalCriarGrupo={setShowModalCriarGrupo} callback={requestAllClients} />
+
             {
                 atualizarCadastro &&
-                <Atualizar atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro}  idGrupo={clientChoice} setIdGrupo={setGrupoChoice} callback={requestAllClients} />
+                <Atualizar atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro} idGrupo={clientChoice} setIdGrupo={setGrupoChoice} callback={requestAllClients} />
             }
-         </>
+        </>
 
-	)
+    )
 }
 
 export default Grupos;

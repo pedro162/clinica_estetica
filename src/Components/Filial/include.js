@@ -9,7 +9,7 @@ import Cadastrar from './Cadastrar/index.js'
 import Atualizar from './Atualizar/index.js'
 import ListMobile from '../Relatorio/ListMobile/index.js'
 
-const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFiltros, idFilialCriada, nextPage, setNextPage, usePagination, setUsePagination, totalPageCount, setTotalPageCount, ...props})=>{
+const Include = ({dataEstado, callBakSelectedItem, ignoreTableActions, loadingData, nadaEncontrado, callBack, setMostarFiltros, idFilialCriada, nextPage, setNextPage, usePagination, setUsePagination, totalPageCount, setTotalPageCount, ...props})=>{
 
     const {data, error, request, loading} = useFetch();
     const [estado, setFilial] = React.useState([])
@@ -141,7 +141,7 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                     data.push(
 
                         {
-                            propsRow:{id:(atual.id), style:{...line_style}},
+                            propsRow:{id:(atual.id), onClick:()=>callBakSelectedItem && callBakSelectedItem(atual.id), style:{...line_style}},
                             acoes:[
                                 ...acoesArr
                             ],
@@ -236,7 +236,7 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                     data.push(
 
                         {
-                            propsRow:{id:(atual.id), titleRow: atual?.id+' - '+atual?.name_filial, style:{...line_style}},
+                            propsRow:{id:(atual.id), titleRow: atual?.id+' - '+atual?.name_filial, onClick:()=>callBakSelectedItem && callBakSelectedItem(atual.id), style:{...line_style}},
                             acoes:[
                                 ...acoesArr
                             ],
@@ -310,6 +310,7 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                         totalPageCount={totalPageCount}
                         qtdItemsTo={qtdItemsTo}
                         qtdItemsTotal={qtdItemsTotal}
+                        ignoreTableActions={ignoreTableActions}
 
                     />
 
@@ -333,6 +334,7 @@ const Include = ({dataEstado, loadingData, nadaEncontrado, callBack, setMostarFi
                         totalPageCount={totalPageCount}
                         qtdItemsTo={qtdItemsTo}
                         qtdItemsTotal={qtdItemsTotal}
+                        ignoreTableActions={ignoreTableActions}
                     />
                 </Col>
             </Row>

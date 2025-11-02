@@ -74,7 +74,7 @@ const FormCaixa = forwardRef(({
 		const { response, json } = await request(url, options);
 		setCarregando(false);
 
-		if (json) {
+		if (json || !error) {
 			callback && callback();
 			setShowModalCriarCaixa && setShowModalCriarCaixa(false);
 			setAtualizarCaixa && setAtualizarCaixa(false);
@@ -219,7 +219,7 @@ const FormCaixa = forwardRef(({
 			<Formik
 				innerRef={formikRef}
 				initialValues={dataToFormCaixa()}
-				enableReinitialize={true}
+				enableReinitialize={false}
 				validate={validate}
 				onSubmit={async (values, { setSubmitting }) => {
 					await sendData({ ...values });
@@ -383,12 +383,14 @@ const FormCaixa = forwardRef(({
 									<Field
 										data={
 											{
+												hasNumberFormat:true,
 												hasLabel: true,
 												contentLabel: 'Valor mínimo *',
 												atributsFormLabel: {
 
 												},
 												atributsFormControl: {
+													maskChar:null,
 													type: 'text',
 													name: 'vrMin',
 													placeholder: '',
@@ -414,6 +416,7 @@ const FormCaixa = forwardRef(({
 									<Field
 										data={
 											{
+												hasNumberFormat:true,
 												hasLabel: true,
 												contentLabel: 'Valor máximo *',
 												atributsFormLabel: {
@@ -477,6 +480,7 @@ const FormCaixa = forwardRef(({
 									<Field
 										data={
 											{
+												hasNumberFormat:true,
 												hasLabel: true,
 												contentLabel: 'Saldo inicial *',
 												atributsFormLabel: {

@@ -92,6 +92,12 @@ const Configuracoes = ({ defaultFilters, ...props }) => {
                                         <li class="mb-2">
                                             <Link className={'text-primary text-decoration-underline'} to={'/configuracoes/construtor/ficha'}>Construtor de fichas</Link>
                                         </li>
+                                        <li class="mb-2">
+                                            <Link className={'text-primary text-decoration-underline'} to={'/grupos/painel'}>Grupos</Link>
+                                        </li>
+                                        <li class="mb-2">
+                                            <Link className={'text-primary text-decoration-underline'} to={'/profissionais/painel'}>Especialidades</Link>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
@@ -107,6 +113,12 @@ const Configuracoes = ({ defaultFilters, ...props }) => {
                                         </li>
                                         <li class="mb-2">
                                             <Link className={'text-primary text-decoration-underline'} to={'/financeiro/planos-pagamento'}>Planos de pagamento</Link>
+                                        </li>
+                                        <li class="mb-2">
+                                            <Link className={'text-primary text-decoration-underline'} to={'/financeiro/operadores-financeiros'}>Operadores financeiros</Link>
+                                        </li>
+                                        <li class="mb-2">
+                                            <Link className={'text-primary text-decoration-underline'} to={'/financeiro/bandeiras-cartoes'}>Bandeiras de cartões</Link>
                                         </li>
                                     </ul>
                                 </div>
