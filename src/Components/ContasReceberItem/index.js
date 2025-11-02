@@ -20,7 +20,6 @@ import FormControlInput from '../FormControl/index.js'
 import { FORMAT_CALC_COD, FORMAT_MONEY } from '../../functions/index.js'
 import { Link } from 'react-router-dom/cjs/react-router-dom.min.js';
 
-
 const ContasReceberItem = ({ defaultFilters, ...props }) => {
 
     const { data, error, request, loading } = useFetch();
@@ -85,7 +84,6 @@ const ContasReceberItem = ({ defaultFilters, ...props }) => {
     const handleFiltroFim = ({ target }) => {
         setDtFim(target.value)
     }
-
 
     const handleFiltroStatus = ({ target }) => {
         setStatus(target.value)
@@ -254,27 +252,27 @@ const ContasReceberItem = ({ defaultFilters, ...props }) => {
     ]
 
     const acoesBottomCard = [{
-        label: 'Pesquisar',
-        icon: <FontAwesomeIcon icon={faSearch} />,
-        props: { onClick: () => requestAllContasReceberItems(), className: 'btn btn-sm botao_success' }
-    },
-    {
-        label: 'Limpar',
-        icon: <FontAwesomeIcon icon={faBroom} />,
-        props: { onClick: () => limparFiltros(), className: 'btn btn-sm btn-secondary mx-2' }
-    },
-    {
-        label: 'Cadastrar',
-        icon: <FontAwesomeIcon icon={faPlus} />,
-        props: { onClick: () => setCadastrarContasReceberItem(true), className: 'btn btn-sm mx-2 btn-secondary' }
-    }
+            label: 'Pesquisar',
+            icon: <FontAwesomeIcon icon={faSearch} />,
+            props: { onClick: () => requestAllContasReceberItems(), className: 'btn btn-sm botao_success' }
+        },
+        {
+            label: 'Limpar',
+            icon: <FontAwesomeIcon icon={faBroom} />,
+            props: { onClick: () => limparFiltros(), className: 'btn btn-sm btn-secondary mx-2' }
+        },
+        {
+            label: 'Cadastrar',
+            icon: <FontAwesomeIcon icon={faPlus} />,
+            props: { onClick: () => setCadastrarContasReceberItem(true), className: 'btn btn-sm mx-2 btn-secondary' }
+        }
     ];
 
     const acoesHeaderCard = [{
-        label: '',
-        icon: <FontAwesomeIcon icon={(mostarFiltros ? faChevronDown : faChevronUp)} />,
-        props: { onClick: () => { setMostarFiltros(!mostarFiltros); }, className: 'btn btn-sm btn-secondary' },
-    },
+            label: '',
+            icon: <FontAwesomeIcon icon={(mostarFiltros ? faChevronDown : faChevronUp)} />,
+            props: { onClick: () => { setMostarFiltros(!mostarFiltros); }, className: 'btn btn-sm btn-secondary' },
+        },
     ];
 
     React.useEffect(() => {
@@ -516,6 +514,7 @@ const ContasReceberItem = ({ defaultFilters, ...props }) => {
         if (nextPage) {
             url = nextPage;
         }
+
         const { response, json } = await request(url, options);
 
         if (json) {
@@ -689,11 +688,8 @@ const ContasReceberItem = ({ defaultFilters, ...props }) => {
                                 </Row>
                                 <Row>
                                     <div style={{ display: 'flex', flexDirection: 'collumn', flexWrap: 'wrap' }}>
-                                        <Button style={{ borderRadius: '50px', marginBottom: '10px', marginRight: '0.4rem' }} className={'btn btn-sm btn-secondary'} onClick={() => { setCadastrarContasReceberItem(true); }} ><FontAwesomeIcon icon={faPlus} /> Receita</Button>
                                         <Button style={{ borderRadius: '50px', marginBottom: '10px', marginRight: '0.4rem' }} className={'btn btn-sm btn-secondary'} onClick={() => { setFiltroAbertas(true); }} ><FontAwesomeIcon icon={faSearch} /> Abertas</Button>
                                         <Button style={{ borderRadius: '50px', marginBottom: '10px', marginRight: '0.4rem' }} className={'btn btn-sm btn-secondary'} onClick={() => { setFiltroPagas(true); }} ><FontAwesomeIcon icon={faSearch} /> Pagas</Button>
-                                        <Button style={{ borderRadius: '50px', marginBottom: '10px', marginRight: '0.4rem' }} className={'btn btn-sm btn-secondary'} onClick={() => { setFiltroVencidas(true); }} ><FontAwesomeIcon icon={faSearch} /> Vencidas</Button>
-                                        <Button style={{ borderRadius: '50px', marginBottom: '10px' }} className={'btn btn-sm btn-secondary'} onClick={() => { setFiltroAvencer(true); }} ><FontAwesomeIcon icon={faSearch} /> A vencer</Button>
                                     </div>
                                 </Row>
                             </Col>
