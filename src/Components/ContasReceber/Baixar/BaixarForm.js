@@ -129,46 +129,46 @@ const BaixarForm = ({ dataContasReceberChoice, setDataContasReceber, setIdContas
 	const calcularCobranca = (objParams = {}) => {
 		let obj = { caixa_id: '', vrLiquido: '', status: '', vr_total: '', vr_acrescimo: '', vr_final: '', vr_multa: '', vr_juros: '', vr_desconto: '', ds_observacao: '', ...dataBaixaContasReceber }
 		let data = dataBaixaContasReceber;
-	
+
 		let vrJurosForm = objParams?.vrJurosForm;
 		let vrMultaForm = objParams?.vrMultaForm;
 		let vrDescontoForm = objParams?.vrDescontoForm;
 		let vrAcrescimosForm = objParams?.vrAcrescimosForm;
-	
+
 		// Recuperação dos valores de juros, multa, desconto e acréscimos
 		let vrJuros = vrJurosForm != undefined ? FORMAT_CALC_COD(vrJurosForm) : FORMAT_CALC_COD(data.vr_juros || 0);
 		let vrDesconto = vrDescontoForm != undefined ? FORMAT_CALC_COD(vrDescontoForm) : FORMAT_CALC_COD(data.vr_desconto || 0);
 		let vrMulta = vrMultaForm != undefined ? FORMAT_CALC_COD(vrMultaForm) : FORMAT_CALC_COD(data.vr_multa || 0);
 		let vrAcrescimo = vrAcrescimosForm != undefined ? FORMAT_CALC_COD(vrAcrescimosForm) : FORMAT_CALC_COD(data.vr_acrescimo || 0);
-	
+
 		// Zerar valores de desconto caso haja acréscimos ou juros, e vice-versa
 		if ((vrAcrescimo > 0 || vrJuros > 0) && vrDesconto > 0) {
 			vrDesconto = 0;
 		}
-	
+
 		if (vrDesconto > 0 && (vrAcrescimo > 0 || vrJuros > 0)) {
 			vrAcrescimo = 0;
 			vrJuros = 0;
 			vrMulta = 0;
 		}
-	
+
 		let vrBaixar = FORMAT_CALC_COD(data?.vrLiquido - data?.vrPago);
 		let subTotal = vrBaixar + vrMulta + vrJuros + vrAcrescimo;
-	
+
 		if (vrDesconto >= subTotal) {
 			vrDesconto = 0;
 		}
-	
+
 		subTotal += vrDesconto;
-	
+
 		obj.vr_final = FORMAT_MONEY(subTotal);
 		obj.vr_desconto = vrDesconto;
 		obj.vr_juros = vrJuros;
 		obj.vr_multa = vrMulta;
 		obj.vr_acrescimo = vrAcrescimo;
 		obj.vr_total = data?.vrLiquido - data?.vrPago;
-		
-		if(idCaixaForm > 0){
+
+		if (idCaixaForm > 0) {
 			obj.caixa_id = idCaixaForm;
 		}
 
@@ -197,7 +197,7 @@ const BaixarForm = ({ dataContasReceberChoice, setDataContasReceber, setIdContas
 	React.useEffect(() => {
 
 		const newState = { ...dataBaixaContasReceber, ...calcularCobranca({ vrJurosForm }) };
-		
+
 		if (JSON.stringify(newState) !== JSON.stringify(dataBaixaContasReceber)) {
 			setDataBaixaContasReceber(newState);
 		}
@@ -206,7 +206,7 @@ const BaixarForm = ({ dataContasReceberChoice, setDataContasReceber, setIdContas
 
 	React.useEffect(() => {
 		const newState = { ...dataBaixaContasReceber, ...calcularCobranca({ vrMultaForm }) };
-		
+
 		if (JSON.stringify(newState) !== JSON.stringify(dataBaixaContasReceber)) {
 			setDataBaixaContasReceber(newState);
 		}
@@ -216,7 +216,7 @@ const BaixarForm = ({ dataContasReceberChoice, setDataContasReceber, setIdContas
 	React.useEffect(() => {
 
 		const newState = { ...dataBaixaContasReceber, ...calcularCobranca({ vrDescontoForm }) };
-		
+
 		if (JSON.stringify(newState) !== JSON.stringify(dataBaixaContasReceber)) {
 			setDataBaixaContasReceber(newState);
 		}
@@ -226,7 +226,7 @@ const BaixarForm = ({ dataContasReceberChoice, setDataContasReceber, setIdContas
 	React.useEffect(() => {
 
 		const newState = { ...dataBaixaContasReceber, ...calcularCobranca({ vrAcrescimosForm }) };
-		
+
 		if (JSON.stringify(newState) !== JSON.stringify(dataBaixaContasReceber)) {
 			setDataBaixaContasReceber(newState);
 		}
@@ -535,7 +535,7 @@ const BaixarForm = ({ dataContasReceberChoice, setDataContasReceber, setIdContas
 														data={
 															{
 																hasLabel: true,
-																contentLabel: 'Histórico',
+																contentLabel: 'Histórico *',
 																atributsFormLabel: {
 
 																},

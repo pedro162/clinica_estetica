@@ -20,11 +20,11 @@ const FormPlanoPagamento = forwardRef(({
 	setVrMinimo,
 	id,
 	setVrMaximo,
-	cdCobrancaTipo,
-	setcdCobrancaTipo,
+	descricao,
+	setdescricao,
 	tpPagamento,
 	setAceitaTransferencia,
-	hasEntrada,
+	exibe_balcao,
 	setVrSaldoInicial,
 	carregando,
 	setAtualizarPlanoPagamento,
@@ -89,13 +89,14 @@ const FormPlanoPagamento = forwardRef(({
 	const validate = (values) => {
 		const errors = {};
 		if (!values.name) errors.name = 'Obrigatório';
-		if (!values.tipo) errors.tipo = 'Obrigatório';
-		if (!values.hasOperadorFinanceiro) errors.hasOperadorFinanceiro = 'Obrigatório';
-		if (!values.cdCobrancaTipo) errors.cdCobrancaTipo = 'Obrigatório';
-		if (!values.tpPagamento) errors.tpPagamento = 'Obrigatório';
-		if (!values.hasLimiteDeCredito) errors.hasLimiteDeCredito = 'Obrigatório';
-		if (!values.hasAcertoCaixa) errors.hasAcertoCaixa = 'Obrigatório';
-		if (!values.hasEntrada) errors.hasEntrada = 'Obrigatório';
+		if (!(values.qtdParcelas >= 0)) errors.qtdParcelas = 'Obrigatório';
+		if (!values.descricao) errors.descricao = 'Obrigatório';
+		if (!(values.qtdDiasIntervaloParcelas >= 0)) errors.qtdDiasIntervaloParcelas = 'Obrigatório';
+		if (!values.isAberto) errors.isAberto = 'Obrigatório';
+		if (!(values.diasmedios >= 0)) errors.diasmedios = 'Obrigatório';
+		if (!(values.qtdMinParcelas >= 0)) errors.qtdMinParcelas = 'Obrigatório';
+		if (!(values.qtd_dias_pri_parcela >= 0)) errors.qtd_dias_pri_parcela = 'Obrigatório';
+		if (!values.exibe_balcao) errors.exibe_balcao = 'Obrigatório';
 		return errors;
 	};
 
@@ -110,7 +111,7 @@ const FormPlanoPagamento = forwardRef(({
 	}, [loading, setCarregando]);
 
 	const dataToFormPlanoPagamento = () => {
-		let obj = { hasEntrada: '', hasAcertoCaixa: '', hasAcertoBalcao: 'no', hasLimiteDeCredito: '', name: '', tipo: '', hasOperadorFinanceiro: '', id: '', cdCobrancaTipo: '', tpPagamento: '', hasEntrada: '', active: '', deleted_at: '', created_at: '', updated_at: '' }
+		let obj = { qtdParcelas: '', qtdDiasIntervaloParcelas:'',  desdrobrarDuplicataManual: 'no', gerarDuplicataManual: '', isAberto: '', name: '', diasmedios: '', qtdMinParcelas: '', id: '', descricao: '', exibe_balcao:'', qtd_dias_pri_parcela: '', active: '', deleted_at: '', created_at: '', updated_at: '' }
 
 		if (dataPlanoPagamentoChoice) {
 
@@ -122,52 +123,52 @@ const FormPlanoPagamento = forwardRef(({
 				data = data?.data
 			}
 
-			if (data.hasOwnProperty('hasEntrada')) {
-				obj.hasEntrada = data.hasEntrada;
+			if (data.hasOwnProperty('qtdParcelas')) {
+				obj.qtdParcelas = data.qtdParcelas;
 			}
 
-			if (data.hasOwnProperty('hasAcertoCaixa')) {
-				obj.hasAcertoCaixa = data.hasAcertoCaixa;
+			if (data.hasOwnProperty('desdrobrarDuplicataManual')) {
+				obj.desdrobrarDuplicataManual = data.desdrobrarDuplicataManual;
 			}
 
-			if (data.hasOwnProperty('hasAcertoBalcao')) {
-				obj.hasAcertoBalcao = data.hasAcertoBalcao;
+			if (data.hasOwnProperty('gerarDuplicataManual')) {
+				obj.gerarDuplicataManual = data.gerarDuplicataManual;
 			}
 
-			if (data.hasOwnProperty('hasLimiteDeCredito')) {
-				obj.hasLimiteDeCredito = data.hasLimiteDeCredito;
+			if (data.hasOwnProperty('isAberto')) {
+				obj.isAberto = data.isAberto;
 			}
 
 			if (data.hasOwnProperty('name')) {
 				obj.name = data.name;
 			}
 
-			if (data.hasOwnProperty('hasComissao')) {
-				obj.hasComissao = data.hasComissao;
+			if (data.hasOwnProperty('diasmedios')) {
+				obj.diasmedios = data.diasmedios;
 			}
 
-			if (data.hasOwnProperty('tipo')) {
-				obj.tipo = data.tipo;
+			if (data.hasOwnProperty('qtdMinParcelas')) {
+				obj.qtdMinParcelas = data.qtdMinParcelas;
 			}
 
-			if (data.hasOwnProperty('hasOperadorFinanceiro')) {
-				obj.hasOperadorFinanceiro = data.hasOperadorFinanceiro;
+			if (data.hasOwnProperty('qtdDiasIntervaloParcelas')) {
+				obj.qtdDiasIntervaloParcelas = data.qtdDiasIntervaloParcelas;
 			}
 
 			if (data.hasOwnProperty('id')) {
 				obj.id = data.id;
 			}
 
-			if (data.hasOwnProperty('cdCobrancaTipo')) {
-				obj.cdCobrancaTipo = data.cdCobrancaTipo;
+			if (data.hasOwnProperty('descricao')) {
+				obj.descricao = data.descricao;
 			}
 
-			if (data.hasOwnProperty('tpPagamento')) {
-				obj.tpPagamento = data.tpPagamento;
+			if (data.hasOwnProperty('qtd_dias_pri_parcela')) {
+				obj.qtd_dias_pri_parcela = data.qtd_dias_pri_parcela;
 			}
 
-			if (data.hasOwnProperty('hasEntrada')) {
-				obj.hasEntrada = data.hasEntrada;
+			if (data.hasOwnProperty('exibe_balcao')) {
+				obj.exibe_balcao = data.exibe_balcao;
 			}
 
 		}
@@ -192,7 +193,7 @@ const FormPlanoPagamento = forwardRef(({
 			<Formik
 				innerRef={formikRef}
 				initialValues={dataToFormPlanoPagamento()}
-				enableReinitialize={true}
+				enableReinitialize={false}
 				validate={validate}
 				onSubmit={async (values, { setSubmitting }) => {
 					await sendData({ ...values });
@@ -261,18 +262,18 @@ const FormPlanoPagamento = forwardRef(({
 										data={
 											{
 												hasLabel: true,
-												contentLabel: 'Código *',
+												contentLabel: 'Descrição *',
 												atributsFormLabel: {
 
 												},
 												atributsFormControl: {
 													tipo: 'text',
-													name: 'cdCobrancaTipo',
+													name: 'descricao',
 													placeholder: '',
-													id: 'nacdCobrancaTipoe',
+													id: 'nadescricaoe',
 													onChange: handleChange,
 													onBlur: handleBlur,
-													value: values.cdCobrancaTipo,
+													value: values.descricao,
 													className: `${estilos.input}`,
 													size: "sm"
 												},
@@ -284,7 +285,7 @@ const FormPlanoPagamento = forwardRef(({
 
 										component={FormControlInput}
 									></Field>
-									<ErrorMessage className="alerta_error_form_label" name="cdCobrancaTipo" component="div" />
+									<ErrorMessage className="alerta_error_form_label" name="descricao" component="div" />
 								</Col>
 							</Row>
 							<Row className="mb-3">
@@ -293,31 +294,31 @@ const FormPlanoPagamento = forwardRef(({
 										data={
 											{
 												hasLabel: true,
-												contentLabel: 'Tipo *',
+												contentLabel: 'Quantida mínima de parcelas *',
 												atributsFormLabel: {
 
 												},
 												atributsFormControl: {
 													tipo: 'text',
-													name: 'tipo',
+													name: 'qtdMinParcelas',
 													placeholder: '',
-													id: 'tipo',
+													id: 'qtdMinParcelas',
 													onChange: handleChange,
 													onBlur: handleBlur,
-													value: values.tipo,
+													value: values.qtdMinParcelas,
 													className: estilos.input,
 													size: "sm",
 												},
-												options: [{ label: 'Selecione', valor: '', props: { selected: 'selected', disabled: 'disabled' } }, { label: 'Cartão de crédito', valor: 'cartao_credito', props: { selected: '' } }, { label: 'Cartão de débito', valor: 'cartao_debito', props: {} }, { label: 'Boleto', valor: 'boleto', props: {}}, { label: 'Dinheiro', valor: 'dinheiro', props: {} }],
+												options: [],
 												atributsContainer: {
 													className: ''
 												}
 											}
 										}
 
-										component={FormControlSelect}
+										component={FormControlInput}
 									></Field>
-									<ErrorMessage className="alerta_error_form_label" name="tipo" component="div" />
+									<ErrorMessage className="alerta_error_form_label" name="qtdMinParcelas" component="div" />
 								</Col>
 
 								<Col xs="12" sm="12" md="6">
@@ -325,31 +326,96 @@ const FormPlanoPagamento = forwardRef(({
 										data={
 											{
 												hasLabel: true,
-												contentLabel: 'Tipo de pagamento *',
+												contentLabel: 'Quantidade parcelas *',
 												atributsFormLabel: {
 
 												},
 												atributsFormControl: {
 													tipo: 'text',
-													name: 'tpPagamento',
+													name: 'qtdParcelas',
 													placeholder: '',
-													id: 'tpPagamento',
+													id: 'qtdParcelas',
 													onChange: handleChange,
 													onBlur: handleBlur,
-													value: values.tpPagamento,
+													value: values.qtdParcelas,
 													className: estilos.input,
-													size: "sm"
+													size: "sm",
 												},
-												options: [{ label: 'Selecione', valor: '', props: { selected: 'selected', disabled: 'disabled' } }, { label: 'A prazo', valor: 'a prazo', props: { selected: '' } }, { label: 'Avista', valor: 'a vista', props: {} }],
+												options: [],
 												atributsContainer: {
 													className: ''
 												}
 											}
 										}
 
-										component={FormControlSelect}
+										component={FormControlInput}
 									></Field>
-									<ErrorMessage className="alerta_error_form_label" name="tpPagamento" component="div" />
+									<ErrorMessage className="alerta_error_form_label" name="qtdParcelas" component="div" />
+								</Col>
+							</Row>
+							<Row className="mb-3">	
+								
+								<Col xs="12" sm="12" md="6">
+									<Field
+										data={
+											{
+												hasLabel: true,
+												contentLabel: 'Dias entre parcelas *',
+												atributsFormLabel: {
+
+												},
+												atributsFormControl: {
+													tipo: 'text',
+													name: 'qtdDiasIntervaloParcelas',
+													placeholder: '',
+													id: 'qtdDiasIntervaloParcelas',
+													onChange: handleChange,
+													onBlur: handleBlur,
+													value: values.qtdDiasIntervaloParcelas,
+													className: estilos.input,
+													size: "sm",
+												},
+												options: [],
+												atributsContainer: {
+													className: ''
+												}
+											}
+										}
+
+										component={FormControlInput}
+									></Field>
+									<ErrorMessage className="alerta_error_form_label" name="qtdDiasIntervaloParcelas" component="div" />
+								</Col>
+								<Col xs="12" sm="12" md="6">
+									<Field
+										data={
+											{
+												hasLabel: true,
+												contentLabel: 'Dias para primeira parcela *',
+												atributsFormLabel: {
+
+												},
+												atributsFormControl: {
+													tipo: 'text',
+													name: 'qtd_dias_pri_parcela',
+													placeholder: '',
+													id: 'qtd_dias_pri_parcela',
+													onChange: handleChange,
+													onBlur: handleBlur,
+													value: values.qtd_dias_pri_parcela,
+													className: estilos.input,
+													size: "sm",
+												},
+												options: [],
+												atributsContainer: {
+													className: ''
+												}
+											}
+										}
+
+										component={FormControlInput}
+									></Field>
+									<ErrorMessage className="alerta_error_form_label" name="qtd_dias_pri_parcela" component="div" />
 								</Col>
 							</Row>
 							<Row className="mb-3">
@@ -358,50 +424,49 @@ const FormPlanoPagamento = forwardRef(({
 										data={
 											{
 												hasLabel: true,
-												contentLabel: 'Tem comissão *',
+												contentLabel: 'Dias médios *',
 												atributsFormLabel: {
 
 												},
 												atributsFormControl: {
 													tipo: 'text',
-													name: 'hasComissao',
+													name: 'diasmedios',
 													placeholder: '',
-													id: 'hasComissao',
+													id: 'diasmedios',
 													onChange: handleChange,
 													onBlur: handleBlur,
-													value: values.hasComissao,
+													value: values.diasmedios,
 													className: estilos.input,
-													size: "sm"
+													size: "sm",
 												},
-												options: [{ label: 'Selecione', valor: '', props: { selected: 'selected', disabled: 'disabled' } }, { label: 'Sim', valor: 'yes', props: { selected: '' } }, { label: 'Não', valor: 'no', props: {} }],
+												options: [],
 												atributsContainer: {
 													className: ''
 												}
 											}
 										}
 
-										component={FormControlSelect}
+										component={FormControlInput}
 									></Field>
-									<ErrorMessage className="alerta_error_form_label" name="hasComissao" component="div" />
+									<ErrorMessage className="alerta_error_form_label" name="diasmedios" component="div" />
 								</Col>
-
 								<Col xs="12" sm="12" md="6">
 									<Field
 										data={
 											{
 												hasLabel: true,
-												contentLabel: 'Tem limite de crédito *',
+												contentLabel: 'Gerar duplicata manual *',
 												atributsFormLabel: {
 
 												},
 												atributsFormControl: {
 													tipo: 'text',
-													name: 'hasLimiteDeCredito',
+													name: 'gerarDuplicataManual',
 													placeholder: '',
-													id: 'hasLimiteDeCredito',
+													id: 'gerarDuplicataManual',
 													onChange: handleChange,
 													onBlur: handleBlur,
-													value: values.hasLimiteDeCredito,
+													value: values.gerarDuplicataManual,
 													className: estilos.input,
 													size: "sm"
 												},
@@ -414,7 +479,7 @@ const FormPlanoPagamento = forwardRef(({
 
 										component={FormControlSelect}
 									></Field>
-									<ErrorMessage className="alerta_error_form_label" name="hasLimiteDeCredito" component="div" />
+									<ErrorMessage className="alerta_error_form_label" name="gerarDuplicataManual" component="div" />
 								</Col>
 							</Row>
 							<Row className="mb-3">
@@ -423,18 +488,18 @@ const FormPlanoPagamento = forwardRef(({
 										data={
 											{
 												hasLabel: true,
-												contentLabel: 'Tem acerto de caixa *',
+												contentLabel: 'Aberta *',
 												atributsFormLabel: {
 
 												},
 												atributsFormControl: {
 													tipo: 'text',
-													name: 'hasAcertoCaixa',
+													name: 'isAberto',
 													placeholder: '',
-													id: 'hasAcertoCaixa',
+													id: 'isAberto',
 													onChange: handleChange,
 													onBlur: handleBlur,
-													value: values.hasAcertoCaixa,
+													value: values.isAberto,
 													className: estilos.input,
 													size: "sm"
 												},
@@ -447,25 +512,25 @@ const FormPlanoPagamento = forwardRef(({
 
 										component={FormControlSelect}
 									></Field>
-									<ErrorMessage className="alerta_error_form_label" name="hasAcertoCaixa" component="div" />
+									<ErrorMessage className="alerta_error_form_label" name="isAberto" component="div" />
 								</Col>
 								<Col xs="12" sm="12" md="6">
 									<Field
 										data={
 											{
 												hasLabel: true,
-												contentLabel: 'Tem entrada *',
+												contentLabel: 'Exibe no balcão *',
 												atributsFormLabel: {
 
 												},
 												atributsFormControl: {
 													tipo: 'text',
-													name: 'hasEntrada',
+													name: 'exibe_balcao',
 													placeholder: '',
-													id: 'hasEntrada',
+													id: 'exibe_balcao',
 													onChange: handleChange,
 													onBlur: handleBlur,
-													value: values.hasEntrada,
+													value: values.exibe_balcao,
 													className: estilos.input,
 													size: "sm"
 												},
@@ -478,43 +543,9 @@ const FormPlanoPagamento = forwardRef(({
 
 										component={FormControlSelect}
 									></Field>
-									<ErrorMessage className="alerta_error_form_label" name="hasEntrada" component="div" />
+									<ErrorMessage className="alerta_error_form_label" name="exibe_balcao" component="div" />
 								</Col>
 							</Row>
-							<Row className="mb-3">								
-								<Col xs="12" sm="12" md="6">
-									<Field
-										data={
-											{
-												hasLabel: true,
-												contentLabel: 'Tem operador financeiro *',
-												atributsFormLabel: {
-
-												},
-												atributsFormControl: {
-													tipo: 'text',
-													name: 'hasOperadorFinanceiro',
-													placeholder: '',
-													id: 'hasOperadorFinanceiro',
-													onChange: handleChange,
-													onBlur: handleBlur,
-													value: values.hasOperadorFinanceiro,
-													className: estilos.input,
-													size: "sm"
-												},
-												options: [{ label: 'Selecione', valor: '', props: { selected: 'selected', disabled: 'disabled' } }, { label: 'Sim', valor: 'yes', props: { selected: '' } }, { label: 'Não', valor: 'no', props: {} }],
-												atributsContainer: {
-													className: ''
-												}
-											}
-										}
-
-										component={FormControlSelect}
-									></Field>
-									<ErrorMessage className="alerta_error_form_label" name="hasOperadorFinanceiro" component="div" />
-								</Col>
-							</Row>
-
 						</form>
 					)
 				}

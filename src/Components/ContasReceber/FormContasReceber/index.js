@@ -43,9 +43,15 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 		...params
 	}) => {
 
-		const data = {
+		let data = {
 			...params,
 			vrBruto: params?.vrLiquido
+		}
+
+		for (let prop in data) {
+			if (data[prop] == '') {
+				delete data[prop]
+			}
 		}
 
 		let data_config = {}
@@ -59,7 +65,7 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 		const { url, options } = data_config;
 		const { response, json } = await request(url, options);
 
-		if (json) {
+		if (json || !error) {
 			callback();
 			setShowModalCriarContasReceber();
 			setAtualizarContasReceber(false);
@@ -183,7 +189,7 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 			if (json && json.hasOwnProperty('mensagem')) {
 				let data = json.mensagem;
 				setDataFormaPagamento(data)
-			}else if(json && json.hasOwnProperty('data')){
+			} else if (json && json.hasOwnProperty('data')) {
 				let data = json.data?.data;
 				setDataFormaPagamento(data)
 			} else {
@@ -209,10 +215,10 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 			if (json && json.hasOwnProperty('mensagem')) {
 				let data = json.mensagem;
 				setDataPlanoPagamento(data)
-			}else if(json && json.hasOwnProperty('data')){
+			} else if (json && json.hasOwnProperty('data')) {
 				let data = json.data?.data;
 				setDataPlanoPagamento(data)
-			}else {
+			} else {
 				setDataPlanoPagamento([])
 			}
 
@@ -235,7 +241,7 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 			if (json && json.hasOwnProperty('mensagem')) {
 				let data = json.mensagem;
 				setDataOperadorFinanceiro(data)
-			}else if(json && json.hasOwnProperty('data')){
+			} else if (json && json.hasOwnProperty('data')) {
 				let data = json.data?.data;
 				setDataOperadorFinanceiro(data)
 			} else {
@@ -269,7 +275,7 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 
 	const preparaOperadorFinanceiroToForm = () => {
 		if (dataOperadorFinanceiro && Array.isArray(dataOperadorFinanceiro) && dataOperadorFinanceiro.length > 0) {
-			let formaPgto = dataOperadorFinanceiro.map(({ id, name }, index, arr) => ({ label: name, valor: id, props: {} }))
+			let formaPgto = dataOperadorFinanceiro.map(({ id, pessoa }, index, arr) => ({ label: pessoa?.name, valor: id, props: {} }))
 			formaPgto.unshift({ label: 'Selecione...', valor: '', props: { selected: 'selected', } })
 			return formaPgto;
 		}
@@ -317,7 +323,7 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 			<Formik
 
 				initialValues={{ ...dataToFormContasReceber }}
-				enableReinitialize={true}
+				enableReinitialize={false}
 				validate={
 					values => {
 
@@ -348,7 +354,7 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 						}
 
 						if (!values.operador_financeiro_id) {
-							errors.operador_financeiro_id = "Obrigatório"
+							//errors.operador_financeiro_id = "Obrigatório"
 						}
 
 						if (!values.documento) {
@@ -374,7 +380,8 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 							handleChange,
 							handleBlur,
 							handleSubmit,
-							isSubmitting
+							isSubmitting,
+							setFieldValue
 						}
 					) => (
 
@@ -475,8 +482,7 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 																			hookToLoadFromDescription: CLIENTES_ALL_POST,
 																			callbackDataItemChoice: (param) => {
 																				let { label, value } = param
-
-																				setIdPessoaForm(value)
+																				setFieldValue('pessoa_id', value)
 																			}
 																		}
 																	}
@@ -516,6 +522,10 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 																				className: ''
 																			},
 																			hookToLoadFromDescription: CAIXA_ALL_POST,
+																			callbackDataItemChoice: (param) => {
+																				let { label, value } = param
+																				setFieldValue('caixa_id', value)
+																			}
 																		}
 																	}
 																	ComponentFilter={Caixa}
@@ -529,6 +539,7 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 																<Field
 																	data={
 																		{
+																			hasNumberFormat: true,
 																			hasLabel: true,
 																			contentLabel: 'Valor *',
 																			atributsFormLabel: {
@@ -544,7 +555,7 @@ const FormContasReceber = ({ dataContasReceberChoice, setDataContasReceber, setI
 																				onChange: handleChange,
 																				onBlur: handleBlur,
 																				value: values.vrLiquido,
-																				className: `${estilos.input}`,
+																				className: estilos.input,
 																				size: "sm",
 																			},
 																			atributsContainer: {

@@ -8,8 +8,6 @@ import Modal from '../../Utils/Modal/index.js'
 import Load from '../../Utils/Load/index.js'
 
 const Iniciar = ({idOrdemServico, setIdOrdemServico, callback, atualizarOrdemServico, setAtualizarOrdemServico, setIniciarOrdemServico, incicarOrdemServico})=>{
-
-    
     const [showModalAtualizarOrdemServico, setShowModalAtualizarOrdemServico] = React.useState(false)
     const [carregando, setCarregando] = React.useState(false)
     const [dataOrdemServico, setDataOrdemServico] = React.useState(null)
@@ -23,8 +21,7 @@ const Iniciar = ({idOrdemServico, setIdOrdemServico, callback, atualizarOrdemSer
 			const {url, options} = GRUPOS_ALL_POST({}, getToken());
 
 	        const {response, json} = await request(url, options);
-	        console.log('All grupos here')
-	        console.log(json)
+			
 	        if(json){
 	            setDataGrupo(json)
 	            setShowModalAtualizarOrdemServico(true)
@@ -39,11 +36,6 @@ const Iniciar = ({idOrdemServico, setIdOrdemServico, callback, atualizarOrdemSer
 		
 	}, [incicarOrdemServico])
 
-	/*
-		atualizarOrdemServico && 
-                <Atualizar setCarregandoDadosOrdemServico={null} atualizarOrdemServico={setAtualizarOrdemServico} idOrdemServico={clientChoice} setDataOrdemServico={null} setShowModalCriarOrdemServico={setShowModalAtualizarOrdemServico} />
-	*/
-	//<Pesquisar idOrdemServico={idOrdemServico} setDataOrdemServico={setDataOrdemServico} setCarregandoDadosOrdemServico={setCarregando} />
 	return(
 		<>
 			{! dataGrupo &&

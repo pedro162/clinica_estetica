@@ -74,11 +74,12 @@ const FormCaixa = forwardRef(({
 		const { response, json } = await request(url, options);
 		setCarregando(false);
 
-		if (json) {
-			callback();
-			setShowModalCriarCaixa();
-			setAtualizarCaixa(false);
-			setIdCaixa(null);
+		if (json || !error) {
+			callback && callback();
+			setShowModalCriarCaixa && setShowModalCriarCaixa(false);
+			setAtualizarCaixa && setAtualizarCaixa(false);
+			
+			setIdCaixa && setIdCaixa(null);
 
 			Swal.fire({
 				icon: "success",
@@ -202,13 +203,23 @@ const FormCaixa = forwardRef(({
 
 	}, []);
 
+	if (error) {
+		Swal.fire({
+			icon: "error",
+			title: "Oops...",
+			text: error,
+			footer: '',
+			confirmButtonColor: "#07B201",
+		});
+	}
+
 	return (
 
 		<>
 			<Formik
 				innerRef={formikRef}
 				initialValues={dataToFormCaixa()}
-				enableReinitialize={true}
+				enableReinitialize={false}
 				validate={validate}
 				onSubmit={async (values, { setSubmitting }) => {
 					await sendData({ ...values });
@@ -286,7 +297,11 @@ const FormCaixa = forwardRef(({
 													className: estilos.input,
 													size: "sm",
 												},
-												options: [{ label: 'Selecione', valor: '', props: { selected: 'selected', disabled: 'disabled' } }, { label: 'Banco', valor: 'banco', props: { selected: '' } }, { label: 'Balcão', valor: 'convencional', props: {} }],
+												options: [
+													{ label: 'Selecione', valor: '', props: { selected: 'selected', disabled: 'disabled' } }
+													,{ label: 'Banco', valor: 'banco', props: { selected: '' } },
+													{ label: 'Balcão', valor: 'convencional', props: {} }
+												],
 												atributsContainer: {
 													className: ''
 												}
@@ -368,12 +383,14 @@ const FormCaixa = forwardRef(({
 									<Field
 										data={
 											{
+												hasNumberFormat:true,
 												hasLabel: true,
 												contentLabel: 'Valor mínimo *',
 												atributsFormLabel: {
 
 												},
 												atributsFormControl: {
+													maskChar:null,
 													type: 'text',
 													name: 'vrMin',
 													placeholder: '',
@@ -399,6 +416,7 @@ const FormCaixa = forwardRef(({
 									<Field
 										data={
 											{
+												hasNumberFormat:true,
 												hasLabel: true,
 												contentLabel: 'Valor máximo *',
 												atributsFormLabel: {
@@ -407,7 +425,7 @@ const FormCaixa = forwardRef(({
 												atributsFormControl: {
 													type: 'text',
 													name: 'vrMax',
-													placeholder: 'fulano de tal',
+													placeholder: '',
 													id: 'vrMax',
 													onChange: handleChange,
 													onBlur: handleBlur,
@@ -462,6 +480,7 @@ const FormCaixa = forwardRef(({
 									<Field
 										data={
 											{
+												hasNumberFormat:true,
 												hasLabel: true,
 												contentLabel: 'Saldo inicial *',
 												atributsFormLabel: {

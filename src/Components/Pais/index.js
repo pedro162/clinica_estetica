@@ -18,7 +18,7 @@ import Cadastrar from './Cadastrar/index.js'
 import { Link } from 'react-router-dom/cjs/react-router-dom.min';
 
 
-const Pais = (props) => {
+const Pais = ({ defaultFilters, callBakSelectedItem, ignoreTableActions, ...props }) => {
 
     const { data, error, request, loading } = useFetch();
     const [estado, setPais] = React.useState([])
@@ -363,6 +363,8 @@ const Pais = (props) => {
                         setUsePagination={setUsePagination}
                         totalPageCount={totalPageCount}
                         setTotalPageCount={setTotalPageCount}
+                        callBakSelectedItem={callBakSelectedItem}
+                        ignoreTableActions={ignoreTableActions}
                     />
                 </Col>
             </Row>
