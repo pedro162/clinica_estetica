@@ -75,10 +75,11 @@ const FormCaixa = forwardRef(({
 		setCarregando(false);
 
 		if (json || !error) {
-			callback();
-			setShowModalCriarCaixa();
-			setAtualizarCaixa(false);
-			setIdCaixa(null);
+			callback && callback();
+			setShowModalCriarCaixa && setShowModalCriarCaixa(false);
+			setAtualizarCaixa && setAtualizarCaixa(false);
+			
+			setIdCaixa && setIdCaixa(null);
 
 			Swal.fire({
 				icon: "success",
