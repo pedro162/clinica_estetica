@@ -26,7 +26,6 @@ const FormPlanoPagamento = forwardRef(({
 	setAceitaTransferencia,
 	exibe_balcao,
 	setVrSaldoInicial,
-	carregando,
 	setAtualizarPlanoPagamento,
 	callback,
 	setShowModalCriarPlanoPagamento,
@@ -35,6 +34,7 @@ const FormPlanoPagamento = forwardRef(({
 	setIdPlanoPagamento,
 	dataPlanoPagamentoChoice,
 	atualizarPlanoPagamento,
+	carregando,
 	setCarregando,
 	...props
 }, ref) => {
@@ -63,6 +63,8 @@ const FormPlanoPagamento = forwardRef(({
 			...params,
 		}
 
+		setCarregando && setCarregando(true);
+
 		let data_config = idPlanoPagamento && idPlanoPagamento > 0
 			? PLANO_PAGAMENTO_UPDATE_POST(idPlanoPagamento, data, getToken())
 			: PLANO_PAGAMENTO_SAVE_POST(data, getToken());
@@ -70,11 +72,11 @@ const FormPlanoPagamento = forwardRef(({
 		const { url, options } = data_config;
 		const { response, json } = await request(url, options);
 
-		if (json && !error) {
-			callback();
-			setShowModalCriarPlanoPagamento();
-			setAtualizarPlanoPagamento(false);
-			setIdPlanoPagamento(null);
+		if (!error) {
+			callback && callback();
+			setShowModalCriarPlanoPagamento && setShowModalCriarPlanoPagamento();
+			setAtualizarPlanoPagamento && setAtualizarPlanoPagamento(false);
+			setIdPlanoPagamento && setIdPlanoPagamento(null);
 
 			Swal.fire({
 				icon: "success",
@@ -84,6 +86,8 @@ const FormPlanoPagamento = forwardRef(({
 				confirmButtonColor: "#07B201",
 			});
 		}
+
+		setCarregando && setCarregando(false);
 	}
 
 	const validate = (values) => {
@@ -107,11 +111,11 @@ const FormPlanoPagamento = forwardRef(({
 	}));
 
 	React.useRef(() => {
-		setCarregando(loading)
+		setCarregando & setCarregando(loading)
 	}, [loading, setCarregando]);
 
 	const dataToFormPlanoPagamento = () => {
-		let obj = { qtdParcelas: '', qtdDiasIntervaloParcelas:'',  desdrobrarDuplicataManual: 'no', gerarDuplicataManual: '', isAberto: '', name: '', diasmedios: '', qtdMinParcelas: '', id: '', descricao: '', exibe_balcao:'', qtd_dias_pri_parcela: '', active: '', deleted_at: '', created_at: '', updated_at: '' }
+		let obj = { qtdParcelas: '', qtdDiasIntervaloParcelas: '', desdrobrarDuplicataManual: 'no', gerarDuplicataManual: '', isAberto: '', name: '', diasmedios: '', qtdMinParcelas: '', id: '', descricao: '', exibe_balcao: '', qtd_dias_pri_parcela: '', active: '', deleted_at: '', created_at: '', updated_at: '' }
 
 		if (dataPlanoPagamentoChoice) {
 
@@ -176,7 +180,7 @@ const FormPlanoPagamento = forwardRef(({
 		return obj;
 	}
 
-	if(error){
+	if (error) {
 		Swal.fire({
 			icon: "error",
 			title: "Oops...",
@@ -353,8 +357,8 @@ const FormPlanoPagamento = forwardRef(({
 									<ErrorMessage className="alerta_error_form_label" name="qtdParcelas" component="div" />
 								</Col>
 							</Row>
-							<Row className="mb-3">	
-								
+							<Row className="mb-3">
+
 								<Col xs="12" sm="12" md="6">
 									<Field
 										data={
@@ -468,7 +472,7 @@ const FormPlanoPagamento = forwardRef(({
 													onBlur: handleBlur,
 													value: values.gerarDuplicataManual,
 													className: estilos.input,
-													size: "sm"
+													size: "sm",
 												},
 												options: [{ label: 'Selecione', valor: '', props: { selected: 'selected', disabled: 'disabled' } }, { label: 'Sim', valor: 'yes', props: { selected: '' } }, { label: 'Não', valor: 'no', props: {} }],
 												atributsContainer: {

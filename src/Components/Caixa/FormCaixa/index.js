@@ -69,16 +69,15 @@ const FormCaixa = forwardRef(({
 			? CAIXA_UPDATE_POST(idCaixa, data, getToken())
 			: CAIXA_SAVE_POST(data, getToken());
 
-		setCarregando(true);
+		setCarregando && setCarregando(true);
 		const { url, options } = data_config;
 		const { response, json } = await request(url, options);
-		setCarregando(false);
 
 		if (json || !error) {
 			callback && callback();
 			setShowModalCriarCaixa && setShowModalCriarCaixa(false);
 			setAtualizarCaixa && setAtualizarCaixa(false);
-			
+
 			setIdCaixa && setIdCaixa(null);
 
 			Swal.fire({
@@ -89,6 +88,8 @@ const FormCaixa = forwardRef(({
 				confirmButtonColor: "#07B201",
 			});
 		}
+
+		setCarregando(false);
 	}
 
 	const validate = (values) => {
@@ -299,7 +300,7 @@ const FormCaixa = forwardRef(({
 												},
 												options: [
 													{ label: 'Selecione', valor: '', props: { selected: 'selected', disabled: 'disabled' } }
-													,{ label: 'Banco', valor: 'banco', props: { selected: '' } },
+													, { label: 'Banco', valor: 'banco', props: { selected: '' } },
 													{ label: 'Balcão', valor: 'convencional', props: {} }
 												],
 												atributsContainer: {
@@ -383,14 +384,14 @@ const FormCaixa = forwardRef(({
 									<Field
 										data={
 											{
-												hasNumberFormat:true,
+												hasNumberFormat: true,
 												hasLabel: true,
 												contentLabel: 'Valor mínimo *',
 												atributsFormLabel: {
 
 												},
 												atributsFormControl: {
-													maskChar:null,
+													maskChar: null,
 													type: 'text',
 													name: 'vrMin',
 													placeholder: '',
@@ -416,7 +417,7 @@ const FormCaixa = forwardRef(({
 									<Field
 										data={
 											{
-												hasNumberFormat:true,
+												hasNumberFormat: true,
 												hasLabel: true,
 												contentLabel: 'Valor máximo *',
 												atributsFormLabel: {
@@ -480,7 +481,7 @@ const FormCaixa = forwardRef(({
 									<Field
 										data={
 											{
-												hasNumberFormat:true,
+												hasNumberFormat: true,
 												hasLabel: true,
 												contentLabel: 'Saldo inicial *',
 												atributsFormLabel: {
