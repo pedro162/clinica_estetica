@@ -108,7 +108,7 @@ const Atualizar = ({ idFormaPagamento, setIdFormaPagamento, callback, atualizarF
 						setDataFormaPagamento={setDataFormaPagamento}
 						setIdFormaPagamento={setIdFormaPagamento}
 						idFormaPagamento={idFormaPagamento}
-						carregando={false}
+						carregando={carregando}
 						dataFormaPagamentoChoice={dataFormaPagamento}
 						setAtualizarFormaPagamento={setAtualizarFormaPagamento}
 						atualizarFormaPagamento={atualizarFormaPagamento}
@@ -125,7 +125,7 @@ const Atualizar = ({ idFormaPagamento, setIdFormaPagamento, callback, atualizarF
 		)
 	}
 
-	if(error){
+	if (error) {
 		Swal.fire({
 			icon: "error",
 			title: "Oops...",

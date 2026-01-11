@@ -265,7 +265,7 @@ const Required = ({ data, url_btn, callback_selected, props_btn_search, label_bt
                     {label_btn_search ? label_btn_search : (<FontAwesomeIcon icon={faSearch} />)}
                 </Button>
             </Col>
-            <Col style={{ 'margin': '0px', 'padding-left': '0px' }} xs="7" sm="7" md="7">
+            <Col style={{ 'margin': '0px', 'paddingLeft': '0px' }} xs="7" sm="7" md="7">
                 <FormControlInput
                     data={
                         {
@@ -311,8 +311,10 @@ const Required = ({ data, url_btn, callback_selected, props_btn_search, label_bt
                                         if (index === activeSuggestion) {
                                             className = estilos.suggestion_active;
                                         }
+
+                                        let rand = Math.random() * (11111 - 99999);
                                         return (
-                                            <li className={className} key={(value + label + index)} onClick={() => onClickSugestion(value, label)}>
+                                            <li className={className} key={(value + label + index + rand)} onClick={() => onClickSugestion(value, label)}>
                                                 {value + ' - ' + label}
                                             </li>
                                         );
