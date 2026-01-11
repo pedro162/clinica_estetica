@@ -108,7 +108,7 @@ const Atualizar = ({ idPlanoPagamento, setIdPlanoPagamento, callback, atualizarP
 						setDataPlanoPagamento={setDataPlanoPagamento}
 						setIdPlanoPagamento={setIdPlanoPagamento}
 						idPlanoPagamento={idPlanoPagamento}
-						carregando={false}
+						carregando={carregando}
 						dataPlanoPagamentoChoice={dataPlanoPagamento}
 						setAtualizarPlanoPagamento={setAtualizarPlanoPagamento}
 						atualizarPlanoPagamento={atualizarPlanoPagamento}
@@ -125,7 +125,7 @@ const Atualizar = ({ idPlanoPagamento, setIdPlanoPagamento, callback, atualizarP
 		)
 	}
 
-	if(error){
+	if (error) {
 		Swal.fire({
 			icon: "error",
 			title: "Oops...",

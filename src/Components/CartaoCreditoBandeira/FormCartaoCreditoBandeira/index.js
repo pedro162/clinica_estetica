@@ -57,6 +57,8 @@ const FormCartaoCreditoBandeira = forwardRef(({
 			...params,
 		}
 
+		setCarregando && setCarregando(true);
+
 		let data_config = idCartaoCreditoBandeira && idCartaoCreditoBandeira > 0
 			? BANDEIRA_CARTAO_UPDATE_POST(idCartaoCreditoBandeira, data, getToken())
 			: BANDEIRA_CARTAO_SAVE_POST(data, getToken());
@@ -64,11 +66,11 @@ const FormCartaoCreditoBandeira = forwardRef(({
 		const { url, options } = data_config;
 		const { response, json } = await request(url, options);
 
-		if (json && !error) {
-			callback();
-			setShowModalCriarCartaoCreditoBandeira();
-			setAtualizarCartaoCreditoBandeira(false);
-			setIdCartaoCreditoBandeira(null);
+		if (!error) {
+			callback && callback();
+			setShowModalCriarCartaoCreditoBandeira && setShowModalCriarCartaoCreditoBandeira();
+			setAtualizarCartaoCreditoBandeira && setAtualizarCartaoCreditoBandeira(false);
+			setIdCartaoCreditoBandeira && setIdCartaoCreditoBandeira(null);
 
 			Swal.fire({
 				icon: "success",
@@ -78,6 +80,8 @@ const FormCartaoCreditoBandeira = forwardRef(({
 				confirmButtonColor: "#07B201",
 			});
 		}
+
+		setCarregando && setCarregando(false);
 	}
 
 	const validate = (values) => {

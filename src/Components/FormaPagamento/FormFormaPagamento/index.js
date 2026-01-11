@@ -54,6 +54,8 @@ const FormFormaPagamento = forwardRef(({
 			...params,
 		}
 
+		setCarregando && setCarregando(true);
+
 		let data_config = idFormaPagamento && idFormaPagamento > 0
 			? FORMA_PAGAMENTO_UPDATE_POST(idFormaPagamento, data, getToken())
 			: FORMA_PAGAMENTO_SAVE_POST(data, getToken());
@@ -61,11 +63,11 @@ const FormFormaPagamento = forwardRef(({
 		const { url, options } = data_config;
 		const { response, json } = await request(url, options);
 
-		if (json && !error) {
-			callback();
-			setShowModalCriarFormaPagamento();
-			setAtualizarFormaPagamento(false);
-			setIdFormaPagamento(null);
+		if (!error) {
+			callback && callback();
+			setShowModalCriarFormaPagamento && setShowModalCriarFormaPagamento();
+			setAtualizarFormaPagamento && setAtualizarFormaPagamento(false);
+			setIdFormaPagamento && setIdFormaPagamento(null);
 
 			Swal.fire({
 				icon: "success",
@@ -75,6 +77,8 @@ const FormFormaPagamento = forwardRef(({
 				confirmButtonColor: "#07B201",
 			});
 		}
+
+		setCarregando && setCarregando(false);
 	}
 
 	const validate = (values) => {

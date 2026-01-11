@@ -64,6 +64,8 @@ const FormOperadorFinanceiro = forwardRef(({
 			...params,
 		}
 
+		setCarregando && setCarregando(true);
+
 		let data_config = idOperadorFinanceiro && idOperadorFinanceiro > 0
 			? OPERADOR_FINANCEIRO_UPDATE_POST(idOperadorFinanceiro, data, getToken())
 			: OPERADOR_FINANCEIRO_SAVE_POST(data, getToken());
@@ -71,11 +73,11 @@ const FormOperadorFinanceiro = forwardRef(({
 		const { url, options } = data_config;
 		const { response, json } = await request(url, options);
 
-		if (json && !error) {
-			callback();
-			setShowModalCriarOperadorFinanceiro();
-			setAtualizarOperadorFinanceiro(false);
-			setIdOperadorFinanceiro(null);
+		if (!error) {
+			callback && callback();
+			setShowModalCriarOperadorFinanceiro && setShowModalCriarOperadorFinanceiro();
+			setAtualizarOperadorFinanceiro && setAtualizarOperadorFinanceiro(false);
+			setIdOperadorFinanceiro && setIdOperadorFinanceiro(null);
 
 			Swal.fire({
 				icon: "success",
@@ -85,6 +87,8 @@ const FormOperadorFinanceiro = forwardRef(({
 				confirmButtonColor: "#07B201",
 			});
 		}
+
+		setCarregando(false)
 	}
 
 	const validate = (values) => {
@@ -92,12 +96,19 @@ const FormOperadorFinanceiro = forwardRef(({
 		if (!values.pessoa_id) errors.pessoa_id = 'Obrigatório';
 		if (!(String(values.vrTarifa).length > 0)) errors.vrTarifa = 'Obrigatório';
 		if (!(String(values.vrDesconto).length > 0)) errors.vrDesconto = 'Obrigatório';
-		if (!( String(values.vrPorcentagemDesconto).length > 0)) errors.vrPorcentagemDesconto = 'Obrigatório';
+		if (!(String(values.vrPorcentagemDesconto).length > 0)) errors.vrPorcentagemDesconto = 'Obrigatório';
 		if (!values.filial_id) errors.filial_id = 'Obrigatório';
-		//if (!values.nrRemessaAtual) errors.nrRemessaAtual = 'Obrigatório';
-		//if (!values.nrNossoNumero) errors.nrNossoNumero = 'Obrigatório';
+
+		if (values.nrRemessaAtual && values.nrRemessaAtual < 0) {
+			errors.nrRemessaAtual = 'A remessa atual não pode ser um número negativo';
+		}
+
+		if (values.nrNossoNumero && values.nrNossoNumero < 0) {
+			errors.nrNossoNumero = 'O nossó número atual não pode ser um número negativo';
+		}
+
 		if (!values.tpLocalAtualizacaoBoleto) errors.tpLocalAtualizacaoBoleto = 'Obrigatório';
-		if (!( String(values.qtdDiasProtesto).length > 0)) errors.qtdDiasProtesto = 'Obrigatório';
+		if (!(String(values.qtdDiasProtesto).length > 0)) errors.qtdDiasProtesto = 'Obrigatório';
 		if (!values.isAssumeDuplicata) errors.isAssumeDuplicata = 'Obrigatório';
 		if (!values.isPadrao) errors.isPadrao = 'Obrigatório';
 		if (!values.isLiberado) errors.isLiberado = 'Obrigatório';
@@ -115,7 +126,7 @@ const FormOperadorFinanceiro = forwardRef(({
 	}, [loading, setCarregando]);
 
 	const dataToFormOperadorFinanceiro = () => {
-		let obj = { pessoa_id: '', vrPorcentagemDesconto:'', filial_id:'', vrTarifa:'',  isPadrao: 'no', vrDesconto: '', isLiberado: '', nrRemessaAtual: '', nrNossoNumero: '', qtdDiasProtesto: '', id: '', tpLocalAtualizacaoBoleto: '', isAssumeDuplicata:'', isPadrao: '', active: '', deleted_at: '', created_at: '', updated_at: '' }
+		let obj = { pessoa_id: '', vrPorcentagemDesconto: '', filial_id: '', vrTarifa: '', isPadrao: 'no', vrDesconto: '', isLiberado: '', nrRemessaAtual: '', nrNossoNumero: '', qtdDiasProtesto: '', id: '', tpLocalAtualizacaoBoleto: '', isAssumeDuplicata: '', isPadrao: '', active: '', deleted_at: '', created_at: '', updated_at: '' }
 
 		if (dataOperadorFinanceiroChoice) {
 
@@ -185,18 +196,18 @@ const FormOperadorFinanceiro = forwardRef(({
 
 		}
 
-		if(idFilialForm){
+		if (idFilialForm) {
 			obj.filial_id = idFilialForm;
 		}
 
-		if(idPessoaForm){
+		if (idPessoaForm) {
 			obj.pessoa_id = idPessoaForm;
 		}
 
 		return obj;
 	}
 
-	if(error){
+	if (error) {
 		Swal.fire({
 			icon: "error",
 			title: "Oops...",
@@ -362,7 +373,7 @@ const FormOperadorFinanceiro = forwardRef(({
 									></Field>
 									<ErrorMessage className="alerta_error_form_label" name="qtdDiasProtesto" component="div" />
 								</Col>
-								
+
 								<Col xs="12" sm="12" md="6">
 									<Field
 										data={
@@ -394,7 +405,7 @@ const FormOperadorFinanceiro = forwardRef(({
 									></Field>
 									<ErrorMessage className="alerta_error_form_label" name="vrTarifa" component="div" />
 								</Col>
-								
+
 							</Row>
 							<Row className="mb-3">
 								<Col xs="12" sm="12" md="6">
@@ -461,7 +472,7 @@ const FormOperadorFinanceiro = forwardRef(({
 									<ErrorMessage className="alerta_error_form_label" name="nrNossoNumero" component="div" />
 								</Col>
 							</Row>
-							<Row className="mb-3">	
+							<Row className="mb-3">
 								<Col xs="12" sm="12" md="6">
 									<Field
 										data={
