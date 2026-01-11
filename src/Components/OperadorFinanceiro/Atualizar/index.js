@@ -108,7 +108,7 @@ const Atualizar = ({ idOperadorFinanceiro, setIdOperadorFinanceiro, callback, at
 						setDataOperadorFinanceiro={setDataOperadorFinanceiro}
 						setIdOperadorFinanceiro={setIdOperadorFinanceiro}
 						idOperadorFinanceiro={idOperadorFinanceiro}
-						carregando={false}
+						carregando={carregando}
 						dataOperadorFinanceiroChoice={dataOperadorFinanceiro}
 						setAtualizarOperadorFinanceiro={setAtualizarOperadorFinanceiro}
 						atualizarOperadorFinanceiro={atualizarOperadorFinanceiro}
@@ -125,7 +125,7 @@ const Atualizar = ({ idOperadorFinanceiro, setIdOperadorFinanceiro, callback, at
 		)
 	}
 
-	if(error){
+	if (error) {
 		Swal.fire({
 			icon: "error",
 			title: "Oops...",
