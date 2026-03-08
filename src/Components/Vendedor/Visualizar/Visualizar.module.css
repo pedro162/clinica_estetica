@@ -1,0 +1,12 @@
+.card-detalhes {
+    background-color: #f8f9fa;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+.card-detalhes h5 {
+    color: #0d6efd;
+}
+.card-detalhes strong {
+    color: #6c757d;
+}

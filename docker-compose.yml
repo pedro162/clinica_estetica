@@ -1,7 +1,9 @@
 services:
   react-app:
     container_name: clinica_estetica
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
     ports:
       - "3001:3000"
     volumes:

@@ -14,13 +14,9 @@ import Modal from '../Utils/Modal/index.js'
 import Load from '../Utils/Load/index.js'
 import { UserContex } from '../../Context/UserContex.js'
 import FormServico from './FormServico/index.js'
-import Cadastrar from './Cadastrar/index.js'
+import Visualizar from './Visualizar/index.js'
 import Atualizar from './Atualizar/index.js'
-import ContasReceber from '../ContasReceber/index.js'
 import { FORMAT_CALC_COD, FORMAT_MONEY } from '../../functions/index.js'
-import { Button } from 'bootstrap';
-import reactDom from 'react-dom';
-//
 
 const Include = ({ dataEstado, callBakSelectedItem, ignoreTableActions, loadingData, nadaEncontrado, callBack, setMostarFiltros, idOrdemCriada, nextPage, setNextPage, usePagination, setUsePagination, totalPageCount, setTotalPageCount, ...props }) => {
     const { data, error, request, loading } = useFetch();
@@ -43,6 +39,7 @@ const Include = ({ dataEstado, callBakSelectedItem, ignoreTableActions, loadingD
     const [nrPageAtual, setNrPageAtual] = React.useState(null)
     const [qtdItemsTo, setQtdItemsTo] = React.useState(null)
     const [qtdItemsTotal, setQtdItemsTotal] = React.useState(null)
+    const [visualizarServico, setVisualizarServico] = React.useState(false)
 
     const { getToken } = React.useContext(UserContex);
 
@@ -91,6 +88,12 @@ const Include = ({ dataEstado, callBakSelectedItem, ignoreTableActions, loadingD
         setPessoa(target.value)
     }
 
+    const visualizarServicoAction = (idServico) => {
+        setServicoChoice(idServico)
+        setAcao('visualizar')
+        setVisualizarServico(true);
+    }
+
     React.useEffect(() => {
         switch (acao) {
             case 'editar':
@@ -105,6 +108,14 @@ const Include = ({ dataEstado, callBakSelectedItem, ignoreTableActions, loadingD
                     setCancelarServico(true);
                 } else {
                     setCancelarServico(false);
+                }
+                break;
+
+            case 'visualizar':
+                if (consultaChoice > 0) {
+                    setVisualizarServico(true);
+                } else {
+                    setVisualizarServico(false);
                 }
                 break;
             default://
@@ -174,11 +185,15 @@ const Include = ({ dataEstado, callBakSelectedItem, ignoreTableActions, loadingD
                 if (atual) {
                     let acoesArr = [];
                     let btnEditar = true;
+                    let btnDetalhes = true;
 
                     if (btnEditar) {
                         acoesArr.push({ acao: () => atualizarServicoAction(atual.id), label: 'Editar', propsOption: {}, propsLabel: {} })
                     }
 
+                    if (btnDetalhes) {
+                        acoesArr.push({ acao: () => visualizarServicoAction(atual.id), label: 'Visualizar', propsOption: {}, propsLabel: {} })
+                    }
 
                     //'remarcado','finalizado','cancelado','pendente'
                     data.push(
@@ -269,9 +284,14 @@ const Include = ({ dataEstado, callBakSelectedItem, ignoreTableActions, loadingD
                 if (atual) {
                     let acoesArr = [];
                     let btnEditar = true;
+                    let btnDetalhes = true;
 
                     if (btnEditar) {
                         acoesArr.push({ acao: () => atualizarServicoAction(atual.id), label: 'Editar', propsOption: {}, propsLabel: {} })
+                    }
+
+                    if (btnDetalhes) {
+                        acoesArr.push({ acao: () => visualizarServicoAction(atual.id), label: 'Visualizar', propsOption: {}, propsLabel: {} })
                     }
 
 
@@ -400,6 +420,11 @@ const Include = ({ dataEstado, callBakSelectedItem, ignoreTableActions, loadingD
             {
                 atualizarServico &&
                 <Atualizar atualizarServico={atualizarServico} setAtualizarServico={setAtualizarServico} idServico={consultaChoice} setIdServico={setServicoChoice} callback={callBack} />
+            }
+
+            {
+                visualizarServico &&
+                <Visualizar visualizarServico={visualizarServico} setVisualizarServico={setVisualizarServico} idServico={consultaChoice} setIdServico={setServicoChoice} callback={callBack} />
             }
 
         </>
