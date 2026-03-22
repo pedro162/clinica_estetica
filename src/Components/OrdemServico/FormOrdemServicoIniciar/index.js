@@ -16,6 +16,8 @@ import * as Yup from 'yup';
 import { TOKEN_POST, CLIENT_ID, CLIENT_SECRET, ORDEM_SERVICO_SAVE_POST, SERVICO_ALL_POST, SERVICO_UPDATE_POST, CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST, RCA_ALL_POST, FILIAIS_ALL_POST } from '../../../api/endpoints/geral.js'
 import Profissionais from '../../Profissionais/index.js';
 import Filial from '../../Filial/index.js';
+import Clientes from '../../Clientes/index.js';
+import Vendedor from '../../Vendedor/index.js';
 
 
 const FormOrdemServicoIniciar = ({ dataOrdemServicoChoice, setIdOrdemServico, idOrdemServico, showModalCriarOrdemServico, setShowModalCriarOrdemServico, callback, atualizarOrdemServico, setAtualizarOrdemServico, carregando }) => {
@@ -64,11 +66,29 @@ const FormOrdemServicoIniciar = ({ dataOrdemServicoChoice, setIdOrdemServico, id
 	}
 
 	const requestAllRca = async () => {
-
 		const { url, options } = RCA_ALL_POST({}, getToken());
 		const { response, json } = await dataRequest.request(url, options);
+
 		if (json) {
-			setDataRca(json)
+			let data = json;
+
+			if (data?.mensagem) {
+				data = data?.mensagem;
+			}
+
+			if (data?.registro) {
+				data = data?.registro;
+			}
+
+			if (data?.data) {
+				data = data?.data;
+			}
+
+			if (data?.data) {
+				data = data?.data;
+			}
+
+			setDataRca(data)
 		} else {
 
 			setDataRca([]);
@@ -100,14 +120,14 @@ const FormOrdemServicoIniciar = ({ dataOrdemServicoChoice, setIdOrdemServico, id
 		return obj;
 	}
 
-	//RCA_ALL_POST
 	const preparaRcaToForm = () => {
-		if (dataRca.hasOwnProperty('mensagem') && Array.isArray(dataRca.mensagem) && dataRca.mensagem.length > 0) {
-			let filiais = dataRca.mensagem.map(({ id, name }, index, arr) => ({ label: name, valor: id, props: {} }))
-			filiais.unshift({ label: 'Selecione...', valor: '', props: { selected: 'selected', disabled: 'disabled' } })
+		if (dataRca && Array.isArray(dataRca) && dataRca.length > 0) {
+			let rca = dataRca.map(({ id, name }, index, arr) => ({ label: name, valor: id, props: {} }))
+			rca.unshift({ label: 'Selecione...', valor: '', props: { selected: 'selected', disabled: 'disabled' } })
 
-			return filiais;
+			return rca;
 		}
+
 		return []
 	}
 
@@ -125,13 +145,11 @@ const FormOrdemServicoIniciar = ({ dataOrdemServicoChoice, setIdOrdemServico, id
 			icon: "error",
 			title: "Oops...",
 			text: error,
-			footer: '',//'<a href="#">Why do I have this issue?</a>'
+			footer: '',
 			confirmButtonColor: "#07B201",
-			//width:'20rem',
 		});
 	}
 
-	// Validação com Yup
 	const validationSchema = Yup.object({
 		rca_id: Yup.string().required('Vendedor é obrigatório'),
 		filial_id: Yup.string().required('Filial é obrigatório'),
@@ -158,7 +176,6 @@ const FormOrdemServicoIniciar = ({ dataOrdemServicoChoice, setIdOrdemServico, id
 						if (!values.filial_id) {
 							errors.filial_id = "Obrigatório"
 						}
-
 
 						if (!values.pessoa_id) {
 							errors.pessoa_id = "Obrigatório"
@@ -192,7 +209,6 @@ const FormOrdemServicoIniciar = ({ dataOrdemServicoChoice, setIdOrdemServico, id
 
 						<Modal handleConcluir={() => { handleSubmit(); }} title={(atualizarOrdemServico == true ? 'Atualizar' : 'Iniciar') + ' Ordem de Servico'} size="lg" propsConcluir={{ 'disabled': loading }} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarOrdemServico} showHide={() => { setShowModalCriarOrdemServico(); setAtualizarOrdemServico(false); setIdOrdemServico(null); }}>
 							{
-
 								carregando && carregando == true
 									?
 									(<Load />)
@@ -292,7 +308,6 @@ const FormOrdemServicoIniciar = ({ dataOrdemServicoChoice, setIdOrdemServico, id
 											</Row>
 											<Row className="mb-3">
 
-
 												<Col xs="12" sm="12" md="6">
 													<Field
 														data={
@@ -305,26 +320,32 @@ const FormOrdemServicoIniciar = ({ dataOrdemServicoChoice, setIdOrdemServico, id
 																atributsFormControl: {
 																	type: 'text',
 																	name: 'rca_id',
-																	placeholder: 'Vendedor',
+																	placeholder: 'Fulano de tal',
 																	id: 'rca_id',
+																	name_cod: 'rca_id',
+																	name_description: 'rca_nome',
 																	onChange: handleChange,
 																	onBlur: handleBlur,
 																	value: values.rca_id,
-																	className: estilos.input,
-																	size: "sm"
+																	className: `${estilos.input}`,
+																	size: "sm",
 																},
-																options: preparaRcaToForm(),
 																atributsContainer: {
 																	className: ''
+																},
+																hookToLoadFromDescription: RCA_ALL_POST,
+																callbackDataItemChoice: (param) => {
+																	let { label, value } = param
+																	setFieldValue('rca_id', value)
 																}
 															}
 														}
 
-														component={FormControlSelect}
-													></Field>
+														ComponentFilter={Vendedor}
+														componentTitle={'Escolha um vendedor'}
+														component={Required}
+													>   </Field>
 													<ErrorMessage className="alerta_error_form_label" name="rca_id" component="div" />
-
-
 												</Col>
 
 												<Col xs="12" sm="12" md="6">
@@ -332,7 +353,7 @@ const FormOrdemServicoIniciar = ({ dataOrdemServicoChoice, setIdOrdemServico, id
 														data={
 															{
 																hasLabel: true,
-																contentLabel: 'Profissinal ',
+																contentLabel: 'Profissional ',
 																atributsFormLabel: {
 
 																},
@@ -342,7 +363,7 @@ const FormOrdemServicoIniciar = ({ dataOrdemServicoChoice, setIdOrdemServico, id
 																	placeholder: 'Ex: fulano de tal',
 																	id: 'profissional_id',
 																	name_cod: 'profissional_id',
-																	name_desacription: 'pessoa_name',
+																	name_description: 'pessoa_name',
 																	onChange: handleChange,
 																	onBlur: handleBlur,
 																	value: values.profissional_id,
@@ -382,7 +403,7 @@ const FormOrdemServicoIniciar = ({ dataOrdemServicoChoice, setIdOrdemServico, id
 																	placeholder: 'Fulano de tal',
 																	id: 'name_pessoa_contato',
 																	name_cod: 'name_pessoa_contato',
-																	name_desacription: 'name_pessoa_contato',
+																	name_description: 'name_pessoa_contato',
 																	onChange: handleChange,
 																	onBlur: handleBlur,
 																	value: values.name_pessoa_contato,

@@ -39,10 +39,11 @@ import FormaPagamento from '../Components/FormaPagamento/index.js'
 import PlanoPagamento from '../Components/PlanoPagamento/index.js'
 import OperadorFinanceiro from '../Components/OperadorFinanceiro/index.js'
 import CartaoCreditoBandeira from '../Components/CartaoCreditoBandeira/index.js'
+import Vendedor from '../Components/Vendedor/index.js'
 
 export {
      Home, NotFound, Login, ProtectedRoute, PainelInicial, Clientes, Grupos, ContasReceber, Caixa, Filial, Parametro, User, Pais,
      Estado, Cidade, Agenda, AgendaEvento, CategoriaEvento, Especialidade, Profissionais, Consulta, ConstrutorFicha, ConstrutorFichaGrupo,
      ConstrutorFichaItem, Servico, OrdemServico, ClientesFichas, MovimentacoesFinanceiras, MenuBotoes, CadastrarCliente, Widgets, PainelHome, CadastrarExternoSimples,
-     SendMessageWhatsApp, SendEmail, Configuracoes, ContasReceberItem, FormaPagamento, PlanoPagamento, OperadorFinanceiro, CartaoCreditoBandeira
+     SendMessageWhatsApp, SendEmail, Configuracoes, ContasReceberItem, FormaPagamento, PlanoPagamento, OperadorFinanceiro, CartaoCreditoBandeira, Vendedor
 }
