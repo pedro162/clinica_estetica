@@ -8,7 +8,8 @@ import {
   FormaPagamento,
   PlanoPagamento,
   OperadorFinanceiro,
-  CartaoCreditoBandeira
+  CartaoCreditoBandeira,
+  Vendedor
 } from './View/index.js'
 import { Router, Route, Switch } from 'react-router'
 import { history } from './history.js'
@@ -189,6 +190,11 @@ function App() {
                 <ProtectedRoute
                   path="/nofiticacoes/email/:id"
                   component={SendEmail}
+                />
+
+                <ProtectedRoute
+                  path="/vendedores/painel"
+                  component={Vendedor}
                 />
 
                 <ProtectedRoute
