@@ -4,19 +4,22 @@ import FormControlInput from '../../FormControl/index.js'
 import FormControlSelect from '../../FormControl/Select.js'
 import { Col, Row } from 'react-bootstrap';
 import Button from '../../FormControl/Button.js';
-import estilos from './FormPlanoPagamento.module.css'
+import estilos from './FormVendedor.module.css'
 import useFetch from '../../../Hooks/useFetch.js';
 import { UserContex } from '../../../Context/UserContex.js'
 import Swal from 'sweetalert2'
 import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible.js'
-import { TOKEN_POST, CLIENT_ID, CLIENT_SECRET, FILIAIS_ALL_POST, PLANO_PAGAMENTO_UPDATE_POST, PLANO_PAGAMENTO_SAVE_POST } from '../../../api/endpoints/geral.js'
+import { TOKEN_POST, CLIENT_ID, CLIENT_SECRET, FILIAIS_ALL_POST, RCA_UPDATE_POST, RCA_SAVE_POST, CLIENTES_ALL_POST } from '../../../api/endpoints/geral.js'
+import Required from '../../FormControl/Required.js';
+import Clientes from '../../Clientes/index.js';
+import Filial from '../../Filial/index.js';
 
-const FormPlanoPagamento = forwardRef(({
-	name,
+const FormVendedor = forwardRef(({
+	pessoa_id,
 	setname,
 	tipo,
 	setTipo,
-	hasOperadorFinanceiro,
+	hasVendedor,
 	setVrMinimo,
 	id,
 	setVrMaximo,
@@ -24,17 +27,17 @@ const FormPlanoPagamento = forwardRef(({
 	setdescricao,
 	tpPagamento,
 	setAceitaTransferencia,
-	exibe_balcao,
+	isAssumeDuplicata,
 	setVrSaldoInicial,
-	setAtualizarPlanoPagamento,
-	callback,
-	setShowModalCriarPlanoPagamento,
-	showModalCriarPlanoPagamento,
-	idPlanoPagamento,
-	setIdPlanoPagamento,
-	dataPlanoPagamentoChoice,
-	atualizarPlanoPagamento,
 	carregando,
+	setAtualizarVendedor,
+	callback,
+	setShowModalCriarVendedor,
+	showModalCriarVendedor,
+	idVendedor,
+	setIdVendedor,
+	dataVendedorChoice,
+	atualizarVendedor,
 	setCarregando,
 	...props
 }, ref) => {
@@ -44,12 +47,10 @@ const FormPlanoPagamento = forwardRef(({
 	const { getToken, dataUser } = React.useContext(UserContex);
 	const [dataFiliais, setDataFiliais] = React.useState([])
 	const [dataItens, setDataitens] = React.useState([])
-	const [dataPlanoPagamento, setDataPlanoPagamento] = React.useState([])
-	const [dataOperadorFinanceiro, setDataOperadorFinanceiro] = React.useState([])
-	const [dataPlanoPagamentoEscolhido, setDataPlanoPagamentoEscolhido] = React.useState([])
-	const [idPlanoPagamentoForm, setIdPlanoPagamentoForm] = React.useState(0)
+	const [dataVendedor, setDataVendedor] = React.useState([])
+	const [dataVendedorEscolhido, setDataVendedorEscolhido] = React.useState([])
+	const [idVendedorForm, setIdVendedorForm] = React.useState(0)
 	const [vrCobrancaForm, setVrCobrancaForm] = React.useState(0)
-	const [idOperadorFinanceiroForm, setIdOperadorFinanceiroForm] = React.useState(0)
 	const [idFilialForm, setIdFilialForm] = React.useState(0)
 	const [nrDocForm, setNrDocForm] = React.useState('')
 	const [idPessoaForm, setIdPessoaForm] = React.useState(0)
@@ -65,18 +66,18 @@ const FormPlanoPagamento = forwardRef(({
 
 		setCarregando && setCarregando(true);
 
-		let data_config = idPlanoPagamento && idPlanoPagamento > 0
-			? PLANO_PAGAMENTO_UPDATE_POST(idPlanoPagamento, data, getToken())
-			: PLANO_PAGAMENTO_SAVE_POST(data, getToken());
+		let data_config = idVendedor && idVendedor > 0
+			? RCA_UPDATE_POST(idVendedor, data, getToken())
+			: RCA_SAVE_POST(data, getToken());
 
 		const { url, options } = data_config;
 		const { response, json } = await request(url, options);
 
 		if (!error) {
 			callback && callback();
-			setShowModalCriarPlanoPagamento && setShowModalCriarPlanoPagamento();
-			setAtualizarPlanoPagamento && setAtualizarPlanoPagamento(false);
-			setIdPlanoPagamento && setIdPlanoPagamento(null);
+			setShowModalCriarVendedor && setShowModalCriarVendedor();
+			setAtualizarVendedor && setAtualizarVendedor(false);
+			setIdVendedor && setIdVendedor(null);
 
 			Swal.fire({
 				icon: "success",
@@ -87,20 +88,30 @@ const FormPlanoPagamento = forwardRef(({
 			});
 		}
 
-		setCarregando && setCarregando(false);
+		setCarregando(false)
 	}
 
 	const validate = (values) => {
 		const errors = {};
-		if (!values.name) errors.name = 'Obrigatório';
-		if (!(values.qtdParcelas >= 0)) errors.qtdParcelas = 'Obrigatório';
-		if (!values.descricao) errors.descricao = 'Obrigatório';
-		if (!(values.qtdDiasIntervaloParcelas >= 0)) errors.qtdDiasIntervaloParcelas = 'Obrigatório';
-		if (!values.isAberto) errors.isAberto = 'Obrigatório';
-		if (!(values.diasmedios >= 0)) errors.diasmedios = 'Obrigatório';
-		if (!(values.qtdMinParcelas >= 0)) errors.qtdMinParcelas = 'Obrigatório';
-		if (!(values.qtd_dias_pri_parcela >= 0)) errors.qtd_dias_pri_parcela = 'Obrigatório';
-		if (!values.exibe_balcao) errors.exibe_balcao = 'Obrigatório';
+		if (!values.pessoa_id) errors.pessoa_id = 'Obrigatório';
+		if (!(String(values.vrTarifa).length > 0)) errors.vrTarifa = 'Obrigatório';
+		if (!(String(values.vrDesconto).length > 0)) errors.vrDesconto = 'Obrigatório';
+		if (!(String(values.vrPorcentagemDesconto).length > 0)) errors.vrPorcentagemDesconto = 'Obrigatório';
+		if (!values.filial_id) errors.filial_id = 'Obrigatório';
+
+		if (values.nrRemessaAtual && values.nrRemessaAtual < 0) {
+			errors.nrRemessaAtual = 'A remessa atual não pode ser um número negativo';
+		}
+
+		if (values.nrNossoNumero && values.nrNossoNumero < 0) {
+			errors.nrNossoNumero = 'O nossó número atual não pode ser um número negativo';
+		}
+
+		if (!values.tpLocalAtualizacaoBoleto) errors.tpLocalAtualizacaoBoleto = 'Obrigatório';
+		if (!(String(values.qtdDiasProtesto).length > 0)) errors.qtdDiasProtesto = 'Obrigatório';
+		if (!values.isAssumeDuplicata) errors.isAssumeDuplicata = 'Obrigatório';
+		if (!values.isPadrao) errors.isPadrao = 'Obrigatório';
+		if (!values.isLiberado) errors.isLiberado = 'Obrigatório';
 		return errors;
 	};
 
@@ -111,15 +122,15 @@ const FormPlanoPagamento = forwardRef(({
 	}));
 
 	React.useRef(() => {
-		setCarregando && setCarregando(loading);
+		setCarregando(loading)
 	}, [loading, setCarregando]);
 
-	const dataToFormPlanoPagamento = () => {
-		let obj = { qtdParcelas: '', qtdDiasIntervaloParcelas: '', desdrobrarDuplicataManual: 'no', gerarDuplicataManual: '', isAberto: '', name: '', diasmedios: '', qtdMinParcelas: '', id: '', descricao: '', exibe_balcao: '', qtd_dias_pri_parcela: '', active: '', deleted_at: '', created_at: '', updated_at: '' }
+	const dataToFormVendedor = () => {
+		let obj = { pessoa_id: '', vrPorcentagemDesconto: '', filial_id: '', vrTarifa: '', isPadrao: 'no', vrDesconto: '', isLiberado: '', nrRemessaAtual: '', nrNossoNumero: '', qtdDiasProtesto: '', id: '', tpLocalAtualizacaoBoleto: '', isAssumeDuplicata: '', isPadrao: '', active: '', deleted_at: '', created_at: '', updated_at: '' }
 
-		if (dataPlanoPagamentoChoice) {
+		if (dataVendedorChoice) {
 
-			let data = dataPlanoPagamentoChoice
+			let data = dataVendedorChoice
 
 			if (data?.mensagem) {
 				data = data?.mensagem
@@ -127,54 +138,70 @@ const FormPlanoPagamento = forwardRef(({
 				data = data?.data
 			}
 
-			if (data.hasOwnProperty('qtdParcelas')) {
-				obj.qtdParcelas = data.qtdParcelas;
+			if (data.hasOwnProperty('pessoa_id')) {
+				obj.pessoa_id = data.pessoa_id;
 			}
 
-			if (data.hasOwnProperty('desdrobrarDuplicataManual')) {
-				obj.desdrobrarDuplicataManual = data.desdrobrarDuplicataManual;
+			if (data.hasOwnProperty('filial_id')) {
+				obj.filial_id = data.filial_id;
 			}
 
-			if (data.hasOwnProperty('gerarDuplicataManual')) {
-				obj.gerarDuplicataManual = data.gerarDuplicataManual;
+			if (data.hasOwnProperty('isPadrao')) {
+				obj.isPadrao = data.isPadrao;
 			}
 
-			if (data.hasOwnProperty('isAberto')) {
-				obj.isAberto = data.isAberto;
+			if (data.hasOwnProperty('vrDesconto')) {
+				obj.vrDesconto = data.vrDesconto;
 			}
 
-			if (data.hasOwnProperty('name')) {
-				obj.name = data.name;
+			if (data.hasOwnProperty('isLiberado')) {
+				obj.isLiberado = data.isLiberado;
 			}
 
-			if (data.hasOwnProperty('diasmedios')) {
-				obj.diasmedios = data.diasmedios;
+			if (data.hasOwnProperty('nrRemessaAtual')) {
+				obj.nrRemessaAtual = data.nrRemessaAtual;
 			}
 
-			if (data.hasOwnProperty('qtdMinParcelas')) {
-				obj.qtdMinParcelas = data.qtdMinParcelas;
+			if (data.hasOwnProperty('nrNossoNumero')) {
+				obj.nrNossoNumero = data.nrNossoNumero;
 			}
 
-			if (data.hasOwnProperty('qtdDiasIntervaloParcelas')) {
-				obj.qtdDiasIntervaloParcelas = data.qtdDiasIntervaloParcelas;
+			if (data.hasOwnProperty('qtdDiasProtesto')) {
+				obj.qtdDiasProtesto = data.qtdDiasProtesto;
+			}
+
+			if (data.hasOwnProperty('vrTarifa')) {
+				obj.vrTarifa = data.vrTarifa;
 			}
 
 			if (data.hasOwnProperty('id')) {
 				obj.id = data.id;
 			}
 
-			if (data.hasOwnProperty('descricao')) {
-				obj.descricao = data.descricao;
+			if (data.hasOwnProperty('tpLocalAtualizacaoBoleto')) {
+				obj.tpLocalAtualizacaoBoleto = data.tpLocalAtualizacaoBoleto;
 			}
 
-			if (data.hasOwnProperty('qtd_dias_pri_parcela')) {
-				obj.qtd_dias_pri_parcela = data.qtd_dias_pri_parcela;
+			if (data.hasOwnProperty('isPadrao')) {
+				obj.isPadrao = data.isPadrao;
 			}
 
-			if (data.hasOwnProperty('exibe_balcao')) {
-				obj.exibe_balcao = data.exibe_balcao;
+			if (data.hasOwnProperty('isAssumeDuplicata')) {
+				obj.isAssumeDuplicata = data.isAssumeDuplicata;
 			}
 
+			if (data.hasOwnProperty('vrPorcentagemDesconto')) {
+				obj.vrPorcentagemDesconto = data.vrPorcentagemDesconto;
+			}
+
+		}
+
+		if (idFilialForm) {
+			obj.filial_id = idFilialForm;
+		}
+
+		if (idPessoaForm) {
+			obj.pessoa_id = idPessoaForm;
 		}
 
 		return obj;
@@ -196,7 +223,7 @@ const FormPlanoPagamento = forwardRef(({
 		<>
 			<Formik
 				innerRef={formikRef}
-				initialValues={dataToFormPlanoPagamento()}
+				initialValues={dataToFormVendedor()}
 				enableReinitialize={false}
 				validate={validate}
 				onSubmit={async (values, { setSubmitting }) => {
@@ -213,11 +240,12 @@ const FormPlanoPagamento = forwardRef(({
 							handleChange,
 							handleBlur,
 							handleSubmit,
-							isSubmitting
+							isSubmitting,
+							setFieldValue
 						}
 					) => (
 
-						<form onSubmit={handleSubmit} id="formPlanoPagamento" >
+						<form onSubmit={handleSubmit} id="formVendedor" >
 							<Row className="my-3">
 								<Col xs="12" sm="12" md="12">
 									<span className="label_title_grup_forms" >Dados básicos</span>
@@ -236,60 +264,81 @@ const FormPlanoPagamento = forwardRef(({
 										data={
 											{
 												hasLabel: true,
-												contentLabel: 'Nome *',
+												contentLabel: 'Pessoa *',
 												atributsFormLabel: {
 
 												},
 												atributsFormControl: {
 													tipo: 'text',
-													name: 'name',
+													name: 'pessoa_id',
 													placeholder: '',
-													id: 'name',
+													id: 'pessoa_id',
 													onChange: handleChange,
 													onBlur: handleBlur,
-													value: values.name,
+													value: values.pessoa_id,
 													className: `${estilos.input}`,
 													size: "sm"
 												},
 												atributsContainer: {
 													className: ''
+												},
+												hookToLoadFromDescription: CLIENTES_ALL_POST,
+												callbackDataItemChoice: (param) => {
+													let { label, value } = param
+
+													setFieldValue('pessoa_id', value)
 												}
 											}
 										}
 
-										component={FormControlInput}
+										ComponentFilter={Clientes}
+										componentTitle={'Escolha uma pessoa'}
+										component={Required}
 									></Field>
-									<ErrorMessage className="alerta_error_form_label" name="name" component="div" />
+									<ErrorMessage className="alerta_error_form_label" name="pessoa_id" component="div" />
 								</Col>
 								<Col xs="12" sm="12" md="6">
 									<Field
 										data={
 											{
 												hasLabel: true,
-												contentLabel: 'Descrição *',
+												contentLabel: 'Filial *',
 												atributsFormLabel: {
 
 												},
 												atributsFormControl: {
 													tipo: 'text',
-													name: 'descricao',
+													name: 'filial_id',
 													placeholder: '',
-													id: 'nadescricaoe',
+													id: 'filial_id',
 													onChange: handleChange,
 													onBlur: handleBlur,
-													value: values.descricao,
+													value: values.filial_id,
 													className: `${estilos.input}`,
 													size: "sm"
 												},
 												atributsContainer: {
 													className: ''
+												},
+												hookToLoadFromDescription: FILIAIS_ALL_POST,
+												callbackDataItemChoice: (param) => {
+													let { label, value } = param
+
+													handleChange({
+														target: {
+															name: 'filial_id',
+															value: value
+														}
+													})
 												}
 											}
 										}
 
-										component={FormControlInput}
+										ComponentFilter={Filial}
+										componentTitle={'Escolha uma filial'}
+										component={Required}
 									></Field>
-									<ErrorMessage className="alerta_error_form_label" name="descricao" component="div" />
+									<ErrorMessage className="alerta_error_form_label" name="filial_id" component="div" />
 								</Col>
 							</Row>
 							<Row className="mb-3">
@@ -298,18 +347,18 @@ const FormPlanoPagamento = forwardRef(({
 										data={
 											{
 												hasLabel: true,
-												contentLabel: 'Quantida mínima de parcelas *',
+												contentLabel: 'Dias para protesto *',
 												atributsFormLabel: {
 
 												},
 												atributsFormControl: {
 													tipo: 'text',
-													name: 'qtdMinParcelas',
+													name: 'qtdDiasProtesto',
 													placeholder: '',
-													id: 'qtdMinParcelas',
+													id: 'qtdDiasProtesto',
 													onChange: handleChange,
 													onBlur: handleBlur,
-													value: values.qtdMinParcelas,
+													value: values.qtdDiasProtesto,
 													className: estilos.input,
 													size: "sm",
 												},
@@ -322,7 +371,7 @@ const FormPlanoPagamento = forwardRef(({
 
 										component={FormControlInput}
 									></Field>
-									<ErrorMessage className="alerta_error_form_label" name="qtdMinParcelas" component="div" />
+									<ErrorMessage className="alerta_error_form_label" name="qtdDiasProtesto" component="div" />
 								</Col>
 
 								<Col xs="12" sm="12" md="6">
@@ -330,18 +379,18 @@ const FormPlanoPagamento = forwardRef(({
 										data={
 											{
 												hasLabel: true,
-												contentLabel: 'Quantidade parcelas *',
+												contentLabel: 'Valor de tarifa *',
 												atributsFormLabel: {
 
 												},
 												atributsFormControl: {
 													tipo: 'text',
-													name: 'qtdParcelas',
+													name: 'vrTarifa',
 													placeholder: '',
-													id: 'qtdParcelas',
+													id: 'vrTarifa',
 													onChange: handleChange,
 													onBlur: handleBlur,
-													value: values.qtdParcelas,
+													value: values.vrTarifa,
 													className: estilos.input,
 													size: "sm",
 												},
@@ -354,73 +403,9 @@ const FormPlanoPagamento = forwardRef(({
 
 										component={FormControlInput}
 									></Field>
-									<ErrorMessage className="alerta_error_form_label" name="qtdParcelas" component="div" />
+									<ErrorMessage className="alerta_error_form_label" name="vrTarifa" component="div" />
 								</Col>
-							</Row>
-							<Row className="mb-3">
 
-								<Col xs="12" sm="12" md="6">
-									<Field
-										data={
-											{
-												hasLabel: true,
-												contentLabel: 'Dias entre parcelas *',
-												atributsFormLabel: {
-
-												},
-												atributsFormControl: {
-													tipo: 'text',
-													name: 'qtdDiasIntervaloParcelas',
-													placeholder: '',
-													id: 'qtdDiasIntervaloParcelas',
-													onChange: handleChange,
-													onBlur: handleBlur,
-													value: values.qtdDiasIntervaloParcelas,
-													className: estilos.input,
-													size: "sm",
-												},
-												options: [],
-												atributsContainer: {
-													className: ''
-												}
-											}
-										}
-
-										component={FormControlInput}
-									></Field>
-									<ErrorMessage className="alerta_error_form_label" name="qtdDiasIntervaloParcelas" component="div" />
-								</Col>
-								<Col xs="12" sm="12" md="6">
-									<Field
-										data={
-											{
-												hasLabel: true,
-												contentLabel: 'Dias para primeira parcela *',
-												atributsFormLabel: {
-
-												},
-												atributsFormControl: {
-													tipo: 'text',
-													name: 'qtd_dias_pri_parcela',
-													placeholder: '',
-													id: 'qtd_dias_pri_parcela',
-													onChange: handleChange,
-													onBlur: handleBlur,
-													value: values.qtd_dias_pri_parcela,
-													className: estilos.input,
-													size: "sm",
-												},
-												options: [],
-												atributsContainer: {
-													className: ''
-												}
-											}
-										}
-
-										component={FormControlInput}
-									></Field>
-									<ErrorMessage className="alerta_error_form_label" name="qtd_dias_pri_parcela" component="div" />
-								</Col>
 							</Row>
 							<Row className="mb-3">
 								<Col xs="12" sm="12" md="6">
@@ -428,18 +413,18 @@ const FormPlanoPagamento = forwardRef(({
 										data={
 											{
 												hasLabel: true,
-												contentLabel: 'Dias médios *',
+												contentLabel: 'Remessa atual',
 												atributsFormLabel: {
 
 												},
 												atributsFormControl: {
 													tipo: 'text',
-													name: 'diasmedios',
+													name: 'nrRemessaAtual',
 													placeholder: '',
-													id: 'diasmedios',
+													id: 'nrRemessaAtual',
 													onChange: handleChange,
 													onBlur: handleBlur,
-													value: values.diasmedios,
+													value: values.nrRemessaAtual,
 													className: estilos.input,
 													size: "sm",
 												},
@@ -452,29 +437,128 @@ const FormPlanoPagamento = forwardRef(({
 
 										component={FormControlInput}
 									></Field>
-									<ErrorMessage className="alerta_error_form_label" name="diasmedios" component="div" />
+									<ErrorMessage className="alerta_error_form_label" name="nrRemessaAtual" component="div" />
 								</Col>
+
 								<Col xs="12" sm="12" md="6">
 									<Field
 										data={
 											{
 												hasLabel: true,
-												contentLabel: 'Gerar duplicata manual *',
+												contentLabel: 'Nosso número atual',
 												atributsFormLabel: {
 
 												},
 												atributsFormControl: {
 													tipo: 'text',
-													name: 'gerarDuplicataManual',
+													name: 'nrNossoNumero',
 													placeholder: '',
-													id: 'gerarDuplicataManual',
+													id: 'nrNossoNumero',
 													onChange: handleChange,
 													onBlur: handleBlur,
-													value: values.gerarDuplicataManual,
+													value: values.nrNossoNumero,
 													className: estilos.input,
 													size: "sm",
 												},
-												options: [{ label: 'Selecione', valor: '', props: { selected: 'selected', disabled: 'disabled' } }, { label: 'Sim', valor: 'yes', props: { selected: '' } }, { label: 'Não', valor: 'no', props: {} }],
+												options: [],
+												atributsContainer: {
+													className: ''
+												}
+											}
+										}
+
+										component={FormControlInput}
+									></Field>
+									<ErrorMessage className="alerta_error_form_label" name="nrNossoNumero" component="div" />
+								</Col>
+							</Row>
+							<Row className="mb-3">
+								<Col xs="12" sm="12" md="6">
+									<Field
+										data={
+											{
+												hasLabel: true,
+												contentLabel: 'Percentual de desconto *',
+												atributsFormLabel: {
+
+												},
+												atributsFormControl: {
+													tipo: 'text',
+													name: 'vrPorcentagemDesconto',
+													placeholder: '',
+													id: 'vrPorcentagemDesconto',
+													onChange: handleChange,
+													onBlur: handleBlur,
+													value: values.vrPorcentagemDesconto,
+													className: estilos.input,
+													size: "sm",
+												},
+												options: [],
+												atributsContainer: {
+													className: ''
+												}
+											}
+										}
+
+										component={FormControlInput}
+									></Field>
+									<ErrorMessage className="alerta_error_form_label" name="vrPorcentagemDesconto" component="div" />
+								</Col>
+
+								<Col xs="12" sm="12" md="6">
+									<Field
+										data={
+											{
+												hasLabel: true,
+												contentLabel: 'Valor desconto *',
+												atributsFormLabel: {
+
+												},
+												atributsFormControl: {
+													tipo: 'text',
+													name: 'vrDesconto',
+													placeholder: '',
+													id: 'vrDesconto',
+													onChange: handleChange,
+													onBlur: handleBlur,
+													value: values.vrDesconto,
+													className: estilos.input,
+													size: "sm"
+												},
+												options: [],
+												atributsContainer: {
+													className: ''
+												}
+											}
+										}
+
+										component={FormControlInput}
+									></Field>
+									<ErrorMessage className="alerta_error_form_label" name="vrDesconto" component="div" />
+								</Col>
+							</Row>
+							<Row className="mb-3">
+								<Col xs="12" sm="12" md="6">
+									<Field
+										data={
+											{
+												hasLabel: true,
+												contentLabel: 'Local de atualização de boletos *',
+												atributsFormLabel: {
+
+												},
+												atributsFormControl: {
+													tipo: 'text',
+													name: 'tpLocalAtualizacaoBoleto',
+													placeholder: '',
+													id: 'tpLocalAtualizacaoBoleto',
+													onChange: handleChange,
+													onBlur: handleBlur,
+													value: values.tpLocalAtualizacaoBoleto,
+													className: estilos.input,
+													size: "sm",
+												},
+												options: [{ label: 'Selecione', valor: '', props: { selected: 'selected', disabled: 'disabled' } }, { label: 'Banco', valor: 'banco', props: { selected: '' } }, { label: 'Empresa', valor: 'empresa', props: {} }],
 												atributsContainer: {
 													className: ''
 												}
@@ -483,27 +567,26 @@ const FormPlanoPagamento = forwardRef(({
 
 										component={FormControlSelect}
 									></Field>
-									<ErrorMessage className="alerta_error_form_label" name="gerarDuplicataManual" component="div" />
+									<ErrorMessage className="alerta_error_form_label" name="tpLocalAtualizacaoBoleto" component="div" />
 								</Col>
-							</Row>
-							<Row className="mb-3">
+
 								<Col xs="12" sm="12" md="6">
 									<Field
 										data={
 											{
 												hasLabel: true,
-												contentLabel: 'Aberta *',
+												contentLabel: 'Padrão *',
 												atributsFormLabel: {
 
 												},
 												atributsFormControl: {
 													tipo: 'text',
-													name: 'isAberto',
+													name: 'isPadrao',
 													placeholder: '',
-													id: 'isAberto',
+													id: 'isPadrao',
 													onChange: handleChange,
 													onBlur: handleBlur,
-													value: values.isAberto,
+													value: values.isPadrao,
 													className: estilos.input,
 													size: "sm"
 												},
@@ -516,25 +599,27 @@ const FormPlanoPagamento = forwardRef(({
 
 										component={FormControlSelect}
 									></Field>
-									<ErrorMessage className="alerta_error_form_label" name="isAberto" component="div" />
+									<ErrorMessage className="alerta_error_form_label" name="isPadrao" component="div" />
 								</Col>
+							</Row>
+							<Row className="mb-3">
 								<Col xs="12" sm="12" md="6">
 									<Field
 										data={
 											{
 												hasLabel: true,
-												contentLabel: 'Exibe no balcão *',
+												contentLabel: 'Liberado *',
 												atributsFormLabel: {
 
 												},
 												atributsFormControl: {
 													tipo: 'text',
-													name: 'exibe_balcao',
+													name: 'isLiberado',
 													placeholder: '',
-													id: 'exibe_balcao',
+													id: 'isLiberado',
 													onChange: handleChange,
 													onBlur: handleBlur,
-													value: values.exibe_balcao,
+													value: values.isLiberado,
 													className: estilos.input,
 													size: "sm"
 												},
@@ -547,7 +632,38 @@ const FormPlanoPagamento = forwardRef(({
 
 										component={FormControlSelect}
 									></Field>
-									<ErrorMessage className="alerta_error_form_label" name="exibe_balcao" component="div" />
+									<ErrorMessage className="alerta_error_form_label" name="isLiberado" component="div" />
+								</Col>
+								<Col xs="12" sm="12" md="6">
+									<Field
+										data={
+											{
+												hasLabel: true,
+												contentLabel: 'Assume duplicata *',
+												atributsFormLabel: {
+
+												},
+												atributsFormControl: {
+													tipo: 'text',
+													name: 'isAssumeDuplicata',
+													placeholder: '',
+													id: 'isAssumeDuplicata',
+													onChange: handleChange,
+													onBlur: handleBlur,
+													value: values.isAssumeDuplicata,
+													className: estilos.input,
+													size: "sm"
+												},
+												options: [{ label: 'Selecione', valor: '', props: { selected: 'selected', disabled: 'disabled' } }, { label: 'Sim', valor: 'yes', props: { selected: '' } }, { label: 'Não', valor: 'no', props: {} }],
+												atributsContainer: {
+													className: ''
+												}
+											}
+										}
+
+										component={FormControlSelect}
+									></Field>
+									<ErrorMessage className="alerta_error_form_label" name="isAssumeDuplicata" component="div" />
 								</Col>
 							</Row>
 						</form>
@@ -558,4 +674,4 @@ const FormPlanoPagamento = forwardRef(({
 	)
 })
 
-export default FormPlanoPagamento;
+export default FormVendedor;
