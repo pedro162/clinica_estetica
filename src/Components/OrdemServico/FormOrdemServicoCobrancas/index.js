@@ -3,20 +3,14 @@ import { Formik, ErrorMessage, Field } from 'formik';
 import FormControlInput from '../../FormControl/index.js'
 import FormControlSelect from '../../FormControl/Select.js'
 import { Col, Row, Tabs, Tab, Button as ButtonBootstrap } from 'react-bootstrap';
-import Button from '../../FormControl/Button.js';
 import estilos from './FormOrdemServicoCobrancas.module.css'
-import Modal from '../../Utils/Modal/index.js'
 import useFetch from '../../../Hooks/useFetch.js';
 import { UserContex } from '../../../Context/UserContex.js'
-import Required from '../../FormControl/Required.js';
 import Load from '../../Utils/Load/index.js'
 import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible.js'
-import OrdemServicoItens from '../../OrdemServicoItens/index.js'
 import TableForm from '../../Relatorio/TableForm/index.js';
 import { FORMAT_CALC_COD, FORMAT_MONEY } from '../../../functions/index.js'
-
-import { TOKEN_POST, CLIENT_ID, CLIENT_SECRET, COBRANCA_ORDEM_ONE_GET, ORDEM_SERVICO_ONE_GET, COBRANCA_ORDEM_DELETE_POST, FORMA_PAGAMENTOALL_POST, FORMA_PAGAMENTO_ONE_GET, PLANO_PAGAMENTOALL_POST, PLANO_PAGAMENTO_ONE_GET, OPERADOR_FINANCEIROALL_POST, COBRANCA_ORDEM_SAVE_POST, COBRANCA_ORDEM_UPDATE_POST } from '../../../api/endpoints/geral.js'
-
+import { COBRANCA_ORDEM_ONE_GET, ORDEM_SERVICO_ONE_GET, COBRANCA_ORDEM_DELETE_POST, FORMA_PAGAMENTOALL_POST, FORMA_PAGAMENTO_ONE_GET, PLANO_PAGAMENTOALL_POST, PLANO_PAGAMENTO_ONE_GET, OPERADOR_FINANCEIROALL_POST, COBRANCA_ORDEM_SAVE_POST, COBRANCA_ORDEM_UPDATE_POST } from '../../../api/endpoints/geral.js'
 
 const FormOrdemServicoCobrancas = ({ dataOrdemServicoChoice, setDataOrdemServicoGlobal, idOrdemServico, itensOrdem, callback, carregando, qtdAtualizaCobrancas }) => {
 
@@ -76,19 +70,10 @@ const FormOrdemServicoCobrancas = ({ dataOrdemServicoChoice, setDataOrdemServico
 		}
 
 		if (jsonResponse) {
-
 			await getOrdemServico(idOrdemServico);
-			/* setDataFormaPagamentoEscolhido([])
-			setDataServicoItemEscolhido([])
-			setIdCobrancaEscolhidaOrdemServico(null)
-			setIdServicoEscolhido(null) */
 			limparFormulario()
-			//setDataOrdemServico()
 			getFormaPagamentoAll();
-			//calcularSaldoCobranca
-			//callback();
 		}
-
 	}
 
 	const limparFormulario = () => {
@@ -118,7 +103,6 @@ const FormOrdemServicoCobrancas = ({ dataOrdemServicoChoice, setDataOrdemServico
 				if (atual) {
 					totalCobrancas += Number(atual?.vr_final)
 				}
-
 			}
 		}
 
@@ -200,6 +184,7 @@ const FormOrdemServicoCobrancas = ({ dataOrdemServicoChoice, setDataOrdemServico
 			}
 		}
 	}
+
 	React.useEffect(() => {
 		getOrdemServico(idOrdemServico);
 	}, [idOrdemServico, qtdAtualizaCobrancas])
@@ -261,7 +246,6 @@ const FormOrdemServicoCobrancas = ({ dataOrdemServicoChoice, setDataOrdemServico
 
 		if (data && Array.isArray(data) && data.length > 0) {
 			setDataFormaPagamento(data)
-
 		} else {
 			setDataFormaPagamento([])
 		}
@@ -450,9 +434,7 @@ const FormOrdemServicoCobrancas = ({ dataOrdemServicoChoice, setDataOrdemServico
 	}, [nrDocForm])
 
 	React.useEffect(() => {
-
 		setDataFormaPagamentoEscolhido({ ...dataFormaPagamentoEscolhido, ...calcularCobranca({ vrCobrancaForm }) })
-
 	}, [vrCobrancaForm])
 
 	const calcularCobranca = ({ idFormaPagamentoForm, vrCobrancaForm, idPlanoPagamentoForm, idOperadorFinanceiroForm, dtVencimentoManualForm, nrDocForm }) => {
@@ -520,7 +502,6 @@ const FormOrdemServicoCobrancas = ({ dataOrdemServicoChoice, setDataOrdemServico
 
 		if (nrDocForm) {
 			obj.nr_doc = nrDocForm
-
 		} else if (data.hasOwnProperty('nr_doc')) {
 			obj.nr_doc = data.nr_doc;
 		} else {
@@ -536,6 +517,7 @@ const FormOrdemServicoCobrancas = ({ dataOrdemServicoChoice, setDataOrdemServico
 		let novoSaldo = saldoCobrancas - vrCobAtual;
 
 		let novoSaldoAbs = Math.abs(novoSaldo)
+
 		if (!(novoSaldoAbs >= 0)) {
 			novoSaldo = 0;
 		}
@@ -590,9 +572,7 @@ const FormOrdemServicoCobrancas = ({ dataOrdemServicoChoice, setDataOrdemServico
 			const { response, json } = await request(url, options);
 
 			if (json) {
-
 				await getOrdemServico(idOrdemServico);
-
 			}
 		}
 	}
@@ -607,22 +587,14 @@ const FormOrdemServicoCobrancas = ({ dataOrdemServicoChoice, setDataOrdemServico
 
 		let data = [];
 		let dataRegistro = dataCobrancas
+
 		if (dataRegistro && Array.isArray(dataRegistro) && dataRegistro.length > 0) {
 			for (let i = 0; !(i == dataRegistro.length); i++) {
 				let atual = dataRegistro[i];
 				let indexAtual = (i + 1);
 
 				if (atual) {
-
 					let acoesArr = [];
-
-					if (atual?.id > 0) {
-						acoesArr.push({
-							acao: () => {
-								setIdCobrancaEscolhidaOrdemServico(atual?.id)
-							}, label: 'Editar', propsOption: { 'className': 'btn btn-sm' }, propsLabel: {}
-						})
-					}
 
 					data.push(
 
@@ -659,7 +631,7 @@ const FormOrdemServicoCobrancas = ({ dataOrdemServicoChoice, setDataOrdemServico
 									propsRow: {}
 								},
 
-							]//
+							]
 						}
 
 					)
@@ -703,6 +675,7 @@ const FormOrdemServicoCobrancas = ({ dataOrdemServicoChoice, setDataOrdemServico
 	const titulosTableArr = gerarTitleCobTable();
 	const dataFormSev = calcularCobranca({})
 	const readonlyFields = idCobrancaEcolhidaOrdemServico > 0 ? { readonly: 'readonly', disabled: 'disabled' } : {}
+
 	return (
 
 		<>
@@ -732,10 +705,6 @@ const FormOrdemServicoCobrancas = ({ dataOrdemServicoChoice, setDataOrdemServico
 				}
 
 				onSubmit={async (values, { setSubmitting }) => {
-					/*setTimeout(() => {
-						alert(JSON.stringify(values, null, 2));
-						setSubmitting(false);
-					  }, 400);*/
 					await sendData({ ...values });
 				}}
 			>
@@ -778,8 +747,6 @@ const FormOrdemServicoCobrancas = ({ dataOrdemServicoChoice, setDataOrdemServico
 															</Col>
 														</Row>
 													}
-
-
 													<Row className='mb-3'>
 														<Col xs="12" sm="12" md="6">
 															<Field
@@ -833,8 +800,6 @@ const FormOrdemServicoCobrancas = ({ dataOrdemServicoChoice, setDataOrdemServico
 																			id: 'vr_cobranca',
 																			onChange: (ev) => { setVrCobrancaForm(ev.target.value); handleChange(ev) },
 																			onBlur: (ev) => { setVrCobrancaForm(ev.target.value); handleBlur(ev) },
-																			//onChange:handleChange,
-																			//onBlur:handleBlur,
 																			value: values.vr_cobranca,
 																			className: estilos.input,
 																			size: "sm",
@@ -856,8 +821,6 @@ const FormOrdemServicoCobrancas = ({ dataOrdemServicoChoice, setDataOrdemServico
 													</Row>
 
 													<Row className='mb-3'>
-
-
 														<Col xs="12" sm="12" md="6">
 															<Field
 																data={
@@ -872,8 +835,6 @@ const FormOrdemServicoCobrancas = ({ dataOrdemServicoChoice, setDataOrdemServico
 																			name: 'forma_pagamento_id',
 																			placeholder: 'Forma de pagamento',
 																			id: 'forma_pagamento_id',
-																			//onChange:handleChange,
-																			//onBlur:handleBlur,
 																			onChange: (ev) => { setIdFormaPagamentoForm(ev.target.value); handleChange(ev) },
 																			onBlur: (ev) => { setIdFormaPagamentoForm(ev.target.value); handleBlur(ev) },
 																			value: values.forma_pagamento_id,
@@ -892,7 +853,6 @@ const FormOrdemServicoCobrancas = ({ dataOrdemServicoChoice, setDataOrdemServico
 															></Field>
 															<ErrorMessage className="alerta_error_form_label" name="forma_pagamento_id" component="div" />
 														</Col>
-
 														<Col xs="12" sm="12" md="6">
 															<Field
 																data={
@@ -907,8 +867,6 @@ const FormOrdemServicoCobrancas = ({ dataOrdemServicoChoice, setDataOrdemServico
 																			name: 'plano_pagamento_id',
 																			placeholder: 'Plano de pagamento',
 																			id: 'plano_pagamento_id',
-																			//onChange:handleChange,
-																			//onBlur:handleBlur,
 																			onChange: (ev) => { setIdPlanoPagamentoForm(ev.target.value); handleChange(ev) },
 																			onBlur: (ev) => { setIdPlanoPagamentoForm(ev.target.value); handleBlur(ev) },
 																			value: values.plano_pagamento_id,
@@ -929,8 +887,6 @@ const FormOrdemServicoCobrancas = ({ dataOrdemServicoChoice, setDataOrdemServico
 														</Col>
 													</Row>
 													<Row className='mb-3'>
-
-
 														<Col xs="12" sm="12" md="6">
 															<Field
 																data={
@@ -945,8 +901,6 @@ const FormOrdemServicoCobrancas = ({ dataOrdemServicoChoice, setDataOrdemServico
 																			name: 'operador_financeiro_id',
 																			placeholder: 'Operador financeiro',
 																			id: 'operador_financeiro_id',
-																			//onChange:handleChange,
-																			//onBlur:handleBlur,
 																			onChange: (ev) => { setIdOperadorFinanceiroForm(ev.target.value); handleChange(ev) },
 																			onBlur: (ev) => { setIdOperadorFinanceiroForm(ev.target.value); handleBlur(ev) },
 																			value: values.operador_financeiro_id,
@@ -965,7 +919,6 @@ const FormOrdemServicoCobrancas = ({ dataOrdemServicoChoice, setDataOrdemServico
 															></Field>
 															<ErrorMessage className="alerta_error_form_label" name="operador_financeiro_id" component="div" />
 														</Col>
-
 														<Col xs="12" sm="12" md="6">
 															<Field
 																data={
@@ -998,8 +951,6 @@ const FormOrdemServicoCobrancas = ({ dataOrdemServicoChoice, setDataOrdemServico
 															></Field>
 															<ErrorMessage className="alerta_error_form_label" name="bandeira_cartao_id" component="div" />
 														</Col>
-
-
 													</Row>
 													<Row className='mb-3'>
 														<Col xs="12" sm="12" md="6">
@@ -1032,10 +983,7 @@ const FormOrdemServicoCobrancas = ({ dataOrdemServicoChoice, setDataOrdemServico
 																component={FormControlInput}
 															></Field>
 															<ErrorMessage className="alerta_error_form_label" name="nr_doc" component="div" />
-
 														</Col>
-
-
 													</Row>
 													<Row className='mb-3'>
 														<Col className="mt-3 align-self-end d-flex justify-content-end" xs="12" sm="12" md="12">
@@ -1068,9 +1016,6 @@ const FormOrdemServicoCobrancas = ({ dataOrdemServicoChoice, setDataOrdemServico
 
 												</Col>
 											</Row>
-
-
-
 										</form>
 
 									)
