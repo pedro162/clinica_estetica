@@ -44,7 +44,7 @@ const Atualizar = ({ idOrdemServico, setIdOrdemServico, callback, atualizarOrdem
 	return (
 		<>
 			{!dataOrdemServico &&
-				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={() => null} title={'Atualizar OrdemServico'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="" show={setShowModalAtualizarOrdemServico} showHide={() => { setShowModalAtualizarOrdemServico(); }}>
+				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={() => null} title={'Atualizar OrdemServico'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={'modal-os-fullscreen-mobile'} aria-labelledby={'aria-labelledby'} labelCanelar="" show={setShowModalAtualizarOrdemServico} showHide={() => { setShowModalAtualizarOrdemServico(); }}>
 					<Load />
 				</Modal>
 			}

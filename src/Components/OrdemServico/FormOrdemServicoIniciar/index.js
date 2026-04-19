@@ -207,7 +207,7 @@ const FormOrdemServicoIniciar = ({ dataOrdemServicoChoice, setIdOrdemServico, id
 						}
 					) => (
 
-						<Modal handleConcluir={() => { handleSubmit(); }} title={(atualizarOrdemServico == true ? 'Atualizar' : 'Iniciar') + ' Ordem de Servico'} size="lg" propsConcluir={{ 'disabled': loading }} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarOrdemServico} showHide={() => { setShowModalCriarOrdemServico(); setAtualizarOrdemServico(false); setIdOrdemServico(null); }}>
+						<Modal handleConcluir={() => { handleSubmit(); }} title={(atualizarOrdemServico == true ? 'Atualizar' : 'Iniciar') + ' Ordem de Servico'} size="lg" propsConcluir={{ 'disabled': loading }} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={'modal-os-fullscreen-mobile'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarOrdemServico} showHide={() => { setShowModalCriarOrdemServico(); setAtualizarOrdemServico(false); setIdOrdemServico(null); }}>
 							{
 								carregando && carregando == true
 									?

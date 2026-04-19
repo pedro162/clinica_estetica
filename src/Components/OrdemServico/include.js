@@ -21,6 +21,7 @@ import Cancelar from './Cancelar/index.js'
 import AtualizarCabecalho from './AtualizarCabecalho/index.js'
 import ContasReceber from '../ContasReceber/index.js'
 import Finalizar from './Finalizar/index.js'
+import Visualizar from './Visualizar/index.js'
 import { FORMAT_CALC_COD, FORMAT_MONEY } from '../../functions/index.js'
 import { Button } from 'bootstrap';
 import reactDom from 'react-dom';
@@ -37,6 +38,7 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
     const [digitarOrdemServico, setDigitarOrdemServico] = React.useState(false)
     const [cadastrarOrdemServico, setCadastrarOrdemServico] = React.useState(false)
     const [visualizarContasReceber, setVisualizarContasReceber] = React.useState(false)
+    const [visualizarOrdemServico, setVisualizarOrdemServico] = React.useState(false)
     const [atualizarCabecalhoOrdemServico, setAtualizarCabecalhoOrdemServico] = React.useState(false)
     const [finalizarOrdemServico, setFinalizarOrdemServico] = React.useState(false)
     const [incicarOrdemServico, setIniciarOrdemServico] = React.useState(false)
@@ -49,119 +51,60 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
     const divRef = React.useRef(null)
 
     const handleTotalPages = () => {
-        if (Number(dataEstado?.mensagem?.last_page > 0)) {
-            setTotalPageCount(dataEstado?.mensagem?.last_page)
+        if (Number(estado?.data?.last_page > 0)) {
+            setTotalPageCount(estado?.data?.last_page)
+        }
+    }
+
+    const handleTotalItems = () => {
+        if (Number(estado?.data?.to > 0)) {
+            setQtdItemsTo(estado?.data?.to)
+        }
+
+        if (Number(estado?.data?.to > 0)) {
+            setQtdItemsTo(estado?.data?.to)
+        }
+
+        if (Number(estado?.data?.total > 0)) {
+            setQtdItemsTotal(estado?.data?.total)
+        }
+
+        if (Number(estado?.data?.total > 0)) {
+            setQtdItemsTotal(estado?.data?.total)
         }
     }
 
     const nextPageRout = () => {
+        if (estado?.data?.next_page_url) {
+            setNextPage(estado?.data?.next_page_url)
+        }
 
-        if (dataEstado?.mensagem?.next_page_url) {
-            setNextPage(dataEstado?.mensagem?.next_page_url)
+        if (estado?.data?.next_page_url) {
+            setNextPage(estado?.data?.next_page_url)
         }
     }
 
     const previousPageRout = () => {
-        if (dataEstado?.mensagem?.prev_page_url) {
-            setNextPage(dataEstado?.mensagem?.prev_page_url)
+        if (estado?.data?.prev_page_url) {
+            setNextPage(estado?.data?.prev_page_url)
         }
     }
 
     const firstPageRout = () => {
-        if (dataEstado?.mensagem?.first_page_url) {
-            setNextPage(dataEstado?.mensagem?.first_page_url)
+        if (estado?.data?.first_page_url) {
+            setNextPage(estado?.data?.first_page_url)
         }
     }
 
     const lastPageRout = () => {
-        if (dataEstado?.mensagem?.last_page_url) {
-            setNextPage(dataEstado?.mensagem?.last_page_url)
+        if (estado?.data?.last_page_url) {
+            setNextPage(estado?.data?.last_page_url)
         }
-    }
-
-    const alerta = (target) => {
-        console.log(target)
     }
 
     const setNamePessoa = ({ target }) => {
         setPessoa(target.value)
     }
-
-    const filtersArr = [
-        {
-            type: 'text',
-            options: [],
-            hasLabel: true,
-            contentLabel: 'Pessoa',
-            atributsFormLabel: {},
-            atributsContainer: { xs: "12", sm: "12", md: "6", className: 'mb-2' },
-            atributsFormControl: { 'type': 'text', size: "sm", 'name': pessoa, onChange: setNamePessoa, onBlur: setNamePessoa },
-
-        },
-        {
-            type: 'text',
-            options: [],
-            hasLabel: true,
-            contentLabel: 'Contato',
-            atributsFormLabel: {},
-            atributsContainer: { xs: "12", sm: "12", md: "6", className: 'mb-2' },
-            atributsFormControl: { 'type': 'text', size: "sm", 'name_atendido': pessoa, onChange: setNamePessoa, onBlur: setNamePessoa },
-
-        },
-        {
-            type: 'text',
-            options: [],
-            hasLabel: true,
-            contentLabel: 'Status',
-            atributsFormLabel: {},
-            atributsContainer: { xs: "12", sm: "12", md: "6", className: 'mb-2' },
-            atributsFormControl: { 'type': 'text', size: "sm", 'status': pessoa, onChange: setNamePessoa, onBlur: setNamePessoa },
-
-        },
-        {
-            type: 'text',
-            options: [],
-            hasLabel: true,
-            contentLabel: 'Tipo',
-            atributsFormLabel: {},
-            atributsContainer: { xs: "12", sm: "12", md: "6", className: 'mb-2' },
-            atributsFormControl: { 'type': 'text', size: "sm", 'tipo': pessoa, onChange: setNamePessoa, onBlur: setNamePessoa },
-
-        },
-        {
-            type: 'text',
-            options: [],
-            hasLabel: true,
-            contentLabel: 'Dt. inicio',
-            atributsFormLabel: {},
-            atributsContainer: { xs: "12", sm: "12", md: "6", className: 'mb-2' },
-            atributsFormControl: { 'type': 'date', size: "sm", 'dt_inico': pessoa, onChange: setNamePessoa, onBlur: setNamePessoa },
-
-        },
-        {
-            type: 'text',
-            options: [],
-            hasLabel: true,
-            contentLabel: 'Dt. fim',
-            atributsFormLabel: {},
-            atributsContainer: { xs: "12", sm: "12", md: "6", className: 'mb-2' },
-            atributsFormControl: { 'type': 'date', size: "sm", 'dt_fim': pessoa, onChange: setNamePessoa, onBlur: setNamePessoa },
-
-        },
-    ]
-
-    const acoesBottomCard = [{
-        label: 'Pesquisar',
-        icon: <FontAwesomeIcon icon={faSearch} />,
-        props: { onClick: () => requestAllOrdemServicos(), className: 'btn btn-sm botao_success' }
-    },
-    {
-        label: 'Cadastrar',
-        icon: <FontAwesomeIcon icon={faPlus} />,
-        props: { onClick: () => setIniciarOrdemServico(true), className: 'btn btn-sm mx-2 btn-secondary' }
-    }
-    ];
-
 
     React.useEffect(() => {
         switch (acao) {
@@ -188,9 +131,9 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                 break;
             case 'visualizar':
                 if (consultaChoice > 0) {
-                    setDigitarOrdemServico(true);
+                    setVisualizarOrdemServico(true);
                 } else {
-                    setDigitarOrdemServico(false);
+                    setVisualizarOrdemServico(false);
                 }
                 break;
             case 'iniciar_procedimento':
@@ -249,7 +192,6 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
             setShowModalCriarConstula(false);
         }
 
-
     }, [cadastrarOrdemServico])
 
     const atualizarOrdemServicoAction = (idOrdemServico) => {
@@ -268,6 +210,12 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
         setOrdemServicoChoice(idOrdemServico)
         setAcao('contas_receber')
         setVisualizarContasReceber(true);
+    }
+
+    const visualizarOrdemServicoAction = (idOrdemServico) => {
+        setOrdemServicoChoice(idOrdemServico)
+        setAcao('visualizar')
+        setVisualizarOrdemServico(true);
     }
 
     const digitarOrdemServicoAction = (idOrdemServico) => {
@@ -308,15 +256,24 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
     const gerarTableOrdemServico = () => {
 
         let data = [];
-        let dataOrdemServico = estado
+        let dataOrdemServico = estado;
 
         if (dataOrdemServico?.mensagem) {
             dataOrdemServico = dataOrdemServico?.mensagem;
         }
 
+        if (dataOrdemServico?.registro) {
+            dataOrdemServico = dataOrdemServico?.registro;
+        }
+
         if (dataOrdemServico?.data) {
             dataOrdemServico = dataOrdemServico?.data;
         }
+
+        if (dataOrdemServico?.data) {
+            dataOrdemServico = dataOrdemServico?.data;
+        }
+
         if (dataOrdemServico && Array.isArray(dataOrdemServico) && dataOrdemServico.length > 0) {
             for (let i = 0; !(i == dataOrdemServico.length); i++) {
                 let atual = dataOrdemServico[i];
@@ -331,7 +288,6 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                     let btnCancelar = true;
 
                     if (atual?.status != 'cancelado') {
-
                         if (atual?.is_faturado == 'yes') {
                             btnCotinuarDigitacao = false;
                             btnVisualizarFinanceiro = true;
@@ -379,7 +335,7 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                     }
 
                     if (btnVisualizar) {
-                        acoesArr.push({ acao: () => atualizarOrdemServicoAction(atual.id), label: 'Visualizar', propsOption: {}, propsLabel: {} })
+                        acoesArr.push({ acao: () => visualizarOrdemServicoAction(atual.id), label: 'Visualizar', propsOption: {}, propsLabel: {} })
                     }
 
                     if (btnCancelar) {
@@ -387,13 +343,13 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                     }
 
                     let line_style = {}
+
                     if (atual.status == 'cancelado') {
                         line_style.color = 'red';
                     } else if (atual.status == 'concluido') {
                         line_style.color = 'green';
                     }
 
-                    //'remarcado','finalizado','cancelado','pendente'
                     data.push(
 
                         {
@@ -490,11 +446,18 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
     const gerarListMobileRelatorio = () => {
 
         let data = [];
-
-        let dataOrdemServico = estado
+        let dataOrdemServico = estado;
 
         if (dataOrdemServico?.mensagem) {
             dataOrdemServico = dataOrdemServico?.mensagem;
+        }
+
+        if (dataOrdemServico?.registro) {
+            dataOrdemServico = dataOrdemServico?.registro;
+        }
+
+        if (dataOrdemServico?.data) {
+            dataOrdemServico = dataOrdemServico?.data;
         }
 
         if (dataOrdemServico?.data) {
@@ -534,7 +497,6 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                         }
 
                     } else {
-
                         btnCotinuarDigitacao = false;
                         btnFinalizar = false;
                         btnIniciarProcedimento = false;
@@ -563,7 +525,7 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                     }
 
                     if (btnVisualizar) {
-                        acoesArr.push({ acao: () => atualizarOrdemServicoAction(atual.id), label: 'Visualizar', propsOption: {}, propsLabel: {} })
+                        acoesArr.push({ acao: () => visualizarOrdemServicoAction(atual.id), label: 'Visualizar', propsOption: {}, propsLabel: {} })
                     }
 
                     if (btnCancelar) {
@@ -571,13 +533,13 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                     }
 
                     let line_style = {}
+
                     if (atual.status == 'cancelado') {
                         line_style.color = 'red';
                     } else if (atual.status == 'concluido') {
                         line_style.color = 'green';
                     }
 
-                    //propsContainerTitulo, propsContainerButtons
                     data.push(
 
                         {
@@ -613,13 +575,6 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                                         toSum: 1,
                                         isCoin: 1,
                                     },
-                                    /*{
-                                        title:<span style={{fontWeight:'480'}}>Faturado: </span>,
-                                        label:(atual.is_faturado == 'yes' ? 'Sim' : 'Não'),
-                                        props:{style:{textAlign:'left', md:'2', sm:'2', xs:'2'}},
-                                        toSum:0,
-                                        isCoin:0,
-                                    },*/
                                     {
                                         title: <span style={{ fontWeight: '480' }}>Criado em: </span>,
                                         label: FORMAT_DATA_PT_BR(atual.created_at),
@@ -742,8 +697,8 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
     }, [])
 
     React.useEffect(() => {
-        setOrdemServico(dataEstado)
-        setNrPageAtual(dataEstado?.mensagem?.current_page)
+        setOrdemServico(dataEstado?.data)
+        setNrPageAtual(dataEstado?.data?.data?.current_page)
         handleTotalPages();
         /*if(dataEstado?.mensagem?.data){
             setOrdemServico([...estado, ...dataEstado?.mensagem?.data])
@@ -847,8 +802,13 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
             }
 
             {
+                visualizarOrdemServico &&
+                <Visualizar visualizarOrdemServico={visualizarOrdemServico} setVisualizarOrdemServico={setVisualizarOrdemServico} idOrdemServico={consultaChoice} setIdOrdemServico={setOrdemServicoChoice} callback={callBack} />
+            }
+
+            {
                 visualizarContasReceber &&
-                <Modal noBtnCancelar={false} noBtnConcluir={true} handleConcluir={() => null} title={'Contas a receber'} size="lg" propsConcluir={{}} labelConcluir={''} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={consultaChoice} showHide={() => { setVisualizarContasReceber(false); }}>
+                <Modal noBtnCancelar={false} noBtnConcluir={true} handleConcluir={() => null} title={'Contas a receber'} size="lg" propsConcluir={{}} labelConcluir={''} dialogClassName={'modal-90w modal-os-fullscreen-mobile'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={consultaChoice} showHide={() => { setVisualizarContasReceber(false); }}>
 
                     <ContasReceber defaultFilters={defaultFiltersCobReceber} visualizarContasReceber={visualizarContasReceber} setVisualizarContasReceber={setVisualizarContasReceber} atualizarOrdemServico={atualizarOrdemServico} setAtualizarOrdemServico={setAtualizarOrdemServico} idReferencia={consultaChoice} referencia={'ordem_servico'} idOrdemServico={consultaChoice} setIdOrdemServico={setOrdemServicoChoice} callback={callBack} />
 

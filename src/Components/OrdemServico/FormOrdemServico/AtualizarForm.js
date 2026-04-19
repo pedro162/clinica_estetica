@@ -78,7 +78,7 @@ const AtualizarForm = ({ dataOrdemServicoChoice, setDataOrdemServico, setIdOrdem
 			setDataFiliais(json)
 		} else {
 
-			setDataFiliais([]);
+			dialogClassName = { 'modal-90w modal-os-fullscreen-mobile'}
 		}
 	}
 
@@ -237,7 +237,7 @@ const AtualizarForm = ({ dataOrdemServicoChoice, setDataOrdemServico, setIdOrdem
 						}
 					) => (
 
-						<Modal handleConcluir={() => { handleSubmit(); }} title={(atualizarOrdemServico == true ? 'Atualizar' : 'Cadastrar') + ' Ordem de Servico'} size="lg" propsConcluir={{ 'disabled': loading }} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={'modal-90w'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarOrdemServico} showHide={() => { setShowModalCriarOrdemServico(); setAtualizarOrdemServico(false); setIdOrdemServico(null); }}>
+						<Modal handleConcluir={() => { handleSubmit(); }} title={(atualizarOrdemServico == true ? 'Atualizar' : 'Cadastrar') + ' Ordem de Servico'} size="lg" propsConcluir={{ 'disabled': loading }} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={'modal-90w modal-os-fullscreen-mobile'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarOrdemServico} showHide={() => { setShowModalCriarOrdemServico(); setAtualizarOrdemServico(false); setIdOrdemServico(null); }}>
 							{
 
 								carregando && carregando == true

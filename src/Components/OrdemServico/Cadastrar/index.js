@@ -38,7 +38,7 @@ const Cadastrar = ({ idOrdemServico, setIdOrdemServico, callback, atualizarOrdem
 	return (
 		<>
 			{!dataGrupo &&
-				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={() => null} title={'Cadastrar OrdemServico'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="" show={setShowModalAtualizarOrdemServico} showHide={() => { setShowModalAtualizarOrdemServico(); }}>
+				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={() => null} title={'Cadastrar OrdemServico'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={'modal-os-fullscreen-mobile'} aria-labelledby={'aria-labelledby'} labelCanelar="" show={setShowModalAtualizarOrdemServico} showHide={() => { setShowModalAtualizarOrdemServico(); }}>
 					<Load />
 				</Modal>
 			}

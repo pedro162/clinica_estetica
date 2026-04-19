@@ -13,6 +13,7 @@ import Load from '../../Utils/Load/index.js'
 import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible.js'
 import OrdemServicoItens from '../../OrdemServicoItens/index.js'
 import TableForm from '../../Relatorio/TableForm/index.js';
+import ListMobile from '../../Relatorio/ListMobile/index.js';
 import { FORMAT_CALC_COD, FORMAT_MONEY } from '../../../functions/index.js'
 
 import { TOKEN_POST, CLIENT_ID, CLIENT_SECRET, SERVICO_SAVE_POST, ORDEM_SERVICO_ITENS_ONE_GET, SERVICO_ALL_POST, SERVICO_UPDATE_POST, CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST, SERVICO_ONE_GET, ORDEM_SERVICO_ONE_GET, ORDEM_SERVICO_ADD_ITEM_POST, ORDEM_SERVICO_DELETE_ITEM_POST } from '../../../api/endpoints/geral.js'
@@ -960,6 +961,110 @@ const FormOrdemServicoItens = ({ dataOrdemServicoChoice, setDataOrdemServicoGlob
 		return data;
 	}
 
+	const gerarListMobileRelatorio = () => {
+		let data = [];
+		let dataRegistro = dataItens
+
+		if (dataRegistro?.mensagem) {
+			dataRegistro = dataRegistro?.mensagem;
+		}
+
+		if (dataRegistro?.registro) {
+			dataRegistro = dataRegistro?.registro;
+		}
+
+		if (dataRegistro?.data) {
+			dataRegistro = dataRegistro?.data;
+		}
+
+		if (dataRegistro?.data) {
+			dataRegistro = dataRegistro?.data;
+		}
+
+		if (dataRegistro && Array.isArray(dataRegistro) && dataRegistro.length > 0) {
+			for (let i = 0; !(i == dataRegistro.length); i++) {
+				let atual = dataRegistro[i];
+
+				if (atual) {
+					let acoesArr = [];
+
+					if (atual?.id > 0) {
+						acoesArr.push({
+							acao: () => {
+								setIdItemOrdemServico(atual?.id)
+							},
+							label: 'Editar',
+							propsOption: {},
+							propsLabel: {}
+						})
+					}
+
+					acoesArr.push({
+						acao: () => removeItem(atual?.id),
+						label: 'Excluir',
+						propsOption: {},
+						propsLabel: {}
+					})
+
+					data.push(
+						{
+							propsRow: {
+								id: (atual?.id || i + 1),
+								titleRow: `${atual?.servico?.name || 'Servico'}${atual?.servico_id ? ' #' + atual.servico_id : ''}`,
+							},
+							acoes: [
+								...acoesArr
+							],
+							celBodyTableArr: [
+								[
+									{
+										title: <span style={{ fontWeight: '480' }}>Qtde: </span>,
+										label: FORMAT_MONEY(atual?.qtd),
+										props: { style: { textAlign: 'left' }, md: '4', sm: '4', xs: '4' },
+										toSum: 0,
+										isCoin: 0,
+									},
+									{
+										title: <span style={{ fontWeight: '480' }}>Valor: </span>,
+										label: FORMAT_MONEY(atual?.vrItem),
+										props: { style: { textAlign: 'left' }, md: '4', sm: '4', xs: '4' },
+										toSum: 1,
+										isCoin: 1,
+									},
+									{
+										title: <span style={{ fontWeight: '480' }}>Total: </span>,
+										label: FORMAT_MONEY(atual?.vr_final),
+										props: { style: { textAlign: 'left', fontWeight: 'bolder' }, md: '4', sm: '4', xs: '4' },
+										toSum: 1,
+										isCoin: 1,
+									},
+								],
+								[
+									{
+										title: <span style={{ fontWeight: '480' }}>Tabela: </span>,
+										label: FORMAT_MONEY(atual?.vrItemBruto),
+										props: { style: { textAlign: 'left' }, md: '6', sm: '6', xs: '6' },
+										toSum: 1,
+										isCoin: 1,
+									},
+									{
+										title: <span style={{ fontWeight: '480' }}>Desconto: </span>,
+										label: FORMAT_MONEY(atual?.vr_desconto),
+										props: { style: { textAlign: 'left' }, md: '6', sm: '6', xs: '6' },
+										toSum: 1,
+										isCoin: 1,
+									},
+								],
+							]
+						}
+					)
+				}
+			}
+		}
+
+		return data;
+	}
+
 	const gerarTitleCobTable = () => {
 		let tableTitle = [
 			{
@@ -1000,6 +1105,8 @@ const FormOrdemServicoItens = ({ dataOrdemServicoChoice, setDataOrdemServicoGlob
 	}
 
 	const rowsTableArr = gerarTableOrdemServico();
+	const rowsMobileArr = gerarListMobileRelatorio();
+	const nadaEncontradoMobile = !loading && (!rowsMobileArr || rowsMobileArr.length === 0);
 	const titulosTableArr = gerarTitleCobTable();
 	const dataFormSev = dataToFormOrdemServicoItens()
 
@@ -1406,7 +1513,16 @@ const FormOrdemServicoItens = ({ dataOrdemServicoChoice, setDataOrdemServicoGlob
 														</Col>
 													</Row>
 													<Row className="mb-3">
-														<Col xs="12" sm="12" md="12" className="overflow-auto">
+														<Col xs="12" sm="12" md="12" className="mobile_card_report">
+															<ListMobile
+																titulosTableArr={null}
+																rowsTableArr={rowsMobileArr}
+																loading={loading}
+																nadaEncontrado={nadaEncontradoMobile}
+																withoutFirstCol={true}
+															/>
+														</Col>
+														<Col xs="12" sm="12" md="12" className="overflow-auto default_card_report">
 
 															<TableForm
 																titulosTableArr={titulosTableArr}

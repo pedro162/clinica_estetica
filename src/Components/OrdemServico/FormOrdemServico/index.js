@@ -287,7 +287,7 @@ const FormOrdemServico = ({ dataOrdemServicoChoice, setDataOrdemServico, setIdOr
 							size="lg"
 							propsConcluir={{ 'disabled': loading }}
 							labelConcluir={loading ? <><FontAwesomeIcon icon={faCheck} /> Salvando...</> : <><FontAwesomeIcon icon={faCheck} /> Concluir </>}
-							dialogClassName={'modal-90w'}
+							dialogClassName={'modal-90w modal-os-fullscreen-mobile'}
 							aria-labelledby={'aria-labelledby'}
 							labelCanelar="Fechar"
 							show={showModalCriarOrdemServico}

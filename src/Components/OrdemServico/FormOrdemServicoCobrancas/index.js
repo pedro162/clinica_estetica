@@ -9,6 +9,7 @@ import { UserContex } from '../../../Context/UserContex.js'
 import Load from '../../Utils/Load/index.js'
 import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible.js'
 import TableForm from '../../Relatorio/TableForm/index.js';
+import ListMobile from '../../Relatorio/ListMobile/index.js';
 import { FORMAT_CALC_COD, FORMAT_MONEY } from '../../../functions/index.js'
 import { COBRANCA_ORDEM_ONE_GET, ORDEM_SERVICO_ONE_GET, COBRANCA_ORDEM_DELETE_POST, FORMA_PAGAMENTOALL_POST, FORMA_PAGAMENTO_ONE_GET, PLANO_PAGAMENTOALL_POST, PLANO_PAGAMENTO_ONE_GET, OPERADOR_FINANCEIROALL_POST, COBRANCA_ORDEM_SAVE_POST, COBRANCA_ORDEM_UPDATE_POST } from '../../../api/endpoints/geral.js'
 
@@ -644,6 +645,76 @@ const FormOrdemServicoCobrancas = ({ dataOrdemServicoChoice, setDataOrdemServico
 		return data;
 	}
 
+	const gerarListMobileRelatorio = () => {
+		let data = [];
+		let dataRegistro = dataCobrancas
+
+		if (dataRegistro && Array.isArray(dataRegistro) && dataRegistro.length > 0) {
+			for (let i = 0; !(i == dataRegistro.length); i++) {
+				let atual = dataRegistro[i];
+
+				if (atual) {
+					let acoesArr = [];
+
+					if (atual?.id > 0) {
+						acoesArr.push({
+							acao: () => setIdCobrancaEscolhidaOrdemServico(atual?.id),
+							label: 'Editar',
+							propsOption: {},
+							propsLabel: {}
+						})
+					}
+
+					acoesArr.push({
+						acao: () => removeItem(atual?.id),
+						label: 'Excluir',
+						propsOption: {},
+						propsLabel: {}
+					})
+
+					data.push(
+						{
+							propsRow: {
+								id: (atual?.id || i + 1),
+								titleRow: `${atual?.forma_pgto?.name || 'Forma pagamento'}${atual?.id ? ' #' + atual.id : ''}`,
+							},
+							acoes: [
+								...acoesArr
+							],
+							celBodyTableArr: [
+								[
+									{
+										title: <span style={{ fontWeight: '480' }}>Valor: </span>,
+										label: FORMAT_MONEY(atual?.vr_final),
+										props: { style: { textAlign: 'left', fontWeight: 'bolder' }, md: '4', sm: '4', xs: '4' },
+										toSum: 1,
+										isCoin: 1,
+									},
+									{
+										title: <span style={{ fontWeight: '480' }}>Doc: </span>,
+										label: atual?.nr_doc,
+										props: { style: { textAlign: 'left' }, md: '4', sm: '4', xs: '4' },
+										toSum: 0,
+										isCoin: 0,
+									},
+									{
+										title: <span style={{ fontWeight: '480' }}>Plano: </span>,
+										label: atual?.plano_pgto?.name,
+										props: { style: { textAlign: 'left' }, md: '4', sm: '4', xs: '4' },
+										toSum: 0,
+										isCoin: 0,
+									},
+								],
+							]
+						}
+					)
+				}
+			}
+		}
+
+		return data;
+	}
+
 	const gerarTitleCobTable = () => {
 		let tableTitle = [
 			{
@@ -672,6 +743,8 @@ const FormOrdemServicoCobrancas = ({ dataOrdemServicoChoice, setDataOrdemServico
 	}
 
 	const rowsTableArr = gerarTableOrdemServico();
+	const rowsMobileArr = gerarListMobileRelatorio();
+	const nadaEncontradoMobile = !loading && (!rowsMobileArr || rowsMobileArr.length === 0);
 	const titulosTableArr = gerarTitleCobTable();
 	const dataFormSev = calcularCobranca({})
 	const readonlyFields = idCobrancaEcolhidaOrdemServico > 0 ? { readonly: 'readonly', disabled: 'disabled' } : {}
@@ -1000,7 +1073,16 @@ const FormOrdemServicoCobrancas = ({ dataOrdemServicoChoice, setDataOrdemServico
 														</Col>
 													</Row>
 													<Row className="mb-3">
-														<Col xs="12" sm="12" md="12">
+														<Col xs="12" sm="12" md="12" className="mobile_card_report">
+															<ListMobile
+																titulosTableArr={null}
+																rowsTableArr={rowsMobileArr}
+																loading={loading}
+																nadaEncontrado={nadaEncontradoMobile}
+																withoutFirstCol={true}
+															/>
+														</Col>
+														<Col xs="12" sm="12" md="12" className="default_card_report">
 
 															<TableForm
 																titulosTableArr={titulosTableArr}

@@ -161,7 +161,7 @@ const AtualizarCabecalhoForm = ({ dataOrdemServicoChoice, setDataOrdemServico, s
 						}
 					) => (
 
-						<Modal handleConcluir={() => { handleSubmit(); }} title={'Atualizar ordem de servico'} size="xs" dialogClassName={null} propsConcluir={{ 'disabled': loading }} labelConcluir={loading ? 'Salvando...' : 'Concluir'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarOrdemServico} showHide={() => { setShowModalCriarOrdemServico(); setAtualizarCabecalhoOrdemServico(false); setIdOrdemServico(null); }}>
+						<Modal handleConcluir={() => { handleSubmit(); }} title={'Atualizar ordem de servico'} size="xs" dialogClassName={'modal-os-fullscreen-mobile'} propsConcluir={{ 'disabled': loading }} labelConcluir={loading ? 'Salvando...' : 'Concluir'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarOrdemServico} showHide={() => { setShowModalCriarOrdemServico(); setAtualizarCabecalhoOrdemServico(false); setIdOrdemServico(null); }}>
 							{
 
 								carregando && carregando == true
