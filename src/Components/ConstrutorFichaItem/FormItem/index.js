@@ -1,144 +1,145 @@
 import React from 'react';
-import {Formik, ErrorMessage, Field} from 'formik';
+import { Formik, ErrorMessage, Field } from 'formik';
 import FormControlInput from '../../FormControl/index.js'
 import FormControlSelect from '../../FormControl/Select.js'
-import {Col, Row, Button} from 'react-bootstrap';
+import { Col, Row, Button } from 'react-bootstrap';
 //import Button from '../../FormControl/Button.js';
 import estilos from './FormItem.module.css'
 import Modal from '../../Utils/Modal/index.js'
 import useFetch from '../../../Hooks/useFetch.js';
-import {UserContex} from '../../../Context/UserContex.js'
+import { UserContex } from '../../../Context/UserContex.js'
 import Load from '../../Utils/Load/index.js'
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, FORMULARIO_SAVE_POST, FORMULARIO_UPDATE_POST, FORMULARIO_ONE_GET} from '../../../api/endpoints/geral.js'
+import { TOKEN_POST, CLIENT_ID, CLIENT_SECRET, FORMULARIO_SAVE_POST, FORMULARIO_UPDATE_POST, FORMULARIO_ONE_GET } from '../../../api/endpoints/geral.js'
 import Atualizar from '../Atualizar/index.js'
 import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible.js'
 import { DragDropContext } from 'react-beautiful-dnd';
 import TableForm from '../../Relatorio/TableForm/index.js';
+import ListMobile from '../../Relatorio/ListMobile/index.js';
 
 
-const FormItem = ({dataRegistroChoice, dataGrupo, setIdRegistro, idRegistro, showModalCriarRegistro, setShowModalCriarRegistro, callback, atualizarCadastro, setAtualizarCadastro, carregando})=>{
-    
-    const [carregandoDadosChoice, setCarregandoDadosChoice] = React.useState(false)
+const FormItem = ({ dataRegistroChoice, dataGrupo, setIdRegistro, idRegistro, showModalCriarRegistro, setShowModalCriarRegistro, callback, atualizarCadastro, setAtualizarCadastro, carregando }) => {
 
-	const {data, error, request, loading} = useFetch();
+	const [carregandoDadosChoice, setCarregandoDadosChoice] = React.useState(false)
+
+	const { data, error, request, loading } = useFetch();
 	const fetchToRegistro = useFetch();
-	const {getToken, dataUser} = React.useContext(UserContex);
+	const { getToken, dataUser } = React.useContext(UserContex);
 	const [dataContrutorFicha, setDataContrutorFicha] = React.useState([]);
 	const [grupo, setGrupo] = React.useState('')
 	const [dataGrupos, setDataGrupos] = React.useState([]);
 	const [posicao, setPosicao] = React.useState(1)
 	const [idGrupo, setIdGrupo] = React.useState(null)
-	
-	const userLogar =  ()=>{
-        console.log('Aqui............')
-    }
 
-	const handleChangeGroup = ({target})=>{
+	const userLogar = () => {
+		console.log('Aqui............')
+	}
+
+	const handleChangeGroup = ({ target }) => {
 		setGrupo(target.value)
 	}
 
-	const handleChangePosicaoGroup = ({target})=>{
+	const handleChangePosicaoGroup = ({ target }) => {
 		setPosicao(target.value)
 	}
 
-    const sendData = async ({
-			formulario,
-            formulario_id,
-		})=>{
+	const sendData = async ({
+		formulario,
+		formulario_id,
+	}) => {
 
-    	const data = {
-    		'name':formulario,
-            'id':formulario_id,
+		const data = {
+			'name': formulario,
+			'id': formulario_id,
 
-    	}
+		}
 
 		data.grupos = {}
 
 		let dataRegistro = dataGrupos
-        if(dataRegistro && Array.isArray(dataRegistro) && dataRegistro.length > 0){
-            for(let i=0; !(i == dataRegistro.length); i++){
-                let atual = dataRegistro[i];
-				data.grupos[i] = {name:atual?.grupo, nr_ordem:atual?.posicao, id:atual?.id}
+		if (dataRegistro && Array.isArray(dataRegistro) && dataRegistro.length > 0) {
+			for (let i = 0; !(i == dataRegistro.length); i++) {
+				let atual = dataRegistro[i];
+				data.grupos[i] = { name: atual?.grupo, nr_ordem: atual?.posicao, id: atual?.id }
 			}
 		}
 
-        if(atualizarCadastro == true){
-            const {url, options} = FORMULARIO_UPDATE_POST(idRegistro, data, getToken());
+		if (atualizarCadastro == true) {
+			const { url, options } = FORMULARIO_UPDATE_POST(idRegistro, data, getToken());
 
 
-            const {response, json} = await request(url, options);
-            console.log('Save clients here')
-            console.log(json)
-            if(json){
-                console.log('Response Save clients here')
-                console.log(json)
-                
-                callback();
-                setShowModalCriarRegistro();
-                setAtualizarCadastro(false);
-                setIdRegistro(null);
-            }
+			const { response, json } = await request(url, options);
+			console.log('Save clients here')
+			console.log(json)
+			if (json) {
+				console.log('Response Save clients here')
+				console.log(json)
 
-        }else{
+				callback();
+				setShowModalCriarRegistro();
+				setAtualizarCadastro(false);
+				setIdRegistro(null);
+			}
 
-
-        	const {url, options} = FORMULARIO_SAVE_POST(data, getToken());
+		} else {
 
 
-            const {response, json} = await request(url, options);
-            console.log('Save clients here')
-            console.log(json)
-            if(json){
-                console.log('Response Save clients here')
-            	console.log(json)
-            	
-            	callback();
-            	setShowModalCriarRegistro();
-                setAtualizarCadastro(false);
-            }
-
-        }
-    }
+			const { url, options } = FORMULARIO_SAVE_POST(data, getToken());
 
 
-    const dataToFormRegistro = ()=>{
-    	let obj = {name:'', id:'', grupo:[]}
-    	if(dataRegistroChoice && dataRegistroChoice.hasOwnProperty('mensagem')){
-    		let data = dataRegistroChoice.mensagem;
-           
-    		if(data.hasOwnProperty('name')){
-                obj.formulario = data.name;
-    		}
+			const { response, json } = await request(url, options);
+			console.log('Save clients here')
+			console.log(json)
+			if (json) {
+				console.log('Response Save clients here')
+				console.log(json)
 
-			if(data.hasOwnProperty('id')){
-                obj.id = data.id;
-    		}
+				callback();
+				setShowModalCriarRegistro();
+				setAtualizarCadastro(false);
+			}
 
-			
-    		
-    		
+		}
+	}
 
-    		
-    	}
-    	console.log('dados para formulario ----------')
-    	//console.log(obj)
-    	return obj;
-    }
 
-	React.useEffect(()=>{
-		if(dataRegistroChoice && dataRegistroChoice.hasOwnProperty('mensagem')){
+	const dataToFormRegistro = () => {
+		let obj = { name: '', id: '', grupo: [] }
+		if (dataRegistroChoice && dataRegistroChoice.hasOwnProperty('mensagem')) {
 			let data = dataRegistroChoice.mensagem;
-			if(data.hasOwnProperty('grupo')){
-                //let data = dataRegistroChoice.mensagem;
+
+			if (data.hasOwnProperty('name')) {
+				obj.formulario = data.name;
+			}
+
+			if (data.hasOwnProperty('id')) {
+				obj.id = data.id;
+			}
+
+
+
+
+
+
+		}
+		console.log('dados para formulario ----------')
+		//console.log(obj)
+		return obj;
+	}
+
+	React.useEffect(() => {
+		if (dataRegistroChoice && dataRegistroChoice.hasOwnProperty('mensagem')) {
+			let data = dataRegistroChoice.mensagem;
+			if (data.hasOwnProperty('grupo')) {
+				//let data = dataRegistroChoice.mensagem;
 				//data.grupo;
 				let grupoCarregado = [];
-				if(Array.isArray(data.grupo) && data.grupo.length > 0){
-					for(let i = 0; !(i == data.grupo.length); i++){
+				if (Array.isArray(data.grupo) && data.grupo.length > 0) {
+					for (let i = 0; !(i == data.grupo.length); i++) {
 						let atual = data.grupo[i];
-						let {name, nr_ordem, formulario_id, props_grupo, id} = atual;
-						
-						grupoCarregado.push( {grupo:name, posicao:nr_ordem, formulario_id, props_grupo, id})
-						
+						let { name, nr_ordem, formulario_id, props_grupo, id } = atual;
+
+						grupoCarregado.push({ grupo: name, posicao: nr_ordem, formulario_id, props_grupo, id })
+
 					}
 
 				}
@@ -148,322 +149,399 @@ const FormItem = ({dataRegistroChoice, dataGrupo, setIdRegistro, idRegistro, sho
 				//adicionarGrupo
 				console.log("aqui oooo")
 				console.log(grupoCarregado)
-    		}
+			}
 		}
 	}, [dataRegistroChoice])
 
 
-	const adicionarGrupo = ()=>{
+	const adicionarGrupo = () => {
 		let contador = dataGrupos.length
-		if(String(grupo).trim().length > 0){
-			
-			if(atualizarCadastro == true){
-				if(Array.isArray(dataGrupos) && dataGrupos.length > 0){
-					let novoDtg = [] 
+		if (String(grupo).trim().length > 0) {
+
+			if (atualizarCadastro == true) {
+				if (Array.isArray(dataGrupos) && dataGrupos.length > 0) {
+					let novoDtg = []
 					let encontrou = false;
-					dataGrupos.forEach((item, index, dadosArr)=>{
+					dataGrupos.forEach((item, index, dadosArr) => {
 						let idGr = item?.id;
 						idGr = Number(idGr)
 						//let atual = item;
-						if(idGrupo > 0 && idGr > 0 && idGrupo == idGr){
-							item.grupo		= grupo;
-							item.posicao 	= posicao;
+						if (idGrupo > 0 && idGr > 0 && idGrupo == idGr) {
+							item.grupo = grupo;
+							item.posicao = posicao;
 							encontrou = true;
-							
+
 						}
 						novoDtg.push(item)
 					})
-					if(! encontrou){
-						novoDtg.push({grupo, posicao})						
+					if (!encontrou) {
+						novoDtg.push({ grupo, posicao })
 					}
 					setDataGrupos([...novoDtg])
 					contador = Number(posicao) + 1;
 				}
-			}else{
-				setDataGrupos([...dataGrupos, {grupo, posicao}])
+			} else {
+				setDataGrupos([...dataGrupos, { grupo, posicao }])
 				contador += 1;
 			}
-			
-			
+
+
 		}
 		setGrupo('')
 		setPosicao(contador)
 		setIdGrupo(null)
-				
+
 	}
 
-	const removeGroup = (index)=>{
+	const removeGroup = (index) => {
 		console.log(index)
-		if(Array.isArray(dataGrupos) && dataGrupos.length > 0){
-			const newData = dataGrupos.filter((item, indexArr, Arr)=>{
+		if (Array.isArray(dataGrupos) && dataGrupos.length > 0) {
+			const newData = dataGrupos.filter((item, indexArr, Arr) => {
 				return indexArr != index
 			})
 			setDataGrupos(newData)
 		}
 	}
-    
-	const messag = ()=>{
-		console.log('Adicionar grupo');
-	} 
 
-	const gerarTableRegistro = ()=>{
-       
-        let data = [];
-        let dataRegistro = dataGrupos
-        if(dataRegistro && Array.isArray(dataRegistro) && dataRegistro.length > 0){
-            for(let i=0; !(i == dataRegistro.length); i++){
-                let atual = dataRegistro[i];
-				let indexAtual = (i+1);
-                if(atual){
-						//grupo, posicao
+	const messag = () => {
+		console.log('Adicionar grupo');
+	}
+
+	const gerarTableRegistro = () => {
+
+		let data = [];
+		let dataRegistro = dataGrupos
+		if (dataRegistro && Array.isArray(dataRegistro) && dataRegistro.length > 0) {
+			for (let i = 0; !(i == dataRegistro.length); i++) {
+				let atual = dataRegistro[i];
+				let indexAtual = (i + 1);
+				if (atual) {
+					//grupo, posicao
 					let acoesArr = [];
-					if(atualizarCadastro == true && atual?.id > 0){
-						acoesArr.push({acao:()=>{
+					if (atualizarCadastro == true && atual?.id > 0) {
+						acoesArr.push({
+							acao: () => {
 								setGrupo(atual?.grupo);
 								setPosicao(atual?.posicao);
 								setIdGrupo(atual?.id)
 
-							}, label:'Editar', propsOption:{'className':'btn btn-sm'}, propsLabel:{}})
+							}, label: 'Editar', propsOption: { 'className': 'btn btn-sm' }, propsLabel: {}
+						})
 					}
 
-                    data.push(
+					data.push(
 
-                        {
-                            propsRow:{id:indexAtual},
-                            acoes:acoesArr,
-							acaoTrash:()=>removeGroup(i),
-                            celBodyTableArr:[
-                                
-                                {
+						{
+							propsRow: { id: indexAtual },
+							acoes: acoesArr,
+							acaoTrash: () => removeGroup(i),
+							celBodyTableArr: [
 
-                                    label:atual?.grupo,
-                                    propsRow:{}
-                                },
 								{
 
-                                    label:atual?.posicao,
-                                    propsRow:{}
-                                },
+									label: atual?.grupo,
+									propsRow: {}
+								},
+								{
 
-                            ]
-                        }
+									label: atual?.posicao,
+									propsRow: {}
+								},
 
-                    )
+							]
+						}
 
-                }
+					)
 
-            }
-        }
+				}
 
-        return data;
-    }
+			}
+		}
 
-	const gerarTitleTable = ()=>{
-        let tableTitle = [
-            {
-                label:'Nome',
-                props:{}
-            },
+		return data;
+	}
+
+	const gerarTitleTable = () => {
+		let tableTitle = [
 			{
-                label:'Posição',
-                props:{}
-            }
-        ]
+				label: 'Nome',
+				props: {}
+			},
+			{
+				label: 'Posição',
+				props: {}
+			}
+		]
 
-        return tableTitle;
-    }
-    //------------
+		return tableTitle;
+	}
+
+	const gerarListMobileRegistro = () => {
+		let data = [];
+		let dataRegistro = dataGrupos;
+
+		if (dataRegistro && Array.isArray(dataRegistro) && dataRegistro.length > 0) {
+			for (let i = 0; !(i == dataRegistro.length); i++) {
+				let atual = dataRegistro[i];
+				if (atual) {
+					let acoesArr = [];
+
+					if (atualizarCadastro == true && atual?.id > 0) {
+						acoesArr.push({
+							acao: () => {
+								setGrupo(atual?.grupo);
+								setPosicao(atual?.posicao);
+								setIdGrupo(atual?.id)
+							},
+							label: 'Editar',
+							propsOption: {},
+							propsLabel: {}
+						})
+					}
+
+					acoesArr.push({
+						acao: () => removeGroup(i),
+						label: 'Excluir',
+						propsOption: {},
+						propsLabel: {}
+					})
+
+					data.push(
+						{
+							propsRow: {
+								id: (atual?.id || i + 1),
+								titleRow: (atual?.grupo || 'Grupo') + (atual?.posicao ? ' #' + atual.posicao : '')
+							},
+							acoes: [
+								...acoesArr
+							],
+							celBodyTableArr: [
+								[
+									{
+										title: <span style={{ fontWeight: '480' }}>Nome: </span>,
+										label: atual?.grupo,
+										props: { style: { textAlign: 'left' }, md: '8', sm: '8', xs: '8' },
+										toSum: 0,
+										isCoin: 0,
+									},
+									{
+										title: <span style={{ fontWeight: '480' }}>Posicao: </span>,
+										label: atual?.posicao,
+										props: { style: { textAlign: 'left' }, md: '4', sm: '4', xs: '4' },
+										toSum: 0,
+										isCoin: 0,
+									}
+								]
+							]
+						}
+					)
+				}
+			}
+		}
+
+		return data;
+	}
+	//------------
 
 	console.log('Grupo', grupo)
-    const rowsTableArr = gerarTableRegistro();    
-    const titulosTableArr = gerarTitleTable();
-	return(
+	const rowsTableArr = gerarTableRegistro();
+	const rowsMobileArr = gerarListMobileRegistro();
+	const titulosTableArr = gerarTitleTable();
+	return (
 
 		<>
-			 <Formik 
+			<Formik
 
-                initialValues={{... dataToFormRegistro()}}
-                validate={
-                    values=>{
+				initialValues={{ ...dataToFormRegistro() }}
+				validate={
+					values => {
 
-                        const errors = {}
+						const errors = {}
 
 
 
-                        return errors;
-                    }
-                }
+						return errors;
+					}
+				}
 
-                onSubmit={async (values, {setSubmitting})=>{
-                    /*setTimeout(() => {
-                        alert(JSON.stringify(values, null, 2));
-                        setSubmitting(false);
-                      }, 400);*/
-                      //alert(values.nome)
-                      await sendData({...values});
-                }}
-            >
-                {
-                    (
-                        {
-                            values,
-                            errors,
-                            touched,
-                            handleChange,
-                            handleBlur,
-                            handleSubmit,
-                            isSubmitting
-                        }
-                    )=>(
-						
-                        <Modal  handleConcluir={()=>{handleSubmit(); }}  title={ (atualizarCadastro == true ? 'Atualizar' : 'Cadastrar')+' Formulário'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarRegistro} showHide={()=>{setShowModalCriarRegistro();setAtualizarCadastro(false);setIdRegistro(null);}}>
-                                
-								{
-									
-                                    carregando && carregando==true
-                                    ?
-                                        (<Load/>)
-                                    :
-                                        (                 
-	                        <form onSubmit={handleSubmit}>
-	                            <Row className="my-3">
-	                        		<Col xs="12" sm="12" md="12">
-	                        			<span className="label_title_grup_forms">Dados básicos</span>
-	                        		</Col>
-	                        	</Row>
-								{
-									error && <Row className="my-3">
-	                        			<Col xs="12" sm="12" md="12">
-											<AlertaDismissible title="Atenção:" message={error} variant={"danger"} />
-	                        			</Col>
-									</Row>
-								}
-	                        	
-								<Row className="mb-1">
-	                        		<Col xs="12" sm="12" md="12">
-	                        			 <Field
-				                                data={
-				                                    {
-				                                        hasLabel:true,
-				                                        contentLabel:'Formulário *',
-				                                        atributsFormLabel:{
+				onSubmit={async (values, { setSubmitting }) => {
+					/*setTimeout(() => {
+						alert(JSON.stringify(values, null, 2));
+						setSubmitting(false);
+					  }, 400);*/
+					//alert(values.nome)
+					await sendData({ ...values });
+				}}
+			>
+				{
+					(
+						{
+							values,
+							errors,
+							touched,
+							handleChange,
+							handleBlur,
+							handleSubmit,
+							isSubmitting
+						}
+					) => (
 
-				                                        },
-				                                        atributsFormControl:{
-				                                            type:'text',
-				                                            name:'formulario',
-				                                            placeholder:'Formulário',
-				                                            id:'formulario',
-				                                            onChange:handleChange,
-				                                            onBlur:handleBlur,
-				                                            value:values.formulario,
-				                                            className:`${estilos.input}`,
-				                                            size:"sm"
-				                                        },
-				                                        atributsContainer:{
-				                                            className:''
-				                                        }
-				                                    }
-				                                }
-				                               
-				                                component={FormControlInput}
-				                            ></Field>
-				                            <ErrorMessage className="alerta_error_form_label" name="formulario" component="div" />
-	                        		</Col>
+						<Modal handleConcluir={() => { handleSubmit(); }} title={(atualizarCadastro == true ? 'Atualizar' : 'Cadastrar') + ' Formulário'} size="lg" propsConcluir={{ 'disabled': loading }} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarRegistro} showHide={() => { setShowModalCriarRegistro(); setAtualizarCadastro(false); setIdRegistro(null); }}>
 
-	                        		
-	                        	</Row>
-								
-								<Row className="my-3">
-	                        		<Col xs="12" sm="12" md="12">
-	                        			<span className="label_title_grup_forms">Grupos do formulario</span>
-	                        		</Col>
-									<Col className="mt-3" xs="12" sm="12" md="8">
-										
-										<FormControlInput 
-											data={
-												{
-													hasLabel:true,
-													contentLabel:'',
-													atributsFormLabel:{
+							{
 
-													},
-													atributsFormControl:{
-														type:'text',
-														name:'name_group',
-														placeholder:'Nome do grupo',
-														id:'name_group',
-														onChange:handleChangeGroup,
-														onBlur:handleChangeGroup,
-														value:grupo,
-														className:`${estilos.input}`,
-														size:"sm"
-													},
-													atributsContainer:{
-														className:''
-													}
-												}
+								carregando && carregando == true
+									?
+									(<Load />)
+									:
+									(
+										<form onSubmit={handleSubmit}>
+											<Row className="my-3">
+												<Col xs="12" sm="12" md="12">
+													<span className="label_title_grup_forms">Dados básicos</span>
+												</Col>
+											</Row>
+											{
+												error && <Row className="my-3">
+													<Col xs="12" sm="12" md="12">
+														<AlertaDismissible title="Atenção:" message={error} variant={"danger"} />
+													</Col>
+												</Row>
 											}
-										/>
-									</Col>
-									<Col className="mt-3" xs="12" sm="12" md="2">
-										
-										<FormControlInput 
-											data={
-												{
-													hasLabel:true,
-													contentLabel:'',
-													atributsFormLabel:{
 
-													},
-													atributsFormControl:{
-														type:'number',
-														name:'posicao_group',
-														placeholder:'Posição',
-														id:'posicao_group',
-														onChange:handleChangePosicaoGroup,
-														onBlur:handleChangePosicaoGroup,
-														value:posicao,
-														className:`${estilos.input}`,
-														size:"sm"
-													},
-													atributsContainer:{
-														className:''
-													}
-												}
-											}
-										/>
-									</Col>
-									<Col className="mt-3" xs="12" sm="12" md="2">
-										<Button onClick={adicionarGrupo} className='btn btn-sm botao_success' >Adicionar</Button>
-									</Col>
-	                        	</Row>
+											<Row className="mb-1">
+												<Col xs="12" sm="12" md="12">
+													<Field
+														data={
+															{
+																hasLabel: true,
+																contentLabel: 'Formulário *',
+																atributsFormLabel: {
 
-								<Row>
-									<Col  xs="12" sm="12" md="12">
-										<TableForm
-											titulosTableArr={titulosTableArr}
-											rowsTableArr={rowsTableArr}
-											loading={loading}
-											hasActionsCol={true}
-											hasTrashAction={true}
-											propsTrash={{className:'btn btn-sm btn-danger'}}
+																},
+																atributsFormControl: {
+																	type: 'text',
+																	name: 'formulario',
+																	placeholder: 'Formulário',
+																	id: 'formulario',
+																	onChange: handleChange,
+																	onBlur: handleBlur,
+																	value: values.formulario,
+																	className: `${estilos.input}`,
+																	size: "sm"
+																},
+																atributsContainer: {
+																	className: ''
+																}
+															}
+														}
 
-										/>
-									</Col>
-								</Row>
+														component={FormControlInput}
+													></Field>
+													<ErrorMessage className="alerta_error_form_label" name="formulario" component="div" />
+												</Col>
 
-	                        	                          
 
-	                        </form>
-                            )
-                            
-                            }       
+											</Row>
 
-                        </Modal>
-                    )
-                }
-            </Formik>
+											<Row className="my-3">
+												<Col xs="12" sm="12" md="12">
+													<span className="label_title_grup_forms">Grupos do formulario</span>
+												</Col>
+												<Col className="mt-3" xs="12" sm="12" md="8">
+
+													<FormControlInput
+														data={
+															{
+																hasLabel: true,
+																contentLabel: '',
+																atributsFormLabel: {
+
+																},
+																atributsFormControl: {
+																	type: 'text',
+																	name: 'name_group',
+																	placeholder: 'Nome do grupo',
+																	id: 'name_group',
+																	onChange: handleChangeGroup,
+																	onBlur: handleChangeGroup,
+																	value: grupo,
+																	className: `${estilos.input}`,
+																	size: "sm"
+																},
+																atributsContainer: {
+																	className: ''
+																}
+															}
+														}
+													/>
+												</Col>
+												<Col className="mt-3" xs="12" sm="12" md="2">
+
+													<FormControlInput
+														data={
+															{
+																hasLabel: true,
+																contentLabel: '',
+																atributsFormLabel: {
+
+																},
+																atributsFormControl: {
+																	type: 'number',
+																	name: 'posicao_group',
+																	placeholder: 'Posição',
+																	id: 'posicao_group',
+																	onChange: handleChangePosicaoGroup,
+																	onBlur: handleChangePosicaoGroup,
+																	value: posicao,
+																	className: `${estilos.input}`,
+																	size: "sm"
+																},
+																atributsContainer: {
+																	className: ''
+																}
+															}
+														}
+													/>
+												</Col>
+												<Col className="mt-3" xs="12" sm="12" md="2">
+													<Button onClick={adicionarGrupo} className='btn btn-sm botao_success' >Adicionar</Button>
+												</Col>
+											</Row>
+
+											<Row>
+												<Col xs="12" sm="12" md="12" className="mobile_card_report">
+													<ListMobile
+														titulosTableArr={null}
+														rowsTableArr={rowsMobileArr}
+														loading={loading}
+														withoutFirstCol={true}
+													/>
+												</Col>
+												<Col xs="12" sm="12" md="12" className="default_card_report">
+													<TableForm
+														titulosTableArr={titulosTableArr}
+														rowsTableArr={rowsTableArr}
+														loading={loading}
+														hasActionsCol={true}
+														hasTrashAction={true}
+														propsTrash={{ className: 'btn btn-sm btn-danger' }}
+
+													/>
+												</Col>
+											</Row>
+
+
+
+										</form>
+									)
+
+							}
+
+						</Modal>
+					)
+				}
+			</Formik>
 		</>
 	)
 }

@@ -1,29 +1,30 @@
 import React from 'react';
-import {Formik, ErrorMessage, Field} from 'formik';
+import { Formik, ErrorMessage, Field } from 'formik';
 import FormControlInput from '../../FormControl/index.js'
 import FormControlSelect from '../../FormControl/Select.js'
-import {Col, Row, Button} from 'react-bootstrap';
+import { Col, Row, Button } from 'react-bootstrap';
 //import Button from '../../FormControl/Button.js';
 import estilos from './FormGrupo.module.css'
 import Modal from '../../Utils/Modal/index.js'
 import useFetch from '../../../Hooks/useFetch.js';
-import {UserContex} from '../../../Context/UserContex.js'
+import { UserContex } from '../../../Context/UserContex.js'
 import Load from '../../Utils/Load/index.js'
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, FORMULARIO_GRUPO_SAVE_POST, FORMULARIO_GRUPO_UPDATE_POST, FORMULARIO_ONE_GET} from '../../../api/endpoints/geral.js'
+import { TOKEN_POST, CLIENT_ID, CLIENT_SECRET, FORMULARIO_GRUPO_SAVE_POST, FORMULARIO_GRUPO_UPDATE_POST, FORMULARIO_ONE_GET } from '../../../api/endpoints/geral.js'
 import Atualizar from '../Atualizar/index.js'
 import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible'
 import ItemFormGrupo from './ItemForm.js'
 import { DragDropContext } from 'react-beautiful-dnd';
 import TableForm from '../../Relatorio/TableForm/index.js';
+import ListMobile from '../../Relatorio/ListMobile/index.js';
 
 
-const FormGrupo = ({idFormulario, dataRegistroChoice, dataGrupo, setIdRegistro, idRegistro, showModalCriarRegistro, setShowModalCriarRegistro, callback, atualizarCadastro, setAtualizarCadastro, carregando})=>{
-    
-    const [carregandoDadosChoice, setCarregandoDadosChoice] = React.useState(false)
+const FormGrupo = ({ idFormulario, dataRegistroChoice, dataGrupo, setIdRegistro, idRegistro, showModalCriarRegistro, setShowModalCriarRegistro, callback, atualizarCadastro, setAtualizarCadastro, carregando }) => {
 
-	const {data, error, request, loading} = useFetch();
+	const [carregandoDadosChoice, setCarregandoDadosChoice] = React.useState(false)
+
+	const { data, error, request, loading } = useFetch();
 	const fetchToRegistro = useFetch();
-	const {getToken, dataUser} = React.useContext(UserContex);
+	const { getToken, dataUser } = React.useContext(UserContex);
 	const [dataContrutorFicha, setDataContrutorFicha] = React.useState([]);
 	const [item, setItem] = React.useState('')
 	const [type, setType] = React.useState('')
@@ -35,169 +36,169 @@ const FormGrupo = ({idFormulario, dataRegistroChoice, dataGrupo, setIdRegistro, 
 	const [dataItens, setDataItens] = React.useState([]);
 	const [posicao, setPosicao] = React.useState(1)
 	const [idItem, setIdItem] = React.useState(null)
-	
-	const userLogar =  ()=>{
-        console.log('Aqui............')
-    }
 
-	const handleChangeItem = ({target})=>{
+	const userLogar = () => {
+		console.log('Aqui............')
+	}
+
+	const handleChangeItem = ({ target }) => {
 		setItem(target.value)
 	}
-	const handleChangeType = ({target})=>{
+	const handleChangeType = ({ target }) => {
 		setType(target.value)
 	}
 
-	const handleChangeOptions = ({target})=>{
+	const handleChangeOptions = ({ target }) => {
 		setOptions(target.value)
 	}
 
-	const handleChangeDefaultValue = ({target})=>{
+	const handleChangeDefaultValue = ({ target }) => {
 		setDefaultValue(target.value)
 	}
 
-	const handleChangeLabel = ({target})=>{
+	const handleChangeLabel = ({ target }) => {
 		setLabel(target.value)
 	}
 
-	const handleChangeNrLinha = ({target})=>{
+	const handleChangeNrLinha = ({ target }) => {
 		setNrLinha(target.value)
 	}
 
-	const handleChangeNrColuna = ({target})=>{
+	const handleChangeNrColuna = ({ target }) => {
 		setNrColuna(target.value)
 	}
 
-	const handleChangePosicaoItem = ({target})=>{
+	const handleChangePosicaoItem = ({ target }) => {
 		setPosicao(target.value)
 	}
 
-    const sendData = async ({
-			name,
-            id,
-		})=>{
+	const sendData = async ({
+		name,
+		id,
+	}) => {
 
-    	const data = {
-    		'name':name,
-            'id':id,
+		const data = {
+			'name': name,
+			'id': id,
 
-    	}
+		}
 
 		data.items = {}
 
 		let dataRegistro = dataItens
 		/* console.log('data: ====================================')
-        console.log(data)
+		console.log(data)
 		console.log(dataRegistro) */
-        if(dataRegistro && Array.isArray(dataRegistro) && dataRegistro.length > 0){
-            for(let i=0; !(i == dataRegistro.length); i++){
-                let atual = dataRegistro[i];
-				
+		if (dataRegistro && Array.isArray(dataRegistro) && dataRegistro.length > 0) {
+			for (let i = 0; !(i == dataRegistro.length); i++) {
+				let atual = dataRegistro[i];
+
 				console.log('atual: ====================================')
-        		console.log(atual)
+				console.log(atual)
 				data.items[i] = {
-					id:				atual?.id,
-					name:			atual?.item,
-					type:			atual?.type,
-					options:		atual?.options,
-					default_value:	atual?.defaultValue,
-					label:			atual?.label,
-					nr_linha:		atual?.nrLinha,
-					nr_coluna:		atual?.nrColuna
+					id: atual?.id,
+					name: atual?.item,
+					type: atual?.type,
+					options: atual?.options,
+					default_value: atual?.defaultValue,
+					label: atual?.label,
+					nr_linha: atual?.nrLinha,
+					nr_coluna: atual?.nrColuna
 				}
 			}
 		}
-		
+
 		console.log('data: ====================================')
-        console.log(data)
-		const {url, options} = FORMULARIO_GRUPO_UPDATE_POST(idRegistro, data, getToken());
+		console.log(data)
+		const { url, options } = FORMULARIO_GRUPO_UPDATE_POST(idRegistro, data, getToken());
 
 
-        const {response, json} = await request(url, options);
-        console.log('Save form fields here')
-        console.log(json)
-        if(json){
+		const { response, json } = await request(url, options);
+		console.log('Save form fields here')
+		console.log(json)
+		if (json) {
 			console.log('Response Save form fields here')
 			console.log(json)
-			
+
 			callback();
 			setShowModalCriarRegistro();
 			setAtualizarCadastro(false);
 			setIdRegistro(null);
-        }
+		}
 
-        /*if(atualizarCadastro == true){
-            const {url, options} = FORMULARIO_GRUPO_UPDATE_POST(idRegistro, data, getToken());
-
-
-            const {response, json} = await request(url, options);
-            console.log('Save clients here')
-            console.log(json)
-            if(json){
-                console.log('Response Save clients here')
-                console.log(json)
-                
-                callback();
-                setShowModalCriarRegistro();
-                setAtualizarCadastro(false);
-                setIdRegistro(null);
-            }
-
-        }else{
+		/*if(atualizarCadastro == true){
+			const {url, options} = FORMULARIO_GRUPO_UPDATE_POST(idRegistro, data, getToken());
 
 
-        	const {url, options} = FORMULARIO_GRUPO_SAVE_POST(data, getToken());
+			const {response, json} = await request(url, options);
+			console.log('Save clients here')
+			console.log(json)
+			if(json){
+				console.log('Response Save clients here')
+				console.log(json)
+			    
+				callback();
+				setShowModalCriarRegistro();
+				setAtualizarCadastro(false);
+				setIdRegistro(null);
+			}
+
+		}else{
 
 
-            const {response, json} = await request(url, options);
-            console.log('Save clients here')
-            console.log(json)
-            if(json){
-                console.log('Response Save clients here')
-            	console.log(json)
-            	
-            	callback();
-            	setShowModalCriarRegistro();
-                setAtualizarCadastro(false);
-            }
-
-        }*/
-    }
+			const {url, options} = FORMULARIO_GRUPO_SAVE_POST(data, getToken());
 
 
-    const dataToFormRegistro = ()=>{
-    	let obj = {name:'', id:'', item:[]}
-    	if(dataRegistroChoice && dataRegistroChoice.hasOwnProperty('mensagem')){
-    		let data = dataRegistroChoice.mensagem;
-           
-    		if(data.hasOwnProperty('name')){
-                obj.name = data.name;
-    		}
+			const {response, json} = await request(url, options);
+			console.log('Save clients here')
+			console.log(json)
+			if(json){
+				console.log('Response Save clients here')
+				console.log(json)
+				
+				callback();
+				setShowModalCriarRegistro();
+				setAtualizarCadastro(false);
+			}
 
-			if(data.hasOwnProperty('id')){
-                obj.id = data.id;
-    		}
-    		
-    	}
-    	console.log('dados para grupo ----------')
-    	console.log(dataRegistroChoice)
-    	return obj;
-    }
+		}*/
+	}
 
-	React.useEffect(()=>{
-		if(dataRegistroChoice && dataRegistroChoice.hasOwnProperty('mensagem')){
+
+	const dataToFormRegistro = () => {
+		let obj = { name: '', id: '', item: [] }
+		if (dataRegistroChoice && dataRegistroChoice.hasOwnProperty('mensagem')) {
 			let data = dataRegistroChoice.mensagem;
-			if(data.hasOwnProperty('item')){
-                //let data = dataRegistroChoice.mensagem;
+
+			if (data.hasOwnProperty('name')) {
+				obj.name = data.name;
+			}
+
+			if (data.hasOwnProperty('id')) {
+				obj.id = data.id;
+			}
+
+		}
+		console.log('dados para grupo ----------')
+		console.log(dataRegistroChoice)
+		return obj;
+	}
+
+	React.useEffect(() => {
+		if (dataRegistroChoice && dataRegistroChoice.hasOwnProperty('mensagem')) {
+			let data = dataRegistroChoice.mensagem;
+			if (data.hasOwnProperty('item')) {
+				//let data = dataRegistroChoice.mensagem;
 				//data.item;
 				let itemCarregado = [];
-				if(Array.isArray(data.item) && data.item.length > 0){
-					for(let i = 0; !(i == data.item.length); i++){
+				if (Array.isArray(data.item) && data.item.length > 0) {
+					for (let i = 0; !(i == data.item.length); i++) {
 						let atual = data.item[i];
 						//`id`, `name`, `type`, `options`, ``, ``, `label`, `props_label`, `nr_linha`, `nr_coluna`
-						let {name, type, formulario_grupo_id, formulario_id, options, default_value, props, label, props_label, nr_coluna, nr_linha, id} = atual;
-						
-						itemCarregado.push( {item:name, name, type, formulario_grupo_id, formulario_id, options, default_value, props, label, props_label, nr_coluna, nrColuna:nr_coluna, nr_linha, nrLinha:nr_linha, id})
-						
+						let { name, type, formulario_grupo_id, formulario_id, options, default_value, props, label, props_label, nr_coluna, nr_linha, id } = atual;
+
+						itemCarregado.push({ item: name, name, type, formulario_grupo_id, formulario_id, options, default_value, props, label, props_label, nr_coluna, nrColuna: nr_coluna, nr_linha, nrLinha: nr_linha, id })
+
 					}
 
 				}
@@ -207,83 +208,83 @@ const FormGrupo = ({idFormulario, dataRegistroChoice, dataGrupo, setIdRegistro, 
 				//adicionarItem
 				console.log("aqui oooo")
 				console.log(itemCarregado)
-    		}
+			}
 		}
 	}, [dataRegistroChoice])
 
 
-	const adicionarItem = ()=>{
+	const adicionarItem = () => {
 		let contador = dataItens.length
-		if(String(item).trim().length > 0){
-			
-			if(atualizarCadastro == true){
-				
-				if(Array.isArray(dataItens) && dataItens.length > 0){
-					
-					let novoDtg = [] 
+		if (String(item).trim().length > 0) {
+
+			if (atualizarCadastro == true) {
+
+				if (Array.isArray(dataItens) && dataItens.length > 0) {
+
+					let novoDtg = []
 					let encontrou = false;
-					dataItens.forEach((registroItem, index, dadosArr)=>{
+					dataItens.forEach((registroItem, index, dadosArr) => {
 						let idIt = registroItem?.id;
 						idIt = Number(idIt)
 						//let atual = registroItem;
-						if(idItem > 0 && idIt > 0 && idItem == idIt){
-							registroItem.item		= item;
-							registroItem.label				=  label;
-							registroItem.type				=  type;
-							registroItem.options			=  options;
-							registroItem.defaultValue		=  defaultValue;
-							registroItem.nrLinha			=  nrLinha;
-							registroItem.nrColuna			=  nrColuna;
+						if (idItem > 0 && idIt > 0 && idItem == idIt) {
+							registroItem.item = item;
+							registroItem.label = label;
+							registroItem.type = type;
+							registroItem.options = options;
+							registroItem.defaultValue = defaultValue;
+							registroItem.nrLinha = nrLinha;
+							registroItem.nrColuna = nrColuna;
 							encontrou = true;
-							
+
 						}
 						novoDtg.push(registroItem)
-						
+
 					})
 
-					if(! encontrou){
+					if (!encontrou) {
 						let itemPush = {}
-						itemPush.item				= item;
-						itemPush.label				=  label;
-						itemPush.type				=  type;
-						itemPush.options			=  options;
-						itemPush.defaultValue		=  defaultValue;
-						itemPush.nrLinha			=  nrLinha;
-						itemPush.nrColuna			=  nrColuna;
-						novoDtg.push(itemPush)						
+						itemPush.item = item;
+						itemPush.label = label;
+						itemPush.type = type;
+						itemPush.options = options;
+						itemPush.defaultValue = defaultValue;
+						itemPush.nrLinha = nrLinha;
+						itemPush.nrColuna = nrColuna;
+						novoDtg.push(itemPush)
 					}
 					setDataItens([...novoDtg])
 					contador = Number(posicao) + 1;
 
-				}else{	
+				} else {
 
 					let itemPush = {}
-					itemPush.item				= item;
-					itemPush.label				=  label;
-					itemPush.type				=  type;
-					itemPush.options			=  options;
-					itemPush.defaultValue		=  defaultValue;
-					itemPush.nrLinha			=  nrLinha;
-					itemPush.nrColuna			=  nrColuna;
-							
+					itemPush.item = item;
+					itemPush.label = label;
+					itemPush.type = type;
+					itemPush.options = options;
+					itemPush.defaultValue = defaultValue;
+					itemPush.nrLinha = nrLinha;
+					itemPush.nrColuna = nrColuna;
+
 					setDataItens([...dataItens, itemPush])
 					contador = Number(posicao) + 1;
 				}
-				
-			}else{
+
+			} else {
 				let itemPush = {}
-				itemPush.item				= item;
-				itemPush.label				=  label;
-				itemPush.type				=  type;
-				itemPush.options			=  options;
-				itemPush.defaultValue		=  defaultValue;
-				itemPush.nrLinha			=  nrLinha;
-				itemPush.nrColuna			=  nrColuna;
+				itemPush.item = item;
+				itemPush.label = label;
+				itemPush.type = type;
+				itemPush.options = options;
+				itemPush.defaultValue = defaultValue;
+				itemPush.nrLinha = nrLinha;
+				itemPush.nrColuna = nrColuna;
 				setDataItens([...dataItens, itemPush])
 				contador += 1;
 			}
-			
-			
+
+
 		}
 		setItem('')
 		setType('')
@@ -294,37 +295,38 @@ const FormGrupo = ({idFormulario, dataRegistroChoice, dataGrupo, setIdRegistro, 
 		setNrColuna('')
 		setPosicao(contador)
 		setIdItem(null)
-		
-				
+
+
 	}
 
-	const removeItem = (index)=>{
+	const removeItem = (index) => {
 		console.log(index)
-		if(Array.isArray(dataItens) && dataItens.length > 0){
-			const newData = dataItens.filter((item, indexArr, Arr)=>{
+		if (Array.isArray(dataItens) && dataItens.length > 0) {
+			const newData = dataItens.filter((item, indexArr, Arr) => {
 				return indexArr != index
 			})
 			setDataItens(newData)
 		}
 	}
-    
-	const messag = ()=>{
-		console.log('Adicionar item');
-	} 
 
-	const gerarTableRegistro = ()=>{
-       
-        let data = [];
-        let dataRegistro = dataItens
-        if(dataRegistro && Array.isArray(dataRegistro) && dataRegistro.length > 0){
-            for(let i=0; !(i == dataRegistro.length); i++){
-                let atual = dataRegistro[i];
-				let indexAtual = (i+1);
-                if(atual){
-						//item, posicao
+	const messag = () => {
+		console.log('Adicionar item');
+	}
+
+	const gerarTableRegistro = () => {
+
+		let data = [];
+		let dataRegistro = dataItens
+		if (dataRegistro && Array.isArray(dataRegistro) && dataRegistro.length > 0) {
+			for (let i = 0; !(i == dataRegistro.length); i++) {
+				let atual = dataRegistro[i];
+				let indexAtual = (i + 1);
+				if (atual) {
+					//item, posicao
 					let acoesArr = [];
-					if(atualizarCadastro == true && atual?.id > 0){
-						acoesArr.push({acao:()=>{
+					if (atualizarCadastro == true && atual?.id > 0) {
+						acoesArr.push({
+							acao: () => {
 								setItem(atual?.name);
 								setIdItem(atual?.id)
 								setType(atual?.type);
@@ -334,434 +336,524 @@ const FormGrupo = ({idFormulario, dataRegistroChoice, dataGrupo, setIdRegistro, 
 								setNrLinha(atual?.nr_linha);
 								setNrColuna(atual?.nr_coluna);
 
-							}, label:'Editar', propsOption:{'className':'btn btn-sm'}, propsLabel:{}})
+							}, label: 'Editar', propsOption: { 'className': 'btn btn-sm' }, propsLabel: {}
+						})
 					}
 
-                    data.push(
+					data.push(
 
-                        {
-                            propsRow:{id:indexAtual},
-                            acoes:acoesArr,
-							acaoTrash:()=>removeItem(i),
-                            celBodyTableArr:[
-                                
-                                {
+						{
+							propsRow: { id: indexAtual },
+							acoes: acoesArr,
+							acaoTrash: () => removeItem(i),
+							celBodyTableArr: [
 
-                                    label:atual?.item,
-                                    propsRow:{}
-                                },
 								{
 
-                                    label:atual?.label,
-                                    propsRow:{}
-                                },
+									label: atual?.item,
+									propsRow: {}
+								},
 								{
 
-                                    label:atual?.type,
-                                    propsRow:{}
-                                },
+									label: atual?.label,
+									propsRow: {}
+								},
 								{
 
-                                    label:atual?.options,
-                                    propsRow:{}
-                                },
+									label: atual?.type,
+									propsRow: {}
+								},
 								{
 
-                                    label:atual?.defaultValue,
-                                    propsRow:{}
-                                },
+									label: atual?.options,
+									propsRow: {}
+								},
 								{
 
-                                    label:atual?.nrLinha,
-                                    propsRow:{}
-                                },
+									label: atual?.defaultValue,
+									propsRow: {}
+								},
 								{
 
-                                    label:atual?.nrColuna,
-                                    propsRow:{}
-                                },
+									label: atual?.nrLinha,
+									propsRow: {}
+								},
+								{
 
-                            ]
-                        }
+									label: atual?.nrColuna,
+									propsRow: {}
+								},
 
-                    )
+							]
+						}
 
-                }
+					)
 
-            }
-        }
+				}
 
-        return data;
-    }
+			}
+		}
 
-	const gerarTitleTable = ()=>{
-        let tableTitle = [
-            {
-                label:'Chave',
-                props:{}
-            },
+		return data;
+	}
+
+	const gerarTitleTable = () => {
+		let tableTitle = [
 			{
-                label:'Label',
-                props:{}
-            },
+				label: 'Chave',
+				props: {}
+			},
 			{
-                label:'Tipo',
-                props:{}
-            },
+				label: 'Label',
+				props: {}
+			},
 			{
-                label:'Options',
-                props:{}
-            },
+				label: 'Tipo',
+				props: {}
+			},
 			{
-                label:'Vr. padrão',
-                props:{}
-            },
+				label: 'Options',
+				props: {}
+			},
 			{
-                label:'Nº. linha',
-                props:{}
-            },
+				label: 'Vr. padrão',
+				props: {}
+			},
 			{
-                label:'Nº. coluna',
-                props:{}
-            }
-        ]
+				label: 'Nº. linha',
+				props: {}
+			},
+			{
+				label: 'Nº. coluna',
+				props: {}
+			}
+		]
 
-        return tableTitle;
-    }
-    //------------
+		return tableTitle;
+	}
+
+	const gerarListMobileRegistro = () => {
+		let data = [];
+		let dataRegistro = dataItens;
+
+		if (dataRegistro && Array.isArray(dataRegistro) && dataRegistro.length > 0) {
+			for (let i = 0; !(i == dataRegistro.length); i++) {
+				let atual = dataRegistro[i];
+				if (atual) {
+					let acoesArr = [];
+
+					if (atualizarCadastro == true && atual?.id > 0) {
+						acoesArr.push({
+							acao: () => {
+								setItem(atual?.name);
+								setIdItem(atual?.id)
+								setType(atual?.type);
+								setOptions(atual?.options);
+								setDefaultValue(atual?.default_value);
+								setLabel(atual?.label);
+								setNrLinha(atual?.nr_linha);
+								setNrColuna(atual?.nr_coluna);
+							},
+							label: 'Editar',
+							propsOption: {},
+							propsLabel: {}
+						})
+					}
+
+					acoesArr.push({
+						acao: () => removeItem(i),
+						label: 'Excluir',
+						propsOption: {},
+						propsLabel: {}
+					})
+
+					data.push(
+						{
+							propsRow: {
+								id: (atual?.id || i + 1),
+								titleRow: (atual?.item || 'Item') + (atual?.label ? ' - ' + atual.label : '')
+							},
+							acoes: [
+								...acoesArr
+							],
+							celBodyTableArr: [
+								[
+									{
+										title: <span style={{ fontWeight: '480' }}>Chave: </span>,
+										label: atual?.item,
+										props: { style: { textAlign: 'left' }, md: '6', sm: '6', xs: '6' },
+										toSum: 0,
+										isCoin: 0,
+									},
+									{
+										title: <span style={{ fontWeight: '480' }}>Tipo: </span>,
+										label: atual?.type,
+										props: { style: { textAlign: 'left' }, md: '6', sm: '6', xs: '6' },
+										toSum: 0,
+										isCoin: 0,
+									}
+								],
+								[
+									{
+										title: <span style={{ fontWeight: '480' }}>Label: </span>,
+										label: atual?.label,
+										props: { style: { textAlign: 'left' }, md: '12', sm: '12', xs: '12' },
+										toSum: 0,
+										isCoin: 0,
+									}
+								]
+							]
+						}
+					)
+				}
+			}
+		}
+
+		return data;
+	}
+	//------------
 
 	console.log('Grupo', item)
-    const rowsTableArr = gerarTableRegistro();    
-    const titulosTableArr = gerarTitleTable();
-	return(
+	const rowsTableArr = gerarTableRegistro();
+	const rowsMobileArr = gerarListMobileRegistro();
+	const titulosTableArr = gerarTitleTable();
+	return (
 
 		<>
-			 <Formik 
+			<Formik
 
-                initialValues={{... dataToFormRegistro()}}
-                validate={
-                    values=>{
+				initialValues={{ ...dataToFormRegistro() }}
+				validate={
+					values => {
 
-                        const errors = {}
+						const errors = {}
 
 
 
-                        return errors;
-                    }
-                }
+						return errors;
+					}
+				}
 
-                onSubmit={async (values, {setSubmitting})=>{
-                    /*setTimeout(() => {
-                        alert(JSON.stringify(values, null, 2));
-                        setSubmitting(false);
-                      }, 400);*/
-                      //alert(values.nome)
-					  //console.table({...values})
-                      await sendData({...values});
-                }}
-            >
-                {
-                    (
-                        {
-                            values,
-                            errors,
-                            touched,
-                            handleChange,
-                            handleBlur,
-                            handleSubmit,
-                            isSubmitting
-                        }
-                    )=>(
-						
-                        <Modal  handleConcluir={()=>{handleSubmit(); }}  title={ (atualizarCadastro == true ? 'Atualizar' : 'Cadastrar')+' Grupo'} size="lg" propsConcluir={{'disabled':loading}} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarRegistro} showHide={()=>{setShowModalCriarRegistro();setAtualizarCadastro(false);setIdRegistro(null);}}>
-                                
-								{
-									
-                                    carregando && carregando==true
-                                    ?
-                                        (<Load/>)
-                                    :
-                                        (                 
-	                        <form onSubmit={handleSubmit}>
-	                            <Row className="my-3">
-	                        		<Col xs="12" sm="12" md="12">
-	                        			<span className="label_title_grup_forms">Dados básicos</span>
-	                        		</Col>
-	                        	</Row>
-								{
-									error && <Row className="my-3">
-	                        			<Col xs="12" sm="12" md="12">
-											<AlertaDismissible title="Atenção:" message={error} variant={"danger"} />
-	                        			</Col>
-									</Row>
-								}
-	                        	
-								<Row className="mb-1">
-	                        		<Col xs="12" sm="12" md="12">
-	                        			 <Field
-				                                data={
-				                                    {
-				                                        hasLabel:true,
-				                                        contentLabel:'Grupo *',
-				                                        atributsFormLabel:{
+				onSubmit={async (values, { setSubmitting }) => {
+					/*setTimeout(() => {
+						alert(JSON.stringify(values, null, 2));
+						setSubmitting(false);
+					  }, 400);*/
+					//alert(values.nome)
+					//console.table({...values})
+					await sendData({ ...values });
+				}}
+			>
+				{
+					(
+						{
+							values,
+							errors,
+							touched,
+							handleChange,
+							handleBlur,
+							handleSubmit,
+							isSubmitting
+						}
+					) => (
 
-				                                        },
-				                                        atributsFormControl:{
-				                                            type:'text',
-				                                            name:'name',
-				                                            placeholder:'Grupo',
-				                                            id:'name',
-				                                            onChange:handleChange,
-				                                            onBlur:handleBlur,
-				                                            value:values.name,
-				                                            className:`${estilos.input}`,
-				                                            size:"sm"
-				                                        },
-				                                        atributsContainer:{
-				                                            className:''
-				                                        }
-				                                    }
-				                                }
-				                               
-				                                component={FormControlInput}
-				                            ></Field>
-				                            <ErrorMessage className="alerta_error_form_label" name="name" component="div" />
-	                        		</Col>
+						<Modal handleConcluir={() => { handleSubmit(); }} title={(atualizarCadastro == true ? 'Atualizar' : 'Cadastrar') + ' Grupo'} size="lg" propsConcluir={{ 'disabled': loading }} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarRegistro} showHide={() => { setShowModalCriarRegistro(); setAtualizarCadastro(false); setIdRegistro(null); }}>
 
-	                        		
-	                        	</Row>
-								
-								<Row className="my-3">
-	                        		<Col xs="12" sm="12" md="12">
-	                        			<span className="label_title_grup_forms">Campos do formulário</span>
-	                        		</Col>
-									<Col className="mt-3" xs="12" sm="12" md="3">
-										
-										<FormControlInput 
-											data={
-												{
-													hasLabel:true,
-													contentLabel:'',
-													atributsFormLabel:{
+							{
 
-													},
-													atributsFormControl:{
-														type:'text',
-														name:'name_item',
-														placeholder:'Chave',
-														id:'name_item',
-														onChange:handleChangeItem,
-														onBlur:handleChangeItem,
-														value:item,
-														className:`${estilos.input}`,
-														size:"sm"
-													},
-													atributsContainer:{
-														className:''
-													}
-												}
+								carregando && carregando == true
+									?
+									(<Load />)
+									:
+									(
+										<form onSubmit={handleSubmit}>
+											<Row className="my-3">
+												<Col xs="12" sm="12" md="12">
+													<span className="label_title_grup_forms">Dados básicos</span>
+												</Col>
+											</Row>
+											{
+												error && <Row className="my-3">
+													<Col xs="12" sm="12" md="12">
+														<AlertaDismissible title="Atenção:" message={error} variant={"danger"} />
+													</Col>
+												</Row>
 											}
-										/>
-									</Col>
-									<Col className="mt-3" xs="12" sm="12" md="3">
-										
-										<FormControlInput 
-											data={
-												{
-													hasLabel:true,
-													contentLabel:'',
-													atributsFormLabel:{
 
-													},
-													atributsFormControl:{
-														type:'text',
-														name:'name_item',
-														placeholder:'Label',
-														id:'name_item',
-														onChange:handleChangeLabel,
-														onBlur:handleChangeLabel,
-														value:label,
-														className:`${estilos.input}`,
-														size:"sm"
-													},
-													atributsContainer:{
-														className:''
-													}
-												}
-											}
-										/>
-									</Col>
-									<Col className="mt-3" xs="12" sm="12" md="3">
-										
-										<FormControlInput 
-											data={
-												{
-													hasLabel:true,
-													contentLabel:'',
-													atributsFormLabel:{
+											<Row className="mb-1">
+												<Col xs="12" sm="12" md="12">
+													<Field
+														data={
+															{
+																hasLabel: true,
+																contentLabel: 'Grupo *',
+																atributsFormLabel: {
 
-													},
-													atributsFormControl:{
-														type:'text',
-														name:'type',
-														placeholder:'Tipo',
-														id:'type',
-														onChange:handleChangeType,
-														onBlur:handleChangeType,
-														value:type,
-														className:`${estilos.input}`,
-														size:"sm"
-													},
-													atributsContainer:{
-														className:''
-													}
-												}
-											}
-										/>
-									</Col>
-									<Col className="mt-3" xs="12" sm="12" md="3">
-										
-										<FormControlInput 
-											data={
-												{
-													hasLabel:true,
-													contentLabel:'',
-													atributsFormLabel:{
+																},
+																atributsFormControl: {
+																	type: 'text',
+																	name: 'name',
+																	placeholder: 'Grupo',
+																	id: 'name',
+																	onChange: handleChange,
+																	onBlur: handleBlur,
+																	value: values.name,
+																	className: `${estilos.input}`,
+																	size: "sm"
+																},
+																atributsContainer: {
+																	className: ''
+																}
+															}
+														}
 
-													},
-													atributsFormControl:{
-														type:'text',
-														name:'name_label',
-														placeholder:'Options',
-														id:'name_label',
-														onChange:handleChangeOptions,
-														onBlur:handleChangeOptions,
-														value:options,
-														className:`${estilos.input}`,
-														size:"sm"
-													},
-													atributsContainer:{
-														className:''
-													}
-												}
-											}
-										/>
-									</Col>
-									<Col className="mt-3" xs="12" sm="12" md="3">
-										
-										<FormControlInput 
-											data={
-												{
-													hasLabel:true,
-													contentLabel:'',
-													atributsFormLabel:{
+														component={FormControlInput}
+													></Field>
+													<ErrorMessage className="alerta_error_form_label" name="name" component="div" />
+												</Col>
 
-													},
-													atributsFormControl:{
-														type:'text',
-														name:'default_value',
-														placeholder:'Valor padrao',
-														id:'default_value',
-														onChange:handleChangeDefaultValue,
-														onBlur:handleChangeDefaultValue,
-														value:defaultValue,
-														className:`${estilos.input}`,
-														size:"sm"
-													},
-													atributsContainer:{
-														className:''
-													}
-												}
-											}
-										/>
-									</Col>
 
-									<Col className="mt-3" xs="12" sm="12" md="3">
-										
-										<FormControlInput 
-											data={
-												{
-													hasLabel:true,
-													contentLabel:'',
-													atributsFormLabel:{
+											</Row>
 
-													},
-													atributsFormControl:{
-														type:'number',
-														name:'nr_linha',
-														placeholder:'Nº linha',
-														id:'nr_linha',
-														onChange:handleChangeNrLinha,
-														onBlur:handleChangeNrLinha,
-														value:nrLinha,
-														className:`${estilos.input}`,
-														size:"sm"
-													},
-													atributsContainer:{
-														className:''
-													}
-												}
-											}
-										/>
-									</Col>
-									<Col className="mt-3" xs="12" sm="12" md="3">
-										
-										<FormControlInput 
-											data={
-												{
-													hasLabel:true,
-													contentLabel:'',
-													atributsFormLabel:{
+											<Row className="my-3">
+												<Col xs="12" sm="12" md="12">
+													<span className="label_title_grup_forms">Campos do formulário</span>
+												</Col>
+												<Col className="mt-3" xs="12" sm="12" md="3">
 
-													},
-													atributsFormControl:{
-														type:'number',
-														name:'nr_coluna',
-														placeholder:'Nº coluna',
-														id:'nr_coluna',
-														onChange:handleChangeNrColuna,
-														onBlur:handleChangeNrColuna,
-														value:nrColuna,
-														className:`${estilos.input}`,
-														size:"sm"
-													},
-													atributsContainer:{
-														className:''
-													}
-												}
-											}
-										/>
-									</Col>
-									<Col className="mt-3" xs="12" sm="12" md="3">
-										<Button onClick={adicionarItem} className='btn btn-sm botao_success' >Adicionar</Button>
-									</Col>
-	                        	</Row>
+													<FormControlInput
+														data={
+															{
+																hasLabel: true,
+																contentLabel: '',
+																atributsFormLabel: {
 
-								<Row>
-									<Col  xs="12" sm="12" md="12">
-										<TableForm
-											titulosTableArr={titulosTableArr}
-											rowsTableArr={rowsTableArr}
-											loading={loading}
-											hasActionsCol={true}
-											hasTrashAction={true}
-											propsTrash={{className:'btn btn-sm btn-danger'}}
+																},
+																atributsFormControl: {
+																	type: 'text',
+																	name: 'name_item',
+																	placeholder: 'Chave',
+																	id: 'name_item',
+																	onChange: handleChangeItem,
+																	onBlur: handleChangeItem,
+																	value: item,
+																	className: `${estilos.input}`,
+																	size: "sm"
+																},
+																atributsContainer: {
+																	className: ''
+																}
+															}
+														}
+													/>
+												</Col>
+												<Col className="mt-3" xs="12" sm="12" md="3">
 
-										/>
-									</Col>
-								</Row>
+													<FormControlInput
+														data={
+															{
+																hasLabel: true,
+																contentLabel: '',
+																atributsFormLabel: {
 
-	                        	                          
+																},
+																atributsFormControl: {
+																	type: 'text',
+																	name: 'name_item',
+																	placeholder: 'Label',
+																	id: 'name_item',
+																	onChange: handleChangeLabel,
+																	onBlur: handleChangeLabel,
+																	value: label,
+																	className: `${estilos.input}`,
+																	size: "sm"
+																},
+																atributsContainer: {
+																	className: ''
+																}
+															}
+														}
+													/>
+												</Col>
+												<Col className="mt-3" xs="12" sm="12" md="3">
 
-	                        </form>
-                            )
-                            
-                            }       
+													<FormControlInput
+														data={
+															{
+																hasLabel: true,
+																contentLabel: '',
+																atributsFormLabel: {
 
-                        </Modal>
-                    )
-                }
-            </Formik>
+																},
+																atributsFormControl: {
+																	type: 'text',
+																	name: 'type',
+																	placeholder: 'Tipo',
+																	id: 'type',
+																	onChange: handleChangeType,
+																	onBlur: handleChangeType,
+																	value: type,
+																	className: `${estilos.input}`,
+																	size: "sm"
+																},
+																atributsContainer: {
+																	className: ''
+																}
+															}
+														}
+													/>
+												</Col>
+												<Col className="mt-3" xs="12" sm="12" md="3">
+
+													<FormControlInput
+														data={
+															{
+																hasLabel: true,
+																contentLabel: '',
+																atributsFormLabel: {
+
+																},
+																atributsFormControl: {
+																	type: 'text',
+																	name: 'name_label',
+																	placeholder: 'Options',
+																	id: 'name_label',
+																	onChange: handleChangeOptions,
+																	onBlur: handleChangeOptions,
+																	value: options,
+																	className: `${estilos.input}`,
+																	size: "sm"
+																},
+																atributsContainer: {
+																	className: ''
+																}
+															}
+														}
+													/>
+												</Col>
+												<Col className="mt-3" xs="12" sm="12" md="3">
+
+													<FormControlInput
+														data={
+															{
+																hasLabel: true,
+																contentLabel: '',
+																atributsFormLabel: {
+
+																},
+																atributsFormControl: {
+																	type: 'text',
+																	name: 'default_value',
+																	placeholder: 'Valor padrao',
+																	id: 'default_value',
+																	onChange: handleChangeDefaultValue,
+																	onBlur: handleChangeDefaultValue,
+																	value: defaultValue,
+																	className: `${estilos.input}`,
+																	size: "sm"
+																},
+																atributsContainer: {
+																	className: ''
+																}
+															}
+														}
+													/>
+												</Col>
+
+												<Col className="mt-3" xs="12" sm="12" md="3">
+
+													<FormControlInput
+														data={
+															{
+																hasLabel: true,
+																contentLabel: '',
+																atributsFormLabel: {
+
+																},
+																atributsFormControl: {
+																	type: 'number',
+																	name: 'nr_linha',
+																	placeholder: 'Nº linha',
+																	id: 'nr_linha',
+																	onChange: handleChangeNrLinha,
+																	onBlur: handleChangeNrLinha,
+																	value: nrLinha,
+																	className: `${estilos.input}`,
+																	size: "sm"
+																},
+																atributsContainer: {
+																	className: ''
+																}
+															}
+														}
+													/>
+												</Col>
+												<Col className="mt-3" xs="12" sm="12" md="3">
+
+													<FormControlInput
+														data={
+															{
+																hasLabel: true,
+																contentLabel: '',
+																atributsFormLabel: {
+
+																},
+																atributsFormControl: {
+																	type: 'number',
+																	name: 'nr_coluna',
+																	placeholder: 'Nº coluna',
+																	id: 'nr_coluna',
+																	onChange: handleChangeNrColuna,
+																	onBlur: handleChangeNrColuna,
+																	value: nrColuna,
+																	className: `${estilos.input}`,
+																	size: "sm"
+																},
+																atributsContainer: {
+																	className: ''
+																}
+															}
+														}
+													/>
+												</Col>
+												<Col className="mt-3" xs="12" sm="12" md="3">
+													<Button onClick={adicionarItem} className='btn btn-sm botao_success' >Adicionar</Button>
+												</Col>
+											</Row>
+
+											<Row>
+												<Col xs="12" sm="12" md="12" className="mobile_card_report d-block d-lg-none">
+													<ListMobile
+														titulosTableArr={null}
+														rowsTableArr={rowsMobileArr}
+														loading={loading}
+														withoutFirstCol={true}
+													/>
+												</Col>
+												<Col xs="12" sm="12" md="12" className="default_card_report d-none d-lg-block">
+													<TableForm
+														titulosTableArr={titulosTableArr}
+														rowsTableArr={rowsTableArr}
+														loading={loading}
+														hasActionsCol={true}
+														hasTrashAction={true}
+														propsTrash={{ className: 'btn btn-sm btn-danger' }}
+
+													/>
+												</Col>
+											</Row>
+
+
+
+										</form>
+									)
+
+							}
+
+						</Modal>
+					)
+				}
+			</Formik>
 		</>
 	)
 }
