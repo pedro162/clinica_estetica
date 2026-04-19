@@ -1,329 +1,300 @@
 import React from 'react';
-import estilos from './Item.module.css'
 import useFetch from '../../Hooks/useFetch.js';
-import {TOKEN_POST, CLIENT_ID,CLIENT_SECRET, FORMULARIO_ITEM_ALL_POST} from '../../api/endpoints/geral.js'
-import {Col, Row } from 'react-bootstrap';
-import Table from '../Relatorio/Table/index.js'
+import { FORMULARIO_ITEM_ALL_POST, RECORD_NUMBER_PER_REQUEST } from '../../api/endpoints/geral.js'
+import { Col, Row, Button } from 'react-bootstrap';
 import Filter from '../Relatorio/Filter/index.js'
 import Breadcrumbs from '../Helper/Breadcrumbs.js'
-import { faHome, faSearch, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faPlus, faChevronDown, faChevronUp, faBroom } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Modal from '../Utils/Modal/index.js'
-import Load from '../Utils/Load/index.js'
 import Cadastrar from './Cadastrar/index.js'
-import Atualizar from './Atualizar/index.js'
-import {UserContex} from '../../Context/UserContex.js'
-import FormItem from './FormItem/index.js'
+import { UserContex } from '../../Context/UserContex.js'
+import Include from './include'
+import FormControlInput from '../FormControl/index.js'
 
+const ConstrutorFichaItem = ({ idRegistro, idGrupo, ...props }) => {
 
-const ConstrutorFichaItem = (props)=>{
-
-	const {data, error, request, loading} = useFetch();
+    const { request, loading } = useFetch();
     const [registro, setRegistro] = React.useState([])
-    const [exemplos, setExemplos] = React.useState([])
-    const [exemplosTitleTable, setExemplosTitleTable] = React.useState([])
-    const [showModalCriarRegistro, setShowModalCriarRegistro] = React.useState(false)
     const [registroChoice, setRegistroChoice] = React.useState(null);
-    const [atualizarCadastro, setAtualizarCadastro] = React.useState(false)    
-    const [cadastrarRegistro, setCadastrarRegistro] = React.useState(false)     
-    const [acao, setAcao] = React.useState(null)
+    const [cadastrarRegistro, setCadastrarRegistro] = React.useState(false)
+    const [atualizarCadastro, setAtualizarCadastro] = React.useState(false)
+    const [mostarFiltros, setMostarFiltros] = React.useState(true)
+    const [nadaEncontrado, setNadaEncontrado] = React.useState(false)
+    const [nameItem, setNameItem] = React.useState('')
+    const [filtroMobile, setFiltroMobile] = React.useState('')
+    const [ordenacao, setOrdenacao] = React.useState('')
+    const [appliedFilters, setAppliedFilters] = React.useState([])
+    const [nextPage, setNextPage] = React.useState(null)
+    const [totalPageCount, setTotalPageCount] = React.useState(null)
+    const [usePagination, setUsePagination] = React.useState(true)
+    const [qtdItemsPerPage, setQtdItemsPerPage] = React.useState(RECORD_NUMBER_PER_REQUEST)
 
+    const { getToken } = React.useContext(UserContex);
 
-    const {getToken} = React.useContext(UserContex);
-
-    const alerta = (target)=>{
-        console.log(target)
+    const handleSearch = (ev) => {
+        if (ev.key === "Enter") {
+            requestAllRegistros();
+        }
     }
+
+    const handleFiltroMobile = ({ target }) => {
+        setFiltroMobile(target.value)
+    }
+
+    const setNameItemFilter = ({ target }) => {
+        setNameItem(target.value)
+    }
+
+    const setOrdenacaoFiltro = ({ target }) => {
+        setOrdenacao(target.value)
+    }
+
     const filtersArr = [
         {
-            type:'text',
-            options:[], 
+            type: 'text',
+            options: [],
             hasLabel: true,
-            contentLabel:'Nome',
-            atributsFormLabel:{},
-            atributsContainer:{xs:"12", sm:"12", md:"12",className:'mb-2'},
-            atributsFormControl:{'type':'text', size:"sm",'name':'nome',onChange:alerta,    onBlur:alerta},
-
-        }
-    ]
-
-    const acoesBottomCard=[{
-            label:'Pesquisar',
-            icon:<FontAwesomeIcon icon={faSearch} />,
-            props:{onClick:()=>requestAllRegistros(), className:'btn btn-sm botao_success'}
+            contentLabel: 'Nome do item',
+            atributsFormLabel: {},
+            atributsContainer: { xs: "12", sm: "12", md: "3", className: 'mb-2' },
+            atributsFormControl: { 'type': 'text', size: "sm", 'name': 'name', value: nameItem, onChange: setNameItemFilter, onBlur: setNameItemFilter, onKeyUp: handleSearch },
         },
         {
-            label:'Cadastrar',
-            icon:<FontAwesomeIcon icon={faPlus} />,
-            props:{onClick:()=>setCadastrarRegistro(true), className:'btn btn-sm mx-2 btn-secondary'}
-        }
+            type: 'select',
+            options: [{ 'label': 'Selecione...', 'value': '' }, { 'label': 'Codigo A-Z', 'value': 'id-asc' }, { 'label': 'Codigo Z-A', 'value': 'id-desc' }, { 'label': 'Nome A-Z', 'value': 'name-asc' }, { 'label': 'Nome Z-A', 'value': 'name-desc' }],
+            hasLabel: true,
+            contentLabel: 'Classificar',
+            atributsFormLabel: {},
+            atributsContainer: { xs: "12", sm: "12", md: "3", className: 'mb-2' },
+            atributsFormControl: { 'type': 'select', size: "sm", 'ordem': ordenacao, value: ordenacao, onChange: setOrdenacaoFiltro, onBlur: setOrdenacaoFiltro, onKeyUp: handleSearch },
+        },
+    ]
+
+    const acoesBottomCard = [{
+        label: 'Pesquisar',
+        icon: <FontAwesomeIcon icon={faSearch} />,
+        props: { onClick: () => requestAllRegistros(), className: 'btn btn-sm botao_success' }
+    },
+    {
+        label: 'Limpar',
+        icon: <FontAwesomeIcon icon={faBroom} />,
+        props: { onClick: () => limparFiltros(), className: 'btn btn-sm btn-secondary mx-2' }
+    },
+    {
+        label: 'Cadastrar',
+        icon: <FontAwesomeIcon icon={faPlus} />,
+        props: { onClick: () => setCadastrarRegistro(true), className: 'btn btn-sm btn-secondary' }
+    }
     ];
 
-    const gerarTableRegistro = ()=>{
-       
-        let data = [];
-        let dataRegistro = registro.mensagem
-        if(dataRegistro && Array.isArray(dataRegistro) && dataRegistro.length > 0){
-            for(let i=0; !(i == dataRegistro.length); i++){
-                let atual = dataRegistro[i];
-                if(atual){
+    const acoesHeaderCard = [{
+        label: '',
+        icon: <FontAwesomeIcon icon={(mostarFiltros ? faChevronDown : faChevronUp)} />,
+        props: { onClick: () => { setMostarFiltros(!mostarFiltros); }, className: 'btn btn-sm btn-secondary' },
+    },
+    ];
 
+    const limparFiltros = () => {
+        setNameItem('');
+        setFiltroMobile('');
+        setOrdenacao('');
+        setAppliedFilters([]);
+    }
 
-                    data.push(
+    const removeFilter = (key) => {
+        setAppliedFilters(prevFilters => {
+            const updatedFilters = { ...prevFilters };
+            delete updatedFilters[key];
+            return updatedFilters;
+        });
+    }
 
-                        {
-                            propsRow:{id:(atual.id)},
-                            acoes:[
-                                {acao:()=>atualizarRegistro(atual.id), label:'Editar', propsOption:{}, propsLabel:{}},
-                                {acao:()=>novoAtendimento(atual.id), label:'Excluir', propsOption:{}, propsLabel:{}},
-                            ],
-                            celBodyTableArr:[
-                                {
+    const montarFiltro = () => {
+        let filtros = {}
+        let detalhesFiltros = {}
 
-                                    label:atual.id,
-                                    props:{}
-                                },
-                                {
-
-                                    label:atual.formulario_grupo_id,
-                                    props:{}
-                                },
-                                {
-
-                                    label:atual.name,
-                                    props:{
-                                        style:{
-                                            minWidth:'250px'
-                                        },
-                                    }
-                                },
-                                {
-
-                                    label:atual.label,
-                                    props:{
-                                        style:{
-                                            minWidth:'250px'
-                                        },
-                                    }
-                                },
-                                {
-
-                                    label:atual.type,
-                                    props:{}
-                                },
-                                {
-
-                                    label:atual.options,
-                                    props:{
-                                        style:{
-                                            minWidth:'250px'
-                                        },
-                                    }
-                                },
-                                {
-
-                                    label:atual.default_value,
-                                    props:{}
-                                },
-                                {
-
-                                    label:atual.nr_linha,
-                                    props:{}
-                                },
-                                {
-
-                                    label:atual.nr_coluna,
-                                    props:{}
-                                },
-                            ]
-                        }
-
-                    )
-
-                }
-
-            }
+        if (usePagination) {
+            filtros['usePaginate'] = 1;
+            filtros['nr_itens_per_page'] = qtdItemsPerPage;
         }
 
-        return data;
-    }
-
-    const gerarTitleTable = ()=>{
-        let tableTitle = [
-            {
-                label:'Código',
-                props:{}
-            },
-            {
-                label:'Cód. grupo',
-                props:{}
-            },
-            {
-                label:'Chave',
-                props:{
-                    style:{
-                        minWidth:'250px'
-                    },
-                }
-            },
-            {
-                label:'Pergunta',
-                props:{
-                    style:{
-                        minWidth:'250px'
-                    },
-                }
-            },
-            {
-                label:'Tipo',
-                props:{}
-            },
-            {
-                label:'Opt. valor',
-                props:{
-                    style:{
-                        minWidth:'250px'
-                    },
-                }
-            },
-            {
-                label:'Vr. padrão',
-                props:{}
-            },
-            {
-                label:'Nº linha',
-                props:{}
-            },
-            {
-                label:'Nº coluna',
-                props:{}
-            },
-        ]
-
-        return tableTitle;
-    }
-    //------------
-
-    const requestAllRegistros = async() =>{
-       
-        const {url, options} = FORMULARIO_ITEM_ALL_POST({}, getToken());
-
-
-        const {response, json} = await request(url, options);
-        console.log('All itens here')
-        console.log(json)
-        if(json){
-               setRegistro(json)
+        if (idGrupo) {
+            filtros['formulario_grupo_id'] = idGrupo;
         }
 
-            
+        if (nameItem) {
+            filtros['name'] = nameItem;
+            detalhesFiltros['name'] = {
+                label: 'Item',
+                value: nameItem,
+                resetFilter: () => { setNameItem(''); removeFilter('name') },
+            };
+        }
+
+        if (filtroMobile) {
+            filtros['name'] = filtroMobile;
+            detalhesFiltros['name'] = {
+                label: 'Filtro',
+                value: filtroMobile,
+                resetFilter: () => { setFiltroMobile(''); removeFilter('name') },
+            };
+        }
+
+        if (ordenacao) {
+            filtros['ordem'] = ordenacao;
+            detalhesFiltros['ordem'] = {
+                label: 'Ordem',
+                value: ordenacao,
+                resetFilter: () => { setOrdenacao(''); removeFilter('ordem') },
+            };
+        }
+
+        return { filtros, detalhesFiltros };
     }
 
-    React.useEffect(()=>{
+    const requestAllRegistros = async () => {
+        let { filtros, detalhesFiltros } = await montarFiltro();
+        await setAppliedFilters(detalhesFiltros)
+        let { url, options } = FORMULARIO_ITEM_ALL_POST({ ...filtros }, getToken());
+        if (nextPage) {
+            url = nextPage;
+        }
 
-        const requestAllRegistrosEffect = async() =>{
-       
-           await requestAllRegistros();
+        const { response, json } = await request(url, options);
+        if (json) {
+            setRegistro(json)
+        }
+    }
 
-            
+    React.useEffect(() => {
+        const requestAllRegistrosEffect = async () => {
+            await requestAllRegistros();
         }
 
         requestAllRegistrosEffect();
+    }, [nextPage, setNextPage])
 
-        
+
+    React.useEffect(() => {
+        let { filtros, detalhesFiltros } = montarFiltro();
+        setAppliedFilters(detalhesFiltros)
     }, [])
 
-    React.useEffect(()=>{
-        switch(acao){
-            case 'editar':
-                if(registroChoice > 0){
-                    setAtualizarCadastro(true);
-                }else{
-                    setAtualizarCadastro(false);
-                }
-                break;
-            break;
-            default:
-                setAtualizarCadastro(false);
-                break;
-
-        }
-        
-    }, [registroChoice, acao])
-    
-    
-    React.useEffect(()=>{
-
-        if(cadastrarRegistro == true){
-            setShowModalCriarRegistro(true);
-        }else{
-            setShowModalCriarRegistro(false);
-        }
-
-        
-    }, [cadastrarRegistro])
-
-    const atualizarRegistro = (idRegistro)=>{
-        setRegistroChoice(idRegistro)
-        setAcao('editar')
-        setAtualizarCadastro(true);
-    }
-
-    const novoAtendimento = (idRegistro)=>{
-        setRegistroChoice(idRegistro)
-        setAcao('consultar')
-        setAtualizarCadastro(true);
-    }
-
-    
-    const rowsTableArr = gerarTableRegistro();    
-    const titulosTableArr = gerarTitleTable();
-	return(
-		<>
-            <Breadcrumbs
-                items={[
+    return (
+        <>
+            <Row>
+                <Breadcrumbs
+                    items={[
                         {
-                            props:{},
-                            label:'Início'
+                            props: {},
+                            label: 'Inicio'
                         },
                         {
-                            props:{},
-                            label:'Items'
+                            props: {},
+                            label: 'Itens'
                         }
                     ]}
-            />
-            <Row>
-                <Col  xs="12" sm="12" md="3" xl="3" className={'mb-4'}>
+                    buttonFiltroMobile={true}
+                    setMostarFiltros={setMostarFiltros}
+                    mostarFiltros={mostarFiltros}
+                />
+                <Col xs="12" sm="12" md="13" className={'default_card_report mb-4'}>
                     <Filter
                         filtersArr={filtersArr}
                         actionsArr={acoesBottomCard}
+                        mostarFiltros={mostarFiltros}
+                        setMostarFiltros={setMostarFiltros}
+                        botoesHeader={acoesHeaderCard}
+                        activeFilters={appliedFilters}
                     />
                 </Col>
-                <Col  xs="12" sm="12" md="9" xl="9" >
-                    <Table
-                        titulosTableArr={titulosTableArr}
-                        rowsTableArr={rowsTableArr}
-                        loading={loading}
 
+                <Col xs="12" sm="12" md="12" className={'mobile_card_report pt-4'} style={{ backgroundColor: '#FFF' }}>
+                    <Row className={'mb-3'} >
+                        <Col className={'mx-2'} >
+                            <Row style={{ borderRadius: '24px 24px 24px 24px', border: '1px solid #000' }}>
+                                <Col xs="11" sm="11" md="11" >
+                                    <FormControlInput
+                                        data={
+                                            {
+                                                atributsFormControl: {
+                                                    type: 'input',
+                                                    placeholder: 'Search...',
+                                                    style: {
+                                                        border: 'none',
+                                                        outline: '0',
+                                                        'box-shadow': '0 0 0 0',
+                                                        height: '50px',
+                                                        borderRadius: '24px 24px 24px 24px'
+                                                    },
+                                                    onChange: (ev) => { handleFiltroMobile(ev); },
+                                                    onBlur: (ev) => { handleFiltroMobile(ev); },
+                                                    onKeyUp: (ev) => {
+                                                        if (ev.key === "Enter") {
+                                                            requestAllRegistros();
+                                                        }
+                                                    },
+                                                    value: filtroMobile,
+                                                }
+                                            }
+                                        }
+                                    />
+                                </Col>
+
+                                <Col xs="1" sm="1" md="1" style={{ textAlign: 'left', alignItems: 'center', justifyContent: 'center', margin: 'auto', padding: '0' }} >
+                                    <FontAwesomeIcon onClick={() => { requestAllRegistros(); }} size={'lg'} icon={faSearch} />
+                                </Col>
+                            </Row>
+                        </Col>
+                    </Row>
+                    <Row className={'my-2'}>
+                        <Col>
+                            <Row>
+                                <Col><span style={{ fontWeight: 'bolder', fontSize: '14pt' }} >Acoes</span></Col>
+                            </Row>
+
+                            <div>
+                                <hr style={{ margin: '0', padding: '0' }} />
+                            </div>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <div style={{ display: 'flex', flexDirection: 'collumn', flexWrap: 'wrap' }}>
+                            <Button style={{ borderRadius: '50px', marginBottom: '10px', marginRight: '0.4rem' }} className={'btn btn-sm btn-secondary'} onClick={() => { setCadastrarRegistro(true); }} ><FontAwesomeIcon icon={faPlus} /> Item</Button>
+                        </div>
+                    </Row>
+                </Col>
+                <Col style={{ backgroundColor: '#FFF' }} className={'pt-3 mobile_card_report'} >
+                    <Row>
+                        <Col><span style={{ fontWeight: 'bolder', fontSize: '14pt' }} >Resultado</span></Col>
+                    </Row>
+                    <div>
+                        <hr style={{ margin: '0', padding: '0' }} />
+                    </div>
+                </Col>
+
+                <Col xs="12" sm="12" md={'12'} >
+                    <Include
+                        dataEstado={registro}
+                        loadingData={loading}
+                        requestAllRegistros={requestAllRegistros}
+                        setMostarFiltros={setMostarFiltros}
+                        nadaEncontrado={nadaEncontrado}
+                        nextPage={nextPage}
+                        setNextPage={setNextPage}
+                        usePagination={usePagination}
+                        setUsePagination={setUsePagination}
+                        totalPageCount={totalPageCount}
+                        setTotalPageCount={setTotalPageCount}
                     />
                 </Col>
             </Row>
+
             {
-                cadastrarRegistro && <Cadastrar cadastrarRegistro={cadastrarRegistro} setCadastrarRegistro={setCadastrarRegistro} atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro}  idRegistro={registroChoice} setIdRegistro={setRegistroChoice} callback={requestAllRegistros} />
+                cadastrarRegistro && <Cadastrar cadastrarRegistro={cadastrarRegistro} setCadastrarRegistro={setCadastrarRegistro} atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro} idRegistro={registroChoice} setIdRegistro={setRegistroChoice} callback={requestAllRegistros} />
             }
-            
-            {
-                atualizarCadastro &&
-                <Atualizar atualizarCadastro={atualizarCadastro} setAtualizarCadastro={setAtualizarCadastro}  idRegistro={registroChoice} setIdRegistro={setRegistroChoice} callback={requestAllRegistros} />
-            }
-
-            
-
-         </>
-
-	)
+        </>
+    )
 }
 
 export default ConstrutorFichaItem;
-
-//<FormItem dataGrupo={dataGrupo} dataItemChoice={[]}  atualizarCadastro={false} setAtualizarCadastro={setAtualizarCadastro}  idRegistro={null} setIdRegistro={setRegistroChoice}  showModalCriarRegistro={showModalCriarRegistro} setShowModalCriarRegistro={setShowModalCriarRegistro} callback={requestAllRegistros} />
