@@ -16,24 +16,17 @@ import FormOrdemServicoItens from '../FormOrdemServicoItens/index.js'
 import FormOrdemServicoCobrancas from '../FormOrdemServicoCobrancas/index.js'
 import { FORMAT_CALC_COD, FORMAT_MONEY } from '../../../functions/index.js'
 import Swal from 'sweetalert2'
-
-
 import { TOKEN_POST, CLIENT_ID, CLIENT_SECRET, SERVICO_SAVE_POST, SERVICO_ALL_POST, ORDEM_SERVICO_FINALIZAR_PROCEDIMENTO_POST, CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST } from '../../../api/endpoints/geral.js'
-
+import Details from '../Visualizar/details.js';
 
 const FinalizarForm = ({ dataOrdemServicoChoice, setDataOrdemServico, setIdOrdemServico, idOrdemServico, showModalCriarOrdemServico, setShowModalCriarOrdemServico, callback, FinalizarOrdemServico, setFinalizarOrdemServico, carregando }) => {
 
 	const { data, error, request, loading } = useFetch();
 	const dataRequest = useFetch();
-
 	const { getToken, dataUser } = React.useContext(UserContex);
 	const [dataFiliais, setDataFiliais] = React.useState([])
 	const [dataItens, setDataitens] = React.useState([])
 	const [qtdAtualizaCobrancas, setQtdAtualizaCobrancas] = React.useState(0)
-
-	const userLogar = () => {
-		console.log('Aqui............')
-	}
 
 	const sendData = async ({
 		status
@@ -43,48 +36,34 @@ const FinalizarForm = ({ dataOrdemServicoChoice, setDataOrdemServico, setIdOrdem
 			status
 		}
 
-
 		const { url, options } = ORDEM_SERVICO_FINALIZAR_PROCEDIMENTO_POST(idOrdemServico, data, getToken());
-
-
 		const { response, json } = await request(url, options);
-		console.log('Save consulta here')
-		console.log(json)
-		if (json) {
-			console.log('Response Save consulta here')
-			console.log(json)
 
-			callback();
-			setShowModalCriarOrdemServico();
-			setFinalizarOrdemServico(false);
-			setIdOrdemServico(null);
+		if (json) {
+			callback && callback();
+			setShowModalCriarOrdemServico && setShowModalCriarOrdemServico();
+			setFinalizarOrdemServico && setFinalizarOrdemServico(false);
+			setIdOrdemServico && setIdOrdemServico(null);
 
 			Swal.fire({
 				icon: "success",
 				title: "",
 				text: 'Registrado com sucesso',
-				footer: '',//'<a href="#">Why do I have this issue?</a>'
+				footer: '',
 				confirmButtonColor: "#07B201",
 			});
 		}
 	}
 
 	const requestAllFiliais = async () => {
-
 		const { url, options } = SERVICO_ALL_POST({}, getToken());
-
-
 		const { response, json } = await dataRequest.request(url, options);
-		console.log('All consultas here')
-		console.log(json)
+
 		if (json) {
 			setDataFiliais(json)
 		} else {
-
 			setDataFiliais([]);
 		}
-
-
 	}
 
 	const dataToFormOrdemServico = () => {
@@ -94,11 +73,28 @@ const FinalizarForm = ({ dataOrdemServicoChoice, setDataOrdemServico, setIdOrdem
 			pessoa_rca_id: '', filial_id: '', user_id: '', user_update_id: '',
 			active: '', deleted_at: '', created_at: '', updated_at: '', vr_final: '',
 			vr_desconto: '', pct_acrescimo: '', vr_acrescimo: '', profissional_id: '',
-			pct_desconto: '', pessoa: ''
+			pct_desconto: '', pessoa: {}, rca: {}, profissional: {},
 		}
 
-		if (dataOrdemServicoChoice && dataOrdemServicoChoice.hasOwnProperty('mensagem')) {
-			let data = dataOrdemServicoChoice.mensagem;
+		let data = dataOrdemServicoChoice
+
+		if (data?.mensagem) {
+			data = data?.mensagem;
+		}
+
+		if (data?.registro) {
+			data = data?.registro;
+		}
+
+		if (data?.data) {
+			data = data?.data;
+		}
+
+		if (data?.data) {
+			data = data?.data;
+		}
+
+		if (data && data.hasOwnProperty('id')) {
 
 			if (data.hasOwnProperty('id')) {
 				obj.id = data.id;
@@ -160,68 +156,55 @@ const FinalizarForm = ({ dataOrdemServicoChoice, setDataOrdemServico, setIdOrdem
 				obj.pessoa = data.pessoa;
 			}
 
+			if (data.hasOwnProperty('rca')) {
+				obj.rca = data.rca;
+			}
+
+			if (data.hasOwnProperty('profissional')) {
+				obj.profissional = data.profissional;
+			}
 		}
 
 		return obj;
 	}
-
-	const preparaFilialToForm = () => {
-		if (dataFiliais.hasOwnProperty('mensagem') && Array.isArray(dataFiliais.mensagem) && dataFiliais.mensagem.length > 0) {
-			let filiais = dataFiliais.mensagem.map(({ id, name }, index, arr) => ({ label: name, valor: id, props: {} }))
-			filiais.unshift({ label: 'Selecione...', valor: '', props: { selected: 'selected', disabled: 'disabled' } })
-
-			return filiais;
-		}
-		return []
-	}
-
-
-	console.log('----------------------------- data pais ----------------------------------')
-	console.log(dataToFormOrdemServico())
 
 	if (error) {
 		Swal.fire({
 			icon: "error",
 			title: "Oops...",
 			text: error,
-			footer: '',//'<a href="#">Why do I have this issue?</a>'
+			footer: '',
 			confirmButtonColor: "#07B201",
-			//width:'20rem',
 		});
 	}
 
+	const FormModal = () => {
+		return (
+			<Row>
+				<Col>
+					<Details
+						{...data}
+						dataOrdemServicoChoice={dataOrdemServicoChoice}
+					/>
+				</Col>
+			</Row>
+		)
+	}
 
 	return (
-
 		<>
 			<Formik
-
 				initialValues={{ ...dataToFormOrdemServico() }}
 				enableReinitialize={true}
 				validate={
 					values => {
 
 						const errors = {}
-
-						/* if(!values.name){
-							errors.name="Obrigatório"
-						} */
-
-						if (!values.status) {
-							//errors.status="Obrigatório"    			
-						}
-
 						return errors;
 					}
 				}
 
 				onSubmit={async (values, { setSubmitting }) => {
-					/*setTimeout(() => {
-						alert(JSON.stringify(values, null, 2));
-						setSubmitting(false);
-					  }, 400);*/
-					//alert('aqui')
-
 					await sendData({ ...values });
 				}}
 			>
@@ -238,107 +221,15 @@ const FinalizarForm = ({ dataOrdemServicoChoice, setDataOrdemServico, setIdOrdem
 						}
 					) => (
 
-						<Modal handleConcluir={() => { handleSubmit(); }} title={(FinalizarOrdemServico == true ? 'Finalizar' : 'Cadastrar') + ' Ordem de Servico'} size="xs" dialogClassName={'modal-os-fullscreen-mobile'} propsConcluir={{ 'disabled': loading }} labelConcluir={loading ? 'Salvando...' : 'Concluir'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarOrdemServico} showHide={() => { setShowModalCriarOrdemServico(); setFinalizarOrdemServico(false); setIdOrdemServico(null); }}>
+						<Modal handleConcluir={() => { handleSubmit(); }} title={'Finalizar Ordem de Servico'} size="xs" dialogClassName={'modal-90w modal-os-fullscreen-mobile'} propsConcluir={{ 'disabled': loading }} labelConcluir={loading ? 'Salvando...' : 'Concluir'} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalCriarOrdemServico} showHide={() => { setShowModalCriarOrdemServico(); setFinalizarOrdemServico(false); setIdOrdemServico(null); }}>
 							{
-
 								carregando && carregando == true
 									?
 									(<Load />)
 									:
 									(
-										<form onSubmit={handleSubmit}>
-											<Col xs="12" sm="12" md="12">
-												<span className="label_title_grup_forms">Dados básicos</span>
-												<hr />
-											</Col>
-
-											{
-												error && <Row className="my-3">
-													<Col xs="12" sm="12" md="12">
-														<AlertaDismissible title="Atenção:" message={error} variant={"danger"} />
-													</Col>
-												</Row>
-											}
-											<Row className="mb-3">
-												<Col xs="12" sm="12" md="3">
-													<TableBootstrap striped bordered hover size="sm">
-														<thead>
-															<tr>
-																<th>
-																	Código
-																</th>
-																<th style={{ minWidth: '38vh' }} >
-																	{values?.id}
-																</th>
-															</tr>
-															<tr>
-																<th>
-																	Pessoa
-																</th>
-																<th style={{ minWidth: '38vh' }} >
-																	{values?.pessoa?.name}
-																</th>
-															</tr>
-
-															<tr>
-																<th>
-																	Status
-																</th>
-																<th style={{ minWidth: '38vh' }} >
-																	{values?.status}
-																</th>
-															</tr>
-
-															<tr>
-																<th>
-																	Valor
-																</th>
-																<th style={{ minWidth: '38vh' }}>
-																	{FORMAT_MONEY(values?.vr_final)}
-																</th>
-															</tr>
-
-															<tr>
-																<th>
-																	Profissional
-																</th>
-																<th style={{ minWidth: '38vh' }} >
-																	{values?.profissional?.name}
-																</th>
-
-															</tr>
-
-															<tr>
-																<th>
-																	Vendedor
-																</th>
-																<th style={{ minWidth: '38vh' }} >
-																	{values?.vendedor?.name}
-																</th>
-
-															</tr>
-
-															<tr>
-																<th>
-																	Observação
-																</th>
-																<th style={{ minWidth: '38vh' }} >
-																	{values?.observacao}
-																</th>
-
-															</tr>
-														</thead>
-													</TableBootstrap>
-
-												</Col>
-											</Row>
-
-
-
-										</form>
-
+										<FormModal />
 									)
-
 							}
 
 						</Modal>

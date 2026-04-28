@@ -88,8 +88,25 @@ const AtualizarForm = ({ dataOrdemServicoChoice, setDataOrdemServico, setIdOrdem
 			status: '', observacao: '', dsArquivo: '', pessoa_id: '', pessoa_rca_id: '', filial_id: '', user_id: '', user_update_id: '', active: '', deleted_at: '', created_at: '', updated_at: '', vr_final: '', vr_desconto: '', pct_acrescimo: '', vr_acrescimo: '', profissional_id: '', pct_desconto: ''
 		}
 
-		if (dataOrdemServicoChoice && dataOrdemServicoChoice.hasOwnProperty('mensagem')) {
-			let data = dataOrdemServicoChoice.mensagem;
+		let data = dataOrdemServicoChoice
+
+		if (data?.mensagem) {
+			data = data?.mensagem;
+		}
+
+		if (data?.registro) {
+			data = data?.registro;
+		}
+
+		if (data?.data) {
+			data = data?.data;
+		}
+
+		if (data?.data) {
+			data = data?.data;
+		}
+
+		if (data && data.hasOwnProperty('id')) {
 
 			if (data.hasOwnProperty('filial_id')) {
 				obj.filial_id = data.filial_id;
@@ -184,7 +201,6 @@ const AtualizarForm = ({ dataOrdemServicoChoice, setDataOrdemServico, setIdOrdem
 			text: error,
 			footer: '',
 			confirmButtonColor: "#07B201",
-			//width:'20rem',
 		});
 	}
 

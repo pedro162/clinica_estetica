@@ -12,6 +12,7 @@ import TableForm from '../../Relatorio/TableForm/index.js';
 import ListMobile from '../../Relatorio/ListMobile/index.js';
 import { FORMAT_CALC_COD, FORMAT_MONEY } from '../../../functions/index.js'
 import { COBRANCA_ORDEM_ONE_GET, ORDEM_SERVICO_ONE_GET, COBRANCA_ORDEM_DELETE_POST, FORMA_PAGAMENTOALL_POST, FORMA_PAGAMENTO_ONE_GET, PLANO_PAGAMENTOALL_POST, PLANO_PAGAMENTO_ONE_GET, OPERADOR_FINANCEIROALL_POST, COBRANCA_ORDEM_SAVE_POST, COBRANCA_ORDEM_UPDATE_POST } from '../../../api/endpoints/geral.js'
+import { BANDEIRA_CARTAO_ALL_POST } from '../../CartaoCreditoBandeira/Routes/index.js';
 
 const FormOrdemServicoCobrancas = ({ dataOrdemServicoChoice, setDataOrdemServicoGlobal, idOrdemServico, itensOrdem, callback, carregando, qtdAtualizaCobrancas }) => {
 
@@ -22,6 +23,7 @@ const FormOrdemServicoCobrancas = ({ dataOrdemServicoChoice, setDataOrdemServico
 	const [dataFormaPagamento, setDataFormaPagamento] = React.useState([])
 	const [dataPlanoPagamento, setDataPlanoPagamento] = React.useState([])
 	const [dataOperadorFinanceiro, setDataOperadorFinanceiro] = React.useState([])
+	const [dataBandeiraCartao, setDataBandeiraCartao] = React.useState([])
 	const [dataCobrancas, setDataCobrancas] = React.useState([]);//itensOrdem
 	const [dataOrdemServico, setDataOrdemServico] = React.useState(null)
 	const [dataBodyTable, setDataBodyTable] = React.useState([])
@@ -90,6 +92,7 @@ const FormOrdemServicoCobrancas = ({ dataOrdemServicoChoice, setDataOrdemServico
 		setDataFormaPagamento(null)
 		setDataPlanoPagamento(null)
 		setDataOperadorFinanceiro(null)
+		setDataBandeiraCartao(null)
 		setNrDocForm(null)
 	}
 
@@ -320,6 +323,48 @@ const FormOrdemServicoCobrancas = ({ dataOrdemServicoChoice, setDataOrdemServico
 		}
 	}
 
+	const getBandeiraCartaoAll = async () => {
+
+		if (!(idFormaPagamentoForm > 0)) {
+			setDataBandeiraCartao([])
+			return;
+		}
+
+		const isCartaoCredito = dataFormaPagamento?.find(item => item.id == idFormaPagamentoForm)?.tipo == 'cartao_credito';
+
+		if (!isCartaoCredito) {
+			setDataBandeiraCartao([])
+			return;
+		}
+
+		const { url, options } = BANDEIRA_CARTAO_ALL_POST({}, getToken());
+		const { response, json } = await request(url, options);
+
+		let data = json
+
+		if (data?.mensagem) {
+			data = data?.mensagem;
+		}
+
+		if (data?.registro) {
+			data = data?.registro;
+		}
+
+		if (data?.data) {
+			data = data?.data;
+		}
+
+		if (data?.data) {
+			data = data?.data;
+		}
+
+		if (data && Array.isArray(data) && data.length > 0) {
+			setDataBandeiraCartao(data)
+		} else {
+			setDataBandeiraCartao([])
+		}
+	}
+
 	React.useEffect(() => {
 		if (idServicoEscolhido && idServicoEscolhido > 0) {
 			getFormaPagamentoOrdem(idServicoEscolhido)
@@ -535,6 +580,7 @@ const FormOrdemServicoCobrancas = ({ dataOrdemServicoChoice, setDataOrdemServico
 	React.useEffect(() => {
 		getOperadorFinanceiroAll()
 		getPlanoPagamentoAll();
+		getBandeiraCartaoAll();
 		setDataFormaPagamentoEscolhido({ ...dataFormaPagamentoEscolhido, ...calcularCobranca({ idFormaPagamentoForm }) })
 	}, [idFormaPagamentoForm]);
 
@@ -559,7 +605,16 @@ const FormOrdemServicoCobrancas = ({ dataOrdemServicoChoice, setDataOrdemServico
 
 	const preparaOperadorFinanceiroToForm = () => {
 		if (dataOperadorFinanceiro && Array.isArray(dataOperadorFinanceiro) && dataOperadorFinanceiro.length > 0) {
-			let formaPgto = dataOperadorFinanceiro.map(({ id, name }, index, arr) => ({ label: name, valor: id, props: {} }))
+			let formaPgto = dataOperadorFinanceiro.map(({ id, pessoa }, index, arr) => ({ label: pessoa.name, valor: id, props: {} }))
+			formaPgto.unshift({ label: 'Selecione...', valor: '', props: { selected: 'selected', } })
+			return formaPgto;
+		}
+		return []
+	}
+
+	const preparaBandeiraCartaoToForm = () => {
+		if (dataBandeiraCartao && Array.isArray(dataBandeiraCartao) && dataBandeiraCartao.length > 0) {
+			let formaPgto = dataBandeiraCartao.map(({ id, name }, index, arr) => ({ label: name, valor: id, props: {} }))
 			formaPgto.unshift({ label: 'Selecione...', valor: '', props: { selected: 'selected', } })
 			return formaPgto;
 		}
@@ -1013,7 +1068,7 @@ const FormOrdemServicoCobrancas = ({ dataOrdemServicoChoice, setDataOrdemServico
 																			size: "sm",
 																			...readonlyFields
 																		},
-																		options: preparaFormaPagamentoToForm(),
+																		options: preparaBandeiraCartaoToForm(),
 																		atributsContainer: {
 																			className: ''
 																		}

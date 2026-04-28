@@ -460,6 +460,7 @@ const FormOrdemServico = ({ dataOrdemServicoChoice, setDataOrdemServico, setIdOr
 																	className: estilos.input,
 																	size: "sm",
 																	readonly: 'readonly',
+																	disabled: 'disabled',
 																},
 																atributsContainer: {
 																	className: ''
@@ -495,6 +496,7 @@ const FormOrdemServico = ({ dataOrdemServicoChoice, setDataOrdemServico, setIdOr
 																	className: estilos.input,
 																	size: "sm",
 																	readonly: 'readonly',
+																	disabled: 'disabled',
 																},
 																atributsContainer: {
 																	className: ''
@@ -529,6 +531,7 @@ const FormOrdemServico = ({ dataOrdemServicoChoice, setDataOrdemServico, setIdOr
 																	className: estilos.input,
 																	size: "sm",
 																	readonly: 'readonly',
+																	disabled: 'disabled',
 																},
 																atributsContainer: {
 																	className: ''
@@ -564,6 +567,7 @@ const FormOrdemServico = ({ dataOrdemServicoChoice, setDataOrdemServico, setIdOr
 																	className: estilos.input,
 																	size: "sm",
 																	readonly: 'readonly',
+																	disabled: 'disabled',
 																},
 																atributsContainer: {
 																	className: ''

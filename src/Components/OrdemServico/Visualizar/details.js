@@ -23,6 +23,9 @@ const Details = ({ dataOrdemServicoChoice, carregando, error }) => {
             td_cancelamento: '',
             td_conclusao: '',
             created_at: '',
+            rca: { pessoa: {} },
+            profissional: { pessoa: {} },
+            filial: { pessoa: {} },
         }
 
         if (dataOrdemServicoChoice) {
@@ -93,6 +96,18 @@ const Details = ({ dataOrdemServicoChoice, carregando, error }) => {
             if (data.hasOwnProperty('created_at')) {
                 obj.created_at = FORMAT_DATA_PT_BR(data.created_at);
             }
+
+            if (data.hasOwnProperty('profissional')) {
+                obj.profissional = data.profissional;
+            }
+
+            if (data.hasOwnProperty('rca')) {
+                obj.rca = data.rca;
+            }
+
+            if (data.hasOwnProperty('filial')) {
+                obj.filial = data.filial;
+            }
         }
 
         return obj;
@@ -140,7 +155,7 @@ const Details = ({ dataOrdemServicoChoice, carregando, error }) => {
 
                                 <div className="mb-3">
                                     <strong className="text-muted">Filial:</strong>
-                                    <div>{dataFormatDetails?.name_filial}</div>
+                                    <div>{dataFormatDetails?.filial?.pessoa?.name}</div>
                                 </div>
 
                                 <div className="mb-3">
@@ -155,12 +170,12 @@ const Details = ({ dataOrdemServicoChoice, carregando, error }) => {
 
                                 <div className="mb-3">
                                     <strong className="text-muted">Profissional:</strong>
-                                    <div>{dataFormatDetails?.name_profissional}</div>
+                                    <div>{dataFormatDetails?.profissional?.pessoa?.name}</div>
                                 </div>
 
                                 <div className="mb-3">
                                     <strong className="text-muted">Vendedor:</strong>
-                                    <div>{dataFormatDetails?.name_rca}</div>
+                                    <div>{dataFormatDetails?.rca?.pessoa?.name}</div>
                                 </div>
 
                                 <div className="mb-3">
@@ -217,7 +232,7 @@ const Details = ({ dataOrdemServicoChoice, carregando, error }) => {
                                 </tr>
                                 <tr>
                                     <th>Filial</th>
-                                    <td>{dataFormatDetails?.name_filial}</td>
+                                    <td>{dataFormatDetails?.filial?.pessoa?.name}</td>
                                     <th>Status</th>
                                     <td>{dataFormatDetails?.status}</td>
                                 </tr>
@@ -229,9 +244,9 @@ const Details = ({ dataOrdemServicoChoice, carregando, error }) => {
                                 </tr>
                                 <tr>
                                     <th>Profissional</th>
-                                    <td>{dataFormatDetails?.name_profissional}</td>
+                                    <td>{dataFormatDetails?.profissional?.pessoa?.name}</td>
                                     <th>Vendedor</th>
-                                    <td>{dataFormatDetails?.name_rca}</td>
+                                    <td>{dataFormatDetails?.rca?.pessoa?.name}</td>
                                 </tr>
                                 <tr>
                                     <th>Faturado</th>

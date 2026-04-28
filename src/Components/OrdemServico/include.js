@@ -327,7 +327,7 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                     }
 
                     if (btnFinalizar) {
-                        acoesArr.push({ acao: () => finalizarOrdemServicoAction(atual.id), label: 'Finalizar procedimento', propsOption: {}, propsLabel: {} })
+                        acoesArr.push({ acao: () => finalizarOrdemServicoAction(atual.id), label: 'Finalizar ordem de serviço', propsOption: {}, propsLabel: {} })
                     }
 
                     if (btnVisualizarFinanceiro) {

@@ -11,8 +11,6 @@ import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible.js'
 import Swal from 'sweetalert2'
 
 const Finalizar = ({ idOrdemServico, setIdOrdemServico, callback, atualizarOrdemServico, setFinalizarOrdemServico }) => {
-
-
 	const [showModalFinalizarOrdemServico, setShowModalFinalizarOrdemServico] = React.useState(false)
 	const [carregando, setCarregando] = React.useState(false)
 	const [dataOrdemServico, setDataOrdemServico] = React.useState(null)
@@ -27,11 +25,10 @@ const Finalizar = ({ idOrdemServico, setIdOrdemServico, callback, atualizarOrdem
 			if (idOrdemServico > 0) {
 				const { url, options } = ORDEM_SERVICO_ONE_GET(idOrdemServico, getToken());
 				const { response, json } = await request(url, options);
+				
 				if (json) {
-
 					setDataOrdemServico(json)
 					setShowModalFinalizarOrdemServico(true)
-
 				} else {
 					setDataOrdemServico([])
 				}
@@ -42,11 +39,6 @@ const Finalizar = ({ idOrdemServico, setIdOrdemServico, callback, atualizarOrdem
 
 	}, [idOrdemServico])
 
-	/*
-		atualizarOrdemServico && 
-				<Finalizar setCarregandoDadosOrdemServico={null} atualizarOrdemServico={setFinalizarOrdemServico} idOrdemServico={clientChoice} setDataOrdemServico={null} setShowModalCriarOrdemServico={setShowModalFinalizarOrdemServico} />
-	*/
-	//<Pesquisar idOrdemServico={idOrdemServico} setDataOrdemServico={setDataOrdemServico} setCarregandoDadosOrdemServico={setCarregando} />
 	return (
 		<>
 			{!dataOrdemServico &&
