@@ -33,24 +33,10 @@ const Vendedor = ({ defaultFilters, callBakSelectedItem, ignoreTableActions, ...
     const [mostarFiltros, setMostarFiltros] = React.useState(true)
     const [acao, setAcao] = React.useState(null)
     const [nome, setNome] = React.useState('')
-    const [codigoPessoa, setCodigoPessoa] = React.useState(null)
-    const [profissional, setProfissional] = React.useState('')
-    const [codigoProfissional, setCodigoProfissional] = React.useState(null)
     const [codigoVendedor, setCodigoVendedor] = React.useState(null)
-    const [codigoFilial, setCodigoFilial] = React.useState(null)
-    const [status, setStatus] = React.useState(null)
-    const [prioridade, setPrioridade] = React.useState(null)
-    const [historico, setHistorico] = React.useState(null)
-    const [tipo, setTipo] = React.useState(null)
-    const [dtInicio, setDtInicio] = React.useState(null)
-    const [dtFim, setDtFim] = React.useState(null)
-    const [filtroMobile, setFiltroMobile] = React.useState(null)
+    const [filtroMobile, setFiltroMobile] = React.useState('')
     const [nadaEncontrado, setNadaEncontrado] = React.useState(false)
     const [ordenacao, setOrdenacao] = React.useState('')
-    const [filtroAbertas, setFiltroAbertas] = React.useState(false)
-    const [filtroConcluidas, setFiltroConcluidas] = React.useState(false)
-    const [filtroCanceladas, setFiltroCanceladas] = React.useState(false)
-    const [filtroRemarcadas, setFiltroRemarcadas] = React.useState(false)
     const [nextPage, setNextPage] = React.useState(null)
     const [totalPageCount, setTotalPageCount] = React.useState(null)
     const [usePagination, setUsePagination] = React.useState(true)
@@ -211,20 +197,8 @@ const Vendedor = ({ defaultFilters, callBakSelectedItem, ignoreTableActions, ...
     }
 
     const limparFiltros = () => {
-
-        setCodigoPessoa('');
         setNome('');
-        setCodigoProfissional('');
-        setProfissional('');
-        setFiltroMobile('');
-        setStatus('');
-        setTipo('');
-        setPrioridade('');
-        setHistorico('');
         setCodigoVendedor('');
-        setCodigoFilial('');
-        setDtInicio('');
-        setDtFim('');
         setFiltroMobile('');
         setOrdenacao('');
         setAppliedFilters([]);
@@ -325,19 +299,15 @@ const Vendedor = ({ defaultFilters, callBakSelectedItem, ignoreTableActions, ...
     }
 
     React.useEffect(() => {
-
         const requestDataConfigEffect = async () => {
             await requestAllFilials()
         }
         const requestAllVendedorsEffect = async () => {
             await requestAllVendedors();
         }
-
         requestDataConfigEffect();
         requestAllVendedorsEffect();
-
-
-    }, [filtroConcluidas, filtroCanceladas, filtroAbertas, filtroRemarcadas, nextPage, setNextPage])
+    }, [nextPage, setNextPage])
 
     return (
         <>
@@ -349,7 +319,7 @@ const Vendedor = ({ defaultFilters, callBakSelectedItem, ignoreTableActions, ...
                     },
                     {
                         props: {},
-                        label: 'Operadores financeiros'
+                        label: 'Vendedores'
                     }
                 ]}
                 buttonFiltroMobile={true}

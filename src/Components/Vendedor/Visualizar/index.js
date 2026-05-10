@@ -11,70 +11,39 @@ import Swal from 'sweetalert2'
 import { faHome, faSearch, faPlus, faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const Visualizar = ({ idVendedor, setIdVendedor, callback, atualizarVendedor, setVisualizarVendedor }) => {
 
+const Visualizar = ({ idVendedor, setIdVendedor, callback, atualizarVendedor, setVisualizarVendedor }) => {
 	const [showModalVisualizarVendedor, setShowModalVendedor] = React.useState(false)
 	const [carregando, setCarregando] = React.useState(false)
 	const [dataVendedor, setDataVendedor] = React.useState(null)
-	const [dataGrupo, setDataGrupo] = React.useState(null)
-	const { getToken, dataUser } = React.useContext(UserContex);
-	const [erroValidacao, setErroValidacao] = React.useState(null)
-	const [showModalErro, setShowModalErro] = React.useState(false)
-	const [sendForm, setSendForm] = React.useState(false)
-
-	const { data, error, request, loading } = useFetch();
+	const { getToken } = React.useContext(UserContex);
+	const { error, request } = useFetch();
 	const formRef = React.useRef();
 
 	React.useEffect(() => {
-
 		const getVendedor = async () => {
 			if (idVendedor > 0) {
 				const { url, options } = RCA_ONE_GET(idVendedor, getToken());
-				const { response, json } = await request(url, options);
-
+				const { json } = await request(url, options);
 				if (json) {
-
-					setDataVendedor(json)
-
-					let data = json
-
+					// Extrai o objeto correto do vendedor
+					let data = json;
 					if (data?.mensagem) {
-						data = json?.mensagem
+						data = data.mensagem;
 					} else if (data?.data) {
-						data = json?.data
+						data = data.data;
 					}
-
-					let erroValidaao = validarAtualizacao(data);
-
-					if (Array.isArray(erroValidaao) && erroValidaao.length > 0) {
-						setShowModalErro(true)
-						erroValidaao = erroValidaao.join('<br/>')
-						setErroValidacao(erroValidaao)
-						setVisualizarVendedor(false)
-						setIdVendedor(null)
-
-						Swal.fire({
-							icon: "error",
-							title: "Oops...",
-							text: erroValidaao,
-							footer: '',
-							confirmButtonColor: "#07B201",
-						});
-					} else {
-						setDataVendedor(json)
-						setShowModalVendedor(true)
-					}
+					setDataVendedor(data);
+					setShowModalVendedor(true);
 				} else {
-					setDataVendedor([])
-					setVisualizarVendedor(false)
-					setIdVendedor(null)
+					setDataVendedor(null);
+					setVisualizarVendedor(false);
+					setIdVendedor(null);
 				}
 			}
-		}
-
+		};
 		getVendedor();
-
-	}, [idVendedor])
+	}, [idVendedor]);
 
 
 	const validarAtualizacao = (data) => {
@@ -99,18 +68,14 @@ const Visualizar = ({ idVendedor, setIdVendedor, callback, atualizarVendedor, se
 		}
 	};
 
-	const FormModal = () => {
-		return (
-			<Row>
-				<Col>
-					<Details
-						{...data}
-						dataVendedorChoice={dataVendedor}
-					/>
-				</Col>
-			</Row>
-		)
-	}
+
+	const FormModal = () => (
+		<Row>
+			<Col>
+				<Details dataVendedorChoice={dataVendedor} />
+			</Col>
+		</Row>
+	);
 
 	if (error) {
 		Swal.fire({
@@ -134,7 +99,7 @@ const Visualizar = ({ idVendedor, setIdVendedor, callback, atualizarVendedor, se
 				<Modal
 					handleConcluir={() => { handleConclude(); }}
 					children={<FormModal />}
-					title={'Visualizar Operador Financeiro'}
+					title={'Visualizar Vendedor'}
 					size="lg"
 					dialogClassName={''}
 					aria-labelledby={'aria-labelledby'}

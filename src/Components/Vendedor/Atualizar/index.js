@@ -138,7 +138,7 @@ const Atualizar = ({ idVendedor, setIdVendedor, callback, atualizarVendedor, set
 	return (
 		<>
 			{!dataVendedor &&
-				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={() => null} title={'Atualizar vendedor'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="" show={true} showHide={() => { setShowModalVendedor(); }}>
+				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={() => null} title={'Atualizar Vendedor'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="" show={true} showHide={() => { setShowModalVendedor(); }}>
 					<Load />
 				</Modal>
 			}
@@ -147,7 +147,7 @@ const Atualizar = ({ idVendedor, setIdVendedor, callback, atualizarVendedor, set
 				<Modal
 					handleConcluir={() => { handleConclude(); }}
 					children={<FormModal />}
-					title={'Atualizar vendedor'}
+					title={'Atualizar Vendedor'}
 					size="lg"
 					dialogClassName={''}
 					aria-labelledby={'aria-labelledby'}

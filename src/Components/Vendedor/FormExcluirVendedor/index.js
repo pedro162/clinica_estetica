@@ -137,7 +137,7 @@ const FormExcluirVendedor = ({ dataVendedorChoice, setIdVendedor, idVendedor, sh
 	return (
 
 		<>
-			<Modal handleConcluir={() => { handleSubmit(); }} title={' Excluir vendedor'} size="lg" propsConcluir={{ 'disabled': loading }} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalExcluirVendedor} showHide={() => { setShowModalExcluirVendedor(); setExcluirVendedor(false); setIdVendedor(null); }}>
+			<Modal handleConcluir={() => { handleSubmit(); }} title={'Excluir Vendedor'} size="lg" propsConcluir={{ 'disabled': loading }} labelConcluir={loading ? 'Salvando...' : 'Concluir'} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="Fechar" show={showModalExcluirVendedor} showHide={() => { setShowModalExcluirVendedor(); setExcluirVendedor(false); setIdVendedor(null); }}>
 				{
 					carregando && carregando == true
 						?

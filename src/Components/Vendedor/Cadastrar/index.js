@@ -56,7 +56,7 @@ const Cadastrar = ({ callback, cadastrarVendedor, setCadastrarVendedor }) => {
 			<Modal
 				handleConcluir={() => { handleConclude(); }}
 				children={<FormModal />}
-				title={'Cadastrar vendedor'}
+				title={'Cadastrar Vendedor'}
 				size="lg"
 				dialogClassName={''}
 				aria-labelledby={'aria-labelledby'}
