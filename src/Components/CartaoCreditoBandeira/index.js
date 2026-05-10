@@ -132,6 +132,7 @@ const CartaoCreditoBandeira = (props) => {
     }, [cadastrarCartaoCreditoBandeira])
 
     const limparFiltros = () => {
+        set
         setNome('');
         setFiltroMobile('');
         setCodigoCartaoCreditoBandeira('');

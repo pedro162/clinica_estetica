@@ -331,7 +331,7 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                     }
 
                     if (btnVisualizarFinanceiro) {
-                        acoesArr.push({ acao: () => { visualizarContasReceberAction(atual.id); setDefaultFiltersCobReceber({ ...atual, pessoa_name: atual?.name, referencia_id: atual?.id, referencia: 'ordem_servicos' }) }, label: 'Conta a receber', propsOption: {}, propsLabel: {} })
+                        acoesArr.push({ acao: () => { visualizarContasReceberAction(atual.id); setDefaultFiltersCobReceber({ pessoa_name: atual?.name, referencia_id: atual?.id, referencia: 'ordem_servicos' }) }, label: 'Conta a receber', propsOption: {}, propsLabel: {} })
                     }
 
                     if (btnVisualizar) {
@@ -365,12 +365,12 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                                 },
                                 {
 
-                                    label: atual.name_filial,
+                                    label: atual?.filial?.pessoa?.name,
                                     propsRow: {}
                                 },
                                 {
 
-                                    label: atual.name,
+                                    label: atual?.pessoa?.name,
                                     propsRow: {}
                                 },
                                 {
@@ -385,12 +385,12 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                                 },
                                 {
 
-                                    label: atual.name_profissional,
+                                    label: atual?.profissional?.pessoa?.name,
                                     propsRow: {}
                                 },
                                 {
 
-                                    label: atual.name_rca,
+                                    label: atual?.rca?.pessoa?.name,
                                     propsRow: {}
                                 },
                                 {
@@ -467,6 +467,7 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
         if (dataOrdemServico && Array.isArray(dataOrdemServico) && dataOrdemServico.length > 0) {
             for (let i = 0; !(i == dataOrdemServico.length); i++) {
                 let atual = dataOrdemServico[i];
+
                 if (atual) {
                     let acoesArr = [];
                     let btnEditar = true;
@@ -521,7 +522,7 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                     }
 
                     if (btnVisualizarFinanceiro) {
-                        acoesArr.push({ acao: () => { visualizarContasReceberAction(atual.id); setDefaultFiltersCobReceber({ ...atual, pessoa_name: atual?.name, referencia_id: atual?.id, referencia: 'ordem_servicos' }) }, label: 'Conta a receber', propsOption: {}, propsLabel: {} })
+                        acoesArr.push({ acao: () => { visualizarContasReceberAction(atual.id); setDefaultFiltersCobReceber({ pessoa_name: atual?.name, referencia_id: atual?.id, referencia: 'ordem_servicos' }) }, label: 'Conta a receber', propsOption: {}, propsLabel: {} })
                     }
 
                     if (btnVisualizar) {
@@ -543,7 +544,7 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                     data.push(
 
                         {
-                            propsRow: { id: (atual.id), titleRow: atual.id + ' - ' + atual?.name, style: { ...line_style }, mainIcon: faFileAlt },
+                            propsRow: { id: (atual.id), titleRow: atual.id + ' - ' + atual?.pessoa?.name, style: { ...line_style }, mainIcon: faFileAlt },
                             acoes: [
                                 ...acoesArr
                             ],

@@ -207,24 +207,21 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                     let acoesArr = [];
                     let btnEditar = true;
                     let baixar = true;
-                    let btnFinalizar = true;
-                    let estornar = true;
+                    let estornar = false;
                     let btnVisualizarMovimentacoes = true;
                     let btnVisualizar = true;
-                    let btnCotinuarDigitacao = true;
-                    let btnCancelar = true;
 
-                    if (atual?.status != 'pago') {
-                        estornar = false;
-                    } else if (atual?.status != 'aberto') {
+                    if (atual?.status != 'aberto') {
                         estornar = false;
                         btnEditar = false;
                     } else {
-
-                        btnCotinuarDigitacao = false;
-                        btnFinalizar = false;
                         baixar = false;
-                        acoesArr = [];
+                        btnEditar = false;
+                    }
+
+                    if (atual?.status == 'pago') {
+                        baixar = false;
+                        estornar = true;
                         btnEditar = false;
                     }
 
@@ -246,10 +243,6 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
 
                     if (btnVisualizar) {
                         acoesArr.push({ acao: () => visualizarContasReceberItemAction(atual.id), label: 'Visualizar', propsOption: {}, propsLabel: {} })
-                    }
-
-                    if (btnCancelar) {
-
                     }
 
                     let line_style = {}
@@ -468,28 +461,26 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
         if (dataContasReceberItem && Array.isArray(dataContasReceberItem) && dataContasReceberItem.length > 0) {
             for (let i = 0; !(i == dataContasReceberItem.length); i++) {
                 let atual = dataContasReceberItem[i];
+
                 if (atual && atual.id > 0) {
                     let acoesArr = [];
                     let btnEditar = true;
                     let baixar = true;
-                    let btnFinalizar = true;
-                    let estornar = true;
+                    let estornar = false;
                     let btnVisualizarMovimentacoes = true;
                     let btnVisualizar = true;
-                    let btnCotinuarDigitacao = true;
-                    let btnCancelar = true;
 
-                    if (atual?.status != 'pago') {
-                        estornar = false;
-                    } else if (atual?.status != 'aberto') {
+                    if (atual?.status != 'aberto') {
                         estornar = false;
                         btnEditar = false;
                     } else {
-
-                        btnCotinuarDigitacao = false;
-                        btnFinalizar = false;
                         baixar = false;
-                        acoesArr = [];
+                        btnEditar = false;
+                    }
+
+                    if (atual?.status == 'pago') {
+                        baixar = false;
+                        estornar = true;
                         btnEditar = false;
                     }
 

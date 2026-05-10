@@ -210,37 +210,27 @@ const Include = ({ dataEstado, loadingData, nadaEncontrado, callBakSelectedItem,
                                 },
                                 {
 
-                                    label: atual?.filial_id,
+                                    label: atual?.pessoa?.name,
                                     propsRow: {}
                                 },
                                 {
 
-                                    label: FORMAT_MONEY(atual?.vrTarifa, 2, ',', '.'),
+                                    label: atual?.metaPositivacao,
                                     propsRow: {}
                                 },
                                 {
 
-                                    label: FORMAT_MONEY(atual?.vrDesconto, 2, ',', '.'),
+                                    label: atual?.metaFaturamento,
                                     propsRow: {}
                                 },
                                 {
 
-                                    label: atual?.vrPorcentagemDesconto,
+                                    label: atual?.metaMargem,
                                     propsRow: {}
                                 },
                                 {
 
-                                    label: atual?.nrRemessaAtual,
-                                    propsRow: {}
-                                },
-                                {
-
-                                    label: atual?.nrNossoNumero,
-                                    propsRow: {}
-                                },
-                                {
-
-                                    label: atual?.qtdDiasProtesto,
+                                    label: atual?.situacao,
                                     propsRow: {}
                                 },
                                 {
@@ -250,17 +240,7 @@ const Include = ({ dataEstado, loadingData, nadaEncontrado, callBakSelectedItem,
                                 },
                                 {
 
-                                    label: atual?.isAssumeDuplicata === 'yes' ? 'Sim' : 'Não',
-                                    propsRow: {}
-                                },
-                                {
-
-                                    label: atual?.isPadrao === 'yes' ? 'Sim' : 'Não',
-                                    propsRow: {}
-                                },
-                                {
-
-                                    label: atual?.isLiberado === 'yes' ? 'Sim' : 'Não',
+                                    label: atual?.acessaTodosRcas === 'yes' ? 'Sim' : 'Não',
                                     propsRow: {}
                                 },
                                 {
@@ -296,43 +276,23 @@ const Include = ({ dataEstado, loadingData, nadaEncontrado, callBakSelectedItem,
                 props: { style: { minWidth: '225px' } }
             },
             {
-                label: 'Valor tarifa',
+                label: 'Meta positivação',
                 props: { style: { minWidth: '225px' } }
             },
             {
-                label: 'Valor desconto',
+                label: 'Meta faturamento',
                 props: { style: { minWidth: '225px' } }
             },
             {
-                label: 'Percentual desconto',
+                label: 'Meta margem',
                 props: { style: { minWidth: '225px' } }
             },
             {
-                label: 'Nº remessa atual',
+                label: 'Situação atual',
                 props: { style: { minWidth: '325px' } }
             },
             {
-                label: 'Nosso número atual',
-                props: { style: { minWidth: '325px' } }
-            },
-            {
-                label: 'Dias para protesto',
-                props: { style: { minWidth: '325px' } }
-            },
-            {
-                label: 'Atualização de boleto',
-                props: { style: { minWidth: '325px' } }
-            },
-            {
-                label: 'Assume duplicata',
-                props: { style: { minWidth: '325px' } }
-            },
-            {
-                label: 'Operador padrão',
-                props: { style: { minWidth: '325px' } }
-            },
-            {
-                label: 'Liberado para uso',
+                label: 'Visualiza outros vendedores',
                 props: { style: { minWidth: '325px' } }
             },
             {
@@ -418,8 +378,8 @@ const Include = ({ dataEstado, loadingData, nadaEncontrado, callBakSelectedItem,
                                         isCoin: 0,
                                     },
                                     {
-                                        title: <span style={{ fontWeight: '480' }}>Padrão: </span>,
-                                        label: atual?.isPadrao === 'yes' ? 'Sim' : 'Não',
+                                        title: <span style={{ fontWeight: '480' }}>Situação: </span>,
+                                        label: atual?.situacao,
                                         props: { style: { textAlign: 'left', fontWeight: 'bolder' }, md: '6', sm: '6', xs: '6' },
                                         toSum: 0,
                                         isCoin: 0,

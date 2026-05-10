@@ -26,6 +26,7 @@ const Details = ({ dataOrdemServicoChoice, carregando, error }) => {
             rca: { pessoa: {} },
             profissional: { pessoa: {} },
             filial: { pessoa: {} },
+            pessoa: {},
         }
 
         if (dataOrdemServicoChoice) {
@@ -108,6 +109,10 @@ const Details = ({ dataOrdemServicoChoice, carregando, error }) => {
             if (data.hasOwnProperty('filial')) {
                 obj.filial = data.filial;
             }
+
+            if (data.hasOwnProperty('pessoa')) {
+                obj.pessoa = data.pessoa;
+            }
         }
 
         return obj;
@@ -150,7 +155,7 @@ const Details = ({ dataOrdemServicoChoice, carregando, error }) => {
 
                                 <div className="mb-3">
                                     <strong className="text-muted">Cliente:</strong>
-                                    <div>{dataFormatDetails?.name}</div>
+                                    <div>{dataFormatDetails?.pessoa?.name}</div>
                                 </div>
 
                                 <div className="mb-3">
@@ -228,7 +233,7 @@ const Details = ({ dataOrdemServicoChoice, carregando, error }) => {
                                     <th>Codigo</th>
                                     <td>{dataFormatDetails?.id}</td>
                                     <th>Cliente</th>
-                                    <td>{dataFormatDetails?.name}</td>
+                                    <td>{dataFormatDetails?.pessoa?.name}</td>
                                 </tr>
                                 <tr>
                                     <th>Filial</th>

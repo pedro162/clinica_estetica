@@ -206,33 +206,29 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
         if (dataContasReceber && Array.isArray(dataContasReceber) && dataContasReceber.length > 0) {
             for (let i = 0; !(i == dataContasReceber.length); i++) {
                 let atual = dataContasReceber[i];
+
                 if (atual) {
                     let acoesArr = [];
                     let btnEditar = true;
                     let baixar = true;
                     let btnFinalizar = true;
-                    let estornar = true;
+                    let estornar = false;
                     let btnVisualizarItens = true;
                     let btnVisualizar = true;
-                    let btnCotinuarDigitacao = true;
-                    let btnCancelar = true;
 
-                    if (atual?.status != 'pago') {
-                        estornar = false;
-                    } else if (atual?.status != 'aberto') {
+                    if (atual?.status != 'aberto') {
                         estornar = false;
                         btnEditar = false;
                     } else {
-
-                        btnCotinuarDigitacao = false;
                         btnFinalizar = false;
                         baixar = false;
-                        acoesArr = [];
                         btnEditar = false;
                     }
 
                     if (atual?.status == 'pago') {
                         baixar = false;
+                        estornar = true;
+                        btnEditar = false;
                     }
 
                     if (btnEditar) {
@@ -253,10 +249,6 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
 
                     if (btnVisualizar) {
                         acoesArr.push({ acao: () => visualizarContasReceberAction(atual.id), label: 'Visualizar', propsOption: {}, propsLabel: {} })
-                    }
-
-                    if (btnCancelar) {
-
                     }
 
                     let line_style = {}
@@ -508,31 +500,30 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
         if (dataContasReceber && Array.isArray(dataContasReceber) && dataContasReceber.length > 0) {
             for (let i = 0; !(i == dataContasReceber.length); i++) {
                 let atual = dataContasReceber[i];
+
                 if (atual && atual.id > 0) {
                     let acoesArr = [];
                     let btnEditar = true;
                     let baixar = true;
                     let btnFinalizar = true;
-                    let estornar = true;
+                    let estornar = false;
                     let btnVisualizarItens = true;
                     let btnVisualizar = true;
-                    let btnCotinuarDigitacao = true;
-                    let btnCancelar = true;
 
-                    if (atual?.status != 'pago') {
-                        estornar = false;
-                    } else if (atual?.status != 'aberto') {
+                    if (atual?.status != 'aberto') {
                         estornar = false;
                         btnEditar = false;
                     } else {
-
-                        btnCotinuarDigitacao = false;
                         btnFinalizar = false;
                         baixar = false;
-                        acoesArr = [];
                         btnEditar = false;
                     }
 
+                    if (atual?.status == 'pago') {
+                        baixar = false;
+                        estornar = true;
+                        btnEditar = false;
+                    }
 
                     if (btnEditar) {
                         acoesArr.push({ acao: () => atualizarContasReceberAction(atual.id), label: 'Editar', propsOption: {}, propsLabel: {} })
@@ -546,20 +537,12 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                         acoesArr.push({ acao: () => estornarContasReceberAction(atual.id), label: 'Estornar', propsOption: {}, propsLabel: {} })
                     }
 
-                    if (baixar) {
-
-                    }
-
                     if (btnVisualizarItens) {
                         acoesArr.push({ acao: () => { visualizarContasReceberItensActions(atual.id); setFiltrosPadroesItens({ idContasReceber: atual?.id, referencia: 'contas_receber' }) }, label: 'Contas a receber analítico', propsOption: {}, propsLabel: {} })
                     }
 
                     if (btnVisualizar) {
                         acoesArr.push({ acao: () => visualizarContasReceberAction(atual.id), label: 'Visualizar', propsOption: {}, propsLabel: {} })
-                    }
-
-                    if (btnCancelar) {
-
                     }
 
                     let line_style = {}

@@ -298,6 +298,7 @@ const ContasReceber = ({ defaultFilters, ...props }) => {
     }, [cadastrarContasReceber])
 
     const limparFiltros = () => {
+        setIdReferenciaContasReceber('');
         setReferenciaContasReceber('');
         setPessoa('');
         setFiltroMobile('');
