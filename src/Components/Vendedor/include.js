@@ -235,11 +235,6 @@ const Include = ({ dataEstado, loadingData, nadaEncontrado, callBakSelectedItem,
                                 },
                                 {
 
-                                    label: atual?.tpLocalAtualizacaoBoleto,
-                                    propsRow: {}
-                                },
-                                {
-
                                     label: atual?.acessaTodosRcas === 'yes' ? 'Sim' : 'Não',
                                     propsRow: {}
                                 },

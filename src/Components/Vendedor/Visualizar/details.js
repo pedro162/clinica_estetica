@@ -25,10 +25,11 @@ const Details = ({ dataVendedorChoice, setIdVendedor, idVendedor, showModalVisua
             metaFaturamento: '',
             metaMargem: '',
             situacao: '',
-            tpLocalAtualizacaoBoleto: '',
             acessaTodosRcas: '',
             created_at: '',
+            'active': '',
         };
+
         if (dataVendedorChoice) {
             let data = dataVendedorChoice;
             if (data?.mensagem) {
@@ -36,6 +37,7 @@ const Details = ({ dataVendedorChoice, setIdVendedor, idVendedor, showModalVisua
             } else if (data?.data) {
                 data = data?.data;
             }
+
             if (data.hasOwnProperty('id')) obj.id = data.id;
             if (data.hasOwnProperty('pessoa')) obj.name = data?.pessoa?.name;
             if (data.hasOwnProperty('filial_id')) obj.filial_id = data.filial_id;
@@ -43,7 +45,7 @@ const Details = ({ dataVendedorChoice, setIdVendedor, idVendedor, showModalVisua
             if (data.hasOwnProperty('metaFaturamento')) obj.metaFaturamento = data.metaFaturamento;
             if (data.hasOwnProperty('metaMargem')) obj.metaMargem = data.metaMargem;
             if (data.hasOwnProperty('situacao')) obj.situacao = data.situacao;
-            if (data.hasOwnProperty('tpLocalAtualizacaoBoleto')) obj.tpLocalAtualizacaoBoleto = data.tpLocalAtualizacaoBoleto;
+            if (data.hasOwnProperty('active')) obj.active = data.active;
             if (data.hasOwnProperty('acessaTodosRcas')) obj.acessaTodosRcas = data.acessaTodosRcas;
             if (data.hasOwnProperty('created_at')) obj.created_at = FORMAT_DATA_PT_BR(data.created_at);
         }
@@ -115,8 +117,8 @@ const Details = ({ dataVendedorChoice, setIdVendedor, idVendedor, showModalVisua
                                     <div>{dataPlanotCancel?.situacao}</div>
                                 </div>
                                 <div className="mb-3">
-                                    <strong className="text-muted">Atualização de boleto:</strong>
-                                    <div>{dataPlanotCancel?.tpLocalAtualizacaoBoleto}</div>
+                                    <strong className="text-muted">Ativo:</strong>
+                                    <div>{dataPlanotCancel?.active == 'yes' ? 'Sim' : 'Não'}</div>
                                 </div>
                                 <div className="mb-3">
                                     <strong className="text-muted">Visualiza outros vendedores:</strong>
@@ -157,8 +159,8 @@ const Details = ({ dataVendedorChoice, setIdVendedor, idVendedor, showModalVisua
                                 <tr>
                                     <th>Situação</th>
                                     <td>{dataPlanotCancel?.situacao}</td>
-                                    <th>Atualização de boleto</th>
-                                    <td>{dataPlanotCancel?.tpLocalAtualizacaoBoleto}</td>
+                                    <th>Ativo</th>
+                                    <td>{dataPlanotCancel?.active == 'yes' ? 'Sim' : 'Não'}</td>
                                 </tr>
                                 <tr>
                                     <th>Visualiza outros vendedores</th>

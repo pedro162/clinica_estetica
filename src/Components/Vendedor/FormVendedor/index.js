@@ -344,326 +344,131 @@ const FormVendedor = forwardRef(({
 							<Row className="mb-3">
 								<Col xs="12" sm="12" md="6">
 									<Field
-										data={
-											{
-												hasLabel: true,
-												contentLabel: 'Dias para protesto *',
-												atributsFormLabel: {
-
-												},
-												atributsFormControl: {
-													tipo: 'text',
-													name: 'qtdDiasProtesto',
-													placeholder: '',
-													id: 'qtdDiasProtesto',
-													onChange: handleChange,
-													onBlur: handleBlur,
-													value: values.qtdDiasProtesto,
-													className: estilos.input,
-													size: "sm",
-												},
-												options: [],
-												atributsContainer: {
-													className: ''
-												}
-											}
-										}
-
+										data={{
+											hasLabel: true,
+											contentLabel: 'Meta positivação *',
+											atributsFormLabel: {},
+											atributsFormControl: {
+												tipo: 'text',
+												name: 'metaPositivacao',
+												placeholder: '',
+												id: 'metaPositivacao',
+												onChange: handleChange,
+												onBlur: handleBlur,
+												value: values.metaPositivacao,
+												className: estilos.input,
+												size: "sm"
+											},
+											options: [],
+											atributsContainer: { className: '' }
+										}}
 										component={FormControlInput}
 									></Field>
-									<ErrorMessage className="alerta_error_form_label" name="qtdDiasProtesto" component="div" />
+									<ErrorMessage className="alerta_error_form_label" name="metaPositivacao" component="div" />
 								</Col>
-
 								<Col xs="12" sm="12" md="6">
 									<Field
-										data={
-											{
-												hasLabel: true,
-												contentLabel: 'Valor de tarifa *',
-												atributsFormLabel: {
-
-												},
-												atributsFormControl: {
-													tipo: 'text',
-													name: 'vrTarifa',
-													placeholder: '',
-													id: 'vrTarifa',
-													onChange: handleChange,
-													onBlur: handleBlur,
-													value: values.vrTarifa,
-													className: estilos.input,
-													size: "sm",
-												},
-												options: [],
-												atributsContainer: {
-													className: ''
-												}
-											}
-										}
-
+										data={{
+											hasLabel: true,
+											contentLabel: 'Meta faturamento *',
+											atributsFormLabel: {},
+											atributsFormControl: {
+												tipo: 'text',
+												name: 'metaFaturamento',
+												placeholder: '',
+												id: 'metaFaturamento',
+												onChange: handleChange,
+												onBlur: handleBlur,
+												value: values.metaFaturamento,
+												className: estilos.input,
+												size: "sm"
+											},
+											options: [],
+											atributsContainer: { className: '' }
+										}}
 										component={FormControlInput}
 									></Field>
-									<ErrorMessage className="alerta_error_form_label" name="vrTarifa" component="div" />
-								</Col>
-
-							</Row>
-							<Row className="mb-3">
-								<Col xs="12" sm="12" md="6">
-									<Field
-										data={
-											{
-												hasLabel: true,
-												contentLabel: 'Remessa atual',
-												atributsFormLabel: {
-
-												},
-												atributsFormControl: {
-													tipo: 'text',
-													name: 'nrRemessaAtual',
-													placeholder: '',
-													id: 'nrRemessaAtual',
-													onChange: handleChange,
-													onBlur: handleBlur,
-													value: values.nrRemessaAtual,
-													className: estilos.input,
-													size: "sm",
-												},
-												options: [],
-												atributsContainer: {
-													className: ''
-												}
-											}
-										}
-
-										component={FormControlInput}
-									></Field>
-									<ErrorMessage className="alerta_error_form_label" name="nrRemessaAtual" component="div" />
-								</Col>
-
-								<Col xs="12" sm="12" md="6">
-									<Field
-										data={
-											{
-												hasLabel: true,
-												contentLabel: 'Nosso número atual',
-												atributsFormLabel: {
-
-												},
-												atributsFormControl: {
-													tipo: 'text',
-													name: 'nrNossoNumero',
-													placeholder: '',
-													id: 'nrNossoNumero',
-													onChange: handleChange,
-													onBlur: handleBlur,
-													value: values.nrNossoNumero,
-													className: estilos.input,
-													size: "sm",
-												},
-												options: [],
-												atributsContainer: {
-													className: ''
-												}
-											}
-										}
-
-										component={FormControlInput}
-									></Field>
-									<ErrorMessage className="alerta_error_form_label" name="nrNossoNumero" component="div" />
+									<ErrorMessage className="alerta_error_form_label" name="metaFaturamento" component="div" />
 								</Col>
 							</Row>
 							<Row className="mb-3">
 								<Col xs="12" sm="12" md="6">
 									<Field
-										data={
-											{
-												hasLabel: true,
-												contentLabel: 'Percentual de desconto *',
-												atributsFormLabel: {
-
-												},
-												atributsFormControl: {
-													tipo: 'text',
-													name: 'vrPorcentagemDesconto',
-													placeholder: '',
-													id: 'vrPorcentagemDesconto',
-													onChange: handleChange,
-													onBlur: handleBlur,
-													value: values.vrPorcentagemDesconto,
-													className: estilos.input,
-													size: "sm",
-												},
-												options: [],
-												atributsContainer: {
-													className: ''
-												}
-											}
-										}
-
+										data={{
+											hasLabel: true,
+											contentLabel: 'Meta margem *',
+											atributsFormLabel: {},
+											atributsFormControl: {
+												tipo: 'text',
+												name: 'metaMargem',
+												placeholder: '',
+												id: 'metaMargem',
+												onChange: handleChange,
+												onBlur: handleBlur,
+												value: values.metaMargem,
+												className: estilos.input,
+												size: "sm"
+											},
+											options: [],
+											atributsContainer: { className: '' }
+										}}
 										component={FormControlInput}
 									></Field>
-									<ErrorMessage className="alerta_error_form_label" name="vrPorcentagemDesconto" component="div" />
+									<ErrorMessage className="alerta_error_form_label" name="metaMargem" component="div" />
 								</Col>
-
 								<Col xs="12" sm="12" md="6">
 									<Field
-										data={
-											{
-												hasLabel: true,
-												contentLabel: 'Valor desconto *',
-												atributsFormLabel: {
-
-												},
-												atributsFormControl: {
-													tipo: 'text',
-													name: 'vrDesconto',
-													placeholder: '',
-													id: 'vrDesconto',
-													onChange: handleChange,
-													onBlur: handleBlur,
-													value: values.vrDesconto,
-													className: estilos.input,
-													size: "sm"
-												},
-												options: [],
-												atributsContainer: {
-													className: ''
-												}
-											}
-										}
-
+										data={{
+											hasLabel: true,
+											contentLabel: 'Situação *',
+											atributsFormLabel: {},
+											atributsFormControl: {
+												tipo: 'text',
+												name: 'situacao',
+												placeholder: '',
+												id: 'situacao',
+												onChange: handleChange,
+												onBlur: handleBlur,
+												value: values.situacao,
+												className: estilos.input,
+												size: "sm"
+											},
+											options: [],
+											atributsContainer: { className: '' }
+										}}
 										component={FormControlInput}
 									></Field>
-									<ErrorMessage className="alerta_error_form_label" name="vrDesconto" component="div" />
+									<ErrorMessage className="alerta_error_form_label" name="situacao" component="div" />
 								</Col>
 							</Row>
 							<Row className="mb-3">
 								<Col xs="12" sm="12" md="6">
 									<Field
-										data={
-											{
-												hasLabel: true,
-												contentLabel: 'Local de atualização de boletos *',
-												atributsFormLabel: {
-
-												},
-												atributsFormControl: {
-													tipo: 'text',
-													name: 'tpLocalAtualizacaoBoleto',
-													placeholder: '',
-													id: 'tpLocalAtualizacaoBoleto',
-													onChange: handleChange,
-													onBlur: handleBlur,
-													value: values.tpLocalAtualizacaoBoleto,
-													className: estilos.input,
-													size: "sm",
-												},
-												options: [{ label: 'Selecione', valor: '', props: { selected: 'selected', disabled: 'disabled' } }, { label: 'Banco', valor: 'banco', props: { selected: '' } }, { label: 'Empresa', valor: 'empresa', props: {} }],
-												atributsContainer: {
-													className: ''
-												}
-											}
-										}
-
+										data={{
+											hasLabel: true,
+											contentLabel: 'Visualiza outros vendedores *',
+											atributsFormLabel: {},
+											atributsFormControl: {
+												tipo: 'text',
+												name: 'acessaTodosRcas',
+												placeholder: '',
+												id: 'acessaTodosRcas',
+												onChange: handleChange,
+												onBlur: handleBlur,
+												value: values.acessaTodosRcas,
+												className: estilos.input,
+												size: "sm"
+											},
+											options: [
+												{ label: 'Selecione', valor: '', props: { selected: 'selected', disabled: 'disabled' } },
+												{ label: 'Sim', valor: 'yes', props: { selected: '' } },
+												{ label: 'Não', valor: 'no', props: {} }
+											],
+											atributsContainer: { className: '' }
+										}}
 										component={FormControlSelect}
 									></Field>
-									<ErrorMessage className="alerta_error_form_label" name="tpLocalAtualizacaoBoleto" component="div" />
-								</Col>
-
-								<Col xs="12" sm="12" md="6">
-									<Field
-										data={
-											{
-												hasLabel: true,
-												contentLabel: 'Padrão *',
-												atributsFormLabel: {
-
-												},
-												atributsFormControl: {
-													tipo: 'text',
-													name: 'isPadrao',
-													placeholder: '',
-													id: 'isPadrao',
-													onChange: handleChange,
-													onBlur: handleBlur,
-													value: values.isPadrao,
-													className: estilos.input,
-													size: "sm"
-												},
-												options: [{ label: 'Selecione', valor: '', props: { selected: 'selected', disabled: 'disabled' } }, { label: 'Sim', valor: 'yes', props: { selected: '' } }, { label: 'Não', valor: 'no', props: {} }],
-												atributsContainer: {
-													className: ''
-												}
-											}
-										}
-
-										component={FormControlSelect}
-									></Field>
-									<ErrorMessage className="alerta_error_form_label" name="isPadrao" component="div" />
-								</Col>
-							</Row>
-							<Row className="mb-3">
-								<Col xs="12" sm="12" md="6">
-									<Field
-										data={
-											{
-												hasLabel: true,
-												contentLabel: 'Liberado *',
-												atributsFormLabel: {
-
-												},
-												atributsFormControl: {
-													tipo: 'text',
-													name: 'isLiberado',
-													placeholder: '',
-													id: 'isLiberado',
-													onChange: handleChange,
-													onBlur: handleBlur,
-													value: values.isLiberado,
-													className: estilos.input,
-													size: "sm"
-												},
-												options: [{ label: 'Selecione', valor: '', props: { selected: 'selected', disabled: 'disabled' } }, { label: 'Sim', valor: 'yes', props: { selected: '' } }, { label: 'Não', valor: 'no', props: {} }],
-												atributsContainer: {
-													className: ''
-												}
-											}
-										}
-
-										component={FormControlSelect}
-									></Field>
-									<ErrorMessage className="alerta_error_form_label" name="isLiberado" component="div" />
-								</Col>
-								<Col xs="12" sm="12" md="6">
-									<Field
-										data={
-											{
-												hasLabel: true,
-												contentLabel: 'Assume duplicata *',
-												atributsFormLabel: {
-
-												},
-												atributsFormControl: {
-													tipo: 'text',
-													name: 'isAssumeDuplicata',
-													placeholder: '',
-													id: 'isAssumeDuplicata',
-													onChange: handleChange,
-													onBlur: handleBlur,
-													value: values.isAssumeDuplicata,
-													className: estilos.input,
-													size: "sm"
-												},
-												options: [{ label: 'Selecione', valor: '', props: { selected: 'selected', disabled: 'disabled' } }, { label: 'Sim', valor: 'yes', props: { selected: '' } }, { label: 'Não', valor: 'no', props: {} }],
-												atributsContainer: {
-													className: ''
-												}
-											}
-										}
-
-										component={FormControlSelect}
-									></Field>
-									<ErrorMessage className="alerta_error_form_label" name="isAssumeDuplicata" component="div" />
+									<ErrorMessage className="alerta_error_form_label" name="acessaTodosRcas" component="div" />
 								</Col>
 							</Row>
 						</form>

@@ -45,7 +45,7 @@ const FormExcluirVendedor = ({ dataVendedorChoice, setIdVendedor, idVendedor, sh
 	}
 
 	const dataToFormExcluirVendedor = () => {
-		let obj = { filial_id: '', pessoa_id: '', vrTarifa: '', vrDesconto: '', vrPorcentagemDesconto: '', nrRemessaAtual: '', qtdDiasProtesto: '', tpLocalAtualizacaoBoleto: '', id: '', isAssumeDuplicata: '', isPadrao: 'no', isLiberado: '', active: '', deleted_at: '', created_at: '', updated_at: '' }
+		let obj = { filial_id: '', pessoa_id: '', vrTarifa: '', vrDesconto: '', vrPorcentagemDesconto: '', nrRemessaAtual: '', qtdDiasProtesto: '', id: '', isAssumeDuplicata: '', isPadrao: 'no', isLiberado: '', active: '', deleted_at: '', created_at: '', updated_at: '' }
 
 		if (dataVendedorChoice) {
 
@@ -81,9 +81,6 @@ const FormExcluirVendedor = ({ dataVendedorChoice, setIdVendedor, idVendedor, sh
 				obj.qtdDiasProtesto = data.qtdDiasProtesto;
 			}
 
-			if (data.hasOwnProperty('tpLocalAtualizacaoBoleto')) {
-				obj.tpLocalAtualizacaoBoleto = data.tpLocalAtualizacaoBoleto;
-			}
 
 			if (data.hasOwnProperty('id')) {
 				obj.id = data.id;
