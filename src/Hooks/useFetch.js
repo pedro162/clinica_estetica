@@ -24,27 +24,26 @@ const useFetch = () => {
 
             if (response.ok == false) {
                 let message = json.mensagem
-                ? json.mensagem
-                : json.message;
+                    ? json.mensagem
+                    : json.message;
 
-                if(json?.errors){
-                    for(let prop in json.errors){
-                        if(json.errors[prop].length > 0){
+                if (json?.errors) {
+                    for (let prop in json.errors) {
+                        if (json.errors[prop].length > 0) {
                             message += json.errors[prop] + ', ';
                         }
                     }
-                    
+
                     message = message.trim()
                     message = message.substring(0, message.length - 1);
-                }                
-                
+                }
+
                 throw new Error(message);
             }
 
         } catch (err) {
 
             json = null;
-            console.log({message:err.message})
             setError(err.message);
 
         } finally {
@@ -63,7 +62,7 @@ const useFetch = () => {
             return () => clearTimeout(timer);
         }
     }, [error]);
-    
+
     return {
         data, error, loading,
         request, setError

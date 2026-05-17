@@ -203,6 +203,7 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
         if (dataContasReceberItem && Array.isArray(dataContasReceberItem) && dataContasReceberItem.length > 0) {
             for (let i = 0; !(i == dataContasReceberItem.length); i++) {
                 let atual = dataContasReceberItem[i];
+
                 if (atual) {
                     let acoesArr = [];
                     let btnEditar = true;
@@ -211,12 +212,9 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                     let btnVisualizarMovimentacoes = true;
                     let btnVisualizar = true;
 
-                    if (atual?.status != 'aberto') {
-                        estornar = false;
+                    if (String(atual?.status).trim() != 'aberto') {
                         btnEditar = false;
-                    } else {
                         baixar = false;
-                        btnEditar = false;
                     }
 
                     if (atual?.status == 'pago') {
@@ -470,12 +468,9 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                     let btnVisualizarMovimentacoes = true;
                     let btnVisualizar = true;
 
-                    if (atual?.status != 'aberto') {
-                        estornar = false;
+                    if (String(atual?.status).trim() != 'aberto') {
                         btnEditar = false;
-                    } else {
                         baixar = false;
-                        btnEditar = false;
                     }
 
                     if (atual?.status == 'pago') {

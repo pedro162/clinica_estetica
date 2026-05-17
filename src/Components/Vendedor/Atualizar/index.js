@@ -76,19 +76,8 @@ const Atualizar = ({ idVendedor, setIdVendedor, callback, atualizarVendedor, set
 
 	}, [idVendedor])
 
-
 	const validarAtualizacao = (data) => {
 		let erros = [];
-
-		let { vrLiquido, vrPago, status, id } = data;
-		vrLiquido = Number(vrLiquido)
-		vrPago = Number(vrPago)
-		let difAberto = vrLiquido - vrPago
-		let difAbertoAbs = Math.abs(difAberto);
-
-		if (!(String(status) == 'aberto')) {
-
-		}
 
 		return erros;
 	}

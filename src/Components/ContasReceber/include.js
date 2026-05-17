@@ -216,13 +216,9 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                     let btnVisualizarItens = true;
                     let btnVisualizar = true;
 
-                    if (atual?.status != 'aberto') {
-                        estornar = false;
+                    if (String(atual?.status).trim() != 'aberto') {
                         btnEditar = false;
-                    } else {
-                        btnFinalizar = false;
                         baixar = false;
-                        btnEditar = false;
                     }
 
                     if (atual?.status == 'pago') {
@@ -510,13 +506,9 @@ const Include = ({ dataEstado, loadingData, callBack, setMostarFiltros, nadaEnco
                     let btnVisualizarItens = true;
                     let btnVisualizar = true;
 
-                    if (atual?.status != 'aberto') {
-                        estornar = false;
+                    if (String(atual?.status).trim() != 'aberto') {
                         btnEditar = false;
-                    } else {
-                        btnFinalizar = false;
                         baixar = false;
-                        btnEditar = false;
                     }
 
                     if (atual?.status == 'pago') {

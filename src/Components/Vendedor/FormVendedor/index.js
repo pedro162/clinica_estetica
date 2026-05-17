@@ -74,10 +74,10 @@ const FormVendedor = forwardRef(({
 		const { response, json } = await request(url, options);
 
 		if (!error) {
-			callback && callback();
-			setShowModalCriarVendedor && setShowModalCriarVendedor();
-			setAtualizarVendedor && setAtualizarVendedor(false);
-			setIdVendedor && setIdVendedor(null);
+			callback && callback && callback();
+			setShowModalCriarVendedor && setShowModalCriarVendedor && setShowModalCriarVendedor();
+			setAtualizarVendedor && setAtualizarVendedor && setAtualizarVendedor(false);
+			setIdVendedor && setIdVendedor && setIdVendedor(null);
 
 			Swal.fire({
 				icon: "success",
@@ -88,31 +88,22 @@ const FormVendedor = forwardRef(({
 			});
 		}
 
-		setCarregando(false)
+		setCarregando && setCarregando(false);
 	}
 
 	const validate = (values) => {
-		const errors = {};
-		if (!values.pessoa_id) errors.pessoa_id = 'Obrigatório';
-		if (!(String(values.vrTarifa).length > 0)) errors.vrTarifa = 'Obrigatório';
-		if (!(String(values.vrDesconto).length > 0)) errors.vrDesconto = 'Obrigatório';
-		if (!(String(values.vrPorcentagemDesconto).length > 0)) errors.vrPorcentagemDesconto = 'Obrigatório';
-		if (!values.filial_id) errors.filial_id = 'Obrigatório';
+		const err = {};
+		if (!values.pessoa_id) err.pessoa_id = 'Obrigatório';
+		if (!values.filial_id) err.filial_id = 'Obrigatório';
 
-		if (values.nrRemessaAtual && values.nrRemessaAtual < 0) {
-			errors.nrRemessaAtual = 'A remessa atual não pode ser um número negativo';
-		}
+		if (!values.metaPositivacao || String(values.metaPositivacao).trim() == '') err.metaPositivacao = 'Obrigatório';
+		if (!values.metaFaturamento || String(values.metaFaturamento).trim() == '') err.metaFaturamento = 'Obrigatório';
+		if (!values.metaMargem || String(values.metaMargem).trim() == '') err.metaMargem = 'Obrigatório';
 
-		if (values.nrNossoNumero && values.nrNossoNumero < 0) {
-			errors.nrNossoNumero = 'O nossó número atual não pode ser um número negativo';
-		}
+		if (!values.acessaTodosRcas || !['yes', 'no'].includes(String(values.acessaTodosRcas).toLowerCase())) err.acessaTodosRcas = 'Valor inválido';
+		if (!values.situacao || String(values.situacao).trim() === '') err.situacao = 'Obrigatório';
 
-		if (!values.tpLocalAtualizacaoBoleto) errors.tpLocalAtualizacaoBoleto = 'Obrigatório';
-		if (!(String(values.qtdDiasProtesto).length > 0)) errors.qtdDiasProtesto = 'Obrigatório';
-		if (!values.isAssumeDuplicata) errors.isAssumeDuplicata = 'Obrigatório';
-		if (!values.isPadrao) errors.isPadrao = 'Obrigatório';
-		if (!values.isLiberado) errors.isLiberado = 'Obrigatório';
-		return errors;
+		return err;
 	};
 
 	useImperativeHandle(ref, () => ({
@@ -122,11 +113,27 @@ const FormVendedor = forwardRef(({
 	}));
 
 	React.useRef(() => {
-		setCarregando(loading)
+		//setCarregando(loading)
 	}, [loading, setCarregando]);
 
 	const dataToFormVendedor = () => {
-		let obj = { pessoa_id: '', vrPorcentagemDesconto: '', filial_id: '', vrTarifa: '', isPadrao: 'no', vrDesconto: '', isLiberado: '', nrRemessaAtual: '', nrNossoNumero: '', qtdDiasProtesto: '', id: '', tpLocalAtualizacaoBoleto: '', isAssumeDuplicata: '', isPadrao: '', active: '', deleted_at: '', created_at: '', updated_at: '' }
+		let obj = {
+			pessoa_id: '',
+			pessoa_name: '',
+			metaPositivacao: '',
+			filial_id: '',
+			filial_name: '',
+			metaPositivacao: '',
+			metaFaturamento: '',
+			metaMargem: '',
+			situacao: '',
+			acessaTodosRcas: '',
+			id: '',
+			deleted_at: '',
+			created_at: '',
+			updated_at: ''
+
+		}
 
 		if (dataVendedorChoice) {
 
@@ -150,50 +157,41 @@ const FormVendedor = forwardRef(({
 				obj.isPadrao = data.isPadrao;
 			}
 
-			if (data.hasOwnProperty('vrDesconto')) {
-				obj.vrDesconto = data.vrDesconto;
+			if (data.hasOwnProperty('metaFaturamento')) {
+				obj.metaFaturamento = data.metaFaturamento;
 			}
 
-			if (data.hasOwnProperty('isLiberado')) {
-				obj.isLiberado = data.isLiberado;
+			if (data.hasOwnProperty('metaMargem')) {
+				obj.metaMargem = data.metaMargem;
 			}
 
-			if (data.hasOwnProperty('nrRemessaAtual')) {
-				obj.nrRemessaAtual = data.nrRemessaAtual;
+			if (data.hasOwnProperty('situacao')) {
+				obj.situacao = data.situacao;
 			}
 
-			if (data.hasOwnProperty('nrNossoNumero')) {
-				obj.nrNossoNumero = data.nrNossoNumero;
+			if (data.hasOwnProperty('acessaTodosRcas')) {
+				obj.acessaTodosRcas = data.acessaTodosRcas;
 			}
 
-			if (data.hasOwnProperty('qtdDiasProtesto')) {
-				obj.qtdDiasProtesto = data.qtdDiasProtesto;
-			}
-
-			if (data.hasOwnProperty('vrTarifa')) {
-				obj.vrTarifa = data.vrTarifa;
+			if (data.hasOwnProperty('metaPositivacao')) {
+				obj.metaPositivacao = data.metaPositivacao;
 			}
 
 			if (data.hasOwnProperty('id')) {
 				obj.id = data.id;
 			}
 
-			if (data.hasOwnProperty('tpLocalAtualizacaoBoleto')) {
-				obj.tpLocalAtualizacaoBoleto = data.tpLocalAtualizacaoBoleto;
+			if (data.hasOwnProperty('metaPositivacao')) {
+				obj.metaPositivacao = data.metaPositivacao;
 			}
 
-			if (data.hasOwnProperty('isPadrao')) {
-				obj.isPadrao = data.isPadrao;
+			if (data.hasOwnProperty('pessoa')) {
+				obj.pessoa_name = data.pessoa?.name;
 			}
 
-			if (data.hasOwnProperty('isAssumeDuplicata')) {
-				obj.isAssumeDuplicata = data.isAssumeDuplicata;
+			if (data.hasOwnProperty('filial')) {
+				obj.filial_name = data.filial?.pessoa?.name;
 			}
-
-			if (data.hasOwnProperty('vrPorcentagemDesconto')) {
-				obj.vrPorcentagemDesconto = data.vrPorcentagemDesconto;
-			}
-
 		}
 
 		if (idFilialForm) {
@@ -276,6 +274,7 @@ const FormVendedor = forwardRef(({
 													onChange: handleChange,
 													onBlur: handleBlur,
 													value: values.pessoa_id,
+													name_servico: values.pessoa_name,
 													className: `${estilos.input}`,
 													size: "sm"
 												},
@@ -314,6 +313,7 @@ const FormVendedor = forwardRef(({
 													onChange: handleChange,
 													onBlur: handleBlur,
 													value: values.filial_id,
+													name_servico: values.filial_name,
 													className: `${estilos.input}`,
 													size: "sm"
 												},
@@ -324,12 +324,7 @@ const FormVendedor = forwardRef(({
 												callbackDataItemChoice: (param) => {
 													let { label, value } = param
 
-													handleChange({
-														target: {
-															name: 'filial_id',
-															value: value
-														}
-													})
+													setFieldValue('filial_id', value)
 												}
 											}
 										}
@@ -345,6 +340,7 @@ const FormVendedor = forwardRef(({
 								<Col xs="12" sm="12" md="6">
 									<Field
 										data={{
+											hasNumberFormat: true,
 											hasLabel: true,
 											contentLabel: 'Meta positivação *',
 											atributsFormLabel: {},
@@ -369,6 +365,7 @@ const FormVendedor = forwardRef(({
 								<Col xs="12" sm="12" md="6">
 									<Field
 										data={{
+											hasNumberFormat: true,
 											hasLabel: true,
 											contentLabel: 'Meta faturamento *',
 											atributsFormLabel: {},
@@ -395,6 +392,7 @@ const FormVendedor = forwardRef(({
 								<Col xs="12" sm="12" md="6">
 									<Field
 										data={{
+											hasNumberFormat: true,
 											hasLabel: true,
 											contentLabel: 'Meta margem *',
 											atributsFormLabel: {},
@@ -433,10 +431,14 @@ const FormVendedor = forwardRef(({
 												className: estilos.input,
 												size: "sm"
 											},
-											options: [],
+											options: [
+												{ label: 'Selecione', valor: '', props: { selected: 'selected', disabled: 'disabled' } },
+												{ label: 'Ativo', valor: 'ativo', props: {} },
+												{ label: 'Inativo', valor: 'inativo', props: {} }
+											],
 											atributsContainer: { className: '' }
 										}}
-										component={FormControlInput}
+										component={FormControlSelect}
 									></Field>
 									<ErrorMessage className="alerta_error_form_label" name="situacao" component="div" />
 								</Col>

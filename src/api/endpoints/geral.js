@@ -2536,7 +2536,7 @@ export const RCA_ONE_GET = (id, token) => {
     };
 
     return {
-        url: BASE_URL + '/api/rca/info/' + id,
+        url: BASE_URL + '/api/v1/sellers/' + id,
         options: myInit
     }
 
@@ -2559,7 +2559,7 @@ export const RCA_SAVE_POST = (data, token) => {
     };
 
     return {
-        url: BASE_URL + '/api/rca/store',
+        url: BASE_URL + '/api/v1/sellers',
         options: myInit
     }
 
@@ -2582,7 +2582,7 @@ export const RCA_UPDATE_POST = (id, data, token) => {
     };
 
     return {
-        url: BASE_URL + '/api/rca/update/' + id,
+        url: BASE_URL + '/api/v1/sellers/' + id,
         options: myInit
     }
 
