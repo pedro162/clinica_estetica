@@ -210,7 +210,7 @@ const Include = ({ dataEstado, loadingData, nadaEncontrado, callBakSelectedItem,
                                 },
                                 {
 
-                                    label: atual?.pessoa?.name,
+                                    label: atual?.filial?.pessoa?.name,
                                     propsRow: {}
                                 },
                                 {
