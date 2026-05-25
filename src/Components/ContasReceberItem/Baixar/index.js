@@ -1,6 +1,6 @@
 import React from 'react';
 import useFetch from '../../../Hooks/useFetch.js';
-import { TOKEN_POST, CLIENT_ID, CLIENT_SECRET, CONTAS_RECEBER_ONE_GET, GRUPOS_ALL_POST } from '../../../api/endpoints/geral.js'
+import { TOKEN_POST, CLIENT_ID, CLIENT_SECRET, CONTAS_RECEBER_ONE_GET, GRUPOS_ALL_POST, CONTAS_RECEBER_ITEM_ONE_GET } from '../../../api/endpoints/geral.js'
 import { UserContex } from '../../../Context/UserContex.js'
 import BaixarForm from './BaixarForm.js'
 import Modal from '../../Utils/Modal/index.js'
@@ -21,18 +21,28 @@ const Baixar = ({ idContasReceberItem, setIdContasReceberItem, callback, BaixarC
 	const [erroValidacao, setErroValidacao] = React.useState(null)
 	const [dataGrupo, setDataGrupo] = React.useState(null)
 	const { getToken, dataUser } = React.useContext(UserContex);
-
 	const { data, error, request, loading } = useFetch();
+
 	React.useEffect(() => {
 
 		const getContasReceberItem = async () => {
 			if (idContasReceberItem > 0) {
-				const { url, options } = CONTAS_RECEBER_ONE_GET(idContasReceberItem, getToken());
+				const { url, options } = CONTAS_RECEBER_ITEM_ONE_GET(idContasReceberItem, getToken());
 				const { response, json } = await request(url, options);
-				if (json) {
 
-					let data = json?.mensagem
+				if (json) {
+					let data = json
+
+					if (json?.mensagem) {
+						data = json?.mensagem
+					}
+
+					if (json?.data) {
+						data = json?.data
+					}
+
 					let erroValidaao = validarBaixa(data);
+
 					if (Array.isArray(erroValidaao) && erroValidaao.length > 0) {
 						setShowModalErro(true)
 						erroValidaao = erroValidaao.join('<br/>')
@@ -44,14 +54,11 @@ const Baixar = ({ idContasReceberItem, setIdContasReceberItem, callback, BaixarC
 							footer: '',//'<a href="#">Why do I have this issue?</a>'
 							confirmButtonColor: "#07B201",
 						});
+						setIdContasReceberItem(null)
 					} else {
 						setDataContasReceberItem(json)
 						setShowModalBaixarContasReceberItem(true)
 					}
-
-
-
-
 				} else {
 					setDataContasReceberItem([])
 					setErroValidacao(null)
@@ -84,24 +91,13 @@ const Baixar = ({ idContasReceberItem, setIdContasReceberItem, callback, BaixarC
 
 		return erros;
 	}
-	//ModalAlert = ({show, showHide, title, message, variant})
-	/*
-		BaixarContasReceberItem && 
-				<Baixar setCarregandoDadosContasReceberItem={null} BaixarContasReceberItem={setBaixarContasReceberItem} idContasReceberItem={clientChoice} setDataContasReceberItem={null} setShowModalCriarContasReceberItem={setShowModalBaixarContasReceberItem} />
-	*/
-	//<Pesquisar idContasReceberItem={idContasReceberItem} setDataContasReceberItem={setDataContasReceberItem} setCarregandoDadosContasReceberItem={setCarregando} />
+
 	return (
 		<>
 			{!dataContasReceberItem &&
 				<Modal noBtnCancelar={true} noBtnConcluir={true} handleConcluir={() => null} title={'Baixar ContasReceberItem'} size="xs" propsConcluir={{}} labelConcluir={''} dialogClassName={''} aria-labelledby={'aria-labelledby'} labelCanelar="" show={showModalBaixarContasReceberItem} showHide={() => { setShowModalBaixarContasReceberItem(); }}>
 					<Load />
 				</Modal>
-			}
-
-			{
-				/*erroValidacao && <ModalAlert variant={'danger'} show={showModalErro} showHide={()=>{setShowModalErro(false);setIdContasReceberItem(null)}} title={'Erro'} message={`${erroValidacao}`} >
-					
-				</ModalAlert>*/
 			}
 
 			{dataContasReceberItem &&

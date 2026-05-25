@@ -16,7 +16,7 @@ import { FORMAT_CALC_COD, FORMAT_MONEY } from '../../../functions/index.js'
 import Swal from 'sweetalert2'
 
 
-import { TOKEN_POST, CLIENT_ID, CLIENT_SECRET, SERVICO_SAVE_POST, SERVICO_ALL_POST, CONTAS_RECEBER_BAIXAR_POST, CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST } from '../../../api/endpoints/geral.js'
+import { TOKEN_POST, CLIENT_ID, CLIENT_SECRET, SERVICO_SAVE_POST, SERVICO_ALL_POST, CONTAS_RECEBER_BAIXAR_POST, CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST, CAIXA_ALL_POST } from '../../../api/endpoints/geral.js'
 
 
 const BaixarForm = ({ dataContasReceberItemChoice, setDataContasReceberItem, setIdContasReceberItem, idContasReceberItem, showModalCriarContasReceberItem, setShowModalCriarContasReceberItem, callback, atualizarContasReceberItem, baixarContasReceberItem, setBaixarContasReceberItem, carregando }) => {
@@ -57,9 +57,6 @@ const BaixarForm = ({ dataContasReceberItemChoice, setDataContasReceberItem, set
 
 
 		if (json) {
-			console.log('Response Save consulta here')
-			console.log(json)
-
 			callback();
 			setShowModalCriarContasReceberItem();
 			setBaixarContasReceberItem(false);
@@ -78,19 +75,13 @@ const BaixarForm = ({ dataContasReceberItemChoice, setDataContasReceberItem, set
 	const requestAllFiliais = async () => {
 
 		const { url, options } = SERVICO_ALL_POST({}, getToken());
-
-
 		const { response, json } = await dataRequest.request(url, options);
-		console.log('All consultas here')
-		console.log(json)
+
 		if (json) {
 			setDataFiliais(json)
 		} else {
-
 			setDataFiliais([]);
 		}
-
-
 	}
 
 	const handleChangeDesconto = (ve) => {
@@ -118,29 +109,23 @@ const BaixarForm = ({ dataContasReceberItemChoice, setDataContasReceberItem, set
 	const calcularCobranca = (objParams = {}) => {
 		let obj = { filial_id: '', vrLiquido: '', status: '', vr_total: '', vr_acrescimo: '', vr_final: '', vr_multa: '', vr_juros: '', vr_desconto: '', ds_observacao: '', ...dataBaixaContasReceberItem }
 		let data = dataBaixaContasReceberItem;//dataContasReceberItemChoice?.mensagem;
-		/*
-			if(dataContasReceberItemChoice && dataContasReceberItemChoice.hasOwnProperty('mensagem')){
-			let data = dataContasReceberItemChoice.mensagem;
-		*/
-		//console.log('======================================== objParams ================')//vrMultaForm
-		//console.log(objParams)
-		//
+
 		let vrJurosForm = objParams?.vrJurosForm
 		let vrMultaForm = objParams?.vrMultaForm
 		let vrDescontoForm = objParams?.vrDescontoForm
 		let vrAcrescimosForm = objParams?.vrAcrescimosForm
 
-		if (data.hasOwnProperty('filial_id')) {
-			obj.filial_id = data.filial_id;
+		if (data?.hasOwnProperty('filial_id')) {
+			obj.filial_id = data?.filial_id;
 		}
 
-		if (data.hasOwnProperty('vrLiquido')) {
-			obj.vrLiquido = data.vrLiquido;
-			obj.vr_total = data.vrLiquido;
+		if (data?.hasOwnProperty('vrLiquido')) {
+			obj.vrLiquido = data?.vrLiquido;
+			obj.vr_total = data?.vrLiquido;
 		}
 
-		if (data.hasOwnProperty('status')) {
-			obj.status = data.status;
+		if (data?.hasOwnProperty('status')) {
+			obj.status = data?.status;
 		}
 
 		//console.log('vrDesconto: '+vrDescontoForm)
@@ -155,28 +140,28 @@ const BaixarForm = ({ dataContasReceberItemChoice, setDataContasReceberItem, set
 
 		if (vrJurosForm != undefined && vrJurosForm != null) {
 			vrJuros = FORMAT_CALC_COD(vrJurosForm)
-		} else if (data.hasOwnProperty('vr_juros')) {
-			vrJuros = FORMAT_CALC_COD(data.vr_juros);
+		} else if (data?.hasOwnProperty('vr_juros')) {
+			vrJuros = FORMAT_CALC_COD(data?.vr_juros);
 		}
 
 		if (vrDescontoForm != undefined && vrDescontoForm != null) {
 			vrDesconto = FORMAT_CALC_COD(vrDescontoForm)
 
-		} else if (data.hasOwnProperty('vr_desconto')) {
-			vrDesconto = FORMAT_CALC_COD(data.vr_desconto);
+		} else if (data?.hasOwnProperty('vr_desconto')) {
+			vrDesconto = FORMAT_CALC_COD(data?.vr_desconto);
 		}
 
 		if (vrMultaForm != undefined && vrMultaForm != null) {
 			vrMulta = FORMAT_CALC_COD(vrMultaForm)
-		} else if (data.hasOwnProperty('vr_multa')) {
-			vrMulta = FORMAT_CALC_COD(data.vr_multa);
+		} else if (data?.hasOwnProperty('vr_multa')) {
+			vrMulta = FORMAT_CALC_COD(data?.vr_multa);
 
 		}
 
 		if (vrAcrescimosForm != undefined && vrAcrescimosForm != null) {
 			vrAcrescimo = FORMAT_CALC_COD(vrAcrescimosForm)
-		} else if (data.hasOwnProperty('vr_acrescimo')) {
-			vrAcrescimo = FORMAT_CALC_COD(data.vr_acrescimo);
+		} else if (data?.hasOwnProperty('vr_acrescimo')) {
+			vrAcrescimo = FORMAT_CALC_COD(data?.vr_acrescimo);
 		}
 
 		Number(vrJuros)
@@ -187,10 +172,7 @@ const BaixarForm = ({ dataContasReceberItemChoice, setDataContasReceberItem, set
 
 		if (!(!isNaN(vrJuros) && vrJuros >= 0)) {
 			vrJuros = 0;
-		} else {
-
 		}
-		console.log('vrDesconto: ' + vrDesconto)
 		if (!(!isNaN(vrDesconto) && vrDesconto >= 0)) {
 			vrDesconto = 0;
 		}
@@ -206,10 +188,6 @@ const BaixarForm = ({ dataContasReceberItemChoice, setDataContasReceberItem, set
 		if (!(!isNaN(vrBaixar) && vrBaixar >= 0)) {
 			vrBaixar = 0;
 		}
-
-		console.log('vrDesconto: ' + vrDesconto)
-		console.log('vrMulta: ' + vrMulta)
-		console.log('vrJuros: ' + vrJuros)
 
 		if ((vrMulta > 0 || vrJuros > 0) && vrDesconto > 0) {
 			vrDesconto = 0;
@@ -234,20 +212,24 @@ const BaixarForm = ({ dataContasReceberItemChoice, setDataContasReceberItem, set
 		return obj;
 	}
 
-
-
 	React.useEffect(() => {
 
 		if (dataContasReceberItemChoice && dataContasReceberItemChoice.hasOwnProperty('mensagem')) {
-			let data = dataContasReceberItemChoice.mensagem;
-			//console.log('========================================')//
-			//console.log(data)
+
+			let data = dataContasReceberItemChoice
+
+			if (dataContasReceberItemChoice?.mensagem) {
+				data = dataContasReceberItemChoice?.mensagem
+			}
+
+			if (dataContasReceberItemChoice?.data) {
+				data = dataContasReceberItemChoice?.data
+			}
+
 			setDataBaixaContasReceberItem(data)
 		}
 
-
 	}, [])
-
 
 	React.useEffect(() => {
 
@@ -273,8 +255,6 @@ const BaixarForm = ({ dataContasReceberItemChoice, setDataContasReceberItem, set
 
 	}, [vrAcrescimosForm])
 
-
-
 	const preparaFilialToForm = () => {
 		if (dataFiliais.hasOwnProperty('mensagem') && Array.isArray(dataFiliais.mensagem) && dataFiliais.mensagem.length > 0) {
 			let filiais = dataFiliais.mensagem.map(({ id, name }, index, arr) => ({ label: name, valor: id, props: {} }))
@@ -294,11 +274,7 @@ const BaixarForm = ({ dataContasReceberItemChoice, setDataContasReceberItem, set
 
 	}, []);
 
-	console.log('----------------------------- data pais ----------------------------------')
-	console.log(calcularCobranca())
-
 	const dataFormCob = calcularCobranca({})
-
 
 	if (error) {
 		Swal.fire({
@@ -342,12 +318,6 @@ const BaixarForm = ({ dataContasReceberItemChoice, setDataContasReceberItem, set
 				}
 
 				onSubmit={async (values, { setSubmitting }) => {
-					/*setTimeout(() => {
-						alert(JSON.stringify(values, null, 2));
-						setSubmitting(false);
-					  }, 400);*/
-					//alert('aqui')
-
 					await sendData({ ...values });
 				}}
 			>
@@ -360,7 +330,8 @@ const BaixarForm = ({ dataContasReceberItemChoice, setDataContasReceberItem, set
 							handleChange,
 							handleBlur,
 							handleSubmit,
-							isSubmitting
+							isSubmitting,
+							setFieldValue
 						}
 					) => (
 
@@ -393,31 +364,38 @@ const BaixarForm = ({ dataContasReceberItemChoice, setDataContasReceberItem, set
 														data={
 															{
 																hasLabel: true,
-																contentLabel: 'Caixa *',
+																contentLabel: 'Caixa para extorno *',
 																atributsFormLabel: {
 
 																},
 																atributsFormControl: {
 																	type: 'text',
 																	name: 'caixa_id',
-																	placeholder: 'Ex: caixa',
+																	placeholder: 'Caixa para extorno',
 																	id: 'caixa_id',
 																	name_cod: 'caixa_id',
 																	name_desacription: 'caixa_name',
 																	onChange: handleChange,
 																	onBlur: handleBlur,
 																	value: values.caixa_id,
+																	name_servico: values?.caixa_name,
 																	className: `${estilos.input}`,
 																	size: "sm"
 																},
 																atributsContainer: {
 																	className: ''
 																},
-																hookToLoadFromDescription: CLIENTES_ALL_POST,
+																hookToLoadFromDescription: CAIXA_ALL_POST,
+																callbackDataItemChoice: (param) => {
+																	let { label, value } = param
+
+																	setFieldValue('caixa_id', value)
+																}
 															}
 														}
-														ComponentFilter={<Caixa />}
-														titleCompontent={'Caixa'}
+
+														ComponentFilter={Caixa}
+														componentTitle={'Escolha um caixa'}
 														component={Required}
 													>   </Field>
 													<ErrorMessage className="alerta_error_form_label" name="caixa_id" component="div" />

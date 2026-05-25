@@ -3863,7 +3863,7 @@ export const CONTAS_RECEBER_ITEM_ESTORNAR_POST = (id, data, token) => {
     };
 
     return {
-        url: BASE_URL + '/api/receber/item/estornar/' + id,
+        url: BASE_URL + '/api/receber/item/' + id + '/estornar',
         options: myInit
     }
 

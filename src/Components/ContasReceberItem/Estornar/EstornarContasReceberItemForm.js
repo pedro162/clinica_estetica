@@ -13,125 +13,73 @@ import { UserContex } from '../../../Context/UserContex.js'
 import Required from '../../FormControl/Required.js';
 import Load from '../../Utils/Load/index.js'
 import AlertaDismissible from '../../Utils/Alerta/AlertaDismissible.js'
-
-
-import { TOKEN_POST, CLIENT_ID, CLIENT_SECRET, SERVICO_SAVE_POST, SERVICO_ALL_POST, ORDEM_SERVICO_FINALIZAR_POST, CLIENTES_ALL_POST, PROFISSIONAIS_ALL_POST, CONTAS_RECEBER_UPDATE_POST, CONTAS_RECEBER_SAVE_POST, CONTAS_RECEBER_ESTORNAR_POST } from '../../../api/endpoints/geral.js'
-
+import { TOKEN_POST, CLIENT_ID, CLIENT_SECRET, SERVICO_SAVE_POST, SERVICO_ALL_POST, ORDEM_SERVICO_FINALIZAR_POST, CAIXA_ALL_POST, PROFISSIONAIS_ALL_POST, CONTAS_RECEBER_UPDATE_POST, CONTAS_RECEBER_SAVE_POST, CONTAS_RECEBER_ITEM_ESTORNAR_POST } from '../../../api/endpoints/geral.js'
+import Caixa from '../../Caixa/index.js';
 
 const FormEstornarContasReceberItem = ({ dataContasReceberItemChoice, setDataContasReceberItem, setIdContasReceberItem, idContasReceberItem, showModalEstornarontasReceber, setShowModalEstornarContasReceberItem, callback, setEstornarContasReceberItem, atualizarContasReceberItem, setAtualizarContasReceberItem, showModalCriarContasReceberItem, setShowModalCriarContasReceberItem, carregando }) => {
-
 	const { data, error, request, loading } = useFetch();
 	const dataRequest = useFetch();
-
 	const { getToken, dataUser } = React.useContext(UserContex);
 	const [dataFiliais, setDataFiliais] = React.useState([])
 	const [dataItens, setDataitens] = React.useState([])
 	const [isOrcamento, setIsOramento] = React.useState(false)
 	const [qtdAtualizaCobrancas, setQtdAtualizaCobrancas] = React.useState(0)
 
-
-	const userLogar = () => {
-		console.log('Aqui............')
-	}
-
 	const sendData = async ({
 		...params
 	}) => {
-
-
-
-
 		const data = {
 			...params
 		}
 
-
-
-		const { url, options } = CONTAS_RECEBER_ESTORNAR_POST(idContasReceberItem, data, getToken());
-
-
+		const { url, options } = CONTAS_RECEBER_ITEM_ESTORNAR_POST(idContasReceberItem, data, getToken());
 		const { response, json } = await request(url, options);
-		console.log('Save consulta here')
-		console.log(json)
-		if (json) {
-			console.log('Response Save consulta here')
-			console.log(json)
 
-			callback();
-			setShowModalEstornarContasReceberItem();
-			setAtualizarContasReceberItem(false);
-			setIdContasReceberItem(null);
+		if (!error) {
+			callback && callback();
+			setShowModalEstornarContasReceberItem && setShowModalEstornarContasReceberItem();
+			setAtualizarContasReceberItem && setAtualizarContasReceberItem(false);
+			setIdContasReceberItem && setIdContasReceberItem(null);
 		}
-	}
-
-	const requestAllFiliais = async () => {
-
-		const { url, options } = SERVICO_ALL_POST({}, getToken());
-
-
-		const { response, json } = await dataRequest.request(url, options);
-		console.log('All consultas here')
-		console.log(json)
-		if (json) {
-			setDataFiliais(json)
-		} else {
-
-			setDataFiliais([]);
-		}
-
-
 	}
 
 	const dataToFormContasReceberItem = () => {
-		let obj = { descricao: '' }
-		if (dataContasReceberItemChoice && dataContasReceberItemChoice.hasOwnProperty('mensagem')) {
-			let data = dataContasReceberItemChoice.mensagem;
+		let obj = { caixa_id: '', descricao: '' }
 
+		let dataContasReceberItem = dataContasReceberItemChoice
 
-			if (data.hasOwnProperty('descricao')) {
-				obj.descricao = data.descricao;
-			}
+		if (dataContasReceberItem?.mensagem) {
+			dataContasReceberItem = dataContasReceberItem?.mensagem;
+		}
 
+		if (dataContasReceberItem?.registro) {
+			dataContasReceberItem = dataContasReceberItem?.registro;
+		}
 
+		if (dataContasReceberItem?.data) {
+			dataContasReceberItem = dataContasReceberItem?.data;
+		}
 
+		if (dataContasReceberItem?.data) {
+			dataContasReceberItem = dataContasReceberItem?.data;
+		}
+
+		if (dataContasReceberItem && dataContasReceberItem.hasOwnProperty('id')) {
+			obj = { ...obj, ...dataContasReceberItem }
 		}
 
 		return obj;
 	}
 
-
-
-	const preparaFilialToForm = () => {
-		if (dataFiliais.hasOwnProperty('mensagem') && Array.isArray(dataFiliais.mensagem) && dataFiliais.mensagem.length > 0) {
-			let filiais = dataFiliais.mensagem.map(({ id, name }, index, arr) => ({ label: name, valor: id, props: {} }))
-			filiais.unshift({ label: 'Selecione...', valor: '', props: { selected: 'selected', disabled: 'disabled' } })
-
-			return filiais;
-		}
-		return []
+	if (error) {
+		Swal.fire({
+			icon: "error",
+			title: "Oops...",
+			text: error,
+			footer: '',
+			confirmButtonColor: "#07B201",
+		});
 	}
-
-	React.useEffect(() => {
-
-		if (dataContasReceberItemChoice && dataContasReceberItemChoice.hasOwnProperty('mensagem')) {
-			let data = dataContasReceberItemChoice.mensagem;
-			setDataitens(data?.item)
-		}
-
-	}, [])
-
-	React.useEffect(() => {
-		const requesFiliais = async () => {
-			await requestAllFiliais();
-		}
-
-		requesFiliais();
-
-	}, []);
-
-	console.log('----------------------------- data pais ----------------------------------')
-	console.log(dataToFormContasReceberItem())
-
 
 	return (
 
@@ -142,30 +90,17 @@ const FormEstornarContasReceberItem = ({ dataContasReceberItemChoice, setDataCon
 				enableReinitialize={true}
 				validate={
 					values => {
-
 						const errors = {}
-
-						/* if(!values.name){
-							errors.name="Obrigatório"
-						} */
 
 						if (!values.descricao) {
 							errors.descricao = "Obrigatório"
 						}
-
-
 
 						return errors;
 					}
 				}
 
 				onSubmit={async (values, { setSubmitting }) => {
-					/*setTimeout(() => {
-						alert(JSON.stringify(values, null, 2));
-						setSubmitting(false);
-					  }, 400);*/
-					//alert('aqui')
-
 					await sendData({ ...values });
 				}}
 			>
@@ -178,7 +113,8 @@ const FormEstornarContasReceberItem = ({ dataContasReceberItemChoice, setDataCon
 							handleChange,
 							handleBlur,
 							handleSubmit,
-							isSubmitting
+							isSubmitting,
+							setFieldValue
 						}
 					) => (
 
@@ -222,29 +158,38 @@ const FormEstornarContasReceberItem = ({ dataContasReceberItemChoice, setDataCon
 														data={
 															{
 																hasLabel: true,
-																contentLabel: 'Caixa para baixa *',
+																contentLabel: 'Caixa para extorno *',
 																atributsFormLabel: {
 
 																},
 																atributsFormControl: {
 																	type: 'text',
 																	name: 'caixa_id',
-																	placeholder: 'Caixa para baixa',
+																	placeholder: 'Caixa para extorno',
 																	id: 'caixa_id',
 																	name_cod: 'caixa_id',
 																	name_desacription: 'caixa_name',
 																	onChange: handleChange,
 																	onBlur: handleBlur,
 																	value: values.caixa_id,
+																	name_servico: values?.caixa_name,
 																	className: `${estilos.input}`,
 																	size: "sm"
 																},
 																atributsContainer: {
 																	className: ''
 																},
-																hookToLoadFromDescription: CLIENTES_ALL_POST,
+																hookToLoadFromDescription: CAIXA_ALL_POST,
+																callbackDataItemChoice: (param) => {
+																	let { label, value } = param
+
+																	setFieldValue('caixa_id', value)
+																}
 															}
 														}
+
+														ComponentFilter={Caixa}
+														componentTitle={'Escolha um caixa'}
 														component={Required}
 													>   </Field>
 													<ErrorMessage className="alerta_error_form_label" name="caixa_id" component="div" />
@@ -284,13 +229,8 @@ const FormEstornarContasReceberItem = ({ dataContasReceberItemChoice, setDataCon
 												</Col>
 
 											</Row>
-
-
-
 										</form>
-
 									)
-
 							}
 
 						</Modal>
